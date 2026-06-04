@@ -3,19 +3,11 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import SQLModel, Session, select
 from fastapi.middleware.cors import CORSMiddleware
 
-# استيراد محرك الاتصال والجلسة من ملف الـ database
 from database import engine, get_session
-# استيراد الموديلات الهيكلية الفتحية من ملف الـ models
-from models import MiningSite, Equipment
+from models import MiningSite, Equipment, Production, GoldPrice, Report
 
-# إعداد التطبيق والواجهات الأساسية
-app = FastAPI(
-    title="Sudan Mining Hub - منصة تعدين السودان الرقمية",
-    description="البنية الخلفية المستقرة والمربوطة بقاعدة البيانات السحابية لإدارة المواقع والآليات.",
-    version="1.1.0"
-)
+app = FastAPI(title="Sudan Mining Hub API", version="1.2.0")
 
-# تفعيل الـ CORS لضمان إمكانية الاتصال من تطبيقات الويب والموبايل مستقبلاً
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,53 +16,114 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# حدث بدء التشغيل: إنشاء الجداول تلقائياً وبث البيانات التجريبية الأساسية إن كانت قاعدة البيانات فارغة
 @app.on_event("startup")
 def on_startup():
-    # هذا الأمر ينشئ جداول mining_sites و equipment في PostgreSQL فوراً إذا لم تكن موجودة
+    # إنشاء الجداول الخمسة الجديدة تلقائياً في PostgreSQL
     SQLModel.metadata.create_all(engine)
-    
-    # بث بيانات أولية كـ Mock Data في الجداول الحقيقية عند أول تشغيل فقط
-    with Session(engine) as session:
-        if not session.exec(select(MiningSite)).first():
-            site1 = MiningSite(name="موقع أبو حمد الرئيسي", location="ولاية نهر النيل")
-            site2 = MiningSite(name="موقع وادي حلفا", location="الولاية الشمالية")
-            session.add(site1)
-            session.add(site2)
-            session.commit()
 
-# --- مسارات الـ API (Endpoints) المحدثة لتقرأ وتكتب من قاعدة البيانات ---
+@app.get("/")
+def root():
+    return {"status": "running", "database": "PostgreSQL Connected"}
 
-@app.get("/", tags=["الرئيسية"])
-def read_root():
-    return {"status": "online", "message": "Welcome to Sudan Mining Hub API Connected to PostgreSQL"}
+# --- [1] عمليات مواقع التعدين (Mining Sites CRUD) ---
+@app.get("/api/v1/sites", response_model=List[MiningSite])
+def read_sites(session: Session = Depends(get_session)):
+    return session.exec(select(MiningSite)).all()
 
-# 1. جلب كل مواقع التعدين
-@app.get("/api/v1/mining/sites", response_model=List[MiningSite], tags=["م مواقع التعدين"])
-def get_mining_sites(session: Session = Depends(get_session)):
-    sites = session.exec(select(MiningSite)).all()
-    return sites
-
-# 2. جلب موقع تعدين محدد عبر الـ ID
-@app.get("/api/v1/mining/sites/{site_id}", response_model=MiningSite, tags=["مواقع التعدين"])
-def get_mining_site_by_id(site_id: int, session: Session = Depends(get_session)):
-    site = session.get(MiningSite, site_id)
-    if not site:
-        raise HTTPException(status_code=404, detail="Mining site not found")
+@app.post("/api/v1/sites", response_model=MiningSite, status_code=201)
+def create_site(site: MiningSite, session: Session = Depends(get_session)):
+    site.id = None
+    session.add(site)
+    session.commit()
+    session.refresh(site)
     return site
 
-# 3. جلب كل المعدات والآليات
-@app.get("/api/v1/equipment", response_model=List[Equipment], tags=["المعدات والآليات"])
-def get_all_equipment(session: Session = Depends(get_session)):
-    equipments = session.exec(select(Equipment)).all()
-    return equipments
-
-# 4. إضافة معدة جديدة (وهنا سيتولى PostgreSQL توليد الـ ID تلقائياً واختفاء الـ null)
-@app.post("/api/v1/equipment", response_model=Equipment, status_code=201, tags=["المعدات والآليات"])
-def create_equipment(equipment_data: Equipment, session: Session = Depends(get_session)):
-    # تصفير الـ id لضمان أن قاعدة البيانات هي من ستولد الرقم التسلسلي الفريد
-    equipment_data.id = None
-    session.add(equipment_data)
+@app.put("/api/v1/sites/{site_id}", response_model=MiningSite)
+def update_site(site_id: int, updated_site: MiningSite, session: Session = Depends(get_session)):
+    db_site = session.get(MiningSite, site_id)
+    if not db_site: raise HTTPException(status_code=404, detail="الموقع غير موجود")
+    db_site.name = updated_site.name
+    db_site.state = updated_site.state
+    db_site.coordinates = updated_site.coordinates
+    db_site.is_active = updated_site.is_active
+    session.add(db_site)
     session.commit()
-    session.refresh(equipment_data) # جلب البيانات بعد حقن الـ ID الجديد من قاعدة البيانات
-    return equipment_data
+    session.refresh(db_site)
+    return db_site
+
+@app.delete("/api/v1/sites/{site_id}")
+def delete_site(site_id: int, session: Session = Depends(get_session)):
+    db_site = session.get(MiningSite, site_id)
+    if not db_site: raise HTTPException(status_code=404, detail="الموقع غير موجود")
+    session.delete(db_site)
+    session.commit()
+    return {"message": "تم حذف الموقع بنجاح"}
+
+
+# --- [2] عمليات المعدات والآليات (Equipment CRUD) ---
+@app.get("/api/v1/equipment", response_model=List[Equipment])
+def read_equipment(session: Session = Depends(get_session)):
+    return session.exec(select(Equipment)).all()
+
+@app.post("/api/v1/equipment", response_model=Equipment, status_code=201)
+def create_equipment(item: Equipment, session: Session = Depends(get_session)):
+    item.id = None
+    session.add(item)
+    session.commit()
+    session.refresh(item)
+    return item
+
+@app.put("/api/v1/equipment/{eq_id}", response_model=Equipment)
+def update_equipment(eq_id: int, updated_eq: Equipment, session: Session = Depends(get_session)):
+    db_eq = session.get(Equipment, eq_id)
+    if not db_eq: raise HTTPException(status_code=404, detail="المعدة غير موجودة")
+    db_eq.name = updated_eq.name
+    db_eq.owner = updated_eq.owner
+    db_eq.status = updated_eq.status
+    db_eq.last_maintenance = updated_eq.last_maintenance
+    session.add(db_eq)
+    session.commit()
+    session.refresh(db_eq)
+    return db_eq
+
+
+# --- [3] مسارات الإنتاج وبث البيانات (Production) ---
+@app.get("/api/v1/production", response_model=List[Production])
+def read_production(session: Session = Depends(get_session)):
+    return session.exec(select(Production)).all()
+
+@app.post("/api/v1/production", response_model=Production, status_code=201)
+def create_production(prod: Production, session: Session = Depends(get_session)):
+    prod.id = None
+    session.add(prod)
+    session.commit()
+    session.refresh(prod)
+    return prod
+
+
+# --- [4] مسارات أسعار الذهب (Gold Prices) ---
+@app.get("/api/v1/prices", response_model=List[GoldPrice])
+def read_prices(session: Session = Depends(get_session)):
+    return session.exec(select(GoldPrice)).all()
+
+@app.post("/api/v1/prices", response_model=GoldPrice, status_code=201)
+def update_gold_price(price: GoldPrice, session: Session = Depends(get_session)):
+    price.id = None
+    session.add(price)
+    session.commit()
+    session.refresh(price)
+    return price
+
+
+# --- [5] مسارات البلاغات والطوارئ (Reports) ---
+@app.get("/api/v1/reports", response_model=List[Report])
+def read_reports(session: Session = Depends(get_session)):
+    return session.exec(select(Report)).all()
+
+@app.post("/api/v1/reports", response_model=Report, status_code=201)
+def create_report(report: Report, session: Session = Depends(get_session)):
+    report.id = None
+    session.add(report)
+    session.commit()
+    session.refresh(report)
+    return report

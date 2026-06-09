@@ -1,53 +1,65 @@
 import streamlit as st
-from streamlit_autorefresh import st_autorefresh
 from services import get_gold_prices
 
-st.set_page_config(page_title="منصة تعدين السودان الرقمية", layout="wide")
+st.set_page_config(page_title="منصة تعدين السودان", layout="wide")
 
-# تحديث تلقائي
-st_autorefresh(interval=3000, key="refresh")
+# ====== SIDEBAR ======
+st.sidebar.title("📌 القائمة")
 
-# Sidebar Navigation
-st.sidebar.title("📌 الأقسام")
-
-page = st.sidebar.radio("اختر القسم", [
-    "📊 الأسعار",
+page = st.sidebar.radio("التنقل", [
+    "📊 الداشبورد",
     "🛒 السوق",
-    "ℹ️ معلومات"
+    "👤 المستخدم"
 ])
 
-# ========== الصفحة 1 ==========
-if page == "📊 الأسعار":
-    st.title("📊 أسعار الذهب المباشرة")
+user_type = st.sidebar.selectbox("نوع المستخدم", [
+    "مشتري",
+    "تاجر"
+])
 
-    data = get_gold_prices()
+# ====== DATA ======
+data = get_gold_prices()
 
-    col1, col2, col3, col4 = st.columns(4)
+# ====== DASHBOARD ======
+if page == "📊 الداشبورد":
+    st.title("📊 لوحة الأسعار")
 
-    col1.metric("🇸🇩 المحلي", f"{data['local']} SDG", f"{data['change']}")
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("🇸🇩 المحلي", f"{data['local']} SDG")
     col2.metric("🌍 العالمي", f"{data['global']} USD")
     col3.metric("📊 الاتجاه", data['direction'])
-    col4.metric("⚡ الحالة", "LIVE")
 
-    st.line_chart([data['local'] - 200, data['local'] - 100, data['local']])
-
-    st.caption(f"آخر تحديث: {data['timestamp']}")
-
-# ========== الصفحة 2 ==========
-elif page == "🛒 السوق":
-    st.title("🛒 سوق المعدات")
-
-    st.info("هنا سيتم عرض أجهزة التنقيب والمعدات قريباً")
-
-    st.selectbox("اختر نوع الجهاز", [
-        "جهاز تنقيب ذهب",
-        "معدات حفر",
-        "معدات فصل المعادن"
+    st.line_chart([
+        data['local'] - 150,
+        data['local'] - 80,
+        data['local']
     ])
 
-    st.button("طلب الآن")
+# ====== MARKET ======
+elif page == "🛒 السوق":
+    st.title("🛒 السوق")
 
-# ========== الصفحة 3 ==========
+    st.subheader("المعدات المتاحة")
+
+    category = st.selectbox("تصنيف المعدات", [
+        "معدات خفيفة",
+        "معدات ثقيلة",
+        "أخرى (بحث حر)"
+    ])
+
+    search = st.text_input("ابحث عن أي معدات")
+
+    if user_type == "مشتري":
+        st.info("عرض خاص للمشتري")
+    else:
+        st.success("لوحة التاجر")
+
+    st.button("طلب / إضافة إعلان")
+
+# ====== USER ======
 else:
-    st.title("ℹ️ معلومات النظام")
-    st.write("منصة تعدين السودان الرقمية - نسخة تجريبية")
+    st.title("👤 المستخدم")
+
+    st.write("نوع الحساب:", user_type)
+    st.write("حالة النظام: نشط")

@@ -1,51 +1,44 @@
 import streamlit as st
 
-st.set_page_config(page_title="منصة تعدين السودان الرقمية", layout="wide")
+st.set_page_config(page_title="منصة تعدين السودان", layout="wide")
 
-===== SIDEBAR =====
-
-st.sidebar.title("📌 القائمة")
+# ===== SIDEBAR =====
+st.sidebar.title("📌 التحكم")
 
 page = st.sidebar.radio(
-"التنقل",
-["📊 الداشبورد", "🛒 المشتري", "🏪 التاجر", "🤝 الصفقات", "⭐ المؤسسون", "⚙️ النظام"]
+    "التنقل",
+    ["📊 الداشبورد", "🛒 المشتري", "🏪 التاجر", "🤝 الصفقات", "⚙️ النظام"]
 )
 
-st.title("📊 منصة تعدين السودان الرقمية")
-
-===== DASHBOARD =====
-
+# ===== DASHBOARD =====
 if page == "📊 الداشبورد":
-st.subheader("لوحة الأسعار")
-st.metric("السوق المحلي", "114186 SDG")
-st.metric("السوق العالمي", "75.56 USD")
+    st.title("📊 الداشبورد")
+    st.success("النظام مستقر ويعمل الآن")
 
-===== BUYER =====
-
+# ===== BUYER =====
 elif page == "🛒 المشتري":
-st.subheader("طلب شراء")
-st.text_input("ما الذي تريد شراءه؟")
-st.text_area("وصف الطلب")
+    st.title("🛒 المشتري")
 
-===== SELLER =====
+    category = st.selectbox(
+        "نوع الطلب",
+        ["معدات خفيفة", "معدات ثقيلة", "أخرى (بحث حر)"]
+    )
 
+    search = st.text_input("ابحث عن المنتج")
+
+    st.write("النتائج ستظهر هنا حسب التاجر")
+
+# ===== SELLER =====
 elif page == "🏪 التاجر":
-st.subheader("تسجيل تاجر")
-st.text_input("اسم التاجر")
-st.text_input("رقم الهاتف")
-st.selectbox("نوع النشاط", ["معدات خفيفة", "معدات ثقيلة", "ذهب", "نقل", "خدمات"])
+    st.title("🏪 التاجر")
+    st.info("لوحة التاجر - إدارة المنتجات")
 
-===== DEALS =====
-
+# ===== DEALS =====
 elif page == "🤝 الصفقات":
-st.info("لا توجد صفقات حالياً")
+    st.title("🤝 الصفقات")
+    st.warning("الصفقات النشطة ستظهر هنا")
 
-===== FOUNDERS
-
-elif page == "⭐ المؤسسون":
-st.success("أول 50 تاجر يحصلون على خصم 10%")
-
-===== SYSTEM
-
+# ===== SYSTEM =====
 elif page == "⚙️ النظام":
-st.write("النظام يعمل بشكل مستقر")
+    st.title("⚙️ معلومات النظام")
+    st.write("حالة السيرفر: يعمل")

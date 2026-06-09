@@ -1,9 +1,9 @@
-from fastapi import FastAPi, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlachemy.orm import Session
+from sqlmodel import SQLModel, Session, select
 import models, database
 
-app = FastAPY(title="Sudan Mining Hub API", version="1.0")
+app = FastAPI(title="Sudan Mining Hub API", version="1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,29 +13,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-models.SQLModel.metadata.create_all(bind=database.engine)
-
-def get_db():
-    db = database.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+SQLModel.metadata.create_all(database.engine)
 
 @app.get("/")
 def root():
     return {"status": "running"}
 
 @app.get("/api/v1/market/items")
-def get_items(db: Session = Depends(get_db)):
-    return db.query(models.MarketItem).all()
+def get_items():
+    with Session(database.engine) as session:
+        items = session.exec(select(models.MarketItem)).all()
+        return items
 
 @app.get("/api/v1/prices")
 def get_prices():
     return {
         "local_price": 114842,
         "global_price": 75.56,
-        "direction": "مצ��رк",
+        "direction": "مستقر",
         "change": 0,
         "history": [114700, 114750, 114800, 114850]
     }

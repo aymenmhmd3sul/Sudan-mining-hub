@@ -1,25 +1,53 @@
 import streamlit as st
-from streamlit.runtime.scriptrunner import get_script_run_ctx
 from streamlit_autorefresh import st_autorefresh
 from services import get_gold_prices
 
 st.set_page_config(page_title="منصة تعدين السودان الرقمية", layout="wide")
 
-# ⏱️ تحديث تلقائي كل 3 ثواني
-st_autorefresh(interval=3000, limit=None, key="refresh")
+# تحديث تلقائي
+st_autorefresh(interval=3000, key="refresh")
 
-st.title("📊 منصة تعدين السودان الرقمية")
-st.subheader("نظام سوق الذهب والمعدات - LIVE")
+# Sidebar Navigation
+st.sidebar.title("📌 الأقسام")
 
-data = get_gold_prices()
+page = st.sidebar.radio("اختر القسم", [
+    "📊 الأسعار",
+    "🛒 السوق",
+    "ℹ️ معلومات"
+])
 
-col1, col2, col3, col4 = st.columns(4)
+# ========== الصفحة 1 ==========
+if page == "📊 الأسعار":
+    st.title("📊 أسعار الذهب المباشرة")
 
-col1.metric("🇸🇩 المحلي", f"{data['local']} SDG", f"{data['change']}")
-col2.metric("🌍 العالمي", f"{data['global']} USD")
-col3.metric("📊 الاتجاه", data['direction'])
-col4.metric("⚡ الحالة", "LIVE")
+    data = get_gold_prices()
 
-st.line_chart([data['local'] - 200, data['local'] - 100, data['local']])
+    col1, col2, col3, col4 = st.columns(4)
 
-st.caption(f"آخر تحديث: {data['timestamp']}")
+    col1.metric("🇸🇩 المحلي", f"{data['local']} SDG", f"{data['change']}")
+    col2.metric("🌍 العالمي", f"{data['global']} USD")
+    col3.metric("📊 الاتجاه", data['direction'])
+    col4.metric("⚡ الحالة", "LIVE")
+
+    st.line_chart([data['local'] - 200, data['local'] - 100, data['local']])
+
+    st.caption(f"آخر تحديث: {data['timestamp']}")
+
+# ========== الصفحة 2 ==========
+elif page == "🛒 السوق":
+    st.title("🛒 سوق المعدات")
+
+    st.info("هنا سيتم عرض أجهزة التنقيب والمعدات قريباً")
+
+    st.selectbox("اختر نوع الجهاز", [
+        "جهاز تنقيب ذهب",
+        "معدات حفر",
+        "معدات فصل المعادن"
+    ])
+
+    st.button("طلب الآن")
+
+# ========== الصفحة 3 ==========
+else:
+    st.title("ℹ️ معلومات النظام")
+    st.write("منصة تعدين السودان الرقمية - نسخة تجريبية")

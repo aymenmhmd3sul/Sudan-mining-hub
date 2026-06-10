@@ -1,19 +1,16 @@
 import random
-from datetime import datetime
+import time
 
 def get_gold_prices():
-    base_local = 114000
-    variation = random.randint(-500, 500)
+    base_local = 115000
 
-    local = base_local + variation
-    global_price = 75.56
-
-    direction = "صعود 🔥" if variation >= 0 else "هبوط 🔻"
+    change = random.randint(-900, 1200)
+    local = base_local + change
 
     return {
         "local": local,
-        "global": global_price,
-        "direction": direction,
-        "change": variation,
-        "timestamp": datetime.utcnow().isoformat()
+        "global": round(local / 1600, 2),
+        "change": change,
+        "direction": "صعود 🔥" if change > 0 else "هبوط 🔻",
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
     }

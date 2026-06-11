@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Boolean, Integer, String, Text
 from sqlalchemy.orm import declarative_base
 from datetime import datetime
 
@@ -35,3 +35,6 @@ class TraderOffer(Base):
     details = Column(Text)
     status = Column(String, default='active')
     created_at = Column(String, default=str(datetime.utcnow()))
+
+contact_locked = Column(Boolean, default=True)
+agreed_price = Column(String, nullable=True)

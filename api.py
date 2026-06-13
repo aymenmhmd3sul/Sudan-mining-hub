@@ -4,8 +4,8 @@ app = FastAPI()
 
 @app.get("/")
 def root():
-    return {"status": "SERVER IS ALIVE"}
+    return {"status": "running"}
 
 @app.get("/api/v1/market/items")
-def items():
-    return {"status": "OK - CLEAN START"}
+def get_items():
+    return {"debug": "endpoint reached successfully"}

@@ -14,7 +14,7 @@ app = FastAPI(title="Mining Smart API")
 def root():
     return {"status": "API running Smart Version"}
 
-@app.get("/prices")
+@app.get("/api/v1/prices")
 def prices():
     return {
         "local": 114186,
@@ -22,10 +22,24 @@ def prices():
         "status": "live"
     }
 
-@app.get("/items")
+# ================= MARKET =================
+
+@app.get("/api/v1/market/items")
 def items():
     with Session(database.engine) as session:
-        return session.query(models.TraderOffer).all()
+        items = session.query(models.TraderOffer).all()
+
+        return [
+            {
+                "id": i.id,
+                "request_id": i.request_id,
+                "trader_id": i.trader_id,
+                "price": i.price,
+                "details": i.details,
+                "status": i.status
+            }
+            for i in items
+        ]
 
 # ================= REQUEST SYSTEM =================
 
@@ -36,10 +50,9 @@ class RequestIn(BaseModel):
     specs: str
     images: Optional[List[str]] = []
 
-@app.post("/request")
+@app.post("/api/v1/request")
 def create_request(data: RequestIn):
     with Session(database.engine) as session:
-
         req = models.BuyerRequest(
             buyer_name=data.buyer_name,
             whatsapp=data.whatsapp,
@@ -67,10 +80,9 @@ def create_request(data: RequestIn):
 class CommissionCalc(BaseModel):
     request_id: int
 
-@app.post("/commission")
+@app.post("/api/v1/commission")
 def commission(data: CommissionCalc):
     with Session(database.engine) as session:
-
         req = session.get(models.BuyerRequest, data.request_id)
 
         if not req:

@@ -1,14 +1,18 @@
-from fastapi import FastAPI
-from sqlalchemy import create_engine, text
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="Sudan Mining Hub API")
 
-# مؤقتًا (سنربطه بDB لاحقًا)
-engine = create_engine("sqlite:///./local.db")
+templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 def root():
-    return {"status": "running"}
+    return {"status": "API running"}
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/health")
 def health():
@@ -16,15 +20,9 @@ def health():
 
 @app.get("/api/v1/market/items")
 def get_items():
-    try:
-        with engine.connect() as conn:
-            result = conn.execute(text("SELECT 1 as id, 'gold' as name"))
-            rows = result.fetchall()
-
-        return {
-            "count": len(rows),
-            "data": [dict(r._mapping) for r in rows]
-        }
-
-    except Exception as e:
-        return {"error": str(e)}
+    return {
+        "count": 1,
+        "data": [
+            {"id": 1, "name": "gold"}
+        ]
+    }

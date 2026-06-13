@@ -14,15 +14,13 @@ class BuyerRequest(Base):
     specs = Column(Text)
 
     status = Column(String, default='new')
-
     buyer_confirmed = Column(Boolean, default=False)
     trader_confirmed = Column(Boolean, default=False)
-
     is_heavy_deal = Column(Boolean, default=False)
     manual_override = Column(Boolean, default=False)
     estimated_value = Column(String, nullable=True)
-
     created_at = Column(String, default=str(datetime.utcnow()))
+
 
 class Trader(Base):
     __tablename__ = 'traders'
@@ -34,6 +32,7 @@ class Trader(Base):
     code = Column(String)
     created_at = Column(String, default=str(datetime.utcnow()))
 
+
 class TraderOffer(Base):
     __tablename__ = 'trader_offers'
 
@@ -43,4 +42,14 @@ class TraderOffer(Base):
     price = Column(String)
     details = Column(Text)
     status = Column(String, default='active')
+    created_at = Column(String, default=str(datetime.utcnow()))
+
+
+class MarketItem(Base):
+    __tablename__ = 'market_items'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    price = Column(String)
+    category = Column(String)
     created_at = Column(String, default=str(datetime.utcnow()))

@@ -21,7 +21,12 @@ def health():
 
 @app.get("/policy", response_class=HTMLResponse)
 def policy():
-    return "<html><body style=\"background:#0f172a;color:white;font-family:Arial;padding:20px\"><h1>سياسة المنصة</h1><p>منصة أسعار الذهب فقط.</p></body></html>"
+    return HTMLResponse("""
+<html dir="rtl"><body style="background:#0f172a;color:white;font-family:Arial;padding:20px">
+<h1 style="font-size:28px">سياسة المنصة</h1>
+<p style="font-size:18px">هذه منصة لعرض أسعار الذهب والمعلومات السوقية.</p>
+</body></html>
+""")
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
@@ -47,17 +52,25 @@ color:white;
 background:#111827;
 padding:16px;
 text-align:center;
-font-size:24px;
+font-size:26px;
 font-weight:bold;
-position:sticky;
-top:0;
+}}
+
+.lang {{
+position:absolute;
+left:10px;
+top:10px;
+background:#1f2937;
+padding:6px 10px;
+border-radius:8px;
+font-size:12px;
+cursor:pointer;
 }}
 
 .ticker {{
 background:#1e293b;
 padding:10px;
 text-align:center;
-font-size:14px;
 }}
 
 .grid {{
@@ -72,45 +85,60 @@ background:#1f2937;
 padding:18px;
 border-radius:10px;
 text-align:center;
-font-size:16px;
 cursor:pointer;
-}}
-
-.card:active {{
-transform:scale(0.98);
+font-size:16px;
 }}
 
 .panel {{
-margin:10px;
-padding:15px;
+margin:12px;
+padding:18px;
 background:#111827;
 border-radius:10px;
-min-height:100px;
+min-height:120px;
 }}
 
 .footer {{
 text-align:center;
-padding:12px;
+padding:15px;
 background:#111827;
-margin-top:10px;
 }}
 
-a {{
+.policy-link {{
+font-size:18px;
 color:#38bdf8;
 }}
 </style>
 
 <script>
-function showSection(t,x){{
-document.getElementById("panel").innerHTML = "<h3>"+t+"</h3><p>"+x+"</p>";
+
+let lang = "ar";
+
+function toggleLang(){{
+lang = (lang==="ar") ? "en" : "ar";
+
+document.getElementById("title").innerText =
+(lang==="ar") ? "🟡 منصة السودان للتعدين" : "🟡 Sudan Mining Hub";
+
+document.getElementById("c1").innerText = (lang==="ar") ? "📦 الطلبات" : "Orders";
+document.getElementById("c2").innerText = (lang==="ar") ? "👤 التجار" : "Traders";
+document.getElementById("c3").innerText = (lang==="ar") ? "⛏️ التعدين" : "Mining";
+document.getElementById("c4").innerText = (lang==="ar") ? "📢 الإعلانات" : "Ads";
+document.getElementById("c5").innerText = (lang==="ar") ? "💳 الاشتراك" : "Subscription";
 }}
+
+function showSection(t,x){{
+document.getElementById("panel").innerHTML = "<h2>"+t+"</h2><p>"+x+"</p>";
+}}
+
 </script>
 
 </head>
 
 <body>
 
-<div class="header">🟡 Sudan Mining Hub</div>
+<div class="lang" onclick="toggleLang()">AR | EN</div>
+
+<div class="header" id="title">🟡 منصة السودان للتعدين</div>
 
 <div class="ticker">
 🟡 أونصة الذهب: {gold} USD | 🔄 Live
@@ -118,28 +146,27 @@ document.getElementById("panel").innerHTML = "<h3>"+t+"</h3><p>"+x+"</p>";
 
 <div class="grid">
 
-<div class="card" onclick="showSection(الطلبات,لا
+<div class="card" id="c1" onclick="showSection(الطلبات,لا
 توجد
-طلبات
-حالياً)">📦 الطلبات</div>
-<div class="card" onclick="showSection(التجار,لا
+طلبات)">📦 الطلبات</div>
+<div class="card" id="c2" onclick="showSection(التجار,لا
 يوجد
 تجار)">👤 التجار</div>
-<div class="card" onclick="showSection(التعدين,معدات
+<div class="card" id="c3" onclick="showSection(التعدين,معدات
 التعدين)">⛏️ التعدين</div>
-<div class="card" onclick="showSection(الإعلانات,لا
+<div class="card" id="c4" onclick="showSection(الإعلانات,لا
 توجد
 إعلانات)">📢 الإعلانات</div>
-<div class="card" onclick="showSection(الاشتراك,قريباً)">💳 الاشتراك</div>
+<div class="card" id="c5" onclick="showSection(الاشتراك,قريباً)">💳 الاشتراك</div>
 
 </div>
 
 <div id="panel" class="panel">
-اضغط على أي قسم
+لوحة التحكم
 </div>
 
-<div class="footer">
-<a href="/policy">سياسة المنصة</a>
+<div style="text-align:center;margin:10px">
+<a class="policy-link" href="/policy">سياسة المنصة</a>
 </div>
 
 </body>

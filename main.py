@@ -30,10 +30,9 @@ def dashboard():
 
     return f"""
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sudan Mining Hub</title>
 
 <style>
@@ -108,6 +107,7 @@ body {{
     cursor:pointer;
 }}
 </style>
+
 </head>
 
 <body>
@@ -116,38 +116,19 @@ body {{
 
 <div class="header">🟡 Sudan Mining Hub</div>
 
-<div class="price">{price} USD</div>
+<div class="price">{price}</div>
 
 <div class="grid">
 
-<div class="card" onclick="openModal('الطلبات')">📦 الطلبات</div>
-<div class="card" onclick="openModal('التجار')">👤 التجار</div>
-<div class="card" onclick="openModal('التعدين')">⛏️ التعدين</div>
-<div class="card" onclick="openModal('الإعلانات')">📢 الإعلانات</div>
-<div class="card" onclick="openModal('الاشتراك')">💳 الاشتراك</div>
+<div class="card">📦 الطلبات</div>
+<div class="card">👤 التجار</div>
+<div class="card">⛏️ التعدين</div>
+<div class="card">📢 الإعلانات</div>
+<div class="card">💳 الاشتراك</div>
 
 </div>
 
 </div>
-
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">✖</span>
-    <h2 id="modalTitle"></h2>
-    <p>هذه نافذة تفاعلية — سيتم ربطها بالبيانات لاحقاً</p>
-  </div>
-</div>
-
-<script>
-function openModal(title){
-    document.getElementById('modalTitle').innerText = title;
-    document.getElementById('modal').style.display = 'block';
-}
-
-function closeModal(){
-    document.getElementById('modal').style.display = 'none';
-}
-</script>
 
 </body>
 </html>

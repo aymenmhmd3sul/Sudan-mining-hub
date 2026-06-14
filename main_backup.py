@@ -1,9 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from services.gold_service import get_gold_price
+import requests
 
 app = FastAPI(title="Sudan Mining Hub API")
+
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
@@ -13,21 +14,24 @@ def root():
 @app.get("/api/v1/gold-price")
 def gold_price():
     try:
-        price = get_gold_price()
-        return {"status": "success", "gold_usd": price}
+        r = requests.get("https://api.metals.live/v1/spot/gold", timeout=5)
+        data = r.json()
+        return {"gold_usd": data[0]["price"]}
     except:
-        return {"status": "success", "gold_usd": 0}
+        return {"gold_usd": 0}
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
     try:
-        price = get_gold_price()
+        r = requests.get("https://api.metals.live/v1/spot/gold", timeout=5)
+        data = r.json()
+        price = data[0]["price"]
     except:
         price = 0
+
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "gold_price": round(price, 2),
-        "status": "live"
+        "gold_price": price
     })
 
 @app.get("/health")
@@ -36,4 +40,7 @@ def health():
 
 @app.get("/api/v1/market/items")
 def get_items():
-    return {"count": 1, "data": [{"id": 1, "name": "gold"}]}
+    return {
+        "count": 1,
+        "data": [{"id": 1, "name": "gold"}]
+    }

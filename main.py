@@ -19,17 +19,6 @@ def root():
 def health():
     return {"status":"ok"}
 
-@app.get("/policy", response_class=HTMLResponse)
-def policy():
-    return HTMLResponse("""
-    <html dir="rtl">
-    <body style="background:#0f172a;color:white;font-family:Arial;padding:20px">
-        <h1>سياسة المنصة</h1>
-        <p>منصة عرض أسعار الذهب والمعلومات السوقية.</p>
-    </body>
-    </html>
-    """)
-
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
     gold = get_price()
@@ -39,7 +28,7 @@ def dashboard():
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sudan Mining Hub</title>
 
 <style>
@@ -48,29 +37,36 @@ margin:0;
 font-family:Arial;
 background:#0b1220;
 color:white;
--webkit-user-select:none;
 user-select:none;
-touch-action:manipulation;
 }}
 
-.topbar {{
+.top {{
 position:sticky;
 top:0;
-background:#0f172a;
+background:#111827;
 padding:14px;
 text-align:center;
 font-size:20px;
 font-weight:bold;
-border-bottom:1px solid #1f2937;
 }}
 
-.pricebar {{
+.lang {{
+position:fixed;
+top:10px;
+left:10px;
+background:#1f2937;
+padding:6px 10px;
+border-radius:8px;
+cursor:pointer;
+z-index:9999;
+}}
+
+.price {{
 display:flex;
-justify-content:space-around;
+justify-content:space-between;
 padding:10px;
-background:#111827;
-font-size:14px;
-color:#cbd5e1;
+background:#1e293b;
+font-size:13px;
 }}
 
 .grid {{
@@ -82,32 +78,30 @@ padding:12px;
 
 .card {{
 background:#1f2937;
-padding:18px;
-border-radius:14px;
+padding:16px;
+border-radius:12px;
 text-align:center;
-font-size:15px;
 cursor:pointer;
-transition:0.15s;
 }}
 
 .card:active {{
-transform:scale(0.95);
-background:#374151;
+transform:scale(0.97);
 }}
 
 .panel {{
 margin:12px;
-padding:18px;
+padding:16px;
 background:#111827;
 border-radius:12px;
-min-height:140px;
+min-height:120px;
 }}
 
 .footer {{
 text-align:center;
-padding:15px;
-background:#0f172a;
+padding:14px;
+background:#0b1220;
 border-top:1px solid #1f2937;
+font-size:13px;
 }}
 
 a {{
@@ -115,85 +109,74 @@ color:#38bdf8;
 text-decoration:none;
 }}
 
-.lang {{
-position:fixed;
-top:10px;
-left:10px;
-background:#1f2937;
-padding:6px 10px;
-border-radius:8px;
-font-size:12px;
-cursor:pointer;
-}}
-
 </style>
+</head>
+
+<body>
+
+<div class="lang" id="langBtn">AR/EN</div>
+
+<div class="top" id="title">🟡 منصة السودان للتعدين</div>
+
+<div class="price">
+<div id="price">🟡 أونصة الذهب: {gold} USD</div>
+<div>LIVE</div>
+</div>
+
+<div class="grid">
+
+<div class="card" id="c1">📊 لوحة التحكم</div>
+<div class="card" id="c2">💰 الأسعار</div>
+<div class="card" id="c3">📦 الطلبات</div>
+<div class="card" id="c4">👤 التجار</div>
+<div class="card" id="c5">⛏️ التعدين</div>
+<div class="card" id="c6">📢 الإعلانات</div>
+<div class="card" id="c7">📰 الأخبار</div>
+<div class="card" id="c8">💳 الاشتراك</div>
+<div class="card" id="c9">📜 سياسة المنصة</div>
+
+</div>
+
+<div id="panel" class="panel">اضغط على أي قسم</div>
+
+<div class="footer">
+Sudan Mining Hub
+</div>
 
 <script>
 
 let lang = "ar";
 
-function toggleLang() {{
-lang = (lang === "ar") ? "en" : "ar";
+const labels = {
+ar: ["لوحة التحكم","الأسعار","الطلبات","التجار","التعدين","الإعلانات","الأخبار","الاشتراك","سياسة المنصة"],
+en: ["Dashboard","Prices","Orders","Traders","Mining","Ads","News","Subscription","Policy"]
+};
 
+function render(){
 document.getElementById("title").innerText =
 lang==="ar" ? "🟡 منصة السودان للتعدين" : "🟡 Sudan Mining Hub";
 
-document.getElementById("p1").innerText = lang==="ar" ? "📦 الطلبات" : "Orders";
-document.getElementById("p2").innerText = lang==="ar" ? "👤 التجار" : "Traders";
-document.getElementById("p3").innerText = lang==="ar" ? "⛏️ التعدين" : "Mining";
-document.getElementById("p4").innerText = lang==="ar" ? "📢 الإعلانات" : "Ads";
-document.getElementById("p5").innerText = lang==="ar" ? "💳 الاشتراك" : "Subscription";
-}}
+for(let i=1;i<=9;i++){
+document.getElementById("c"+i).innerText = labels[lang][i-1];
+}
+}
 
-function openTab(title, text) {{
+document.addEventListener("DOMContentLoaded", () => {
+
+document.getElementById("langBtn").addEventListener("click", () => {
+lang = (lang==="ar") ? "en" : "ar";
+render();
+});
+
+for(let i=1;i<=9;i++){
+document.getElementById("c"+i).addEventListener("click", () => {
 document.getElementById("panel").innerHTML =
-"<h2>"+title+"</h2><p>"+text+"</p>";
-}}
+"<h3>"+labels[lang][i-1]+"</h3><p>سيتم تفعيل هذا القسم قريباً</p>";
+});
+}
 
+});
 </script>
-
-</head>
-
-<body>
-
-<div class="lang" onclick="toggleLang()">AR/EN</div>
-
-<div class="topbar" id="title">🟡 منصة السودان للتعدين</div>
-
-<div class="pricebar">
-<div>🟡 أونصة: {gold} USD</div>
-<div>🔄 Live</div>
-</div>
-
-<div class="grid">
-
-<div class="card" id="p1" onclick="openTab(الطلبات,لا
-توجد
-طلبات
-حالياً)">📦 الطلبات</div>
-<div class="card" id="p2" onclick="openTab(التجار,لا
-يوجد
-تجار
-حالياً)">👤 التجار</div>
-<div class="card" id="p3" onclick="openTab(التعدين,معدات
-التعدين
-والخدمات)">⛏️ التعدين</div>
-<div class="card" id="p4" onclick="openTab(الإعلانات,لا
-توجد
-إعلانات)">📢 الإعلانات</div>
-<div class="card" id="p5" onclick="openTab(الاشتراك,خطط
-الاشتراك
-قريباً)">💳 الاشتراك</div>
-
-</div>
-
-<div id="panel" class="panel">
-اضغط على أي قسم لعرض التفاصيل
-</div>
-
-<div class="footer">
-<a href="/policy">سياسة المنصة</a>
-</div>
 
 </body>
 </html>

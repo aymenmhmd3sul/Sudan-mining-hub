@@ -4,7 +4,7 @@ import requests
 
 app = FastAPI()
 
-def price():
+def get_price():
     try:
         r = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT", timeout=5)
         return round(float(r.json()["price"]),2)
@@ -21,16 +21,11 @@ def health():
 
 @app.get("/policy", response_class=HTMLResponse)
 def policy():
-    return HTMLResponse("""
-    <html><body style="background:#0f172a;color:white;font-family:Arial;padding:20px">
-    <h1>سياسة المنصة</h1>
-    <p>منصة عرض أسعار الذهب فقط.</p>
-    </body></html>
-    """)
+    return "<html><body style=\"background:#0f172a;color:white;font-family:Arial;padding:20px\"><h1>سياسة المنصة</h1><p>منصة أسعار الذهب فقط.</p></body></html>"
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
-    gold = price()
+    gold = get_price()
 
     return HTMLResponse(f"""
 <!DOCTYPE html>
@@ -41,21 +36,73 @@ def dashboard():
 <title>Sudan Mining Hub</title>
 
 <style>
-body {{margin:0;font-family:Arial;background:#0f172a;color:white}}
-.header {{background:#111827;padding:18px;text-align:center;font-size:26px;font-weight:bold}}
-.ticker {{background:#1e293b;padding:10px;text-align:center}}
-.grid {{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:15px}}
-.card {{background:#1f2937;padding:18px;border-radius:12px;text-align:center;cursor:pointer}}
-.card:hover {{background:#374151}}
-.panel {{margin:15px;padding:20px;background:#111827;border-radius:12px;min-height:120px}}
-.footer {{text-align:center;padding:15px;background:#111827}}
-a {{color:#38bdf8}}
+body {{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:white;
+}}
+
+.header {{
+background:#111827;
+padding:16px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+position:sticky;
+top:0;
+}}
+
+.ticker {{
+background:#1e293b;
+padding:10px;
+text-align:center;
+font-size:14px;
+}}
+
+.grid {{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+padding:12px;
+}}
+
+.card {{
+background:#1f2937;
+padding:18px;
+border-radius:10px;
+text-align:center;
+font-size:16px;
+cursor:pointer;
+}}
+
+.card:active {{
+transform:scale(0.98);
+}}
+
+.panel {{
+margin:10px;
+padding:15px;
+background:#111827;
+border-radius:10px;
+min-height:100px;
+}}
+
+.footer {{
+text-align:center;
+padding:12px;
+background:#111827;
+margin-top:10px;
+}}
+
+a {{
+color:#38bdf8;
+}}
 </style>
 
 <script>
-function showSection(title,content){{
-document.getElementById("panel").innerHTML =
-"<h2>"+title+"</h2><p>"+content+"</p>";
+function showSection(t,x){{
+document.getElementById("panel").innerHTML = "<h3>"+t+"</h3><p>"+x+"</p>";
 }}
 </script>
 
@@ -66,7 +113,7 @@ document.getElementById("panel").innerHTML =
 <div class="header">🟡 Sudan Mining Hub</div>
 
 <div class="ticker">
-🟡 أونصة الذهب: {gold} USD | 🔄 مباشر
+🟡 أونصة الذهب: {gold} USD | 🔄 Live
 </div>
 
 <div class="grid">
@@ -77,22 +124,18 @@ document.getElementById("panel").innerHTML =
 حالياً)">📦 الطلبات</div>
 <div class="card" onclick="showSection(التجار,لا
 يوجد
-تجار
-حالياً)">👤 التجار</div>
+تجار)">👤 التجار</div>
 <div class="card" onclick="showSection(التعدين,معدات
-التعدين
-والخدمات)">⛏️ التعدين</div>
+التعدين)">⛏️ التعدين</div>
 <div class="card" onclick="showSection(الإعلانات,لا
 توجد
 إعلانات)">📢 الإعلانات</div>
-<div class="card" onclick="showSection(الاشتراك,خطط
-الاشتراك
-قريباً)">💳 الاشتراك</div>
+<div class="card" onclick="showSection(الاشتراك,قريباً)">💳 الاشتراك</div>
 
 </div>
 
 <div id="panel" class="panel">
-اضغط على أي قسم لعرض التفاصيل
+اضغط على أي قسم
 </div>
 
 <div class="footer">

@@ -1,24 +1,30 @@
 import requests
 
-def get_gold_price():
+def fetch_raw_gold():
     try:
-        # مصدر عالمي مستقر (USD index based proxy)
         r = requests.get(
-            "https://api.binance.com/api/v3/ticker/price?symbol=XAUUSDT",
+            "https://api.metals.live/v1/spot/gold",
             timeout=10
         )
         r.raise_for_status()
+        return r.json()
+    except Exception as e:
+        return None
 
+def get_gold_price():
+    data = fetch_raw_gold()
+
+    if data:
         return {
             "status": "success",
-            "source": "binance",
-            "price_raw": r.json()
+            "source": "metals.live",
+            "price_raw": data
         }
 
-    except Exception as e:
-        return {
-            "status": "error",
-            "source": "binance",
-            "price_raw": None,
-            "error": str(e)
-        }
+    # fallback ثابت فقط لمنع crash وليس لتغيير المصدر
+    return {
+        "status": "error",
+        "source": "no_data",
+        "price_raw": None,
+        "error": "external_api_failed"
+    }

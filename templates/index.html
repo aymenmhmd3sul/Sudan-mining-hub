@@ -1,60 +1,116 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>Sudan Mining Hub</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #0f172a;
-            color: white;
-            margin: 0;
-        }
-        .header {
-            padding: 20px;
-            background: #111827;
-            text-align: center;
-            font-size: 22px;
-        }
-        .container {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .card {
-            background: #1f2937;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .title {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Sudan Mining Hub</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial;
+    background:#0f172a;
+    color:white;
+}
+
+.header {
+    background:#111827;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo {
+    font-weight:bold;
+}
+
+.price-bar {
+    background:#0b1220;
+    padding:10px;
+    overflow:hidden;
+    white-space:nowrap;
+    border-bottom:1px solid #1f2937;
+}
+
+.price-bar span {
+    display:inline-block;
+    padding-left:100%;
+    animation: scroll 10s linear infinite;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+.container {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap:15px;
+    padding:20px;
+}
+
+.card {
+    background:#1f2937;
+    padding:20px;
+    border-radius:10px;
+}
+
+.card h3 {
+    margin:0 0 10px 0;
+}
+
+.footer {
+    text-align:center;
+    padding:15px;
+    background:#111827;
+    margin-top:20px;
+}
+</style>
 </head>
+
 <body>
 
 <div class="header">
-    🟡 Sudan Mining Hub - لوحة التحكم
+<div class="logo">🟡 Sudan Mining Hub</div>
+<div>AR | EN</div>
+</div>
+
+<div class="price-bar">
+<span>💰 Gold: 0.00 USD | Silver: 0.00 USD | Oil: Live Market | Update: Live</span>
 </div>
 
 <div class="container">
-    <div class="card">
-        <div class="title">الذهب</div>
-        <div>Gold Market</div>
-    </div>
 
-    <div class="card">
-        <div class="title">التجار</div>
-        <div>Traders</div>
-    </div>
+<div class="card">
+<h3>📦 الطلبات</h3>
+<p>Open Orders</p>
+</div>
 
-    <div class="card">
-        <div class="title">الطلبات</div>
-        <div>Orders</div>
-    </div>
+<div class="card">
+<h3>👤 التجار</h3>
+<p>Traders Network</p>
+</div>
+
+<div class="card">
+<h3>⛏️ معدات التعدين</h3>
+<p>Mining Equipment</p>
+</div>
+
+<div class="card">
+<h3>📢 الإعلانات</h3>
+<p>Featured Ads</p>
+</div>
+
+<div class="card">
+<h3>💳 الاشتراك</h3>
+<p>3000 SDG / Month</p>
+</div>
+
+</div>
+
+<div class="footer">
+سياسة المنصة | شروط الاستخدام | العمولات | تواصل معنا
 </div>
 
 </body>

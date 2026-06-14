@@ -1,10 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import requests
 
 app = FastAPI()
 
-def get_price():
+def price():
     try:
         r = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT", timeout=5)
         return round(float(r.json()["price"]),2)
@@ -13,7 +13,7 @@ def get_price():
 
 @app.get("/")
 def root():
-    return {"status":"API running"}
+    return {"status":"ok"}
 
 @app.get("/health")
 def health():
@@ -21,84 +21,41 @@ def health():
 
 @app.get("/policy", response_class=HTMLResponse)
 def policy():
-    return """
-    <html><body style="background:#0f172a;color:white;padding:20px;font-family:Arial">
+    return HTMLResponse("""
+    <html><body style="background:#0f172a;color:white;font-family:Arial;padding:20px">
     <h1>سياسة المنصة</h1>
-    <p>منصة عرض أسعار الذهب والمعلومات السوقية.</p>
+    <p>منصة عرض أسعار الذهب فقط.</p>
     </body></html>
-    """
+    """)
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
-    gold = get_price()
+    gold = price()
 
     return HTMLResponse(f"""
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sudan Mining Hub</title>
 
 <style>
-body {{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:white;
-}}
-
-.header {{
-background:#111827;
-padding:20px;
-text-align:center;
-font-size:28px;
-font-weight:bold;
-}}
-
-.ticker {{
-background:#1e293b;
-padding:12px;
-text-align:center;
-}}
-
-.grid {{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:12px;
-padding:15px;
-}}
-
-.card {{
-background:#1f2937;
-padding:20px;
-border-radius:12px;
-text-align:center;
-cursor:pointer;
-}}
-
-.panel {{
-margin:15px;
-padding:20px;
-background:#111827;
-border-radius:12px;
-}}
-
-.footer {{
-text-align:center;
-padding:15px;
-background:#111827;
-}}
-
-a {{
-color:#38bdf8;
-text-decoration:none;
-}}
+body {{margin:0;font-family:Arial;background:#0f172a;color:white}}
+.header {{background:#111827;padding:18px;text-align:center;font-size:26px;font-weight:bold}}
+.ticker {{background:#1e293b;padding:10px;text-align:center}}
+.grid {{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:15px}}
+.card {{background:#1f2937;padding:18px;border-radius:12px;text-align:center;cursor:pointer}}
+.card:hover {{background:#374151}}
+.panel {{margin:15px;padding:20px;background:#111827;border-radius:12px;min-height:120px}}
+.footer {{text-align:center;padding:15px;background:#111827}}
+a {{color:#38bdf8}}
 </style>
 
 <script>
-function showSection(title,text){{
-document.getElementById("panel").innerHTML = "<h2>"+title+"</h2><p>"+text+"</p>";
+function showSection(title,content){{
+document.getElementById("panel").innerHTML =
+"<h2>"+title+"</h2><p>"+content+"</p>";
 }}
 </script>
 
@@ -109,7 +66,7 @@ document.getElementById("panel").innerHTML = "<h2>"+title+"</h2><p>"+text+"</p>"
 <div class="header">🟡 Sudan Mining Hub</div>
 
 <div class="ticker">
-أونصة الذهب: {gold} USD | السعر المحلي: قيد التحديث
+🟡 أونصة الذهب: {gold} USD | 🔄 مباشر
 </div>
 
 <div class="grid">
@@ -123,20 +80,19 @@ document.getElementById("panel").innerHTML = "<h2>"+title+"</h2><p>"+text+"</p>"
 تجار
 حالياً)">👤 التجار</div>
 <div class="card" onclick="showSection(التعدين,معدات
-وخدمات
-التعدين)">⛏️ التعدين</div>
+التعدين
+والخدمات)">⛏️ التعدين</div>
 <div class="card" onclick="showSection(الإعلانات,لا
 توجد
 إعلانات)">📢 الإعلانات</div>
 <div class="card" onclick="showSection(الاشتراك,خطط
 الاشتراك
-قيد
-الإعداد)">💳 الاشتراك</div>
+قريباً)">💳 الاشتراك</div>
 
 </div>
 
 <div id="panel" class="panel">
-اختر قسم لعرض التفاصيل
+اضغط على أي قسم لعرض التفاصيل
 </div>
 
 <div class="footer">

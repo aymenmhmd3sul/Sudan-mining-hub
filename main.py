@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import requests
+import json
 
 app = FastAPI()
 
@@ -14,28 +15,12 @@ def get_price():
         return 2333.0
 
 
-# 🧠 نظام تسجيل النوافذ
 WINDOWS = {
-    "orders": {
-        "title": "📦 الطلبات",
-        "desc": "إدارة الطلبات المفتوحة والطلبات الجديدة"
-    },
-    "traders": {
-        "title": "👤 التجار",
-        "desc": "شبكة التجار المسجلين في المنصة"
-    },
-    "mining": {
-        "title": "⛏️ التعدين",
-        "desc": "معدات وعمليات التعدين"
-    },
-    "ads": {
-        "title": "📢 الإعلانات",
-        "desc": "إدارة الإعلانات والعروض"
-    },
-    "subscription": {
-        "title": "💳 الاشتراك",
-        "desc": "خطط الاشتراك والدفع"
-    }
+    "orders": {"title": "📦 الطلبات", "desc": "إدارة الطلبات المفتوحة"},
+    "traders": {"title": "👤 التجار", "desc": "شبكة التجار"},
+    "mining": {"title": "⛏️ التعدين", "desc": "معدات وعمليات التعدين"},
+    "ads": {"title": "📢 الإعلانات", "desc": "الإعلانات والعروض"},
+    "subscription": {"title": "💳 الاشتراك", "desc": "خطط الاشتراك والدفع"}
 }
 
 
@@ -50,6 +35,8 @@ def dashboard():
             {w['title']}
         </div>
         """
+
+    windows_json = json.dumps(WINDOWS, ensure_ascii=False)
 
     return f"""
 <!DOCTYPE html>
@@ -99,12 +86,6 @@ body {{
     border-radius:12px;
     text-align:center;
     cursor:pointer;
-    transition:0.2s;
-}}
-
-.card:hover {{
-    transform:scale(1.05);
-    background:#273449;
 }}
 
 .modal {{
@@ -156,8 +137,7 @@ body {{
 </div>
 
 <script>
-
-const WINDOWS = {WINDOWS};
+const WINDOWS = {windows_json};
 
 function openWindow(key){{
     document.getElementById("title").innerText = WINDOWS[key].title;

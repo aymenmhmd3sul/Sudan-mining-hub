@@ -14,15 +14,42 @@ def get_price():
         return 2333.0
 
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+# 🧠 نظام تسجيل النوافذ
+WINDOWS = {
+    "orders": {
+        "title": "📦 الطلبات",
+        "desc": "إدارة الطلبات المفتوحة والطلبات الجديدة"
+    },
+    "traders": {
+        "title": "👤 التجار",
+        "desc": "شبكة التجار المسجلين في المنصة"
+    },
+    "mining": {
+        "title": "⛏️ التعدين",
+        "desc": "معدات وعمليات التعدين"
+    },
+    "ads": {
+        "title": "📢 الإعلانات",
+        "desc": "إدارة الإعلانات والعروض"
+    },
+    "subscription": {
+        "title": "💳 الاشتراك",
+        "desc": "خطط الاشتراك والدفع"
+    }
+}
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
-    usd = get_price()
-    local = usd * 600  # تقدير محلي (يمكن تغييره لاحقاً)
+    price = get_price()
+
+    cards = ""
+    for key, w in WINDOWS.items():
+        cards += f"""
+        <div class="card" onclick="openWindow('{key}')">
+            {w['title']}
+        </div>
+        """
 
     return f"""
 <!DOCTYPE html>
@@ -41,9 +68,9 @@ body {{
 }}
 
 .container {{
-    max-width:1100px;
+    max-width:1000px;
     margin:auto;
-    padding:10px;
+    padding:12px;
 }}
 
 .header {{
@@ -51,35 +78,13 @@ body {{
     padding:15px;
     background:#111827;
     border-radius:10px;
-    font-size:20px;
-    font-weight:bold;
-}}
-
-.ticker {{
-    background:#0f172a;
-    padding:10px;
-    overflow:hidden;
-    white-space:nowrap;
-    border-bottom:1px solid #1f2937;
-    margin-top:10px;
-}}
-
-.ticker span {{
-    display:inline-block;
-    padding-left:100%;
-    animation: move 12s linear infinite;
-}}
-
-@keyframes move {{
-    0% {{ transform: translateX(0); }}
-    100% {{ transform: translateX(-100%); }}
 }}
 
 .price {{
     text-align:center;
-    font-size:42px;
+    font-size:45px;
     color:#22c55e;
-    margin:20px 0;
+    margin:15px 0;
 }}
 
 .grid {{
@@ -95,7 +100,6 @@ body {{
     text-align:center;
     cursor:pointer;
     transition:0.2s;
-    font-size:14px;
 }}
 
 .card:hover {{
@@ -135,22 +139,10 @@ body {{
 
 <div class="header">🟡 Sudan Mining Hub</div>
 
-<div class="ticker">
-<span>
-💰 USD Gold: {usd:.2f} | 🇸🇩 Local: {local:.0f} SDG | 📈 Live Market Active
-</span>
-</div>
-
-<div class="price">{usd:.2f} USD</div>
+<div class="price">{price:.2f} USD</div>
 
 <div class="grid">
-
-<div class="card" onclick="openModal('الطلبات')">📦 الطلبات</div>
-<div class="card" onclick="openModal('التجار')">👤 التجار</div>
-<div class="card" onclick="openModal('التعدين')">⛏️ التعدين</div>
-<div class="card" onclick="openModal('الإعلانات')">📢 الإعلانات</div>
-<div class="card" onclick="openModal('الاشتراك')">💳 الاشتراك</div>
-
+{cards}
 </div>
 
 </div>
@@ -159,13 +151,17 @@ body {{
 <div class="modal-content">
 <span class="close" onclick="closeModal()">✖</span>
 <h3 id="title"></h3>
-<p>هذه نافذة تفاعلية قابلة للتطوير لاحقاً</p>
+<p id="desc"></p>
 </div>
 </div>
 
 <script>
-function openModal(title){{
-    document.getElementById("title").innerText = title;
+
+const WINDOWS = {WINDOWS};
+
+function openWindow(key){{
+    document.getElementById("title").innerText = WINDOWS[key].title;
+    document.getElementById("desc").innerText = WINDOWS[key].desc;
     document.getElementById("modal").style.display = "block";
 }}
 

@@ -21,10 +21,7 @@ def health():
 
 @app.get("/api/v1/gold-price")
 def gold_price():
-    return {
-        "status": "success",
-        "gold_usd": get_price()
-    }
+    return {"status": "success", "gold_usd": get_price()}
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -35,49 +32,94 @@ def dashboard():
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sudan Mining Hub</title>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<title>Sudan Mining Hub</title>
 
-    <style>
-        body {{
-            margin:0;
-            font-family: Arial;
-            background:#0b1220;
-            color:white;
-            text-align:center;
-        }}
+<style>
+body {{
+    margin:0;
+    font-family: Arial;
+    background:#0b1220;
+    color:white;
+}}
 
-        .box {{
-            margin-top:80px;
-        }}
+.header {{
+    background:#111827;
+    padding:15px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+}}
 
-        .title {{
-            font-size:28px;
-            margin-bottom:20px;
-        }}
+.price {{
+    text-align:center;
+    font-size:60px;
+    color:#22c55e;
+    margin-top:20px;
+}}
 
-        .price {{
-            font-size:64px;
-            color:#22c55e;
-            font-weight:bold;
-        }}
+.grid {{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+    padding:20px;
+}}
 
-        .card {{
-            margin-top:40px;
-            display:inline-block;
-            padding:20px;
-            background:#1f2937;
-            border-radius:12px;
-        }}
-    </style>
+.card {{
+    background:#1f2937;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+}}
+
+.footer {{
+    text-align:center;
+    padding:15px;
+    margin-top:20px;
+    background:#111827;
+    color:#94a3b8;
+}}
+</style>
+
 </head>
 
 <body>
 
-<div class="box">
-    <div class="title">🟡 Sudan Mining Hub</div>
-    <div class="price">{price}</div>
-    <div class="card">Live Gold Price (USD)</div>
+<div class="header">🟡 Sudan Mining Hub Dashboard</div>
+
+<div class="price">{price}</div>
+
+<div class="grid">
+
+    <div class="card">
+        <h3>📦 Orders</h3>
+        <p>Open Buy/Sell Requests</p>
+    </div>
+
+    <div class="card">
+        <h3>👤 Traders</h3>
+        <p>Active Network</p>
+    </div>
+
+    <div class="card">
+        <h3>⛏️ Mining</h3>
+        <p>Equipment & Operations</p>
+    </div>
+
+    <div class="card">
+        <h3>📢 Ads</h3>
+        <p>Market Promotions</p>
+    </div>
+
+    <div class="card">
+        <h3>💳 Subscription</h3>
+        <p>3000 SDG / Month</p>
+    </div>
+
+</div>
+
+<div class="footer">
+© Sudan Mining Hub | Live Market System
 </div>
 
 </body>

@@ -14,22 +14,16 @@ def root():
 
 @app.get("/api/v1/gold-price")
 def gold_price():
-    try:
-        return {"status": "success", "gold_usd": get_gold_price()}
-    except:
-        return {"status": "success", "gold_usd": 0}
+    price = get_gold_price()
+    return {"status": "success", "gold_usd": float(price)}
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
-    try:
-        price_data = get_gold_price()
-        price = price_data.get("price_raw", 0)
-    except:
-        price = 0
+    price = get_gold_price()
 
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "gold_price": price,
+        "gold_price": float(price),
         "status": "live"
     })
 

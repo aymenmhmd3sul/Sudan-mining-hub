@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 import requests
 
@@ -19,9 +19,17 @@ def root():
 def health():
     return {"status":"ok"}
 
+@app.get("/policy", response_class=HTMLResponse)
+def policy():
+    return """
+    <html><body style="background:#0f172a;color:white;padding:20px;font-family:Arial">
+    <h1>سياسة المنصة</h1>
+    <p>منصة عرض أسعار الذهب والمعلومات السوقية.</p>
+    </body></html>
+    """
+
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
-
     gold = get_price()
 
     return HTMLResponse(f"""
@@ -35,7 +43,7 @@ def dashboard():
 <style>
 body {{
 margin:0;
-font-family:Arial,sans-serif;
+font-family:Arial;
 background:#0f172a;
 color:white;
 }}
@@ -44,7 +52,7 @@ color:white;
 background:#111827;
 padding:20px;
 text-align:center;
-font-size:30px;
+font-size:28px;
 font-weight:bold;
 }}
 
@@ -52,42 +60,45 @@ font-weight:bold;
 background:#1e293b;
 padding:12px;
 text-align:center;
-font-size:18px;
-}}
-
-.container {{
-padding:15px;
 }}
 
 .grid {{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:12px;
+padding:15px;
 }}
 
 .card {{
 background:#1f2937;
-padding:25px;
-border-radius:14px;
-cursor:pointer;
+padding:20px;
+border-radius:12px;
 text-align:center;
-font-size:22px;
+cursor:pointer;
 }}
 
 .panel {{
-margin-top:20px;
-background:#111827;
+margin:15px;
 padding:20px;
-border-radius:14px;
-min-height:220px;
+background:#111827;
+border-radius:12px;
 }}
 
+.footer {{
+text-align:center;
+padding:15px;
+background:#111827;
+}}
+
+a {{
+color:#38bdf8;
+text-decoration:none;
+}}
 </style>
 
 <script>
-function showSection(title,text) {{
-document.getElementById("panel").innerHTML =
-"<h2>"+title+"</h2><hr><p>"+text+"</p>";
+function showSection(title,text){{
+document.getElementById("panel").innerHTML = "<h2>"+title+"</h2><p>"+text+"</p>";
 }}
 </script>
 
@@ -95,45 +106,41 @@ document.getElementById("panel").innerHTML =
 
 <body>
 
-<div class="header">
-🟡 منصة السودان للتعدين
-</div>
+<div class="header">🟡 Sudan Mining Hub</div>
 
 <div class="ticker">
-سعر الذهب العالمي: {gold} USD | السعر المحلي: قريباً
+أونصة الذهب: {gold} USD | السعر المحلي: قيد التحديث
 </div>
-
-<div class="container">
 
 <div class="grid">
 
-<div class="card" onclick="showSection('الطلبات','هنا ستظهر طلبات الشراء والبيع.')">
-📦 الطلبات
-</div>
-
-<div class="card" onclick="showSection('التجار','هنا ستظهر قائمة التجار المسجلين.')">
-👤 التجار
-</div>
-
-<div class="card" onclick="showSection('التعدين','هنا ستظهر خدمات ومعدات التعدين.')">
-⛏️ التعدين
-</div>
-
-<div class="card" onclick="showSection('الإعلانات','هنا ستظهر الإعلانات المميزة.')">
-📢 الإعلانات
-</div>
-
-<div class="card" onclick="showSection('الاشتراك','هنا ستظهر خطط الاشتراك والدفع.')">
-💳 الاشتراك
-</div>
+<div class="card" onclick="showSection(الطلبات,لا
+توجد
+طلبات
+حالياً)">📦 الطلبات</div>
+<div class="card" onclick="showSection(التجار,لا
+يوجد
+تجار
+حالياً)">👤 التجار</div>
+<div class="card" onclick="showSection(التعدين,معدات
+وخدمات
+التعدين)">⛏️ التعدين</div>
+<div class="card" onclick="showSection(الإعلانات,لا
+توجد
+إعلانات)">📢 الإعلانات</div>
+<div class="card" onclick="showSection(الاشتراك,خطط
+الاشتراك
+قيد
+الإعداد)">💳 الاشتراك</div>
 
 </div>
 
 <div id="panel" class="panel">
-<h2>مرحباً بك</h2>
-<p>اختر أحد الأقسام أعلاه.</p>
+اختر قسم لعرض التفاصيل
 </div>
 
+<div class="footer">
+<a href="/policy">سياسة المنصة</a>
 </div>
 
 </body>

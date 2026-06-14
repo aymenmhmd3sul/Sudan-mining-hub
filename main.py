@@ -29,6 +29,10 @@ def dashboard():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <title>Sudan Mining Hub</title>
 
 <style>
@@ -40,7 +44,7 @@ color:white;
 user-select:none;
 }}
 
-.top {{
+.header {{
 position:sticky;
 top:0;
 background:#111827;
@@ -61,14 +65,6 @@ cursor:pointer;
 z-index:9999;
 }}
 
-.price {{
-display:flex;
-justify-content:space-between;
-padding:10px;
-background:#1e293b;
-font-size:13px;
-}}
-
 .grid {{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -82,10 +78,11 @@ padding:16px;
 border-radius:12px;
 text-align:center;
 cursor:pointer;
+-webkit-tap-highlight-color:transparent;
 }}
 
 .card:active {{
-transform:scale(0.97);
+transform:scale(0.96);
 }}
 
 .panel {{
@@ -96,19 +93,6 @@ border-radius:12px;
 min-height:120px;
 }}
 
-.footer {{
-text-align:center;
-padding:14px;
-background:#0b1220;
-border-top:1px solid #1f2937;
-font-size:13px;
-}}
-
-a {{
-color:#38bdf8;
-text-decoration:none;
-}}
-
 </style>
 </head>
 
@@ -116,10 +100,10 @@ text-decoration:none;
 
 <div class="lang" id="langBtn">AR/EN</div>
 
-<div class="top" id="title">🟡 منصة السودان للتعدين</div>
+<div class="header" id="title">🟡 منصة السودان للتعدين</div>
 
-<div class="price">
-<div id="price">🟡 أونصة الذهب: {gold} USD</div>
+<div style="padding:10px;background:#1e293b;display:flex;justify-content:space-between">
+<div>🟡 {gold} USD</div>
 <div>LIVE</div>
 </div>
 
@@ -133,23 +117,19 @@ text-decoration:none;
 <div class="card" id="c6">📢 الإعلانات</div>
 <div class="card" id="c7">📰 الأخبار</div>
 <div class="card" id="c8">💳 الاشتراك</div>
-<div class="card" id="c9">📜 سياسة المنصة</div>
+<div class="card" id="c9">📜 السياسة</div>
 
 </div>
 
 <div id="panel" class="panel">اضغط على أي قسم</div>
 
-<div class="footer">
-Sudan Mining Hub
-</div>
-
 <script>
 
-let lang = "ar";
+let lang="ar";
 
-const labels = {
-ar: ["لوحة التحكم","الأسعار","الطلبات","التجار","التعدين","الإعلانات","الأخبار","الاشتراك","سياسة المنصة"],
-en: ["Dashboard","Prices","Orders","Traders","Mining","Ads","News","Subscription","Policy"]
+const labels={
+ar:["لوحة التحكم","الأسعار","الطلبات","التجار","التعدين","الإعلانات","الأخبار","الاشتراك","السياسة"],
+en:["Dashboard","Prices","Orders","Traders","Mining","Ads","News","Subscription","Policy"]
 };
 
 function render(){
@@ -163,7 +143,9 @@ document.getElementById("c"+i).innerText = labels[lang][i-1];
 
 document.addEventListener("DOMContentLoaded", () => {
 
-document.getElementById("langBtn").addEventListener("click", () => {
+const btn=document.getElementById("langBtn");
+
+btn.addEventListener("click", () => {
 lang = (lang==="ar") ? "en" : "ar";
 render();
 });
@@ -171,9 +153,11 @@ render();
 for(let i=1;i<=9;i++){
 document.getElementById("c"+i).addEventListener("click", () => {
 document.getElementById("panel").innerHTML =
-"<h3>"+labels[lang][i-1]+"</h3><p>سيتم تفعيل هذا القسم قريباً</p>";
+"<h3>"+labels[lang][i-1]+"</h3><p>قريباً</p>";
 });
 }
+
+render();
 
 });
 </script>

@@ -24,7 +24,6 @@ def dashboard():
 <title>Sudan Mining Hub</title>
 
 <style>
-
 body {{
 margin:0;
 font-family:Arial;
@@ -41,6 +40,9 @@ padding:16px;
 text-align:center;
 font-size:24px;
 font-weight:bold;
+position:sticky;
+top:0;
+z-index:10;
 }}
 
 .ticker {{
@@ -52,24 +54,24 @@ text-align:center;
 .grid {{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:10px;
+gap:12px;
 padding:12px;
 }}
 
 .card {{
 background:#1f2937;
-padding:18px;
-border-radius:12px;
+padding:20px;
+border-radius:14px;
 text-align:center;
 font-size:16px;
 cursor:pointer;
-
+transition:0.15s ease;
 -webkit-tap-highlight-color:transparent;
 touch-action:manipulation;
 }}
 
 .card:active {{
-transform:scale(0.96);
+transform:scale(0.94);
 background:#374151;
 }}
 
@@ -77,7 +79,7 @@ background:#374151;
 margin:12px;
 padding:18px;
 background:#111827;
-border-radius:10px;
+border-radius:12px;
 min-height:120px;
 }}
 
@@ -90,12 +92,10 @@ background:#111827;
 </style>
 
 <script>
-
 function showSection(t,x){{
 document.getElementById("panel").innerHTML =
 "<h2>"+t+"</h2><p>"+x+"</p>";
 }}
-
 </script>
 
 </head>
@@ -110,30 +110,23 @@ document.getElementById("panel").innerHTML =
 
 <div class="grid">
 
-<div class="card" ontouchstart="showSection(الطلبات,لا
-توجد
-طلبات)" onclick="showSection(الطلبات,لا
+<div class="card" onclick="showSection(الطلبات,لا
 توجد
 طلبات)">📦 الطلبات</div>
-<div class="card" ontouchstart="showSection(التجار,لا
-يوجد
-تجار)" onclick="showSection(التجار,لا
+<div class="card" onclick="showSection(التجار,لا
 يوجد
 تجار)">👤 التجار</div>
-<div class="card" ontouchstart="showSection(التعدين,معدات
-التعدين)" onclick="showSection(التعدين,معدات
+<div class="card" onclick="showSection(التعدين,معدات
 التعدين)">⛏️ التعدين</div>
-<div class="card" ontouchstart="showSection(الإعلانات,لا
-توجد
-إعلانات)" onclick="showSection(الإعلانات,لا
+<div class="card" onclick="showSection(الإعلانات,لا
 توجد
 إعلانات)">📢 الإعلانات</div>
-<div class="card" ontouchstart="showSection(الاشتراك,قريباً)" onclick="showSection(الاشتراك,قريباً)">💳 الاشتراك</div>
+<div class="card" onclick="showSection(الاشتراك,قريباً)">💳 الاشتراك</div>
 
 </div>
 
 <div id="panel" class="panel">
-اضغط على أي قسم
+اضغط على أي قسم لعرض المحتوى
 </div>
 
 </body>

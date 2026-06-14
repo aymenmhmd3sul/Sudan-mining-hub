@@ -1,48 +1,25 @@
 import requests
 
-PRIMARY_URL = "https://api.metals.live/v1/spot/gold"
-
-FALLBACK_URL = "https://api.metals.live/v1/spot/gold"
-
 def get_gold_price():
-    """
-    محاولة جلب سعر الذهب من مصدر أساسي،
-    وإذا فشل يتم الرجوع تلقائياً إلى fallback آمن.
-    """
-
-    def fetch(url):
+    try:
+        # مصدر بديل مستقر (proxy عالمي للأسعار)
         r = requests.get(
-            url,
-            timeout=10,
-            headers={"User-Agent": "Mozilla/5.0"}
+            "https://api.exchangerate.host/latest?base=XAU&symbols=USD",
+            timeout=10
         )
         r.raise_for_status()
-        return r.json()
+        data = r.json()
 
-    # 1) محاولة المصدر الأساسي
-    try:
-        data = fetch(PRIMARY_URL)
         return {
             "status": "success",
-            "source": "primary",
+            "source": "exchangerate.host",
             "price_raw": data
         }
 
-    except Exception as e_primary:
-        # 2) fallback (نفس المصدر حالياً لكن جاهز للتبديل لاحقاً)
-        try:
-            data = fetch(FALLBACK_URL)
-            return {
-                "status": "success",
-                "source": "fallback",
-                "price_raw": data,
-                "warning": str(e_primary)
-            }
-
-        except Exception as e_fallback:
-            # 3) فشل كامل بدون إسقاط النظام
-            return {
-                "status": "error",
-                "source": "none",
-                "error": str(e_fallback)
-            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "source": "none",
+            "price_raw": None,
+            "error": str(e)
+        }

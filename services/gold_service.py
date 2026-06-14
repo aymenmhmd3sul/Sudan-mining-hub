@@ -2,24 +2,23 @@ import requests
 
 def get_gold_price():
     try:
-        # مصدر بديل مستقر (proxy عالمي للأسعار)
+        # مصدر عالمي مستقر (USD index based proxy)
         r = requests.get(
-            "https://api.exchangerate.host/latest?base=XAU&symbols=USD",
+            "https://api.binance.com/api/v3/ticker/price?symbol=XAUUSDT",
             timeout=10
         )
         r.raise_for_status()
-        data = r.json()
 
         return {
             "status": "success",
-            "source": "exchangerate.host",
-            "price_raw": data
+            "source": "binance",
+            "price_raw": r.json()
         }
 
     except Exception as e:
         return {
             "status": "error",
-            "source": "none",
+            "source": "binance",
             "price_raw": None,
             "error": str(e)
         }

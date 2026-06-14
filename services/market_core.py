@@ -24,3 +24,9 @@ def match_request(category: str):
 def attach_images(item: Dict, images: Optional[List[str]] = None):
     item["images"] = images or []
     return item
+
+def get_items():
+    return REQUESTS_DB
+
+def add_item(item: Dict):
+    return add_request(item)

@@ -1,34 +1,54 @@
 import requests
+import time
 
-BINANCE_URL = "https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT"
+_cache = {
+    "price": None,
+    "timestamp": None,
+    "status": "no_data"
+}
 
-def _fetch_binance():
+CACHE_TTL = 300  # 5 minutes
+
+
+def fetch_from_api():
+    url = "https://api.metals.live/v1/spot/gold"
+
+    r = requests.get(url, timeout=8)
+    r.raise_for_status()
+
+    data = r.json()
+
+    if isinstance(data, list) and len(data) > 0:
+        return float(data[0][1]) if isinstance(data[0], list) else float(data[0])
+
+    if isinstance(data, dict):
+        return float(data.get("price"))
+
+    raise ValueError("Unexpected API format")
+
+
+def get_price():
+    global _cache
+
+    now = time.time()
+
+    if _cache["price"] is not None:
+        if now - _cache["timestamp"] < CACHE_TTL:
+            return {"price": _cache["price"], "status": "cached"}
+
     try:
-        r = requests.get(BINANCE_URL, timeout=5)
-        return float(r.json()["price"])
-    except:
-        return None
+        price = fetch_from_api()
 
+        _cache = {
+            "price": price,
+            "timestamp": now,
+            "status": "live"
+        }
 
-def _fetch_backup():
-    # fallback ثابت (يمكن لاحقاً ربطه بمصدر آخر)
-    return 2330.0
+        return {"price": price, "status": "live"}
 
+    except Exception:
+        if _cache["price"] is not None:
+            return {"price": _cache["price"], "status": "stale"}
 
-def get_gold_price():
-    prices = []
-
-    b = _fetch_binance()
-    if b:
-        prices.append(b)
-
-    if not prices:
-        prices.append(_fetch_backup())
-
-    avg_price = sum(prices) / len(prices)
-
-    return {
-        "status": "success",
-        "gold_usd": round(avg_price, 2),
-        "sources_used": len(prices)
-    }
+        return {"price": None, "status": "unavailable"}

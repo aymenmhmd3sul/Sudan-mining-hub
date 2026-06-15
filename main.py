@@ -6,18 +6,21 @@ app = FastAPI()
 
 def get_price():
     try:
-        r = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT", timeout=5)
-        return round(float(r.json()["price"]),2)
+        r = requests.get(
+            "https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT",
+            timeout=5
+        )
+        return round(float(r.json()["price"]), 2)
     except:
         return 2330.0
 
 @app.get("/")
 def root():
-    return {"status":"ok"}
+    return {"status": "ok"}
 
 @app.get("/health")
 def health():
-    return {"status":"ok"}
+    return {"status": "ok"}
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
@@ -29,140 +32,94 @@ def dashboard():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
 <title>Sudan Mining Hub</title>
 
 <style>
 body {{
-margin:0;
-font-family:Arial;
-background:#0b1220;
-color:white;
-user-select:none;
+    margin:0;
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
 }}
 
 .header {{
-position:sticky;
-top:0;
-background:#111827;
-padding:14px;
-text-align:center;
-font-size:20px;
-font-weight:bold;
+    padding:15px;
+    text-align:center;
+    background:#111827;
+    font-size:24px;
+    font-weight:bold;
 }}
 
-.lang {{
-position:fixed;
-top:10px;
-left:10px;
-background:#1f2937;
-padding:6px 10px;
-border-radius:8px;
-cursor:pointer;
-z-index:9999;
+.pricebar {{
+    padding:10px;
+    background:#1e293b;
+    text-align:center;
 }}
 
 .grid {{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-padding:12px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    padding:15px;
 }}
 
 .card {{
-background:#1f2937;
-padding:16px;
-border-radius:12px;
-text-align:center;
-cursor:pointer;
--webkit-tap-highlight-color:transparent;
-}}
-
-.card:active {{
-transform:scale(0.96);
+    background:#1f2937;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    cursor:pointer;
 }}
 
 .panel {{
-margin:12px;
-padding:16px;
-background:#111827;
-border-radius:12px;
-min-height:120px;
+    margin:15px;
+    padding:15px;
+    background:#111827;
+    border-radius:12px;
+    min-height:100px;
 }}
 
+.footer {{
+    text-align:center;
+    padding:15px;
+    background:#0b1220;
+}}
 </style>
+
 </head>
 
 <body>
 
-<div class="lang" id="langBtn">AR/EN</div>
+<div class="header">🟡 منصة السودان للتعدين</div>
 
-<div class="header" id="title">🟡 منصة السودان للتعدين</div>
-
-<div style="padding:10px;background:#1e293b;display:flex;justify-content:space-between">
-<div>🟡 {gold} USD</div>
-<div>LIVE</div>
+<div class="pricebar">
+🟡 أونصة الذهب: {gold} USD
 </div>
 
 <div class="grid">
-
-<div class="card" id="c1">📊 لوحة التحكم</div>
-<div class="card" id="c2">💰 الأسعار</div>
-<div class="card" id="c3">📦 الطلبات</div>
-<div class="card" id="c4">👤 التجار</div>
-<div class="card" id="c5">⛏️ التعدين</div>
-<div class="card" id="c6">📢 الإعلانات</div>
-<div class="card" id="c7">📰 الأخبار</div>
-<div class="card" id="c8">💳 الاشتراك</div>
-<div class="card" id="c9">📜 السياسة</div>
-
+<div class="card" data-text="📦 الطلبات">الطلبات</div>
+<div class="card" data-text="👤 التجار">التجار</div>
+<div class="card" data-text="⛏️ التعدين">التعدين</div>
+<div class="card" data-text="📢 الإعلانات">الإعلانات</div>
+<div class="card" data-text="💳 الاشتراك">الاشتراك</div>
 </div>
 
 <div id="panel" class="panel">اضغط على أي قسم</div>
 
+<div class="footer">
+سياسة المنصة
+</div>
+
 <script>
+document.addEventListener("click", function(e) {{
+    const card = e.target.closest(".card");
+    if(!card) return;
 
-let lang="ar";
-
-const labels={
-ar:["لوحة التحكم","الأسعار","الطلبات","التجار","التعدين","الإعلانات","الأخبار","الاشتراك","السياسة"],
-en:["Dashboard","Prices","Orders","Traders","Mining","Ads","News","Subscription","Policy"]
-};
-
-function render(){
-document.getElementById("title").innerText =
-lang==="ar" ? "🟡 منصة السودان للتعدين" : "🟡 Sudan Mining Hub";
-
-for(let i=1;i<=9;i++){
-document.getElementById("c"+i).innerText = labels[lang][i-1];
-}
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-
-const btn=document.getElementById("langBtn");
-
-btn.addEventListener("click", () => {
-lang = (lang==="ar") ? "en" : "ar";
-render();
-});
-
-for(let i=1;i<=9;i++){
-document.getElementById("c"+i).addEventListener("click", () => {
-document.getElementById("panel").innerHTML =
-"<h3>"+labels[lang][i-1]+"</h3><p>قريباً</p>";
-});
-}
-
-render();
-
-});
+    document.getElementById("panel").innerText =
+        "تم فتح: " + card.dataset.text;
+}});
 </script>
 
 </body>
 </html>
 """)
-

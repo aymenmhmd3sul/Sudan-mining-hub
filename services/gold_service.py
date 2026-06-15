@@ -1,28 +1,35 @@
 import time
 
-# قيمة ثابتة احتياطية (Fallback)
+# قيمة افتراضية آمنة دائمًا
 DEFAULT_GOLD_PRICE = 4200.0
 
-# كاش بسيط جدًا لمنع أي ضغط أو فشل متكرر
+# كاش بسيط
 _cache = {
     "price": None,
     "timestamp": 0
 }
 
-CACHE_TTL = 60  # ثانية واحدة كحد أدنى للاستقرار
+CACHE_TTL = 60
 
 
-def get_price():
+def source_primary():
+    """
+    المصدر الأول (حاليًا آمن ومؤقت)
+    لاحقًا نستبدله بـ API حقيقي
+    """
+    # الآن لا نكسر النظام
+    return DEFAULT_GOLD_PRICE
+
+
+def get_gold_price():
     now = time.time()
 
-    # إذا عندنا قيمة محفوظة وصالحة
+    # استخدام الكاش إذا موجود
     if _cache["price"] is not None and (now - _cache["timestamp"]) < CACHE_TTL:
         return float(_cache["price"])
 
     try:
-        # هنا أي مصدر خارجي لاحقًا
-        # حالياً لا نعتمد عليه لتفادي الفشل
-        price = DEFAULT_GOLD_PRICE
+        price = source_primary()
 
         _cache["price"] = float(price)
         _cache["timestamp"] = now
@@ -30,5 +37,4 @@ def get_price():
         return float(price)
 
     except Exception:
-        # ضمان عدم انهيار النظام نهائياً
         return DEFAULT_GOLD_PRICE

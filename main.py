@@ -8,4 +8,4 @@ def root():
 
 @app.get("/dashboard")
 def dashboard():
-    return {"status": "dashboard working"}
+    return {"status": "dashboard working", "gold": "disabled"}

@@ -46,14 +46,7 @@ body {{
     padding:15px;
     text-align:center;
     background:#111827;
-    font-size:24px;
-    font-weight:bold;
-}}
-
-.pricebar {{
-    padding:10px;
-    background:#1e293b;
-    text-align:center;
+    font-size:22px;
 }}
 
 .grid {{
@@ -76,7 +69,6 @@ body {{
     padding:15px;
     background:#111827;
     border-radius:12px;
-    min-height:100px;
 }}
 
 .footer {{
@@ -91,10 +83,6 @@ body {{
 <body>
 
 <div class="header">🟡 منصة السودان للتعدين</div>
-
-<div class="pricebar">
-🟡 أونصة الذهب: {gold} USD
-</div>
 
 <div class="grid">
 <div class="card" data-text="📦 الطلبات">الطلبات</div>

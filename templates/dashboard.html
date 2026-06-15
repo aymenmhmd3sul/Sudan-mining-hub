@@ -5,12 +5,12 @@
 </head>
 <body>
 
-<h2>Gold Price</h2>
+<h2>Gold Dashboard</h2>
 
-{% if gold %}
+{% if gold is not none %}
     <h3>{{ gold }}</h3>
 {% else %}
-    <p>غير متاح</p>
+    <p>لا توجد بيانات حالياً</p>
 {% endif %}
 
 </body>

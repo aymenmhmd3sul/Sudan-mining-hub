@@ -3,8 +3,7 @@ import time
 
 _cache = {
     "price": None,
-    "timestamp": None,
-    "status": "no_data"
+    "timestamp": None
 }
 
 CACHE_TTL = 300  # 5 minutes
@@ -32,23 +31,19 @@ def get_price():
 
     now = time.time()
 
-    if _cache["price"] is not None:
-        if now - _cache["timestamp"] < CACHE_TTL:
-            return {"price": _cache["price"], "status": "cached"}
-
     try:
+        if _cache["price"] is not None:
+            if now - _cache["timestamp"] < CACHE_TTL:
+                return _cache["price"]
+
         price = fetch_from_api()
 
         _cache = {
             "price": price,
-            "timestamp": now,
-            "status": "live"
+            "timestamp": now
         }
 
-        return {"price": price, "status": "live"}
+        return price
 
     except Exception:
-        if _cache["price"] is not None:
-            return {"price": _cache["price"], "status": "stale"}
-
-        return {"price": None, "status": "unavailable"}
+        return _cache["price"]

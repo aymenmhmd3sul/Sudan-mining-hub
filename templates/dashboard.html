@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sudan Mining Hub</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial;
+    background: linear-gradient(135deg,#0f172a,#111827);
+    color:white;
+}
+
+.header {
+    padding:20px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+    background:#0b1220;
+}
+
+.price {
+    text-align:center;
+    padding:10px;
+    background:#1e293b;
+    font-size:16px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    padding:15px;
+}
+
+.card {
+    background:#1f2937;
+    padding:25px;
+    border-radius:14px;
+    text-align:center;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.card:hover {
+    transform:scale(1.03);
+    background:#273449;
+}
+
+.panel {
+    margin:15px;
+    padding:15px;
+    background:#111827;
+    border-radius:12px;
+    min-height:80px;
+}
+
+.footer {
+    text-align:center;
+    padding:15px;
+    background:#0b1220;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">🟡 منصة السودان للتعدين</div>
+
+<div class="price">
+🟡 أونصة الذهب: {{ gold }} USD
+</div>
+
+<div class="grid">
+<div class="card" data="📦 الطلبات">الطلبات</div>
+<div class="card" data="👤 التجار">التجار</div>
+<div class="card" data="⛏️ التعدين">التعدين</div>
+<div class="card" data="📢 الإعلانات">الإعلانات</div>
+<div class="card" data="💳 الاشتراك">الاشتراك</div>
+</div>
+
+<div id="panel" class="panel">اضغط على أي قسم</div>
+
+<div class="footer">سياسة المنصة</div>
+
+<script>
+document.addEventListener("click", function(e){
+    const card = e.target.closest(".card");
+    if(!card) return;
+
+    document.getElementById("panel").innerText =
+        "تم فتح: " + card.getAttribute("data");
+});
+</script>
+
+</body>
+</html>

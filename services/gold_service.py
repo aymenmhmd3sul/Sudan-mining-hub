@@ -1,9 +1,8 @@
 import time
+import requests
 
-# قيمة افتراضية آمنة دائمًا
 DEFAULT_GOLD_PRICE = 4200.0
 
-# كاش بسيط
 _cache = {
     "price": None,
     "timestamp": 0
@@ -12,29 +11,46 @@ _cache = {
 CACHE_TTL = 60
 
 
-def source_primary():
+def source_api():
     """
-    المصدر الأول (حاليًا آمن ومؤقت)
-    لاحقًا نستبدله بـ API حقيقي
+    مصدر خارجي حقيقي (آمن مع timeout)
     """
-    # الآن لا نكسر النظام
-    return DEFAULT_GOLD_PRICE
+    try:
+        # مثال API بسيط (يمكن تغييره لاحقًا)
+        url = "https://api.metals.live/v1/spot/gold"
+
+        r = requests.get(url, timeout=5)
+        data = r.json()
+
+        # بعض الـ APIs ترجع list
+        price = data[0][1] if isinstance(data, list) else data["price"]
+
+        return float(price)
+
+    except Exception:
+        return None
 
 
 def get_gold_price():
     now = time.time()
 
-    # استخدام الكاش إذا موجود
+    # الكاش أولاً
     if _cache["price"] is not None and (now - _cache["timestamp"]) < CACHE_TTL:
         return float(_cache["price"])
 
+    price = None
+
+    # نحاول المصدر الخارجي
     try:
-        price = source_primary()
+        price = source_api()
+    except:
+        price = None
 
-        _cache["price"] = float(price)
-        _cache["timestamp"] = now
+    # fallback نهائي
+    if price is None:
+        price = DEFAULT_GOLD_PRICE
 
-        return float(price)
+    _cache["price"] = float(price)
+    _cache["timestamp"] = now
 
-    except Exception:
-        return DEFAULT_GOLD_PRICE
+    return float(price)

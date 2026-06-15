@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+import traceback
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -8,12 +9,10 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
     try:
-        gold = 2400
-    except:
-        gold = 0
+        return templates.TemplateResponse("dashboard.html", {
+            "request": request,
+            "status": "running"
+        })
+    except Exception as e:
+        return HTMLResponse(str(traceback.format_exc()), status_code=500)
 
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "gold": gold,
-        "status": "running"
-    })

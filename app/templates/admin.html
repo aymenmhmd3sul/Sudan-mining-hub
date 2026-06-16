@@ -18,11 +18,18 @@
         .btn-green { background: #22c55e; color: white; }
         .btn-red { background: #ef4444; color: white; }
         .btn-blue { background: #3b82f6; color: white; }
+        .btn-yellow { background: #fbbf24; color: #0f172a; font-weight: 700; }
         input, select, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; margin-bottom: 10px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; color: #94a3b8; margin-bottom: 5px; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
         .flex { display: flex; gap: 10px; flex-wrap: wrap; }
+        .ad-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .ad-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .ad-item .info { flex: 1; }
+        .ad-item .info strong { color: #fbbf24; }
+        .ad-item .info small { color: #94a3b8; }
+        small.hint { color: #64748b; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -49,37 +56,59 @@
             </table>
         </div>
 
-        <!-- إضافة إعلان -->
+        <!-- إضافة إعلان جديد (مطور) -->
         <div class="card">
             <h2>📢 إضافة إعلان جديد</h2>
-            <form id="adForm">
+            <form id="adForm" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label>العنوان (عربي)</label>
+                    <label>العنوان (عربي) *</label>
                     <input type="text" id="adTitleAr" required>
                 </div>
                 <div class="form-group">
-                    <label>العنوان (إنجليزي)</label>
+                    <label>العنوان (إنجليزي) *</label>
                     <input type="text" id="adTitleEn" required>
                 </div>
                 <div class="form-group">
-                    <label>رابط الصورة</label>
-                    <input type="url" id="adImageUrl" required>
+                    <label>الوصف *</label>
+                    <textarea id="adDescription" rows="3" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label>الرابط</label>
-                    <input type="url" id="adLink" required>
+                    <label>رابط الوجهة (عند الضغط) *</label>
+                    <input type="url" id="adLink" placeholder="https://example.com" required>
                 </div>
                 <div class="form-group">
-                    <label>الموقع</label>
+                    <label>الموقع *</label>
                     <select id="adPosition">
-                        <option value="top">أعلى</option>
-                        <option value="sidebar">جانب</option>
-                        <option value="bottom">أسفل</option>
+                        <option value="top">أعلى الصفحة</option>
+                        <option value="sidebar">الجانب</option>
+                        <option value="bottom">أسفل الصفحة</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-blue">➕ إضافة إعلان</button>
+                <div class="form-group">
+                    <label>رفع صورة الإعلان</label>
+                    <input type="file" id="adImageFile" accept="image/*">
+                    <small class="hint">يمكنك أيضاً إدخال رابط صورة بدلاً من الرفع</small>
+                </div>
+                <div class="form-group">
+                    <label>رابط الصورة (احتياطي)</label>
+                    <input type="url" id="adImageUrl" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label>الحالة *</label>
+                    <select id="adStatus">
+                        <option value="published">📢 منشور</option>
+                        <option value="draft">📝 مسودة (غير منشور)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-blue">➕ نشر الإعلان</button>
             </form>
             <div id="adMessage" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- عرض الإعلانات الحالية -->
+        <div class="card">
+            <h2>📢 الإعلانات الحالية</h2>
+            <div id="adsList" style="color:#94a3b8;">جاري التحميل...</div>
         </div>
 
         <!-- إضافة سعر ذهب محلي -->
@@ -101,12 +130,6 @@
                 <button type="submit" class="btn btn-blue">➕ إضافة سعر</button>
             </form>
             <div id="gpMessage" style="margin-top:10px;"></div>
-        </div>
-
-        <!-- عرض الإعلانات الحالية -->
-        <div class="card">
-            <h2>📢 الإعلانات الحالية</h2>
-            <div id="adsList" style="color:#94a3b8;">جاري التحميل...</div>
         </div>
 
         <!-- عرض أسعار الذهب المحلية الحالية -->
@@ -180,31 +203,40 @@
             }
         }
 
-        // إضافة إعلان
+        // إضافة إعلان (مع رفع الصور)
         document.getElementById('adForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            var title_ar = document.getElementById('adTitleAr').value;
-            var title_en = document.getElementById('adTitleEn').value;
-            var image_url = document.getElementById('adImageUrl').value;
-            var link = document.getElementById('adLink').value;
-            var position = document.getElementById('adPosition').value;
+            
+            var formData = new FormData();
+            formData.append('title_ar', document.getElementById('adTitleAr').value);
+            formData.append('title_en', document.getElementById('adTitleEn').value);
+            formData.append('description', document.getElementById('adDescription').value);
+            formData.append('link', document.getElementById('adLink').value);
+            formData.append('position', document.getElementById('adPosition').value);
+            formData.append('status', document.getElementById('adStatus').value);
+            
+            var imageFile = document.getElementById('adImageFile').files[0];
+            if (imageFile) {
+                formData.append('image_file', imageFile);
+            } else {
+                formData.append('image_url', document.getElementById('adImageUrl').value || '');
+            }
 
             try {
                 var res = await fetch('/api/admin/ad', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title_ar, title_en, image_url, link, position })
+                    body: formData
                 });
                 var data = await res.json();
                 if (data.status === 'success') {
-                    showToast('✅ تم إضافة الإعلان', false);
+                    showToast('✅ تم نشر الإعلان بنجاح!', false);
                     document.getElementById('adForm').reset();
                     loadAds();
                 } else {
-                    showToast('❌ فشل', true);
+                    showToast('❌ فشل النشر: ' + (data.detail || ''), true);
                 }
             } catch (err) {
-                showToast('❌ خطأ', true);
+                showToast('❌ خطأ في الاتصال', true);
             }
         });
 
@@ -216,9 +248,13 @@
                 var container = document.getElementById('adsList');
                 if (data.ads && data.ads.length > 0) {
                     container.innerHTML = data.ads.map(a => `
-                        <div style="background:#0f172a;padding:10px;border-radius:8px;margin-bottom:8px;">
-                            <strong>${a.title_ar}</strong> (${a.position})
-                            <br><small>${a.link}</small>
+                        <div class="ad-item">
+                            ${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}
+                            <div class="info">
+                                <strong>${a.title_ar}</strong>
+                                <p style="color:#94a3b8; font-size:0.9rem;">${a.description || ''}</p>
+                                <small>الحالة: ${a.status === 'published' ? '📢 منشور' : '📝 مسودة'} | ${a.created_at}</small>
+                            </div>
                         </div>
                     `).join('');
                 } else {

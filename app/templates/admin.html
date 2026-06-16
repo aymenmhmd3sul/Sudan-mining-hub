@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المشرف</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tahoma', sans-serif; background: #0f172a; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1300px; margin: 0 auto; }
+        h1 { color: #fbbf24; margin-bottom: 30px; text-align: center; }
+        .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .card h2 { color: #fbbf24; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #94a3b8; }
+        .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-green { background: #22c55e; color: white; }
+        .btn-red { background: #ef4444; color: white; }
+        .btn-blue { background: #3b82f6; color: white; }
+        input, select, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; margin-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; color: #94a3b8; margin-bottom: 5px; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
+        .flex { display: flex; gap: 10px; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ لوحة تحكم المشرف</h1>
+
+        <!-- إدارة المستخدمين -->
+        <div class="card">
+            <h2>👤 إدارة المستخدمين</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>الاسم</th>
+                        <th>البريد</th>
+                        <th>الدور</th>
+                        <th>التاجر نشط؟</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="6" style="text-align:center;color:#94a3b8;">جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- إضافة إعلان -->
+        <div class="card">
+            <h2>📢 إضافة إعلان جديد</h2>
+            <form id="adForm">
+                <div class="form-group">
+                    <label>العنوان (عربي)</label>
+                    <input type="text" id="adTitleAr" required>
+                </div>
+                <div class="form-group">
+                    <label>العنوان (إنجليزي)</label>
+                    <input type="text" id="adTitleEn" required>
+                </div>
+                <div class="form-group">
+                    <label>رابط الصورة</label>
+                    <input type="url" id="adImageUrl" required>
+                </div>
+                <div class="form-group">
+                    <label>الرابط</label>
+                    <input type="url" id="adLink" required>
+                </div>
+                <div class="form-group">
+                    <label>الموقع</label>
+                    <select id="adPosition">
+                        <option value="top">أعلى</option>
+                        <option value="sidebar">جانب</option>
+                        <option value="bottom">أسفل</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-blue">➕ إضافة إعلان</button>
+            </form>
+            <div id="adMessage" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- إضافة سعر ذهب محلي -->
+        <div class="card">
+            <h2>🏅 إضافة سعر ذهب محلي</h2>
+            <form id="goldPriceForm">
+                <div class="form-group">
+                    <label>المدينة</label>
+                    <input type="text" id="gpCity" required>
+                </div>
+                <div class="form-group">
+                    <label>سعر الجرام (ج.س)</label>
+                    <input type="number" id="gpGram" required>
+                </div>
+                <div class="form-group">
+                    <label>سعر الأونصة (ج.س)</label>
+                    <input type="number" id="gpOunce" required>
+                </div>
+                <button type="submit" class="btn btn-blue">➕ إضافة سعر</button>
+            </form>
+            <div id="gpMessage" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- عرض الإعلانات الحالية -->
+        <div class="card">
+            <h2>📢 الإعلانات الحالية</h2>
+            <div id="adsList" style="color:#94a3b8;">جاري التحميل...</div>
+        </div>
+
+        <!-- عرض أسعار الذهب المحلية الحالية -->
+        <div class="card">
+            <h2>🏅 أسعار الذهب المحلية الحالية</h2>
+            <div id="goldPricesList" style="color:#94a3b8;">جاري التحميل...</div>
+        </div>
+
+        <div style="margin-top:30px;text-align:center;">
+            <a href="/dashboard" style="color:#fbbf24;">⬅️ العودة إلى لوحة التحكم الرئيسية</a>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // دوال مساعدة
+        function showToast(msg, err) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            t.style.borderColor = err ? '#ef4444' : '#22c55e';
+            setTimeout(function() { t.style.display = 'none'; }, 4000);
+        }
+
+        // تحميل المستخدمين
+        async function loadUsers() {
+            try {
+                var res = await fetch('/api/admin/users');
+                var data = await res.json();
+                var tbody = document.getElementById('usersTableBody');
+                if (data.users && data.users.length > 0) {
+                    tbody.innerHTML = data.users.map(u => `
+                        <tr>
+                            <td>${u.id}</td>
+                            <td>${u.name}</td>
+                            <td>${u.email}</td>
+                            <td>${u.role}</td>
+                            <td>${u.role === 'seller' ? (u.is_active ? '✅ نشط' : '❌ غير نشط') : '—'}</td>
+                            <td>
+                                ${u.role === 'seller' ? `
+                                    <button class="btn btn-green" onclick="toggleSeller(${u.id}, true)">تفعيل</button>
+                                    <button class="btn btn-red" onclick="toggleSeller(${u.id}, false)">إلغاء</button>
+                                ` : '—'}
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;">لا يوجد مستخدمون</td></tr>';
+                }
+            } catch (err) {
+                document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#ef4444;">فشل التحميل</td></tr>';
+            }
+        }
+
+        // تفعيل/إلغاء تاجر
+        async function toggleSeller(id, activate) {
+            try {
+                var res = await fetch(`/api/admin/${activate ? 'activate' : 'deactivate'}-seller/${id}`, {
+                    method: 'POST'
+                });
+                var data = await res.json();
+                if (data.status === 'success') {
+                    showToast(data.message, false);
+                    loadUsers();
+                } else {
+                    showToast('❌ فشل', true);
+                }
+            } catch (err) {
+                showToast('❌ خطأ', true);
+            }
+        }
+
+        // إضافة إعلان
+        document.getElementById('adForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var title_ar = document.getElementById('adTitleAr').value;
+            var title_en = document.getElementById('adTitleEn').value;
+            var image_url = document.getElementById('adImageUrl').value;
+            var link = document.getElementById('adLink').value;
+            var position = document.getElementById('adPosition').value;
+
+            try {
+                var res = await fetch('/api/admin/ad', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title_ar, title_en, image_url, link, position })
+                });
+                var data = await res.json();
+                if (data.status === 'success') {
+                    showToast('✅ تم إضافة الإعلان', false);
+                    document.getElementById('adForm').reset();
+                    loadAds();
+                } else {
+                    showToast('❌ فشل', true);
+                }
+            } catch (err) {
+                showToast('❌ خطأ', true);
+            }
+        });
+
+        // تحميل الإعلانات
+        async function loadAds() {
+            try {
+                var res = await fetch('/api/admin/ads');
+                var data = await res.json();
+                var container = document.getElementById('adsList');
+                if (data.ads && data.ads.length > 0) {
+                    container.innerHTML = data.ads.map(a => `
+                        <div style="background:#0f172a;padding:10px;border-radius:8px;margin-bottom:8px;">
+                            <strong>${a.title_ar}</strong> (${a.position})
+                            <br><small>${a.link}</small>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد إعلانات</p>';
+                }
+            } catch (err) {
+                document.getElementById('adsList').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
+            }
+        }
+
+        // إضافة سعر ذهب محلي
+        document.getElementById('goldPriceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var city = document.getElementById('gpCity').value;
+            var price_gram = parseFloat(document.getElementById('gpGram').value);
+            var price_ounce = parseFloat(document.getElementById('gpOunce').value);
+
+            try {
+                var res = await fetch('/api/admin/gold-price', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city, price_gram, price_ounce })
+                });
+                var data = await res.json();
+                if (data.status === 'success') {
+                    showToast('✅ تم إضافة السعر', false);
+                    document.getElementById('goldPriceForm').reset();
+                    loadGoldPrices();
+                } else {
+                    showToast('❌ فشل', true);
+                }
+            } catch (err) {
+                showToast('❌ خطأ', true);
+            }
+        });
+
+        // تحميل أسعار الذهب المحلية
+        async function loadGoldPrices() {
+            try {
+                var res = await fetch('/api/admin/gold-prices');
+                var data = await res.json();
+                var container = document.getElementById('goldPricesList');
+                if (data.prices && data.prices.length > 0) {
+                    container.innerHTML = data.prices.map(p => `
+                        <div style="background:#0f172a;padding:10px;border-radius:8px;margin-bottom:8px;">
+                            <strong>${p.city}</strong> — 🟡 ${p.price_gram} ج.س/جم | ${p.price_ounce} ج.س/أونصة
+                            <br><small>آخر تحديث: ${p.updated_at}</small>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>';
+                }
+            } catch (err) {
+                document.getElementById('goldPricesList').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
+            }
+        }
+
+        // تحميل كل شيء عند تشغيل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+            loadAds();
+            loadGoldPrices();
+        });
+    </script>
+</body>
+</html>

@@ -24,6 +24,8 @@
         .btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3); }
         .btn-blue { background: #3b82f6; }
         .btn-blue:hover { box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); }
+        .btn-admin { background: #8b5cf6; }
+        .btn-admin:hover { box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3); }
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 0.9rem; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
@@ -36,6 +38,7 @@
         .list-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid #fbbf24; }
         .list-item strong { color: #fbbf24; }
         .list-item small { color: #94a3b8; }
+        .flex-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
     </style>
 </head>
 <body>
@@ -45,9 +48,10 @@
             <div class="gold-price" id="goldPrice">💰 USD 0.00 <span>| PAXG</span></div>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+        <div class="flex-buttons" style="margin-bottom:20px;">
             <button class="btn" id="loginBtn">🔑 تسجيل الدخول</button>
             <button class="btn btn-blue" id="registerBtn">📝 تسجيل جديد</button>
+            <button class="btn btn-admin" id="adminBtn">🛠️ لوحة المشرف</button>
         </div>
 
         <div class="grid">
@@ -66,13 +70,14 @@
                 <div class="card-number purple" id="chats">0</div>
                 <div class="card-label">المحادثات النشطة</div>
             </div>
+            <div class="card" id="adsCard">
+                <span class="card-icon">📢</span>
+                <div class="card-number" id="adsCount" style="color:#ec4899;">0</div>
+                <div class="card-label">الإعلانات</div>
+            </div>
         </div>
 
-        <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; text-align: center; border: 1px dashed rgba(255,255,255,0.1);">
-            <h3 style="color: #94a3b8; font-size: 0.9rem;">📢 مساحة للإعلانات</h3>
-            <p style="color: #64748b;">سيتم عرض الإعلانات هنا</p>
-        </div>
-
+        <!-- مساحة أسعار الذهب المحلية -->
         <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px dashed rgba(255,255,255,0.1);">
             <h3 style="color: #fbbf24; margin-bottom: 15px;">🏅 أسعار الذهب المحلية</h3>
             <div id="goldPrices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
@@ -139,7 +144,6 @@
             document.getElementById(id).classList.remove('active'); 
         }
 
-        // عرض القوائم في نافذة منبثقة
         function showList(title, itemsHtml) {
             document.getElementById('listModalTitle').textContent = title;
             document.getElementById('listModalBody').innerHTML = itemsHtml;
@@ -148,9 +152,11 @@
 
         // ربط الأزرار والبطاقات
         document.addEventListener('DOMContentLoaded', function() {
-            // أزرار تسجيل الدخول والتسجيل
             document.getElementById('loginBtn').addEventListener('click', function() { openModal('login'); });
             document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
+            document.getElementById('adminBtn').addEventListener('click', function() {
+                window.location.href = '/admin';
+            });
 
             // بطاقة الطلبات
             document.getElementById('ordersCard').addEventListener('click', function() {
@@ -163,7 +169,7 @@
                             ).join('');
                             showList('📦 الطلبات المفتوحة', html);
                         } else {
-                            showList('📦 الطلبات المفتوحة', '<p style="color:#94a3b8;">لا توجد طلبات حالياً</p>');
+                            showList('📦 الطلبات المفتوحة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>');
                         }
                     })
                     .catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
@@ -180,13 +186,13 @@
                             ).join('');
                             showList('🤝 العروض المقدمة', html);
                         } else {
-                            showList('🤝 العروض المقدمة', '<p style="color:#94a3b8;">لا توجد عروض حالياً</p>');
+                            showList('🤝 العروض المقدمة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>');
                         }
                     })
                     .catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
             });
 
-            // بطاقة المحادثات (تتطلب معرف مستخدم، نأخذه من التخزين المحلي)
+            // بطاقة المحادثات
             document.getElementById('chatsCard').addEventListener('click', function() {
                 var user = localStorage.getItem('user');
                 if (!user) {
@@ -203,19 +209,37 @@
                             ).join('');
                             showList('💬 المحادثات النشطة', html);
                         } else {
-                            showList('💬 المحادثات النشطة', '<p style="color:#94a3b8;">لا توجد محادثات حالياً</p>');
+                            showList('💬 المحادثات النشطة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>');
                         }
                     })
                     .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
+            });
+
+            // بطاقة الإعلانات
+            document.getElementById('adsCard').addEventListener('click', function() {
+                fetch('/api/admin/ads')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.ads && data.ads.length > 0) {
+                            let html = data.ads.map(a => 
+                                `<div class="list-item"><strong>${a.title_ar}</strong><br><small>${a.link}</small></div>`
+                            ).join('');
+                            showList('📢 الإعلانات', html);
+                        } else {
+                            showList('📢 الإعلانات', '<p style="color:#94a3b8;">لا توجد إعلانات حالياً</p>');
+                        }
+                    })
+                    .catch(() => showList('📢 الإعلانات', '<p style="color:#ef4444;">فشل تحميل الإعلانات</p>'));
             });
 
             // تحميل البيانات الأولية
             loadGlobalGold();
             loadGoldPrices();
             loadStats();
+            loadAdsCount();
         });
 
-        // باقي الدوال (toast, login, register, load...)
+        // باقي الدوال
         function showToast(msg, err) {
             var t = document.getElementById('toast');
             t.textContent = msg; t.style.display = 'block';
@@ -296,6 +320,14 @@
                     var d3 = await r3.json();
                     document.getElementById('chats').textContent = d3.chats ? d3.chats.length : 0;
                 }
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadAdsCount() {
+            try {
+                var r = await fetch('/api/admin/ads');
+                var d = await r.json();
+                document.getElementById('adsCount').textContent = d.ads ? d.ads.length : 0;
             } catch (err) { console.error(err); }
         }
 

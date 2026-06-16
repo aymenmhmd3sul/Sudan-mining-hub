@@ -113,3 +113,10 @@ def get_gold_prices():
         with open(GOLD_PRICES_FILE, "r") as f:
             return {"prices": json.load(f)}
     return {"prices": []}
+
+@router.get("/ads")
+def get_ads():
+    if os.path.exists(ADS_FILE):
+        with open(ADS_FILE, "r") as f:
+            return {"ads": json.load(f)}
+    return {"ads": []}

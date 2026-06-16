@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
 
-# استيراد الراوتات (سننشئها بعد قليل)
+# استيراد الراوتات
 from app.routers import auth, opportunities, chat, payments, admin
 
 app = FastAPI(

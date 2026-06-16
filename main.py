@@ -1,18 +1,21 @@
-from fastapi import FastAPI, HTMLResponse
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import requests
 from datetime import datetime
 
 app = FastAPI()
 
-# ربط مجلد static لعرض الملفات الثابتة (مثل script.js)
+# ربط مجلد static لخدمة ملفات JavaScript و CSS
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# متغير لحفظ آخر سعر معروف (احتياطي)
 _last_gold_price = 0.0
 
 def get_price():
     global _last_gold_price
     try:
+        # المصدر الأول: Binance (الأسرع)
         r = requests.get(
             "https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT",
             timeout=5
@@ -21,7 +24,18 @@ def get_price():
         _last_gold_price = price
         return price
     except:
-        return _last_gold_price if _last_gold_price > 0 else 0.0
+        # إذا فشل Binance، نجرب Gold-API
+        try:
+            r = requests.get(
+                "https://api.gold-api.com/price/XAU",
+                timeout=5
+            )
+            price = round(float(r.json()["price"]), 2)
+            _last_gold_price = price
+            return price
+        except:
+            # إذا فشل كل شيء، نعيد آخر سعر معروف
+            return _last_gold_price if _last_gold_price > 0 else 0.0
 
 @app.get("/")
 def root():
@@ -39,8 +53,6 @@ def api_gold():
 def dashboard():
     gold = get_price()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # هنا HTML نقي جداً، والجافا سكريبت يتم استدعاؤه من ملف خارجي
     return f"""
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -110,10 +122,8 @@ def dashboard():
 
     <div class="toast" id="toast"></div>
 
-    <!-- تحميل الجافا سكريبت من ملف خارجي (نقي 100%، لا تعارض مع بايثون) -->
     <script src="/static/script.js"></script>
     <script>
-        // ربط الزر بالدالة بعد تحميل الصفحة (تجنباً لأي تعارض)
         document.addEventListener('DOMContentLoaded', function() {{
             var btn = document.getElementById('refreshDataBtn');
             if (btn) {{

@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTMLResponse
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 import requests
 
 app = FastAPI()
@@ -28,7 +29,7 @@ def api_gold():
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
     gold = get_price()
-    return HTMLResponse(f"""
+    return f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,4 +57,4 @@ def dashboard():
     </div>
 </body>
 </html>
-""")
+"""

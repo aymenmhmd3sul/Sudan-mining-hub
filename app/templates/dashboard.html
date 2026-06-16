@@ -17,6 +17,8 @@
         .card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
         .card-icon { font-size: 2.5rem; margin-bottom: 8px; display: block; }
         .card-number { font-size: 2rem; font-weight: 700; color: #fbbf24; margin: 6px 0; }
+        .card-number.green { color: #22c55e; }
+        .card-number.purple { color: #a855f7; }
         .card-label { color: #94a3b8; font-size: 0.9rem; }
         .btn { padding: 10px 24px; background: #22c55e; border: none; color: white; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3); }
@@ -118,163 +120,97 @@
     </div>
 
     <script>
-        // دوال النوافذ المنبثقة
         function openModal(type) {
-            var modalId = {
-                'login': 'loginModal',
-                'register': 'registerModal'
-            }[type];
-            if (modalId) {
-                var modal = document.getElementById(modalId);
-                if (modal) modal.classList.add('active');
-            }
+            var modalId = { 'login': 'loginModal', 'register': 'registerModal' }[type];
+            if (modalId) document.getElementById(modalId).classList.add('active');
         }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        function closeModal(id) {
-            var modal = document.getElementById(id);
-            if (modal) modal.classList.remove('active');
-        }
-
-        // ربط الأزرار
         document.addEventListener('DOMContentLoaded', function() {
-            var loginBtn = document.getElementById('loginBtn');
-            var registerBtn = document.getElementById('registerBtn');
-            
-            if (loginBtn) {
-                loginBtn.addEventListener('click', function() { openModal('login'); });
-            }
-            if (registerBtn) {
-                registerBtn.addEventListener('click', function() { openModal('register'); });
-            }
-
-            // تحميل البيانات
-            loadGlobalGold();
-            loadGoldPrices();
-            loadStats();
+            document.getElementById('loginBtn').addEventListener('click', function() { openModal('login'); });
+            document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
+            loadGlobalGold(); loadGoldPrices(); loadStats();
         });
 
-        // عرض الإشعارات
-        function showToast(message, isError) {
-            var toast = document.getElementById('toast');
-            if (!toast) return;
-            toast.textContent = message;
-            toast.style.display = 'block';
-            toast.style.borderColor = isError ? '#ef4444' : '#22c55e';
-            setTimeout(function() {
-                toast.style.display = 'none';
-            }, 4000);
+        function showToast(msg, err) {
+            var t = document.getElementById('toast');
+            t.textContent = msg; t.style.display = 'block';
+            t.style.borderColor = err ? '#ef4444' : '#22c55e';
+            setTimeout(function() { t.style.display = 'none'; }, 4000);
         }
 
-        // تسجيل الدخول
-        async function login(event) {
-            event.preventDefault();
+        async function login(e) {
+            e.preventDefault();
             var email = document.getElementById('loginEmail').value;
             var password = document.getElementById('loginPassword').value;
-
             try {
-                var response = await fetch('/api/auth/login', {
+                var r = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, password: password })
+                    body: JSON.stringify({ email, password })
                 });
-                var data = await response.json();
-                if (data.status === 'success') {
-                    showToast('✅ تم تسجيل الدخول بنجاح! مرحباً ' + data.user.name, false);
+                var d = await r.json();
+                if (d.status === 'success') {
+                    showToast('✅ مرحباً ' + d.user.name, false);
                     closeModal('loginModal');
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    updateUI(data.user);
-                } else {
-                    showToast('❌ ' + data.detail, true);
-                }
-            } catch (error) {
-                showToast('❌ خطأ في الاتصال', true);
-            }
+                    localStorage.setItem('user', JSON.stringify(d.user));
+                    document.querySelector('.header h1').innerHTML = '⛏️ مرحباً ' + d.user.name;
+                } else { showToast('❌ ' + d.detail, true); }
+            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
 
-        // تسجيل جديد
-        async function register(event) {
-            event.preventDefault();
+        async function register(e) {
+            e.preventDefault();
             var name = document.getElementById('regName').value;
             var email = document.getElementById('regEmail').value;
             var phone = document.getElementById('regPhone').value;
             var role = document.getElementById('regRole').value;
             var password = document.getElementById('regPassword').value;
-
             try {
-                var response = await fetch('/api/auth/register', {
+                var r = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: name, email: email, phone: phone, role: role, password: password })
+                    body: JSON.stringify({ name, email, phone, role, password })
                 });
-                var data = await response.json();
-                if (data.status === 'success') {
-                    showToast('✅ تم التسجيل بنجاح! يمكنك الآن تسجيل الدخول', false);
+                var d = await r.json();
+                if (d.status === 'success') {
+                    showToast('✅ تم التسجيل بنجاح!', false);
                     closeModal('registerModal');
                     document.getElementById('registerMessage').textContent = '';
                 } else {
-                    document.getElementById('registerMessage').textContent = '❌ ' + data.detail;
+                    document.getElementById('registerMessage').textContent = '❌ ' + d.detail;
                     document.getElementById('registerMessage').style.color = '#ef4444';
                 }
-            } catch (error) {
-                showToast('❌ خطأ في الاتصال', true);
-            }
+            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
 
-        // تحديث الواجهة بعد تسجيل الدخول
-        function updateUI(user) {
-            var header = document.querySelector('.header h1');
-            if (header) {
-                header.innerHTML = '⛏️ مرحباً ' + user.name;
-            }
-        }
-
-        // تحميل أسعار الذهب المحلية
         async function loadGoldPrices() {
             try {
-                var response = await fetch('/api/admin/gold-prices');
-                var data = await response.json();
-                var container = document.getElementById('goldPrices');
-                if (container && data.prices && data.prices.length > 0) {
-                    container.innerHTML = data.prices.map(function(p) {
-                        return '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram || 0) + ' ج.س/جم</div><div style="font-size:0.8rem;color:#94a3b8;">' + (p.price_ounce || 0) + ' ج.س/أونصة</div></div>';
-                    }).join('');
-                } else if (container) {
-                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار مسجلة حالياً</p>';
-                }
-            } catch (error) {
-                var container = document.getElementById('goldPrices');
-                if (container) {
-                    container.innerHTML = '<p style="color:#ef4444;">فشل تحميل الأسعار</p>';
-                }
-            }
+                var r = await fetch('/api/admin/gold-prices');
+                var d = await r.json();
+                var c = document.getElementById('goldPrices');
+                if (d.prices && d.prices.length > 0) {
+                    c.innerHTML = d.prices.map(p => '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram||0) + ' ج.س/جم</div></div>').join('');
+                } else { c.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>'; }
+            } catch (err) { document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>'; }
         }
 
-        // تحميل الإحصائيات
         async function loadStats() {
             try {
-                var response = await fetch('/api/opportunities/list');
-                var data = await response.json();
-                var ordersEl = document.getElementById('orders');
-                if (ordersEl) {
-                    ordersEl.textContent = data.opportunities ? data.opportunities.length : 0;
-                }
-            } catch (error) {
-                console.error('فشل تحميل الإحصائيات');
-            }
+                var r = await fetch('/api/opportunities/list');
+                var d = await r.json();
+                document.getElementById('orders').textContent = d.opportunities ? d.opportunities.length : 0;
+            } catch (err) { console.error(err); }
         }
 
-        // تحميل سعر الذهب العالمي
         async function loadGlobalGold() {
             try {
-                var response = await fetch('/api/gold');
-                var data = await response.json();
-                var priceEl = document.getElementById('goldPrice');
-                if (priceEl && data.gold !== undefined) {
-                    priceEl.innerHTML = '💰 USD ' + data.gold.toFixed(2) + ' <span>| PAXG</span>';
+                var r = await fetch('/api/gold');
+                var d = await r.json();
+                if (d.gold !== undefined) {
+                    document.getElementById('goldPrice').innerHTML = '💰 USD ' + d.gold.toFixed(2) + ' <span>| PAXG</span>';
                 }
-            } catch (error) {
-                console.error('فشل تحميل سعر الذهب');
-            }
+            } catch (err) { console.error(err); }
         }
     </script>
 </body>

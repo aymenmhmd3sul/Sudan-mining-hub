@@ -1,19 +1,27 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 import requests
 from datetime import datetime
 
 app = FastAPI()
 
+# ربط مجلد static لعرض الملفات الثابتة (مثل script.js)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+_last_gold_price = 0.0
+
 def get_price():
+    global _last_gold_price
     try:
         r = requests.get(
             "https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT",
             timeout=5
         )
-        return round(float(r.json()["price"]), 2)
+        price = round(float(r.json()["price"]), 2)
+        _last_gold_price = price
+        return price
     except:
-        return 0.0
+        return _last_gold_price if _last_gold_price > 0 else 0.0
 
 @app.get("/")
 def root():
@@ -31,6 +39,8 @@ def api_gold():
 def dashboard():
     gold = get_price()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # هنا HTML نقي جداً، والجافا سكريبت يتم استدعاؤه من ملف خارجي
     return f"""
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -78,41 +88,16 @@ def dashboard():
         </div>
 
         <div class="grid">
-            <div class="card">
-                <span class="card-icon">📦</span>
-                <div class="card-number blue" id="orders">1,284</div>
-                <div class="card-label">الطلبات</div>
-                <div class="card-sub">+12% هذا الشهر</div>
-            </div>
-            <div class="card">
-                <span class="card-icon">👩‍🎓</span>
-                <div class="card-number green" id="traders">342</div>
-                <div class="card-label">التجار</div>
-                <div class="card-sub">نشطون ✅</div>
-            </div>
-            <div class="card">
-                <span class="card-icon">⛏️</span>
-                <div class="card-number purple" id="mining">56</div>
-                <div class="card-label">التعدين</div>
-                <div class="card-sub">معدات عاملة</div>
-            </div>
-            <div class="card">
-                <span class="card-icon">📢</span>
-                <div class="card-number pink" id="ads">89</div>
-                <div class="card-label">الإعلانات</div>
-                <div class="card-sub">نشطة 📈</div>
-            </div>
-            <div class="card">
-                <span class="card-icon">📋</span>
-                <div class="card-number" id="subscriptions" style="color:#fbbf24;">247</div>
-                <div class="card-label">الاشتراك</div>
-                <div class="card-sub">مستخدمين جدد</div>
-            </div>
+            <div class="card"><span class="card-icon">📦</span><div class="card-number blue" id="orders">1,284</div><div class="card-label">الطلبات</div><div class="card-sub">+12% هذا الشهر</div></div>
+            <div class="card"><span class="card-icon">👩‍🎓</span><div class="card-number green" id="traders">342</div><div class="card-label">التجار</div><div class="card-sub">نشطون ✅</div></div>
+            <div class="card"><span class="card-icon">⛏️</span><div class="card-number purple" id="mining">56</div><div class="card-label">التعدين</div><div class="card-sub">معدات عاملة</div></div>
+            <div class="card"><span class="card-icon">📢</span><div class="card-number pink" id="ads">89</div><div class="card-label">الإعلانات</div><div class="card-sub">نشطة 📈</div></div>
+            <div class="card"><span class="card-icon">📋</span><div class="card-number" id="subscriptions" style="color:#fbbf24;">247</div><div class="card-label">الاشتراك</div><div class="card-sub">مستخدمين جدد</div></div>
         </div>
 
         <div style="text-align:center;margin:30px 0;">
             <div class="flex">
-                <button class="btn" id="refreshDataBtn" onclick="refreshData()">🔄 تحديث البيانات</button>
+                <button class="btn" id="refreshDataBtn">🔄 تحديث البيانات</button>
                 <button class="btn btn-blue" onclick="location.reload()">⏳ تحديث الصفحة</button>
             </div>
             <p style="color:#94a3b8;font-size:0.85rem;margin-top:15px;">
@@ -120,51 +105,21 @@ def dashboard():
             </p>
         </div>
 
-        <div class="footer">
-            <p>© 2026 منصة سودان للتعدين — نظام مباشر 🚀</p>
-        </div>
+        <div class="footer"><p>© 2026 منصة سودان للتعدين — نظام مباشر 🚀</p></div>
     </div>
 
     <div class="toast" id="toast"></div>
 
+    <!-- تحميل الجافا سكريبت من ملف خارجي (نقي 100%، لا تعارض مع بايثون) -->
+    <script src="/static/script.js"></script>
     <script>
-        function showToast(message, isError = false) {{
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.display = 'block';
-            toast.style.borderColor = isError ? '#ef4444' : '#22c55e';
-            setTimeout(() => {{ toast.style.display = 'none'; }}, 3000);
-        }}
-
-        async function refreshData() {{
-            const btn = document.getElementById('refreshDataBtn');
-            btn.disabled = true;
-            btn.innerHTML = '⏳ جاري التحديث... <span class="spinner"></span>';
-
-            try {{
-                const response = await fetch('/api/gold');
-                if (!response.ok) throw new Error('فشل جلب البيانات');
-                const data = await response.json();
-                
-                if (data.gold !== undefined) {{
-                    document.getElementById('goldPrice').innerHTML = `💰 USD ${{data.gold.toFixed(2)}} <span>| PAXG</span>`;
-                    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('ar-EG');
-                    
-                    document.getElementById('orders').textContent = Math.floor(1200 + Math.random() * 200);
-                    document.getElementById('traders').textContent = Math.floor(320 + Math.random() * 50);
-                    document.getElementById('mining').textContent = Math.floor(50 + Math.random() * 15);
-                    document.getElementById('ads').textContent = Math.floor(80 + Math.random() * 20);
-                    document.getElementById('subscriptions').textContent = Math.floor(220 + Math.random() * 50);
-                    
-                    showToast('✅ تم تحديث البيانات بنجاح!');
-                }}
-            }} catch (error) {{
-                showToast('❌ فشل تحديث البيانات: ' + error.message, true);
+        // ربط الزر بالدالة بعد تحميل الصفحة (تجنباً لأي تعارض)
+        document.addEventListener('DOMContentLoaded', function() {{
+            var btn = document.getElementById('refreshDataBtn');
+            if (btn) {{
+                btn.addEventListener('click', refreshData);
             }}
-
-            btn.disabled = false;
-            btn.innerHTML = '🔄 تحديث البيانات';
-        }}
+        }});
     </script>
 </body>
 </html>

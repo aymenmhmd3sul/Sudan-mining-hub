@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from fastapi.responses import HTMLResponse
 import httpx
 from datetime import datetime
-import asyncio
 
 app = FastAPI()
 
@@ -18,7 +16,7 @@ async def get_gold_price():
     except:
         return 4315.09
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
     gold = await get_gold_price()
     now = datetime.now().strftime("%I:%M %p")
@@ -32,7 +30,7 @@ async def root():
     <title>منصة السودان للتعدين</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: 'Tahoma', Arial, sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; padding: 20px; }}
+        body {{ font-family: Tahoma, Arial, sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; padding: 20px; }}
         .container {{ max-width: 1300px; margin: 0 auto; }}
         .header {{ display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }}
         .header h1 {{ font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
@@ -50,7 +48,7 @@ async def root():
         .card-label {{ color: #94a3b8; font-size: 0.9rem; }}
         .card-sub {{ color: #64748b; font-size: 0.75rem; margin-top: 4px; }}
         .flex {{ display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }}
-        .btn {{ padding: 10px 24px; background: #22c55e; border: none; color: white; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; text-decoration: none; display: inline-block; }}
+        .btn {{ padding: 10px 24px; background: #22c55e; border: none; color: white; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }}
         .btn:hover {{ transform: scale(1.05); box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3); }}
         .btn-blue {{ background: #3b82f6; }}
         .btn-blue:hover {{ box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); }}
@@ -94,11 +92,11 @@ async def root():
         </div>
         <div class="section-title">🚀 التنقل السريع</div>
         <div class="flex">
-            <a href="/traders" class="btn">التجار</a>
-            <a href="/orders" class="btn btn-blue">الطلبات</a>
-            <a href="/ads" class="btn btn-blue">الإعلانات</a>
-            <a href="/mining" class="btn btn-blue">التعدين</a>
-            <a href="/subscribe" class="btn btn-blue">الاشتراك</a>
+            <button class="btn">التجار</button>
+            <button class="btn btn-blue">الطلبات</button>
+            <button class="btn btn-blue">الإعلانات</button>
+            <button class="btn btn-blue">التعدين</button>
+            <button class="btn btn-blue">الاشتراك</button>
         </div>
         <div style="margin-top: 30px; padding: 20px; background: #1e293b; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
             🟢 النظام مباشر <span class="status-badge">Live</span> — آخر تحديث: {now}
@@ -115,57 +113,9 @@ async def root():
 async def get_price():
     return {"gold": await get_gold_price()}
 
-@app.get("/api/gold")
-async def get_gold():
-    return {"gold": await get_gold_price()}
-
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
-
-@app.get("/dashboard")
-async def dashboard():
-    gold = await get_gold_price()
-    return f'''
-<!DOCTYPE html>
-<html>
-<head><title>Sudan Mining Hub</title>
-<meta charset="utf-8">
-<style>
-body {{ background:#0f172a; color:white; font-family:Arial; padding:20px; }}
-.box {{ background:#1e293b; padding:20px; margin:10px 0; border-radius:12px; }}
-button {{ padding:10px; background:#22c55e; border:none; color:white; border-radius:8px; cursor:pointer; }}
-button:hover {{ background:#16a34a; }}
-</style>
-</head>
-<body>
-<h1>🟡 Sudan Mining Hub</h1>
-<div class="box"><h3>Gold Price</h3><p style="font-size:24px">{gold} USD</p></div>
-<div class="box"><h3>Status</h3><p>✅ Running</p></div>
-<div class="box"><button onclick="alert('✅ زر يعمل بشكل صحيح!')">Test Button</button></div>
-</body>
-</html>
-'''
-
-@app.get("/traders")
-async def traders():
-    return {"page": "التجار", "message": "قائمة التجار"}
-
-@app.get("/orders")
-async def orders():
-    return {"page": "الطلبات", "message": "قائمة الطلبات"}
-
-@app.get("/ads")
-async def ads():
-    return {"page": "الإعلانات", "message": "قائمة الإعلانات"}
-
-@app.get("/mining")
-async def mining():
-    return {"page": "التعدين", "message": "معلومات التعدين"}
-
-@app.get("/subscribe")
-async def subscribe():
-    return {"page": "الاشتراك", "message": "صفحة الاشتراك"}
 
 if __name__ == "__main__":
     import uvicorn

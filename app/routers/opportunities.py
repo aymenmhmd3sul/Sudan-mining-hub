@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import json
 import os
@@ -7,6 +7,8 @@ from datetime import datetime
 router = APIRouter()
 OPPORTUNITIES_FILE = "data/opportunities.json"
 OFFERS_FILE = "data/offers.json"
+
+os.makedirs("data", exist_ok=True)
 
 if not os.path.exists(OPPORTUNITIES_FILE):
     with open(OPPORTUNITIES_FILE, "w") as f:
@@ -17,7 +19,7 @@ if not os.path.exists(OFFERS_FILE):
 
 class OpportunityCreate(BaseModel):
     buyer_id: int
-    type: str  # light_equipment, heavy_equipment, mine, well, production_line, shop_rent, service
+    type: str
     specs: str
     budget: float
     location: str
@@ -29,7 +31,7 @@ class OfferCreate(BaseModel):
     price: float
     specs: str
     delivery_time: str
-    condition: str  # new, used
+    condition: str
 
 def get_opportunities():
     with open(OPPORTUNITIES_FILE, "r") as f:

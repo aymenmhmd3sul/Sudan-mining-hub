@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import json
 import os
@@ -8,6 +8,8 @@ router = APIRouter()
 TRANSACTIONS_FILE = "data/transactions.json"
 SUBSCRIPTIONS_FILE = "data/subscriptions.json"
 USERS_FILE = "data/users.json"
+
+os.makedirs("data", exist_ok=True)
 
 if not os.path.exists(TRANSACTIONS_FILE):
     with open(TRANSACTIONS_FILE, "w") as f:
@@ -34,22 +36,17 @@ def save_transactions(data):
 
 @router.post("/commission/{opportunity_id}")
 def calculate_commission(opportunity_id: int):
-    """
-    حساب العمولة بناءً على نوع المعدات
-    """
-    # في الواقع سنجلب تفاصيل الفرصة من ملف الفرص
-    # لكن هنا نستخدم منطقاً مبسطاً
-    opportunity_type = "light_equipment"  # سيتم جلبها من قاعدة البيانات
+    opportunity_type = "light_equipment"
     
     commission_fixed = None
     commission_percentage = None
     
     if opportunity_type == "light_equipment":
-        commission_fixed = 100000  # 100,000 ج.س
+        commission_fixed = 100000
     elif opportunity_type == "heavy_equipment":
-        commission_percentage = 0.25  # 0.25%
+        commission_percentage = 0.25
     else:
-        commission_fixed = 50000  # قيمة افتراضية
+        commission_fixed = 50000
     
     return {
         "opportunity_id": opportunity_id,
@@ -60,11 +57,7 @@ def calculate_commission(opportunity_id: int):
 
 @router.post("/confirm-delivery/{opportunity_id}")
 def confirm_delivery(opportunity_id: int, user_id: int):
-    """
-    تأكيد الاستلام من أحد الطرفين
-    """
     transactions = get_transactions()
-    # نبحث عن صفقة مفتوحة
     for t in transactions:
         if t["opportunity_id"] == opportunity_id and t["status"] == "pending":
             t["status"] = "completed"
@@ -77,11 +70,10 @@ def confirm_delivery(opportunity_id: int, user_id: int):
                 "commission": t.get("commission", 0)
             }
     
-    # إذا لم توجد صفقة، ننشئ واحدة
     new_transaction = {
         "id": len(transactions) + 1,
         "opportunity_id": opportunity_id,
-        "commission": 100000,  # مثال
+        "commission": 100000,
         "status": "pending",
         "confirmed_by": user_id,
         "confirmed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -96,9 +88,6 @@ def confirm_delivery(opportunity_id: int, user_id: int):
 
 @router.get("/subscription/{seller_id}")
 def get_subscription(seller_id: int):
-    """
-    التحقق من اشتراك التاجر
-    """
     users = get_users()
     for u in users:
         if u["id"] == seller_id and u["role"] == "seller":

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import json
 import os
@@ -6,6 +6,8 @@ from datetime import datetime
 
 router = APIRouter()
 CHAT_FILE = "data/chats.json"
+
+os.makedirs("data", exist_ok=True)
 
 if not os.path.exists(CHAT_FILE):
     with open(CHAT_FILE, "w") as f:
@@ -29,7 +31,6 @@ def save_chats(data):
 def send_message(msg: MessageSend):
     chats = get_chats()
     
-    # البحث عن محادثة مفتوحة، أو إنشاء واحدة جديدة
     chat_id = None
     for chat in chats:
         if (chat["opportunity_id"] == msg.opportunity_id and 
@@ -39,22 +40,18 @@ def send_message(msg: MessageSend):
             break
     
     if chat_id is None:
-        # إنشاء محادثة جديدة
         new_chat = {
             "id": len(chats) + 1,
             "opportunity_id": msg.opportunity_id,
-            "buyer_id": msg.receiver_id if msg.sender_id != msg.receiver_id else msg.sender_id,  # مبسط
+            "buyer_id": msg.receiver_id if msg.sender_id != msg.receiver_id else msg.sender_id,
             "seller_id": msg.sender_id if msg.sender_id != msg.receiver_id else msg.receiver_id,
             "messages": [],
             "status": "active",
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
-        # تحديد الأدوار بناءً على من أرسل
-        # هذا مبسط، يمكن تحسينه
         chats.append(new_chat)
         chat_id = new_chat["id"]
     
-    # إضافة الرسالة
     for chat in chats:
         if chat["id"] == chat_id:
             chat["messages"].append({
@@ -66,13 +63,8 @@ def send_message(msg: MessageSend):
     
     save_chats(chats)
     
-    # **كشف الكلمات المفتاحية للذكاء الاصطناعي**
     keywords = ["تم الاتفاق", "وافقت", "موافق", "تم البيع", "تم الشراء", "اتفقنا"]
-    detected = False
-    for keyword in keywords:
-        if keyword in msg.message:
-            detected = True
-            break
+    detected = any(keyword in msg.message for keyword in keywords)
     
     return {
         "status": "success", 

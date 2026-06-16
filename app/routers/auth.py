@@ -7,6 +7,9 @@ from datetime import datetime, timedelta
 router = APIRouter()
 USERS_FILE = "data/users.json"
 
+# التأكد من وجود مجلد data
+os.makedirs(os.path.dirname(USERS_FILE), exist_ok=True)
+
 # التأكد من وجود ملف المستخدمين
 if not os.path.exists(USERS_FILE):
     with open(USERS_FILE, "w") as f:
@@ -47,7 +50,7 @@ def register(user: UserRegister):
         "phone": user.phone,
         "role": user.role,
         "password": user.password,  # في المستقبل: تشفير
-        "is_active": False if user.role == "seller" else True,  # التاجر يحتاج تفعيل
+        "is_active": False if user.role == "seller" else True,
         "subscription_end": None,
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }

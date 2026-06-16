@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import json
 import os
@@ -8,6 +8,8 @@ router = APIRouter()
 USERS_FILE = "data/users.json"
 ADS_FILE = "data/ads.json"
 GOLD_PRICES_FILE = "data/gold_prices.json"
+
+os.makedirs("data", exist_ok=True)
 
 if not os.path.exists(USERS_FILE):
     with open(USERS_FILE, "w") as f:
@@ -52,13 +54,12 @@ def deactivate_seller(seller_id: int):
             return {"status": "success", "message": "تم إلغاء اشتراك التاجر"}
     raise HTTPException(status_code=404, detail="المستخدم غير موجود")
 
-# إدارة الإعلانات
 class AdCreate(BaseModel):
     title_ar: str
     title_en: str
     image_url: str
     link: str
-    position: str  # top, sidebar, bottom
+    position: str
 
 @router.post("/ad")
 def create_ad(ad: AdCreate):
@@ -76,7 +77,6 @@ def create_ad(ad: AdCreate):
         json.dump(ads, f, indent=2)
     return {"status": "success", "ad": new_ad}
 
-# إدارة أسعار الذهب المحلية
 class GoldPriceCreate(BaseModel):
     city: str
     price_gram: float
@@ -89,7 +89,6 @@ def set_gold_price(gp: GoldPriceCreate):
         with open(GOLD_PRICES_FILE, "r") as f:
             prices = json.load(f)
     
-    # تحديث السعر للمدينة إذا كانت موجودة
     for p in prices:
         if p["city"] == gp.city:
             p["price_gram"] = gp.price_gram
@@ -99,7 +98,6 @@ def set_gold_price(gp: GoldPriceCreate):
                 json.dump(prices, f, indent=2)
             return {"status": "success", "message": f"تم تحديث سعر الذهب في {gp.city}"}
     
-    # إذا لم توجد المدينة، نضيفها
     new_price = {
         **gp.dict(),
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")

@@ -43,8 +43,8 @@ def send_message(msg: MessageSend):
         new_chat = {
             "id": len(chats) + 1,
             "opportunity_id": msg.opportunity_id,
-            "buyer_id": msg.receiver_id if msg.sender_id != msg.receiver_id else msg.sender_id,
-            "seller_id": msg.sender_id if msg.sender_id != msg.receiver_id else msg.receiver_id,
+            "buyer_id": msg.receiver_id,
+            "seller_id": msg.sender_id,
             "messages": [],
             "status": "active",
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -72,6 +72,15 @@ def send_message(msg: MessageSend):
         "ai_detected": detected,
         "message": "تم إرسال الرسالة" + (" - تنبيه: يبدو أنكما توصلا إلى اتفاق! اضغط زر تأكيد الاتفاق." if detected else "")
     }
+
+@router.get("/list/{user_id}")
+def list_user_chats(user_id: int):
+    chats = get_chats()
+    result = []
+    for chat in chats:
+        if chat["buyer_id"] == user_id or chat["seller_id"] == user_id:
+            result.append(chat)
+    return {"chats": result}
 
 @router.get("/{opportunity_id}/{user_id}")
 def get_chat(opportunity_id: int, user_id: int):

@@ -66,6 +66,10 @@ def create_opportunity(opp: OpportunityCreate):
 def list_opportunities():
     return {"opportunities": get_opportunities()}
 
+@router.get("/all-offers")
+def list_all_offers():
+    return {"offers": get_offers()}
+
 @router.get("/{opp_id}")
 def get_opportunity(opp_id: int):
     opportunities = get_opportunities()

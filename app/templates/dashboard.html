@@ -28,11 +28,14 @@
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
-        .modal-content { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-content { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 600px; width: 90%; border: 1px solid rgba(255,255,255,0.1); max-height: 80vh; overflow-y: auto; }
         .modal-content h2 { color: #fbbf24; margin-bottom: 20px; text-align: center; }
         .modal-content input, .modal-content select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; }
         .modal-content .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; color: #0f172a; font-weight: 700; border-radius: 10px; font-size: 1rem; cursor: pointer; }
         .modal-content .btn-close { background: #ef4444; border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; float: left; }
+        .list-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid #fbbf24; }
+        .list-item strong { color: #fbbf24; }
+        .list-item small { color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -65,13 +68,11 @@
             </div>
         </div>
 
-        <!-- مساحة الإعلانات -->
         <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; text-align: center; border: 1px dashed rgba(255,255,255,0.1);">
             <h3 style="color: #94a3b8; font-size: 0.9rem;">📢 مساحة للإعلانات</h3>
             <p style="color: #64748b;">سيتم عرض الإعلانات هنا</p>
         </div>
 
-        <!-- مساحة أسعار الذهب المحلية -->
         <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px dashed rgba(255,255,255,0.1);">
             <h3 style="color: #fbbf24; margin-bottom: 15px;">🏅 أسعار الذهب المحلية</h3>
             <div id="goldPrices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
@@ -86,7 +87,7 @@
 
     <div class="toast" id="toast"></div>
 
-    <!-- نموذج تسجيل الدخول -->
+    <!-- نافذة تسجيل الدخول -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <button class="btn-close" onclick="closeModal('loginModal')">✕</button>
@@ -99,7 +100,7 @@
         </div>
     </div>
 
-    <!-- نموذج تسجيل جديد -->
+    <!-- نافذة تسجيل جديد -->
     <div class="modal" id="registerModal">
         <div class="modal-content">
             <button class="btn-close" onclick="closeModal('registerModal')">✕</button>
@@ -119,19 +120,102 @@
         </div>
     </div>
 
+    <!-- نافذة عرض القوائم -->
+    <div class="modal" id="listModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal('listModal')">✕</button>
+            <h2 id="listModalTitle">قائمة</h2>
+            <div id="listModalBody"></div>
+        </div>
+    </div>
+
     <script>
+        // دوال النوافذ
         function openModal(type) {
             var modalId = { 'login': 'loginModal', 'register': 'registerModal' }[type];
             if (modalId) document.getElementById(modalId).classList.add('active');
         }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+        }
 
+        // عرض القوائم في نافذة منبثقة
+        function showList(title, itemsHtml) {
+            document.getElementById('listModalTitle').textContent = title;
+            document.getElementById('listModalBody').innerHTML = itemsHtml;
+            document.getElementById('listModal').classList.add('active');
+        }
+
+        // ربط الأزرار والبطاقات
         document.addEventListener('DOMContentLoaded', function() {
+            // أزرار تسجيل الدخول والتسجيل
             document.getElementById('loginBtn').addEventListener('click', function() { openModal('login'); });
             document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
-            loadGlobalGold(); loadGoldPrices(); loadStats();
+
+            // بطاقة الطلبات
+            document.getElementById('ordersCard').addEventListener('click', function() {
+                fetch('/api/opportunities/list')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.opportunities && data.opportunities.length > 0) {
+                            let html = data.opportunities.map(o => 
+                                `<div class="list-item"><strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})<br><small>${o.status} | ${o.created_at}</small></div>`
+                            ).join('');
+                            showList('📦 الطلبات المفتوحة', html);
+                        } else {
+                            showList('📦 الطلبات المفتوحة', '<p style="color:#94a3b8;">لا توجد طلبات حالياً</p>');
+                        }
+                    })
+                    .catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
+            });
+
+            // بطاقة العروض
+            document.getElementById('offersCard').addEventListener('click', function() {
+                fetch('/api/opportunities/all-offers')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.offers && data.offers.length > 0) {
+                            let html = data.offers.map(o => 
+                                `<div class="list-item"><strong>${o.specs}</strong> - ${o.price} ج.س<br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small></div>`
+                            ).join('');
+                            showList('🤝 العروض المقدمة', html);
+                        } else {
+                            showList('🤝 العروض المقدمة', '<p style="color:#94a3b8;">لا توجد عروض حالياً</p>');
+                        }
+                    })
+                    .catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
+            });
+
+            // بطاقة المحادثات (تتطلب معرف مستخدم، نأخذه من التخزين المحلي)
+            document.getElementById('chatsCard').addEventListener('click', function() {
+                var user = localStorage.getItem('user');
+                if (!user) {
+                    showList('💬 المحادثات النشطة', '<p style="color:#fbbf24;">يرجى تسجيل الدخول أولاً لعرض المحادثات</p>');
+                    return;
+                }
+                user = JSON.parse(user);
+                fetch('/api/chat/list/' + user.id)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.chats && data.chats.length > 0) {
+                            let html = data.chats.map(c => 
+                                `<div class="list-item"><strong>الفرصة #${c.opportunity_id}</strong><br><small>الرسائل: ${c.messages.length} | الحالة: ${c.status}</small></div>`
+                            ).join('');
+                            showList('💬 المحادثات النشطة', html);
+                        } else {
+                            showList('💬 المحادثات النشطة', '<p style="color:#94a3b8;">لا توجد محادثات حالياً</p>');
+                        }
+                    })
+                    .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
+            });
+
+            // تحميل البيانات الأولية
+            loadGlobalGold();
+            loadGoldPrices();
+            loadStats();
         });
 
+        // باقي الدوال (toast, login, register, load...)
         function showToast(msg, err) {
             var t = document.getElementById('toast');
             t.textContent = msg; t.style.display = 'block';
@@ -200,6 +284,18 @@
                 var r = await fetch('/api/opportunities/list');
                 var d = await r.json();
                 document.getElementById('orders').textContent = d.opportunities ? d.opportunities.length : 0;
+                
+                var r2 = await fetch('/api/opportunities/all-offers');
+                var d2 = await r2.json();
+                document.getElementById('offers').textContent = d2.offers ? d2.offers.length : 0;
+                
+                var user = localStorage.getItem('user');
+                if (user) {
+                    user = JSON.parse(user);
+                    var r3 = await fetch('/api/chat/list/' + user.id);
+                    var d3 = await r3.json();
+                    document.getElementById('chats').textContent = d3.chats ? d3.chats.length : 0;
+                }
             } catch (err) { console.error(err); }
         }
 

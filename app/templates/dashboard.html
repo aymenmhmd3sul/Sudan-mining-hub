@@ -26,25 +26,29 @@
         .btn-blue:hover { box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); }
         .btn-admin { background: #8b5cf6; }
         .btn-admin:hover { box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3); }
+        .btn-yellow { background: #fbbf24; color: #0f172a; font-weight: 700; }
+        .btn-yellow:hover { box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4); }
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 0.9rem; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 600px; width: 90%; border: 1px solid rgba(255,255,255,0.1); max-height: 80vh; overflow-y: auto; }
         .modal-content h2 { color: #fbbf24; margin-bottom: 20px; text-align: center; }
-        .modal-content input, .modal-content select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; }
         .modal-content .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; color: #0f172a; font-weight: 700; border-radius: 10px; font-size: 1rem; cursor: pointer; }
         .modal-content .btn-close { background: #ef4444; border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; float: left; }
         .list-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid #fbbf24; }
         .list-item strong { color: #fbbf24; }
         .list-item small { color: #94a3b8; }
+        .list-item a { color: #fbbf24; text-decoration: none; }
         .flex-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>⛏️ منصة السودان للتعدين</h1>
+            <h1 id="mainTitle">⛏️ منصة السودان للتعدين</h1>
             <div class="gold-price" id="goldPrice">💰 USD 0.00 <span>| PAXG</span></div>
         </div>
 
@@ -52,6 +56,8 @@
             <button class="btn" id="loginBtn">🔑 تسجيل الدخول</button>
             <button class="btn btn-blue" id="registerBtn">📝 تسجيل جديد</button>
             <button class="btn btn-admin" id="adminBtn">🛠️ لوحة المشرف</button>
+            <!-- زر إنشاء طلب (يظهر فقط للمشتري بعد تسجيل الدخول) -->
+            <button class="btn btn-yellow hidden" id="createOpportunityBtn">➕ إنشاء طلب</button>
         </div>
 
         <div class="grid">
@@ -125,6 +131,31 @@
         </div>
     </div>
 
+    <!-- نافذة إنشاء طلب (للمشتري) -->
+    <div class="modal" id="createOpportunityModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal('createOpportunityModal')">✕</button>
+            <h2>➕ إنشاء طلب جديد</h2>
+            <form id="createOpportunityForm">
+                <select id="oppType" required>
+                    <option value="light_equipment">معدات خفيفة</option>
+                    <option value="heavy_equipment">معدات ثقيلة</option>
+                    <option value="mine">منجم</option>
+                    <option value="well">بئر</option>
+                    <option value="production_line">خط إنتاج</option>
+                    <option value="shop_rent">دكان للإيجار</option>
+                    <option value="service">خدمات</option>
+                </select>
+                <textarea id="oppSpecs" placeholder="المواصفات التفصيلية..." required></textarea>
+                <input type="number" id="oppBudget" placeholder="الميزانية (ج.س)" required>
+                <input type="text" id="oppLocation" placeholder="الموقع" required>
+                <input type="text" id="oppCity" placeholder="المدينة" required>
+                <button type="submit" class="btn-submit">✅ نشر الطلب</button>
+            </form>
+            <div id="oppMessage" style="margin-top:10px;text-align:center;"></div>
+        </div>
+    </div>
+
     <!-- نافذة عرض القوائم -->
     <div class="modal" id="listModal">
         <div class="modal-content">
@@ -137,7 +168,7 @@
     <script>
         // دوال النوافذ
         function openModal(type) {
-            var modalId = { 'login': 'loginModal', 'register': 'registerModal' }[type];
+            var modalId = { 'login': 'loginModal', 'register': 'registerModal', 'createOpportunity': 'createOpportunityModal' }[type];
             if (modalId) document.getElementById(modalId).classList.add('active');
         }
         function closeModal(id) { 
@@ -156,6 +187,46 @@
             document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
             document.getElementById('adminBtn').addEventListener('click', function() {
                 window.location.href = '/admin';
+            });
+
+            // زر إنشاء طلب
+            document.getElementById('createOpportunityBtn').addEventListener('click', function() {
+                openModal('createOpportunity');
+            });
+
+            // نموذج إنشاء الطلب
+            document.getElementById('createOpportunityForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var user = localStorage.getItem('user');
+                if (!user) {
+                    showToast('❌ يرجى تسجيل الدخول أولاً', true);
+                    return;
+                }
+                user = JSON.parse(user);
+                var type = document.getElementById('oppType').value;
+                var specs = document.getElementById('oppSpecs').value;
+                var budget = parseFloat(document.getElementById('oppBudget').value);
+                var location = document.getElementById('oppLocation').value;
+                var city = document.getElementById('oppCity').value;
+
+                try {
+                    var res = await fetch('/api/opportunities/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ buyer_id: user.id, type, specs, budget, location, city })
+                    });
+                    var data = await res.json();
+                    if (data.status === 'success') {
+                        showToast('✅ تم نشر الطلب بنجاح!', false);
+                        closeModal('createOpportunityModal');
+                        document.getElementById('createOpportunityForm').reset();
+                        loadStats(); // تحديث العداد
+                    } else {
+                        showToast('❌ فشل النشر', true);
+                    }
+                } catch (err) {
+                    showToast('❌ خطأ في الاتصال', true);
+                }
             });
 
             // بطاقة الطلبات
@@ -215,14 +286,17 @@
                     .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
             });
 
-            // بطاقة الإعلانات
+            // بطاقة الإعلانات (تفتح الرابط عند النقر)
             document.getElementById('adsCard').addEventListener('click', function() {
                 fetch('/api/admin/ads')
                     .then(r => r.json())
                     .then(data => {
                         if (data.ads && data.ads.length > 0) {
                             let html = data.ads.map(a => 
-                                `<div class="list-item"><strong>${a.title_ar}</strong><br><small>${a.link}</small></div>`
+                                `<div class="list-item" onclick="window.open('${a.link}', '_blank')" style="cursor:pointer; border-right-color: #ec4899;">
+                                    <strong>${a.title_ar}</strong><br>
+                                    <small style="color:#ec4899;">👆 اضغط لفتح الإعلان</small>
+                                </div>`
                             ).join('');
                             showList('📢 الإعلانات', html);
                         } else {
@@ -237,7 +311,26 @@
             loadGoldPrices();
             loadStats();
             loadAdsCount();
+            
+            // التحقق من وجود مستخدم مسجل
+            var storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                try {
+                    var user = JSON.parse(storedUser);
+                    updateUI(user);
+                } catch (e) {}
+            }
         });
+
+        function updateUI(user) {
+            document.getElementById('mainTitle').innerHTML = '⛏️ مرحباً ' + user.name;
+            // إظهار زر إنشاء الطلب إذا كان المستخدم مشترياً
+            if (user.role === 'buyer') {
+                document.getElementById('createOpportunityBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('createOpportunityBtn').classList.add('hidden');
+            }
+        }
 
         // باقي الدوال
         function showToast(msg, err) {
@@ -262,7 +355,7 @@
                     showToast('✅ مرحباً ' + d.user.name, false);
                     closeModal('loginModal');
                     localStorage.setItem('user', JSON.stringify(d.user));
-                    document.querySelector('.header h1').innerHTML = '⛏️ مرحباً ' + d.user.name;
+                    updateUI(d.user);
                 } else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة السودان للتعدين</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tahoma', sans-serif; background: #0f172a; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1300px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+        .header h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gold-price { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 12px 24px; border-radius: 12px; font-size: 1.3rem; font-weight: 600; color: #fbbf24; }
+        .gold-price span { font-size: 0.8rem; color: #94a3b8; font-weight: 400; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 20px; text-align: center; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+        .card-icon { font-size: 2.5rem; margin-bottom: 8px; display: block; }
+        .card-number { font-size: 2rem; font-weight: 700; color: #fbbf24; margin: 6px 0; }
+        .card-label { color: #94a3b8; font-size: 0.9rem; }
+        .btn { padding: 10px 24px; background: #22c55e; border: none; color: white; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3); }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 0.9rem; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-content h2 { color: #fbbf24; margin-bottom: 20px; text-align: center; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; }
+        .modal-content .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; color: #0f172a; font-weight: 700; border-radius: 10px; font-size: 1rem; cursor: pointer; }
+        .modal-content .btn-close { background: #ef4444; border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; float: left; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⛏️ منصة السودان للتعدين</h1>
+            <div class="gold-price" id="goldPrice">💰 USD 0.00 <span>| PAXG</span></div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button class="btn" onclick="openModal('login')">🔑 تسجيل الدخول</button>
+            <button class="btn" onclick="openModal('register')">📝 تسجيل جديد</button>
+        </div>
+
+        <div class="grid">
+            <div class="card" onclick="openModal('opportunity')">
+                <span class="card-icon">📦</span>
+                <div class="card-number" id="orders">0</div>
+                <div class="card-label">الطلبات المفتوحة</div>
+            </div>
+            <div class="card" onclick="openModal('offers')">
+                <span class="card-icon">🤝</span>
+                <div class="card-number green" id="offers">0</div>
+                <div class="card-label">العروض المقدمة</div>
+            </div>
+            <div class="card" onclick="openModal('chats')">
+                <span class="card-icon">💬</span>
+                <div class="card-number purple" id="chats">0</div>
+                <div class="card-label">المحادثات النشطة</div>
+            </div>
+        </div>
+
+        <!-- مساحة الإعلانات -->
+        <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; text-align: center; border: 1px dashed rgba(255,255,255,0.1);">
+            <h3 style="color: #94a3b8; font-size: 0.9rem;">📢 مساحة للإعلانات</h3>
+            <p style="color: #64748b;">سيتم عرض الإعلانات هنا</p>
+        </div>
+
+        <!-- مساحة أسعار الذهب المحلية -->
+        <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px dashed rgba(255,255,255,0.1);">
+            <h3 style="color: #fbbf24; margin-bottom: 15px;">🏅 أسعار الذهب المحلية</h3>
+            <div id="goldPrices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                <p style="color: #94a3b8;">جاري التحميل...</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 منصة السودان للتعدين — نظام مباشر 🚀</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- نموذج تسجيل الدخول -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal('loginModal')">✕</button>
+            <h2>🔑 تسجيل الدخول</h2>
+            <form onsubmit="login(event)">
+                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required>
+                <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+                <button type="submit" class="btn-submit">دخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نموذج تسجيل جديد -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal('registerModal')">✕</button>
+            <h2>📝 تسجيل جديد</h2>
+            <form onsubmit="register(event)">
+                <input type="text" id="regName" placeholder="الاسم الكامل" required>
+                <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required>
+                <input type="text" id="regPhone" placeholder="رقم الهاتف" required>
+                <select id="regRole" required>
+                    <option value="buyer">مشتري</option>
+                    <option value="seller">تاجر</option>
+                </select>
+                <input type="password" id="regPassword" placeholder="كلمة المرور" required>
+                <button type="submit" class="btn-submit">تسجيل</button>
+            </form>
+            <div id="registerMessage" style="margin-top:10px;text-align:center;"></div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            toast.style.borderColor = isError ? '#ef4444' : '#22c55e';
+            setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+
+        function openModal(type) {
+            const modalMap = {
+                'login': 'loginModal',
+                'register': 'registerModal',
+                'opportunity': 'opportunityModal',
+                'offers': 'offersModal',
+                'chats': 'chatsModal'
+            };
+            const modalId = modalMap[type];
+            if (modalId) {
+                document.getElementById(modalId).classList.add('active');
+            } else {
+                showToast('🚧 هذه الميزة قيد التطوير', false);
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // تسجيل الدخول
+        async function login(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showToast('✅ تم تسجيل الدخول بنجاح! مرحباً ' + data.user.name);
+                    closeModal('loginModal');
+                    // تخزين معلومات المستخدم
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    updateUI(data.user);
+                } else {
+                    showToast('❌ ' + data.detail, true);
+                }
+            } catch (error) {
+                showToast('❌ خطأ في الاتصال', true);
+            }
+        }
+
+        // تسجيل جديد
+        async function register(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const role = document.getElementById('regRole').value;
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, role, password })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showToast('✅ تم التسجيل بنجاح! يمكنك الآن تسجيل الدخول');
+                    closeModal('registerModal');
+                    document.getElementById('registerMessage').textContent = '';
+                } else {
+                    document.getElementById('registerMessage').textContent = '❌ ' + data.detail;
+                    document.getElementById('registerMessage').style.color = '#ef4444';
+                }
+            } catch (error) {
+                showToast('❌ خطأ في الاتصال', true);
+            }
+        }
+
+        // تحديث الواجهة بعد تسجيل الدخول
+        function updateUI(user) {
+            document.querySelector('.header h1').innerHTML = '⛏️ مرحباً ' + user.name;
+            if (user.role === 'seller') {
+                document.querySelector('.grid').innerHTML += `
+                    <div class="card" onclick="openModal('subscription')">
+                        <span class="card-icon">📋</span>
+                        <div class="card-number" style="color:#22c55e;">${user.is_active ? '✅ نشط' : '❌ غير نشط'}</div>
+                        <div class="card-label">اشتراك التاجر</div>
+                    </div>
+                `;
+            }
+        }
+
+        // تحميل أسعار الذهب المحلية
+        async function loadGoldPrices() {
+            try {
+                const response = await fetch('/api/admin/gold-prices');
+                const data = await response.json();
+                const container = document.getElementById('goldPrices');
+                if (data.prices && data.prices.length > 0) {
+                    container.innerHTML = data.prices.map(p => `
+                        <div style="background:#0f172a;padding:10px;border-radius:10px;">
+                            <strong>${p.city}</strong>
+                            <div>🟡 ${p.price_gram || 0} ج.س/جم</div>
+                            <div style="font-size:0.8rem;color:#94a3b8;">${p.price_ounce || 0} ج.س/أونصة</div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار مسجلة حالياً</p>';
+                }
+            } catch (error) {
+                document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل تحميل الأسعار</p>';
+            }
+        }
+
+        // تحميل بيانات الطلبات والعروض (مثال)
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/opportunities/list');
+                const data = await response.json();
+                document.getElementById('orders').textContent = data.opportunities ? data.opportunities.length : 0;
+            } catch (error) {
+                console.error('فشل تحميل الإحصائيات');
+            }
+        }
+
+        // تحميل سعر الذهب العالمي
+        async function loadGlobalGold() {
+            try {
+                const response = await fetch('/api/gold');
+                const data = await response.json();
+                if (data.gold !== undefined) {
+                    document.getElementById('goldPrice').innerHTML = '💰 USD ' + data.gold.toFixed(2) + ' <span>| PAXG</span>';
+                }
+            } catch (error) {
+                console.error('فشل تحميل سعر الذهب');
+            }
+        }
+
+        // التشغيل عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGlobalGold();
+            loadGoldPrices();
+            loadStats();
+            
+            // التحقق من وجود مستخدم مسجل
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                try {
+                    const user = JSON.parse(storedUser);
+                    updateUI(user);
+                } catch (e) {}
+            }
+        });
+    </script>
+</body>
+</html>

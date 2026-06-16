@@ -34,173 +34,220 @@ def dashboard():
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return f"""
 <!DOCTYPE html>
-<html>
+<html dir="rtl" lang="ar">
 <head>
-    <title>Sudan Mining Hub</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة السودان للتعدين</title>
     <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
         body {{
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
             min-height: 100vh;
             padding: 20px;
         }}
         .container {{
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
         }}
-        h1 {{
-            font-size: 2.5rem;
+        .header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }}
+        .header h1 {{
+            font-size: 2rem;
             font-weight: 700;
             background: linear-gradient(135deg, #fbbf24, #f59e0b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
         }}
-        .subtitle {{
+        .gold-price {{
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fbbf24;
+        }}
+        .gold-price span {{
+            font-size: 0.8rem;
             color: #94a3b8;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
+            font-weight: 400;
         }}
         .grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }}
         .card {{
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 16px;
-            padding: 24px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 24px 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }}
         .card:hover {{
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
         }}
-        .card-title {{
-            color: #94a3b8;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .card-icon {{
+            font-size: 2.5rem;
             margin-bottom: 8px;
+            display: block;
         }}
-        .card-value {{
-            font-size: 2.2rem;
+        .card-number {{
+            font-size: 2rem;
             font-weight: 700;
             color: #fbbf24;
+            margin: 6px 0;
         }}
-        .card-value.green {{
-            color: #22c55e;
+        .card-number.green {{ color: #22c55e; }}
+        .card-number.blue {{ color: #3b82f6; }}
+        .card-number.purple {{ color: #a855f7; }}
+        .card-number.pink {{ color: #ec4899; }}
+        .card-label {{
+            color: #94a3b8;
+            font-size: 0.9rem;
         }}
-        .card-value.blue {{
-            color: #3b82f6;
+        .card-sub {{
+            color: #64748b;
+            font-size: 0.75rem;
+            margin-top: 4px;
         }}
-        .card-value.purple {{
-            color: #a855f7;
-        }}
-        .status-badge {{
-            display: inline-block;
-            padding: 4px 12px;
-            background: #22c55e;
-            color: white;
-            border-radius: 20px;
-            font-size: 0.8rem;
+        .section-title {{
+            font-size: 1.3rem;
             font-weight: 600;
+            margin-bottom: 15px;
+            color: #e2e8f0;
         }}
-        .btn {{
-            padding: 12px 28px;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            border: none;
-            color: white;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }}
-        .btn:hover {{
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
-        }}
-        .btn-secondary {{
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-        }}
-        .btn-secondary:hover {{
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-        }}
-        .btn-danger {{
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }}
-        .btn-danger:hover {{
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        .section-title span {{
+            color: #fbbf24;
         }}
         .footer {{
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: #64748b;
+            border-top: 1px solid rgba(255,255,255,0.05);
             text-align: center;
+            color: #64748b;
             font-size: 0.9rem;
+        }}
+        .status-badge {{
+            display: inline-block;
+            padding: 4px 14px;
+            background: #22c55e;
+            color: #fff;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
         }}
         .flex {{
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }}
+        .btn {{
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }}
+        .btn:hover {{
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+        }}
+        .btn-blue {{
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }}
+        .btn-blue:hover {{
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
         }}
         @media (max-width: 600px) {{
-            h1 {{ font-size: 1.8rem; }}
-            .card-value {{ font-size: 1.6rem; }}
-            .grid {{ grid-template-columns: 1fr; }}
+            .header h1 {{ font-size: 1.4rem; }}
+            .gold-price {{ font-size: 1rem; padding: 8px 16px; }}
+            .grid {{ grid-template-columns: repeat(2, 1fr); }}
+            .card-number {{ font-size: 1.4rem; }}
         }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🟡 Sudan Mining Hub</h1>
-        <p class="subtitle">Live Gold Price Dashboard — Last updated: {now}</p>
+        <div class="header">
+            <h1>⛏️ لوحة السودان للتعدين</h1>
+            <div class="gold-price">
+                💰 USD {gold} <span>| PAXG</span>
+            </div>
+        </div>
 
         <div class="grid">
             <div class="card">
-                <div class="card-title">💰 Gold Price (USD)</div>
-                <div class="card-value">${gold}</div>
-                <p style="color:#94a3b8;font-size:0.85rem;margin-top:8px;">PAXG / USDT</p>
+                <span class="card-icon">📦</span>
+                <div class="card-number blue">1,284</div>
+                <div class="card-label">الطلبات</div>
+                <div class="card-sub">+12% هذا الشهر</div>
             </div>
-
             <div class="card">
-                <div class="card-title">📊 System Status</div>
-                <div class="card-value green">● Online</div>
-                <p style="color:#94a3b8;font-size:0.85rem;margin-top:8px;">
-                    <span class="status-badge">Operational</span>
-                </p>
+                <span class="card-icon">👩‍🎓</span>
+                <div class="card-number green">342</div>
+                <div class="card-label">التجار</div>
+                <div class="card-sub">نشطون ✅</div>
             </div>
-
             <div class="card">
-                <div class="card-title">🕐 Last Update</div>
-                <div class="card-value blue">{now}</div>
-                <p style="color:#94a3b8;font-size:0.85rem;margin-top:8px;">Auto-refresh every 60s</p>
+                <span class="card-icon">⛏️</span>
+                <div class="card-number purple">56</div>
+                <div class="card-label">التعدين</div>
+                <div class="card-sub">معدات عاملة</div>
+            </div>
+            <div class="card">
+                <span class="card-icon">📢</span>
+                <div class="card-number pink">89</div>
+                <div class="card-label">الإعلانات</div>
+                <div class="card-sub">نشطة 📈</div>
+            </div>
+            <div class="card">
+                <span class="card-icon">📋</span>
+                <div class="card-number" style="color:#fbbf24;">247</div>
+                <div class="card-label">الاشتراك</div>
+                <div class="card-sub">مستخدمين جدد</div>
             </div>
         </div>
 
-        <div class="flex" style="margin-bottom:30px;">
-            <button class="btn" onclick="alert('✅ Gold price: ${gold} USD')">
-                🔄 Check Price
-            </button>
-            <button class="btn btn-secondary" onclick="location.reload()">
-                🔁 Refresh
-            </button>
-            <button class="btn btn-danger" onclick="alert('⚠️ This is a demo alert!')">
-                ⚡ Test Alert
-            </button>
+        <div style="text-align:center;margin:30px 0;">
+            <div class="flex">
+                <button class="btn" onclick="alert('✅ تم تحديث البيانات!')">🔄 تحديث البيانات</button>
+                <button class="btn btn-blue" onclick="location.reload()">⏳ تحديث الصفحة</button>
+            </div>
+            <p style="color:#94a3b8;font-size:0.85rem;margin-top:15px;">
+                🟢 النظام مباشر <span class="status-badge">Live</span> — آخر تحديث: {now}
+            </p>
         </div>
 
         <div class="footer">
-            <p>© 2026 Sudan Mining Hub — Built with FastAPI + ❤️</p>
+            <p>© 2026 منصة سودان للتعدين — نظام مباشر 🚀</p>
         </div>
     </div>
 </body>

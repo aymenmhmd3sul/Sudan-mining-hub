@@ -37,11 +37,13 @@
         .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; }
         .modal-content .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; color: #0f172a; font-weight: 700; border-radius: 10px; font-size: 1rem; cursor: pointer; }
         .modal-content .btn-close { background: #ef4444; border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; float: left; }
-        .list-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid #fbbf24; }
+        .list-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid #fbbf24; cursor: pointer; transition: 0.2s; }
+        .list-item:hover { background: #1e293b; }
         .list-item strong { color: #fbbf24; }
         .list-item small { color: #94a3b8; }
-        .list-item a { color: #fbbf24; text-decoration: none; }
+        .list-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
         .flex-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .ad-item { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .hidden { display: none; }
     </style>
 </head>
@@ -56,7 +58,6 @@
             <button class="btn" id="loginBtn">🔑 تسجيل الدخول</button>
             <button class="btn btn-blue" id="registerBtn">📝 تسجيل جديد</button>
             <button class="btn btn-admin" id="adminBtn">🛠️ لوحة المشرف</button>
-            <!-- زر إنشاء طلب (يظهر فقط للمشتري بعد تسجيل الدخول) -->
             <button class="btn btn-yellow hidden" id="createOpportunityBtn">➕ إنشاء طلب</button>
         </div>
 
@@ -83,7 +84,6 @@
             </div>
         </div>
 
-        <!-- مساحة أسعار الذهب المحلية -->
         <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px dashed rgba(255,255,255,0.1);">
             <h3 style="color: #fbbf24; margin-bottom: 15px;">🏅 أسعار الذهب المحلية</h3>
             <div id="goldPrices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
@@ -131,7 +131,7 @@
         </div>
     </div>
 
-    <!-- نافذة إنشاء طلب (للمشتري) -->
+    <!-- نافذة إنشاء طلب -->
     <div class="modal" id="createOpportunityModal">
         <div class="modal-content">
             <button class="btn-close" onclick="closeModal('createOpportunityModal')">✕</button>
@@ -166,7 +166,6 @@
     </div>
 
     <script>
-        // دوال النوافذ
         function openModal(type) {
             var modalId = { 'login': 'loginModal', 'register': 'registerModal', 'createOpportunity': 'createOpportunityModal' }[type];
             if (modalId) document.getElementById(modalId).classList.add('active');
@@ -181,7 +180,6 @@
             document.getElementById('listModal').classList.add('active');
         }
 
-        // ربط الأزرار والبطاقات
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('loginBtn').addEventListener('click', function() { openModal('login'); });
             document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
@@ -189,12 +187,10 @@
                 window.location.href = '/admin';
             });
 
-            // زر إنشاء طلب
             document.getElementById('createOpportunityBtn').addEventListener('click', function() {
                 openModal('createOpportunity');
             });
 
-            // نموذج إنشاء الطلب
             document.getElementById('createOpportunityForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 var user = localStorage.getItem('user');
@@ -220,7 +216,7 @@
                         showToast('✅ تم نشر الطلب بنجاح!', false);
                         closeModal('createOpportunityModal');
                         document.getElementById('createOpportunityForm').reset();
-                        loadStats(); // تحديث العداد
+                        loadStats();
                     } else {
                         showToast('❌ فشل النشر', true);
                     }
@@ -229,7 +225,6 @@
                 }
             });
 
-            // بطاقة الطلبات
             document.getElementById('ordersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/list')
                     .then(r => r.json())
@@ -246,7 +241,6 @@
                     .catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
             });
 
-            // بطاقة العروض
             document.getElementById('offersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/all-offers')
                     .then(r => r.json())
@@ -263,7 +257,6 @@
                     .catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
             });
 
-            // بطاقة المحادثات
             document.getElementById('chatsCard').addEventListener('click', function() {
                 var user = localStorage.getItem('user');
                 if (!user) {
@@ -286,53 +279,47 @@
                     .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
             });
 
-            // بطاقة الإعلانات (تفتح الرابط عند النقر)
             document.getElementById('adsCard').addEventListener('click', function() {
                 fetch('/api/admin/ads')
                     .then(r => r.json())
                     .then(data => {
-                        if (data.ads && data.ads.length > 0) {
-                            let html = data.ads.map(a => 
-                                `<div class="list-item" onclick="window.open('${a.link}', '_blank')" style="cursor:pointer; border-right-color: #ec4899;">
-                                    <strong>${a.title_ar}</strong><br>
-                                    <small style="color:#ec4899;">👆 اضغط لفتح الإعلان</small>
-                                </div>`
-                            ).join('');
-                            showList('📢 الإعلانات', html);
+                        var publishedAds = data.ads ? data.ads.filter(a => a.status === 'published') : [];
+                        if (publishedAds.length > 0) {
+                            let html = publishedAds.map(a => `
+                                <div class="list-item" onclick="window.open('${a.link}', '_blank')" style="border-right-color: #ec4899;">
+                                    <div class="ad-item">
+                                        ${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}
+                                        <div style="flex:1;">
+                                            <strong>${a.title_ar}</strong>
+                                            <p style="color:#94a3b8; font-size:0.9rem; margin-top:4px;">${a.description || ''}</p>
+                                            <small style="color:#ec4899;">👆 اضغط لفتح الإعلان</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('');
+                            showList('📢 الإعلانات المنشورة', html);
                         } else {
-                            showList('📢 الإعلانات', '<p style="color:#94a3b8;">لا توجد إعلانات حالياً</p>');
+                            showList('📢 الإعلانات', '<p style="color:#94a3b8;">لا توجد إعلانات منشورة حالياً</p>');
                         }
                     })
                     .catch(() => showList('📢 الإعلانات', '<p style="color:#ef4444;">فشل تحميل الإعلانات</p>'));
             });
 
-            // تحميل البيانات الأولية
             loadGlobalGold();
             loadGoldPrices();
             loadStats();
             loadAdsCount();
             
-            // التحقق من وجود مستخدم مسجل
             var storedUser = localStorage.getItem('user');
             if (storedUser) {
                 try {
                     var user = JSON.parse(storedUser);
-                    updateUI(user);
+                    // لا نغير العنوان الرئيسي، نضيف ترحيباً في مكان آخر
+                    document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
                 } catch (e) {}
             }
         });
 
-        function updateUI(user) {
-            document.getElementById('mainTitle').innerHTML = '⛏️ مرحباً ' + user.name;
-            // إظهار زر إنشاء الطلب إذا كان المستخدم مشترياً
-            if (user.role === 'buyer') {
-                document.getElementById('createOpportunityBtn').classList.remove('hidden');
-            } else {
-                document.getElementById('createOpportunityBtn').classList.add('hidden');
-            }
-        }
-
-        // باقي الدوال
         function showToast(msg, err) {
             var t = document.getElementById('toast');
             t.textContent = msg; t.style.display = 'block';
@@ -355,7 +342,7 @@
                     showToast('✅ مرحباً ' + d.user.name, false);
                     closeModal('loginModal');
                     localStorage.setItem('user', JSON.stringify(d.user));
-                    updateUI(d.user);
+                    document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
                 } else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
@@ -420,7 +407,8 @@
             try {
                 var r = await fetch('/api/admin/ads');
                 var d = await r.json();
-                document.getElementById('adsCount').textContent = d.ads ? d.ads.length : 0;
+                var published = d.ads ? d.ads.filter(a => a.status === 'published') : [];
+                document.getElementById('adsCount').textContent = published.length;
             } catch (err) { console.error(err); }
         }
 

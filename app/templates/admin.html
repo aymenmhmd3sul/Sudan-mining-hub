@@ -24,7 +24,7 @@
         .form-group label { display: block; color: #94a3b8; margin-bottom: 5px; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
         .flex { display: flex; gap: 10px; flex-wrap: wrap; }
-        .ad-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .ad-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; border-right: 3px solid #ec4899; }
         .ad-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
         .ad-item .info { flex: 1; }
         .ad-item .info strong { color: #fbbf24; }
@@ -56,7 +56,7 @@
             </table>
         </div>
 
-        <!-- إضافة إعلان جديد (مطور) -->
+        <!-- إضافة إعلان جديد -->
         <div class="card">
             <h2>📢 إضافة إعلان جديد</h2>
             <form id="adForm" enctype="multipart/form-data">
@@ -108,7 +108,7 @@
         <!-- عرض الإعلانات الحالية -->
         <div class="card">
             <h2>📢 الإعلانات الحالية</h2>
-            <div id="adsList" style="color:#94a3b8;">جاري التحميل...</div>
+            <div id="adsList"></div>
         </div>
 
         <!-- إضافة سعر ذهب محلي -->
@@ -146,7 +146,6 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // دوال مساعدة
         function showToast(msg, err) {
             var t = document.getElementById('toast');
             t.textContent = msg;
@@ -155,7 +154,6 @@
             setTimeout(function() { t.style.display = 'none'; }, 4000);
         }
 
-        // تحميل المستخدمين
         async function loadUsers() {
             try {
                 var res = await fetch('/api/admin/users');
@@ -185,12 +183,9 @@
             }
         }
 
-        // تفعيل/إلغاء تاجر
         async function toggleSeller(id, activate) {
             try {
-                var res = await fetch(`/api/admin/${activate ? 'activate' : 'deactivate'}-seller/${id}`, {
-                    method: 'POST'
-                });
+                var res = await fetch(`/api/admin/${activate ? 'activate' : 'deactivate'}-seller/${id}`, { method: 'POST' });
                 var data = await res.json();
                 if (data.status === 'success') {
                     showToast(data.message, false);
@@ -203,10 +198,9 @@
             }
         }
 
-        // إضافة إعلان (مع رفع الصور)
+        // نموذج الإعلان
         document.getElementById('adForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             var formData = new FormData();
             formData.append('title_ar', document.getElementById('adTitleAr').value);
             formData.append('title_en', document.getElementById('adTitleEn').value);
@@ -240,7 +234,7 @@
             }
         });
 
-        // تحميل الإعلانات
+        // تحميل الإعلانات (مرة واحدة فقط)
         async function loadAds() {
             try {
                 var res = await fetch('/api/admin/ads');
@@ -265,7 +259,7 @@
             }
         }
 
-        // إضافة سعر ذهب محلي
+        // نموذج سعر الذهب
         document.getElementById('goldPriceForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             var city = document.getElementById('gpCity').value;
@@ -291,7 +285,6 @@
             }
         });
 
-        // تحميل أسعار الذهب المحلية
         async function loadGoldPrices() {
             try {
                 var res = await fetch('/api/admin/gold-prices');
@@ -312,7 +305,6 @@
             }
         }
 
-        // تحميل كل شيء عند تشغيل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
             loadUsers();
             loadAds();

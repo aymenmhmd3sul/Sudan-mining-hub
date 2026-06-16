@@ -72,7 +72,7 @@ def dashboard():
     <div class="container">
         <div class="header">
             <h1>⛏️ لوحة السودان للتعدين</h1>
-            <div class="gold-price">💰 USD {gold} <span>| PAXG</span></div>
+f            <div class="gold-price">💰 USD {gold} <span>| PAXG</span></div>
         </div>
 
         <div class="grid">
@@ -114,7 +114,7 @@ def dashboard():
                 <button class="btn btn-blue" onclick="location.reload()">⏳ تحديث الصفحة</button>
             </div>
             <p style="color:#94a3b8;font-size:0.85rem;margin-top:15px;">
-                🟢 النظام مباشر <span class="status-badge">Live</span> — آخر تحديث: {now}
+f                🟢 النظام مباشر <span class="status-badge">Live</span> — آخر تحديث: {now}
             </p>
         </div>
 

@@ -40,23 +40,23 @@
             <div class="gold-price" id="goldPrice">💰 USD 0.00 <span>| PAXG</span></div>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button class="btn" onclick="openModal('login')">🔑 تسجيل الدخول</button>
-            <button class="btn" onclick="openModal('register')">📝 تسجيل جديد</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="btn" id="loginBtn">🔑 تسجيل الدخول</button>
+            <button class="btn btn-blue" id="registerBtn">📝 تسجيل جديد</button>
         </div>
 
         <div class="grid">
-            <div class="card" onclick="openModal('opportunity')">
+            <div class="card" id="ordersCard">
                 <span class="card-icon">📦</span>
                 <div class="card-number" id="orders">0</div>
                 <div class="card-label">الطلبات المفتوحة</div>
             </div>
-            <div class="card" onclick="openModal('offers')">
+            <div class="card" id="offersCard">
                 <span class="card-icon">🤝</span>
                 <div class="card-number green" id="offers">0</div>
                 <div class="card-label">العروض المقدمة</div>
             </div>
-            <div class="card" onclick="openModal('chats')">
+            <div class="card" id="chatsCard">
                 <span class="card-icon">💬</span>
                 <div class="card-number purple" id="chats">0</div>
                 <div class="card-label">المحادثات النشطة</div>
@@ -122,25 +122,41 @@
         function openModal(type) {
             var modalId = {
                 'login': 'loginModal',
-                'register': 'registerModal',
-                'opportunity': 'opportunityModal',
-                'offers': 'offersModal',
-                'chats': 'chatsModal'
+                'register': 'registerModal'
             }[type];
             if (modalId) {
-                document.getElementById(modalId).classList.add('active');
-            } else {
-                showToast('🚧 هذه الميزة قيد التطوير', false);
+                var modal = document.getElementById(modalId);
+                if (modal) modal.classList.add('active');
             }
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            var modal = document.getElementById(id);
+            if (modal) modal.classList.remove('active');
         }
+
+        // ربط الأزرار
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginBtn = document.getElementById('loginBtn');
+            var registerBtn = document.getElementById('registerBtn');
+            
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() { openModal('login'); });
+            }
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function() { openModal('register'); });
+            }
+
+            // تحميل البيانات
+            loadGlobalGold();
+            loadGoldPrices();
+            loadStats();
+        });
 
         // عرض الإشعارات
         function showToast(message, isError) {
             var toast = document.getElementById('toast');
+            if (!toast) return;
             toast.textContent = message;
             toast.style.display = 'block';
             toast.style.borderColor = isError ? '#ef4444' : '#22c55e';
@@ -206,14 +222,9 @@
 
         // تحديث الواجهة بعد تسجيل الدخول
         function updateUI(user) {
-            document.querySelector('.header h1').innerHTML = '⛏️ مرحباً ' + user.name;
-            if (user.role === 'seller') {
-                var grid = document.querySelector('.grid');
-                var card = document.createElement('div');
-                card.className = 'card';
-                card.setAttribute('onclick', "openModal('subscription')");
-                card.innerHTML = '<span class="card-icon">📋</span><div class="card-number" style="color:#22c55e;">' + (user.is_active ? '✅ نشط' : '❌ غير نشط') + '</div><div class="card-label">اشتراك التاجر</div>';
-                grid.appendChild(card);
+            var header = document.querySelector('.header h1');
+            if (header) {
+                header.innerHTML = '⛏️ مرحباً ' + user.name;
             }
         }
 
@@ -223,15 +234,18 @@
                 var response = await fetch('/api/admin/gold-prices');
                 var data = await response.json();
                 var container = document.getElementById('goldPrices');
-                if (data.prices && data.prices.length > 0) {
+                if (container && data.prices && data.prices.length > 0) {
                     container.innerHTML = data.prices.map(function(p) {
                         return '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram || 0) + ' ج.س/جم</div><div style="font-size:0.8rem;color:#94a3b8;">' + (p.price_ounce || 0) + ' ج.س/أونصة</div></div>';
                     }).join('');
-                } else {
+                } else if (container) {
                     container.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار مسجلة حالياً</p>';
                 }
             } catch (error) {
-                document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل تحميل الأسعار</p>';
+                var container = document.getElementById('goldPrices');
+                if (container) {
+                    container.innerHTML = '<p style="color:#ef4444;">فشل تحميل الأسعار</p>';
+                }
             }
         }
 
@@ -240,7 +254,10 @@
             try {
                 var response = await fetch('/api/opportunities/list');
                 var data = await response.json();
-                document.getElementById('orders').textContent = data.opportunities ? data.opportunities.length : 0;
+                var ordersEl = document.getElementById('orders');
+                if (ordersEl) {
+                    ordersEl.textContent = data.opportunities ? data.opportunities.length : 0;
+                }
             } catch (error) {
                 console.error('فشل تحميل الإحصائيات');
             }
@@ -251,28 +268,14 @@
             try {
                 var response = await fetch('/api/gold');
                 var data = await response.json();
-                if (data.gold !== undefined) {
-                    document.getElementById('goldPrice').innerHTML = '💰 USD ' + data.gold.toFixed(2) + ' <span>| PAXG</span>';
+                var priceEl = document.getElementById('goldPrice');
+                if (priceEl && data.gold !== undefined) {
+                    priceEl.innerHTML = '💰 USD ' + data.gold.toFixed(2) + ' <span>| PAXG</span>';
                 }
             } catch (error) {
                 console.error('فشل تحميل سعر الذهب');
             }
         }
-
-        // عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            loadGlobalGold();
-            loadGoldPrices();
-            loadStats();
-
-            var storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                try {
-                    var user = JSON.parse(storedUser);
-                    updateUI(user);
-                } catch (e) {}
-            }
-        });
     </script>
 </body>
 </html>

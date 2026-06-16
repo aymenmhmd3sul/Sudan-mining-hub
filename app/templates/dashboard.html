@@ -45,6 +45,9 @@
         .flex-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
         .ad-item { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .hidden { display: none; }
+        .welcome-box { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .welcome-box h3 { color: #fbbf24; }
+        .welcome-box p { color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -59,6 +62,12 @@
             <button class="btn btn-blue" id="registerBtn">📝 تسجيل جديد</button>
             <button class="btn btn-admin" id="adminBtn">🛠️ لوحة المشرف</button>
             <button class="btn btn-yellow hidden" id="createOpportunityBtn">➕ إنشاء طلب</button>
+        </div>
+
+        <!-- رسالة ترحيب للمشتري -->
+        <div id="welcomeBox" class="welcome-box hidden">
+            <h3>👋 مرحباً بك!</h3>
+            <p>يمكنك الآن <strong>إنشاء طلب جديد</strong> بالضغط على الزر الأصفر أعلاه، أو تصفح الطلبات والعروض من البطاقات أدناه.</p>
         </div>
 
         <div class="grid">
@@ -217,6 +226,10 @@
                         closeModal('createOpportunityModal');
                         document.getElementById('createOpportunityForm').reset();
                         loadStats();
+                        // تحديث عداد الطلبات
+                        var ordersEl = document.getElementById('orders');
+                        var current = parseInt(ordersEl.textContent);
+                        ordersEl.textContent = current + 1;
                     } else {
                         showToast('❌ فشل النشر', true);
                     }
@@ -225,6 +238,7 @@
                 }
             });
 
+            // بطاقة الطلبات
             document.getElementById('ordersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/list')
                     .then(r => r.json())
@@ -241,6 +255,7 @@
                     .catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
             });
 
+            // بطاقة العروض
             document.getElementById('offersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/all-offers')
                     .then(r => r.json())
@@ -257,6 +272,7 @@
                     .catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
             });
 
+            // بطاقة المحادثات
             document.getElementById('chatsCard').addEventListener('click', function() {
                 var user = localStorage.getItem('user');
                 if (!user) {
@@ -279,6 +295,7 @@
                     .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
             });
 
+            // بطاقة الإعلانات
             document.getElementById('adsCard').addEventListener('click', function() {
                 fetch('/api/admin/ads')
                     .then(r => r.json())
@@ -305,20 +322,40 @@
                     .catch(() => showList('📢 الإعلانات', '<p style="color:#ef4444;">فشل تحميل الإعلانات</p>'));
             });
 
+            // تحميل البيانات
             loadGlobalGold();
             loadGoldPrices();
             loadStats();
             loadAdsCount();
-            
+
+            // التحقق من تسجيل الدخول
             var storedUser = localStorage.getItem('user');
             if (storedUser) {
                 try {
                     var user = JSON.parse(storedUser);
-                    // لا نغير العنوان الرئيسي، نضيف ترحيباً في مكان آخر
-                    document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
+                    updateUI(user);
                 } catch (e) {}
             }
         });
+
+        function updateUI(user) {
+            // إظهار رسالة ترحيب للمشتري
+            var welcomeBox = document.getElementById('welcomeBox');
+            var createBtn = document.getElementById('createOpportunityBtn');
+            if (user.role === 'buyer') {
+                welcomeBox.classList.remove('hidden');
+                createBtn.classList.remove('hidden');
+                document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (مشتري)';
+            } else if (user.role === 'seller') {
+                welcomeBox.classList.add('hidden');
+                createBtn.classList.add('hidden');
+                document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (تاجر)';
+            } else {
+                welcomeBox.classList.add('hidden');
+                createBtn.classList.add('hidden');
+                document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
+            }
+        }
 
         function showToast(msg, err) {
             var t = document.getElementById('toast');
@@ -342,7 +379,7 @@
                     showToast('✅ مرحباً ' + d.user.name, false);
                     closeModal('loginModal');
                     localStorage.setItem('user', JSON.stringify(d.user));
-                    document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
+                    updateUI(d.user);
                 } else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }

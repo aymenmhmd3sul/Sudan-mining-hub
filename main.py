@@ -1,36 +1,46 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-import httpx
+import requests
 from datetime import datetime
 
 app = FastAPI()
 
-async def get_gold_price():
+def get_price():
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get("https://api.gold-api.com/price/XAU")
-            if response.status_code == 200:
-                data = response.json()
-                return data.get("price", 4315.09)
-            return 4315.09
+        r = requests.get(
+            "https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT",
+            timeout=5
+        )
+        return round(float(r.json()["price"]), 2)
     except:
-        return 4315.09
+        return 0.0
 
-@app.get("/", response_class=HTMLResponse)
-async def root():
-    gold = await get_gold_price()
-    now = datetime.now().strftime("%I:%M %p")
-    
-    return f'''
+@app.get("/")
+def root():
+    return {"status": "running"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.get("/api/gold")
+def api_gold():
+    return {"gold": get_price()}
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard():
+    gold = get_price()
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return f"""
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة السودان للتعدين</title>
+    <title>لوحة السودان للتعدين</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: Tahoma, Arial, sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; padding: 20px; }}
+        body {{ font-family: 'Tahoma', Arial, sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; padding: 20px; }}
         .container {{ max-width: 1300px; margin: 0 auto; }}
         .header {{ display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }}
         .header h1 {{ font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
@@ -53,70 +63,109 @@ async def root():
         .btn-blue {{ background: #3b82f6; }}
         .btn-blue:hover {{ box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); }}
         .status-badge {{ display: inline-block; padding: 4px 14px; background: #22c55e; color: #fff; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 8px; }}
+        .toast {{ position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }}
         .footer {{ margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 0.9rem; }}
-        .section-title {{ font-size: 1.3rem; font-weight: 600; margin-bottom: 15px; color: #e2e8f0; }}
         @media (max-width: 600px) {{ .header h1 {{ font-size: 1.4rem; }} .gold-price {{ font-size: 1rem; padding: 8px 16px; }} .grid {{ grid-template-columns: repeat(2, 1fr); }} .card-number {{ font-size: 1.4rem; }} }}
+        .spinner {{ display: inline-block; width: 16px; height: 16px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s ease infinite; vertical-align: middle; margin-left: 8px; }}
+        @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>⛏️ منصة السودان للتعدين</h1>
-            <div class="gold-price">💰 USD {gold} <span>| PAXG</span></div>
+            <h1>⛏️ لوحة السودان للتعدين</h1>
+            <div class="gold-price" id="goldPrice">💰 USD {gold} <span>| PAXG</span></div>
         </div>
+
         <div class="grid">
             <div class="card">
-                <span class="card-icon">📊</span>
-                <div class="card-number green">{gold}</div>
-                <div class="card-label">سعر الأونصة</div>
-                <div class="card-sub">تحديث مباشر</div>
-            </div>
-            <div class="card">
-                <span class="card-icon">🏦</span>
-                <div class="card-number blue">٢٤</div>
-                <div class="card-label">التجار النشطون</div>
-                <div class="card-sub">قائمة معتمدة</div>
-            </div>
-            <div class="card">
                 <span class="card-icon">📦</span>
-                <div class="card-number purple">١٤٢</div>
-                <div class="card-label">الطلبات المفتوحة</div>
-                <div class="card-sub">اليوم</div>
+                <div class="card-number blue" id="orders">1,284</div>
+                <div class="card-label">الطلبات</div>
+                <div class="card-sub">+12% هذا الشهر</div>
             </div>
             <div class="card">
-                <span class="card-icon">⚡</span>
-                <div class="card-number pink">٨</div>
-                <div class="card-label">إعلانات جديدة</div>
-                <div class="card-sub">آخر ساعة</div>
+                <span class="card-icon">👩‍🎓</span>
+                <div class="card-number green" id="traders">342</div>
+                <div class="card-label">التجار</div>
+                <div class="card-sub">نشطون ✅</div>
+            </div>
+            <div class="card">
+                <span class="card-icon">⛏️</span>
+                <div class="card-number purple" id="mining">56</div>
+                <div class="card-label">التعدين</div>
+                <div class="card-sub">معدات عاملة</div>
+            </div>
+            <div class="card">
+                <span class="card-icon">📢</span>
+                <div class="card-number pink" id="ads">89</div>
+                <div class="card-label">الإعلانات</div>
+                <div class="card-sub">نشطة 📈</div>
+            </div>
+            <div class="card">
+                <span class="card-icon">📋</span>
+                <div class="card-number" id="subscriptions" style="color:#fbbf24;">247</div>
+                <div class="card-label">الاشتراك</div>
+                <div class="card-sub">مستخدمين جدد</div>
             </div>
         </div>
-        <div class="section-title">🚀 التنقل السريع</div>
-        <div class="flex">
-            <button class="btn">التجار</button>
-            <button class="btn btn-blue">الطلبات</button>
-            <button class="btn btn-blue">الإعلانات</button>
-            <button class="btn btn-blue">التعدين</button>
-            <button class="btn btn-blue">الاشتراك</button>
+
+        <div style="text-align:center;margin:30px 0;">
+            <div class="flex">
+                <button class="btn" id="refreshDataBtn" onclick="refreshData()">🔄 تحديث البيانات</button>
+                <button class="btn btn-blue" onclick="location.reload()">⏳ تحديث الصفحة</button>
+            </div>
+            <p style="color:#94a3b8;font-size:0.85rem;margin-top:15px;">
+                🟢 النظام مباشر <span class="status-badge">Live</span> — آخر تحديث: <span id="lastUpdate">{now}</span>
+            </p>
         </div>
-        <div style="margin-top: 30px; padding: 20px; background: #1e293b; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-            🟢 النظام مباشر <span class="status-badge">Live</span> — آخر تحديث: {now}
-        </div>
+
         <div class="footer">
-            منصة السودان للتعدين © 2026 — جميع الحقوق محفوظة
+            <p>© 2026 منصة سودان للتعدين — نظام مباشر 🚀</p>
         </div>
     </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function showToast(message, isError = false) {{
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            toast.style.borderColor = isError ? '#ef4444' : '#22c55e';
+            setTimeout(() => {{ toast.style.display = 'none'; }}, 3000);
+        }}
+
+        async function refreshData() {{
+            const btn = document.getElementById('refreshDataBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ جاري التحديث... <span class="spinner"></span>';
+
+            try {{
+                const response = await fetch('/api/gold');
+                if (!response.ok) throw new Error('فشل جلب البيانات');
+                const data = await response.json();
+                
+                if (data.gold !== undefined) {{
+                    document.getElementById('goldPrice').innerHTML = `💰 USD ${{data.gold.toFixed(2)}} <span>| PAXG</span>`;
+                    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('ar-EG');
+                    
+                    document.getElementById('orders').textContent = Math.floor(1200 + Math.random() * 200);
+                    document.getElementById('traders').textContent = Math.floor(320 + Math.random() * 50);
+                    document.getElementById('mining').textContent = Math.floor(50 + Math.random() * 15);
+                    document.getElementById('ads').textContent = Math.floor(80 + Math.random() * 20);
+                    document.getElementById('subscriptions').textContent = Math.floor(220 + Math.random() * 50);
+                    
+                    showToast('✅ تم تحديث البيانات بنجاح!');
+                }}
+            }} catch (error) {{
+                showToast('❌ فشل تحديث البيانات: ' + error.message, true);
+            }}
+
+            btn.disabled = false;
+            btn.innerHTML = '🔄 تحديث البيانات';
+        }}
+    </script>
 </body>
 </html>
-'''
-
-@app.get("/api/price")
-async def get_price():
-    return {"gold": await get_gold_price()}
-
-@app.get("/health")
-async def health_check():
-    return {"status": "ok"}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+"""

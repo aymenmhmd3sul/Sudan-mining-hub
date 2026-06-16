@@ -58,3 +58,4 @@ def dashboard():
 </body>
 </html>
 """
+# force rebuild

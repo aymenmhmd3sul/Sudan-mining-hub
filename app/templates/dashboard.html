@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة السودان للتعدين</title>
     <style>
-        /* ========== الأساسيات ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', 'Tahoma', Arial, sans-serif;
@@ -18,7 +17,6 @@
             padding: 20px;
             background-image: radial-gradient(circle at 10% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
         }
-        /* ========== الحاوية الرئيسية ========== */
         .main-container {
             max-width: 1100px;
             width: 100%;
@@ -29,19 +27,14 @@
             padding: 35px 30px;
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.03);
         }
-        /* ========== الطبقة الأولى (صفحة الدخول) ========== */
+        /* ===== صفحة الدخول (تظهر دائماً أولاً) ===== */
         .login-page { display: block; }
         .login-page.hidden { display: none; }
         .brand-large {
             text-align: center;
             margin-bottom: 35px;
         }
-        .brand-large .icon {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.15));
-        }
+        .brand-large .icon { font-size: 4rem; display: block; margin-bottom: 8px; filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.15)); }
         .brand-large h1 {
             font-size: 2.2rem;
             font-weight: 700;
@@ -57,20 +50,9 @@
             margin-top: 4px;
             letter-spacing: 0.5px;
         }
-        .login-form {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .login-form .input-group {
-            margin-bottom: 18px;
-        }
-        .login-form .input-group label {
-            display: block;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
+        .login-form { max-width: 400px; margin: 0 auto; }
+        .login-form .input-group { margin-bottom: 18px; }
+        .login-form .input-group label { display: block; color: #94a3b8; font-size: 0.85rem; margin-bottom: 6px; font-weight: 500; }
         .login-form .input-group input {
             width: 100%;
             padding: 16px 18px;
@@ -81,23 +63,10 @@
             font-size: 1rem;
             transition: 0.3s;
         }
-        .login-form .input-group input:focus {
-            outline: none;
-            border-color: #fbbf24;
-            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
-        }
-        .login-form .input-group input::placeholder {
-            color: #64748b;
-        }
-        .login-form .forgot-link {
-            text-align: left;
-            margin: -10px 0 20px;
-        }
-        .login-form .forgot-link a {
-            color: #94a3b8;
-            font-size: 0.8rem;
-            text-decoration: none;
-        }
+        .login-form .input-group input:focus { outline: none; border-color: #fbbf24; box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1); }
+        .login-form .input-group input::placeholder { color: #64748b; }
+        .login-form .forgot-link { text-align: left; margin: -10px 0 20px; }
+        .login-form .forgot-link a { color: #94a3b8; font-size: 0.8rem; text-decoration: none; }
         .login-form .forgot-link a:hover { color: #fbbf24; }
         .btn-gold {
             width: 100%;
@@ -132,16 +101,22 @@
             color: #64748b;
             font-size: 0.8rem;
         }
-        .login-footer a {
-            color: #94a3b8;
-            text-decoration: none;
-            margin: 0 10px;
-        }
+        .login-footer a { color: #94a3b8; text-decoration: none; margin: 0 10px; }
         .login-footer a:hover { color: #fbbf24; }
-        /* ========== الطبقة الثانية (لوحة التحكم) ========== */
+        .session-info {
+            text-align: center;
+            margin: 10px 0;
+            color: #94a3b8;
+        }
+        .session-info .logout-link {
+            color: #ef4444;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .session-info .logout-link:hover { color: #fbbf24; }
+        /* ===== الواجهة الثانية (لوحة المستخدم) ===== */
         .dashboard-page { display: none; }
         .dashboard-page.active { display: block; }
-        /* الهيدر */
         .dash-header {
             display: flex;
             justify-content: space-between;
@@ -176,7 +151,74 @@
             font-weight: 600;
         }
         .dash-gold span { color: #f8fafc; font-weight: 400; }
-        /* بطاقات الخدمات (4) */
+        .policy {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border-right: 4px solid #fbbf24;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+        .policy strong { color: #fbbf24; }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+        .card-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+        .card-box:hover { border-color: rgba(251, 191, 36, 0.2); }
+        .card-box h3 {
+            color: #fbbf24;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-box p, .card-box li {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            list-style: none;
+            line-height: 1.6;
+        }
+        .ads-uni {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .ads-uni h3 { color: #fbbf24; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .ad-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .ad-item:hover { border-color: rgba(251, 191, 36, 0.3); transform: translateY(-2px); }
+        .ad-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; }
+        .ad-item .info strong { color: #fbbf24; display: block; }
+        .ad-item .info p { font-size: 0.8rem; color: #94a3b8; margin: 4px 0 0; }
         .dash-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -201,32 +243,6 @@
         .service-card .icon { font-size: 2.8rem; display: block; margin-bottom: 8px; }
         .service-card .title { font-weight: 600; font-size: 1rem; color: #f8fafc; }
         .service-card .desc { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
-        /* زر المشرف */
-        .admin-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin: 20px 0 25px;
-            padding: 14px;
-            background: rgba(30, 41, 59, 0.3);
-            border-radius: 60px;
-            border: 1px dashed rgba(239, 68, 68, 0.15);
-        }
-        .admin-row button {
-            background: transparent;
-            border: 1px solid #ef4444;
-            color: #ef4444;
-            padding: 8px 30px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .admin-row button:hover { background: #ef4444; color: white; }
-        .admin-row .hint { color: #64748b; font-size: 0.7rem; }
-        /* الفوتر */
         .dash-footer {
             border-top: 1px solid rgba(255,255,255,0.04);
             padding-top: 18px;
@@ -251,7 +267,6 @@
         }
         .dash-footer .social a:hover { color: #fbbf24; }
         .dash-footer .copy { color: #64748b; font-size: 0.75rem; }
-        /* ========== النوافذ المنبثقة ========== */
         .overlay {
             display: none;
             position: fixed;
@@ -311,6 +326,14 @@
         .list-item:hover { background: #1e293b; }
         .list-item strong { color: #fbbf24; }
         .list-item small { color: #94a3b8; }
+        .offer-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .offer-detail-grid .label { color: #94a3b8; font-size: 0.8rem; }
+        .offer-detail-grid .value { color: #f8fafc; font-size: 1.1rem; font-weight: 500; }
         .input-group { margin-bottom: 18px; }
         .input-group label { display: block; color: #94a3b8; margin-bottom: 5px; font-weight: 500; }
         .input-group input, .input-group select, .input-group textarea {
@@ -334,6 +357,18 @@
             font-size: 1rem;
         }
         .btn-gold-full:hover { transform: scale(1.02); box-shadow: 0 8px 30px rgba(251, 191, 36, 0.25); }
+        .btn-chat-action {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-chat-action:hover { transform: scale(1.02); box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3); }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -365,7 +400,6 @@
             color: #f8fafc;
         }
         .toast.error { border-color: #ef4444; }
-        /* ========== التوافق مع الشاشات الصغيرة ========== */
         @media (max-width: 480px) {
             .main-container { padding: 20px 15px; border-radius: 24px; }
             .brand-large h1 { font-size: 1.6rem; }
@@ -376,6 +410,7 @@
             .service-card .icon { font-size: 2rem; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
             .overlay-content { padding: 20px; }
+            .offer-detail-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -383,16 +418,15 @@
 
 <div class="main-container">
 
-    <!-- ========================================================== -->
-    <!-- الطبقة الأولى: صفحة الدخول -->
-    <!-- ========================================================== -->
+    <!-- ====== صفحة الدخول (الواجهة الأولى) ====== -->
     <div class="login-page" id="loginPage">
         <div class="brand-large">
             <span class="icon">⛏️</span>
             <h1>منصة السودان للتعدين</h1>
             <div class="sub">Sudan Mining Hub — السوق المباشر للمعدات والخدمات</div>
         </div>
-
+        <!-- رسالة الجلسة الحالية (إن وجدت) -->
+        <div id="sessionInfo" class="session-info"></div>
         <div class="login-form">
             <div class="input-group">
                 <label>📱 رقم الهاتف أو البريد الإلكتروني</label>
@@ -408,9 +442,8 @@
             <button class="btn-gold" onclick="loginUser()">🚀 تسجيل الدخول</button>
             <button class="btn-outline-gold" onclick="openOverlay('register')">📝 إنشاء حساب جديد</button>
         </div>
-
         <div class="login-footer">
-            <a href="#" onclick="showToast('📞 واتساب: +249 123 456 789', false)">📱 واتساب</a>
+            <a href="#" onclick="showToast('📱 واتساب: +249 123 456 789', false)">📱 واتساب</a>
             <a href="#" onclick="showToast('📘 فيسبوك: SudanMiningHub', false)">📘 فيسبوك</a>
             <a href="#" onclick="showToast('✉️ البريد: info@sudanmining.com', false)">✉️ جيميل</a>
             <span style="color:#64748b; margin:0 5px;">|</span>
@@ -418,9 +451,7 @@
         </div>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- الطبقة الثانية: لوحة التحكم -->
-    <!-- ========================================================== -->
+    <!-- ====== الواجهة الثانية (لوحة المستخدم) ====== -->
     <div class="dashboard-page" id="dashboardPage">
         <div class="dash-header">
             <div class="dash-brand">
@@ -433,9 +464,38 @@
             <div class="dash-gold">
                 🟡 <span id="dashGoldPrice">جاري التحميل...</span> <span>| PAXG/USD</span>
             </div>
+            <button onclick="logoutUser()" style="background:transparent; border:1px solid #64748b; color:#94a3b8; padding:6px 20px; border-radius:40px; cursor:pointer;">🚪 خروج</button>
         </div>
 
-        <!-- بطاقات الخدمات -->
+        <div class="policy">
+            <strong>📜 سياسة المنصة وإخلاء المسؤولية:</strong>
+            منصة السودان للتعدين هي وسيط بين المشترين والتجار. نحن لا نتحمل أي مسؤولية قانونية أو مالية عن أي سلوك أو اتفاق أو نزاع يحدث بين الطرفين خارج نطاق توثيق المنصة. جميع الصفقات تتم تحت مسؤولية المستخدمين، وتلتزم المنصة بتقديم بيئة آمنة للتواصل فقط.
+        </div>
+
+        <div class="grid-2">
+            <div class="card-box">
+                <h3>📰 أخبار الذهب</h3>
+                <div id="newsContainer">
+                    <p>• الذهب يسجل أعلى مستوى له هذا الشهر بدعم من الطلب الآسيوي.</p>
+                    <p>• السودان: توقعات بارتفاع الطلب على المعدن الأصفر مع موسم التعدين.</p>
+                    <p>• الأسواق العالمية تترقب قرار الفيدرالي الأمريكي بشأن أسعار الفائدة.</p>
+                </div>
+            </div>
+            <div class="card-box">
+                <h3>📢 إعلانات مميزة</h3>
+                <div id="adsSide">
+                    <p style="color:#94a3b8;">جاري تحميل الإعلانات...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ads-uni">
+            <h3>📢 مساحة إعلانات (عرض كامل)</h3>
+            <div class="ads-grid" id="adsFullGrid">
+                <p style="color:#94a3b8; grid-column:1/-1; text-align:center;">لا توجد إعلانات منشورة حالياً</p>
+            </div>
+        </div>
+
         <div class="dash-grid">
             <div class="service-card" onclick="openOverlay('buyer')">
                 <span class="icon">🛒</span>
@@ -459,14 +519,6 @@
             </div>
         </div>
 
-        <!-- لوحة المشرف -->
-        <div class="admin-row">
-            <button onclick="promptAdmin()">🛠️ لوحة المشرف (محمية)</button>
-            <span class="hint">🔑 كلمة السر: admin123</span>
-            <button onclick="logoutUser()" style="background:transparent; border:1px solid #64748b; color:#94a3b8; padding:6px 20px; border-radius:40px; cursor:pointer;">🚪 خروج</button>
-        </div>
-
-        <!-- الفوتر -->
         <div class="dash-footer">
             <div class="social">
                 <a href="#" onclick="showToast('📱 واتساب: +249 123 456 789', false)">واتساب</a>
@@ -479,17 +531,28 @@
 
 </div>
 
-<!-- ========================================================== -->
-<!-- النوافذ المنبثقة (Overlays) -->
-<!-- ========================================================== -->
+<!-- ====== النوافذ المنبثقة ====== -->
 
-<!-- 1. مشتري / زائر -->
+<!-- 1. مشتري -->
 <div class="overlay" id="overlay-buyer">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('buyer')">✕ إغلاق</button>
         <h2>🛒 الطلبات المفتوحة</h2>
         <div class="flex-actions">
-            <button class="btn-gold-full" onclick="createSampleOpportunity()">➕ إنشاء طلب جديد</button>
+            <button class="btn-gold-full" onclick="document.getElementById('createOpportunityFormContainer').style.display='block'">➕ إنشاء طلب جديد</button>
+        </div>
+        <div id="createOpportunityFormContainer" style="display:none; background:#0f172a; padding:20px; border-radius:16px; margin-top:15px;">
+            <h3 style="color:#fbbf24; margin-bottom:15px;">📝 تفاصيل الطلب</h3>
+            <form id="createOpportunityForm">
+                <div class="input-group"><label>نوع الفرصة</label><select id="oppType" required><option value="light_equipment">معدات خفيفة</option><option value="heavy_equipment">معدات ثقيلة</option><option value="mine">منجم</option><option value="well">بئر</option><option value="production_line">خط إنتاج</option><option value="shop_rent">دكان للإيجار</option><option value="service">خدمات</option></select></div>
+                <div class="input-group"><label>المواصفات</label><textarea id="oppSpecs" placeholder="وصف تفصيلي..." required></textarea></div>
+                <div class="input-group"><label>الميزانية (ج.س)</label><input type="number" id="oppBudget" placeholder="الميزانية" required></div>
+                <div class="input-group"><label>الموقع</label><input type="text" id="oppLocation" placeholder="الموقع" required></div>
+                <div class="input-group"><label>المدينة</label><input type="text" id="oppCity" placeholder="المدينة" required></div>
+                <button type="submit" class="btn-gold-full">✅ نشر الطلب</button>
+                <button type="button" class="btn-gold-full" style="background:#64748b; margin-top:10px;" onclick="document.getElementById('createOpportunityFormContainer').style.display='none'">إلغاء</button>
+            </form>
+            <div id="createOppMessage" style="margin-top:10px;"></div>
         </div>
         <div id="buyerList"><p style="color:#94a3b8;">جاري التحميل...</p></div>
     </div>
@@ -504,7 +567,16 @@
     </div>
 </div>
 
-<!-- 3. تسجيل تاجر -->
+<!-- 3. تفاصيل العرض -->
+<div class="overlay" id="overlay-offer-detail">
+    <div class="overlay-content">
+        <button class="close-btn" onclick="closeOverlay('offer-detail')">✕ إغلاق</button>
+        <h2 id="offerDetailTitle">📋 تفاصيل العرض</h2>
+        <div id="offerDetailBody"></div>
+    </div>
+</div>
+
+<!-- 4. تسجيل تاجر -->
 <div class="overlay" id="overlay-register">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('register')">✕ إغلاق</button>
@@ -521,7 +593,7 @@
     </div>
 </div>
 
-<!-- 4. النشاط -->
+<!-- 5. النشاط -->
 <div class="overlay" id="overlay-activity">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('activity')">✕ إغلاق</button>
@@ -537,34 +609,73 @@
     </div>
 </div>
 
+<!-- 6. المحادثة -->
+<div class="overlay" id="overlay-chat">
+    <div class="overlay-content">
+        <button class="close-btn" onclick="closeOverlay('chat')">✕ إغلاق</button>
+        <h2 id="chatTitle">💬 التفاوض</h2>
+        <div id="chatMessages" style="max-height:300px; overflow-y:auto; margin-bottom:10px; background:#0f172a; border-radius:12px; padding:10px;">
+            <p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ التفاوض!</p>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <input type="text" id="chatInput" placeholder="أدخل طلب التفاوض الخاص بك..." style="flex:1; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.06); background:#0f172a; color:white;">
+            <button class="btn-gold-full" onclick="sendChatMessage()" style="padding:12px 24px;">إرسال</button>
+        </div>
+    </div>
+</div>
+
 <!-- ====== Toast ====== -->
 <div class="toast" id="toast"></div>
 
 <script>
     // ============================================================
-    // دوال الطبقات (تبديل بين صفحة الدخول ولوحة التحكم)
+    // عرض صفحة الدخول دائماً عند التحميل
     // ============================================================
-    function showDashboard() {
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('dashboardPage').classList.add('active');
-        loadDashboardData();
-    }
-
-    function showLogin() {
+    function showLoginPage() {
         document.getElementById('loginPage').classList.remove('hidden');
         document.getElementById('dashboardPage').classList.remove('active');
     }
 
+    function showDashboardPage() {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('dashboardPage').classList.add('active');
+    }
+
     // ============================================================
-    // تسجيل الدخول
+    // إدارة الجلسة (عرض معلومات المستخدم في صفحة الدخول)
+    // ============================================================
+    function updateSessionInfo() {
+        var user = localStorage.getItem('user');
+        var infoDiv = document.getElementById('sessionInfo');
+        if (user) {
+            try {
+                var userData = JSON.parse(user);
+                infoDiv.innerHTML = '👋 مرحباً ' + userData.name + ' (أنت مسجل الدخول) — <span class="logout-link" onclick="logoutUser()">تسجيل خروج</span>';
+            } catch (e) {
+                infoDiv.innerHTML = '';
+            }
+        } else {
+            infoDiv.innerHTML = '';
+        }
+    }
+
+    // ============================================================
+    // تسجيل الخروج (من أي مكان)
+    // ============================================================
+    function logoutUser() {
+        localStorage.removeItem('user');
+        showLoginPage();
+        updateSessionInfo();
+        showToast('✅ تم تسجيل الخروج بنجاح', false);
+    }
+
+    // ============================================================
+    // تسجيل الدخول (مع توجيه المشرف)
     // ============================================================
     async function loginUser() {
         var email = document.getElementById('loginEmail').value.trim();
         var password = document.getElementById('loginPassword').value.trim();
-        if (!email || !password) {
-            showToast('❌ يرجى إدخال البريد الإلكتروني وكلمة المرور', true);
-            return;
-        }
+        if (!email || !password) { showToast('❌ يرجى إدخال البريد وكلمة المرور', true); return; }
         try {
             var res = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -574,24 +685,21 @@
             var data = await res.json();
             if (data.status === 'success') {
                 localStorage.setItem('user', JSON.stringify(data.user));
-                document.getElementById('welcomeUser').textContent = '👋 مرحباً ' + data.user.name;
-                showDashboard();
-                showToast('✅ تم تسجيل الدخول بنجاح!', false);
+                if (data.user.role === 'admin') {
+                    window.location.href = '/admin';
+                } else {
+                    document.getElementById('welcomeUser').textContent = '👋 مرحباً ' + data.user.name;
+                    showDashboardPage();
+                    loadDashboardData();
+                    loadAds();
+                    showToast('✅ تم تسجيل الدخول بنجاح!', false);
+                }
             } else {
                 showToast('❌ ' + data.detail, true);
             }
         } catch (e) {
             showToast('❌ خطأ في الاتصال بالخادم', true);
         }
-    }
-
-    // ============================================================
-    // تسجيل الخروج
-    // ============================================================
-    function logoutUser() {
-        localStorage.removeItem('user');
-        showLogin();
-        showToast('✅ تم تسجيل الخروج', false);
     }
 
     // ============================================================
@@ -635,7 +743,7 @@
     }
 
     // ============================================================
-    // تحميل بيانات لوحة التحكم
+    // تحميل البيانات (سعر الذهب، الإعلانات، إلخ)
     // ============================================================
     async function loadDashboardData() {
         try {
@@ -648,8 +756,46 @@
     }
     setInterval(loadDashboardData, 30000);
 
+    async function loadAds() {
+        try {
+            var res = await fetch('/api/admin/ads');
+            var data = await res.json();
+            var published = data.ads ? data.ads.filter(a => a.status === 'published') : [];
+
+            var side = document.getElementById('adsSide');
+            if (published.length > 0) {
+                side.innerHTML = published.slice(0, 3).map(a => `
+                    <div style="background:#0f172a; padding:10px; border-radius:10px; margin-bottom:8px; display:flex; gap:10px; align-items:center; cursor:pointer;" onclick="window.open('${a.link}','_blank')">
+                        ${a.image_url ? `<img src="${a.image_url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">` : ''}
+                        <div><strong style="color:#fbbf24;">${a.title_ar}</strong><p style="font-size:0.75rem; color:#94a3b8;">${a.description || ''}</p></div>
+                    </div>
+                `).join('');
+            } else {
+                side.innerHTML = '<p style="color:#94a3b8;">لا توجد إعلانات</p>';
+            }
+
+            var full = document.getElementById('adsFullGrid');
+            if (published.length > 0) {
+                full.innerHTML = published.map(a => `
+                    <div class="ad-item" onclick="window.open('${a.link}','_blank')">
+                        ${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}
+                        <div class="info">
+                            <strong>${a.title_ar}</strong>
+                            <p>${a.description || ''}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                full.innerHTML = '<p style="color:#94a3b8; grid-column:1/-1; text-align:center;">لا توجد إعلانات منشورة حالياً</p>';
+            }
+        } catch (e) {
+            document.getElementById('adsSide').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
+            document.getElementById('adsFullGrid').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
+        }
+    }
+
     // ============================================================
-    // تحميل بيانات المشتري (الطلبات)
+    // دوال الطلبات والعروض والمحادثة (نفس ما كان سابقاً)
     // ============================================================
     async function loadBuyerData() {
         try {
@@ -658,7 +804,7 @@
             var container = document.getElementById('buyerList');
             if (data.opportunities && data.opportunities.length > 0) {
                 container.innerHTML = data.opportunities.map(o => `
-                    <div class="list-item">
+                    <div class="list-item" onclick="showOpportunityDetail(${o.id})">
                         <strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})
                         <br><small>الحالة: ${o.status} | ${o.created_at}</small>
                     </div>
@@ -671,9 +817,47 @@
         }
     }
 
-    // ============================================================
-    // تحميل بيانات العروض
-    // ============================================================
+    document.getElementById('createOpportunityForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var user = localStorage.getItem('user');
+        if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً كمشتري', true); return; }
+        user = JSON.parse(user);
+        if (user.role !== 'buyer') { showToast('❌ فقط المشترين يمكنهم إنشاء طلبات', true); return; }
+
+        var type = document.getElementById('oppType').value;
+        var specs = document.getElementById('oppSpecs').value.trim();
+        var budget = parseFloat(document.getElementById('oppBudget').value);
+        var location = document.getElementById('oppLocation').value.trim();
+        var city = document.getElementById('oppCity').value.trim();
+
+        if (!specs || !budget || !location || !city) {
+            showToast('❌ يرجى ملء جميع الحقول', true);
+            return;
+        }
+
+        try {
+            var res = await fetch('/api/opportunities/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ buyer_id: user.id, type, specs, budget, location, city })
+            });
+            var data = await res.json();
+            if (data.status === 'success') {
+                showToast('✅ تم نشر الطلب بنجاح!', false);
+                document.getElementById('createOpportunityFormContainer').style.display = 'none';
+                document.getElementById('createOpportunityForm').reset();
+                loadBuyerData();
+            } else {
+                var errorMsg = data.detail || 'فشل إنشاء الطلب';
+                showToast('❌ ' + errorMsg, true);
+                document.getElementById('createOppMessage').innerHTML = '<p style="color:#ef4444;">❌ ' + errorMsg + '</p>';
+            }
+        } catch (err) {
+            showToast('❌ خطأ في الاتصال بالخادم', true);
+            document.getElementById('createOppMessage').innerHTML = '<p style="color:#ef4444;">❌ خطأ في الاتصال</p>';
+        }
+    });
+
     async function loadOffersData() {
         try {
             var res = await fetch('/api/opportunities/all-offers');
@@ -681,9 +865,10 @@
             var container = document.getElementById('offersList');
             if (data.offers && data.offers.length > 0) {
                 container.innerHTML = data.offers.map(o => `
-                    <div class="list-item">
+                    <div class="list-item" onclick="showOfferDetail(${o.id})">
                         <strong>${o.specs}</strong> - ${o.price} ج.س
                         <br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small>
+                        <br><small style="color:#0ea5e9;">👆 اضغط لعرض التفاصيل</small>
                     </div>
                 `).join('');
             } else {
@@ -694,9 +879,118 @@
         }
     }
 
-    // ============================================================
-    // تسجيل تاجر جديد
-    // ============================================================
+    async function showOfferDetail(offerId) {
+        try {
+            var res = await fetch('/api/opportunities/all-offers');
+            var data = await res.json();
+            var offer = data.offers.find(o => o.id === offerId);
+            if (!offer) { showToast('❌ العرض غير موجود', true); return; }
+            var resOpp = await fetch('/api/opportunities/' + offer.opportunity_id);
+            var oppData = await resOpp.json();
+            var opportunity = oppData.opportunity;
+            var resUsers = await fetch('/api/admin/users');
+            var usersData = await resUsers.json();
+            var seller = usersData.users.find(u => u.id === offer.seller_id);
+            var sellerName = seller ? seller.name : 'تاجر غير معروف';
+
+            var html = `
+                <div class="offer-detail-grid">
+                    <div><span class="label">المواصفات</span><div class="value">${offer.specs}</div></div>
+                    <div><span class="label">السعر المقترح</span><div class="value">${offer.price} ج.س</div></div>
+                    <div><span class="label">حالة العرض</span><div class="value">${offer.status}</div></div>
+                    <div><span class="label">مدة التسليم</span><div class="value">${offer.delivery_time}</div></div>
+                    <div><span class="label">حالة المعدات</span><div class="value">${offer.condition}</div></div>
+                    <div><span class="label">التاجر</span><div class="value">${sellerName}</div></div>
+                    <div><span class="label">تاريخ العرض</span><div class="value">${offer.created_at}</div></div>
+                    <div><span class="label">الطلب المرتبط</span><div class="value">${opportunity.specs} (${opportunity.budget} ج.س)</div></div>
+                </div>
+                <div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:15px;">
+                    <button class="btn-chat-action" onclick="openChatFromOffer(${opportunity.id}, ${opportunity.buyer_id}, ${offer.seller_id})">🤝 بدء التفاوض</button>
+                    <button class="btn-gold-full" onclick="closeOverlay('offer-detail'); showToast('🚧 سيتم إضافة خيارات إضافية قريباً', false);">📌 إجراءات أخرى</button>
+                </div>
+            `;
+
+            document.getElementById('offerDetailTitle').textContent = `📋 العرض #${offer.id}`;
+            document.getElementById('offerDetailBody').innerHTML = html;
+            openOverlay('offer-detail');
+        } catch (e) {
+            showToast('❌ فشل تحميل تفاصيل العرض', true);
+            console.error(e);
+        }
+    }
+
+    async function openChatFromOffer(opportunityId, buyerId, sellerId) {
+        closeOverlay('offer-detail');
+        closeOverlay('offers');
+        currentChat = { opportunity_id: opportunityId, buyer_id: buyerId, seller_id: sellerId };
+        document.getElementById('chatTitle').textContent = `💬 التفاوض - الطلب #${opportunityId}`;
+        await loadChatMessages();
+        openOverlay('chat');
+    }
+
+    var currentChat = null;
+
+    async function loadChatMessages() {
+        if (!currentChat) return;
+        var { opportunity_id, buyer_id, seller_id } = currentChat;
+        try {
+            var r = await fetch(`/api/chat/${opportunity_id}/${buyer_id}/${seller_id}`);
+            var data = await r.json();
+            var container = document.getElementById('chatMessages');
+            if (data.chat && data.chat.messages) {
+                var user = JSON.parse(localStorage.getItem('user') || '{}');
+                var html = data.chat.messages.map(m => {
+                    var isMine = (m.sender_id == user.id);
+                    return `<div style="text-align: ${isMine ? 'left' : 'right'}; margin-bottom:8px; background:${isMine ? '#1e293b' : '#0f172a'}; padding:8px 12px; border-radius:12px;">
+                        <span style="color:#fbbf24; font-weight:600;">${isMine ? 'أنت' : 'الطرف الآخر'}</span>
+                        <span style="color:#94a3b8; font-size:0.7rem; float:left;">${m.timestamp}</span>
+                        <div style="margin-top:4px;">${m.message}</div>
+                    </div>`;
+                }).join('');
+                container.innerHTML = html || '<p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ التفاوض!</p>';
+                container.scrollTop = container.scrollHeight;
+            } else {
+                container.innerHTML = '<p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ التفاوض!</p>';
+            }
+        } catch (err) {
+            document.getElementById('chatMessages').innerHTML = '<p style="color:#ef4444;">فشل تحميل المحادثة</p>';
+        }
+    }
+
+    async function sendChatMessage() {
+        var input = document.getElementById('chatInput');
+        var message = input.value.trim();
+        if (!message) { showToast('❌ اكتب رسالة أولاً', true); return; }
+        if (!currentChat) { showToast('❌ لا توجد محادثة مفتوحة', true); return; }
+
+        var user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user.id) { showToast('❌ يرجى تسجيل الدخول', true); return; }
+
+        var { opportunity_id, buyer_id, seller_id } = currentChat;
+        var sender_id = user.id;
+        var receiver_id = (user.id == buyer_id) ? seller_id : buyer_id;
+
+        try {
+            var r = await fetch('/api/chat/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ opportunity_id, sender_id, receiver_id, message, buyer_id, seller_id })
+            });
+            var data = await r.json();
+            if (data.status === 'success') {
+                input.value = '';
+                await loadChatMessages();
+                if (data.ai_detected) {
+                    showToast('🤖 ' + data.message, false);
+                }
+            } else {
+                showToast('❌ فشل إرسال الرسالة', true);
+            }
+        } catch (err) {
+            showToast('❌ خطأ في الاتصال', true);
+        }
+    }
+
     document.getElementById('sellerRegisterForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         var name = document.getElementById('sName').value;
@@ -723,9 +1017,6 @@
         }
     });
 
-    // ============================================================
-    // تحميل بيانات النشاط
-    // ============================================================
     async function loadActivityData() {
         try {
             var res1 = await fetch('/api/admin/users');
@@ -757,80 +1048,18 @@
     }
 
     // ============================================================
-    // إنشاء طلب عينة
-    // ============================================================
-    async function createSampleOpportunity() {
-        var user = localStorage.getItem('user');
-        if (!user) {
-            showToast('❌ يرجى تسجيل الدخول أولاً كمشتري', true);
-            return;
-        }
-        user = JSON.parse(user);
-        if (user.role !== 'buyer') {
-            showToast('❌ فقط المشترين يمكنهم إنشاء طلبات', true);
-            return;
-        }
-        var specs = prompt('📝 أدخل مواصفات الطلب:');
-        if (!specs) return;
-        var budget = prompt('💰 أدخل الميزانية (ج.س):');
-        if (!budget) return;
-        var city = prompt('📍 أدخل المدينة:');
-        if (!city) return;
-
-        try {
-            var res = await fetch('/api/opportunities/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    buyer_id: user.id,
-                    type: 'heavy_equipment',
-                    specs: specs,
-                    budget: parseFloat(budget),
-                    location: city,
-                    city: city
-                })
-            });
-            var data = await res.json();
-            if (data.status === 'success') {
-                showToast('✅ تم إنشاء الطلب بنجاح!', false);
-                loadBuyerData();
-            } else {
-                showToast('❌ فشل إنشاء الطلب', true);
-            }
-        } catch (e) {
-            showToast('❌ خطأ في الاتصال', true);
-        }
-    }
-
-    // ============================================================
-    // لوحة المشرف
-    // ============================================================
-    function promptAdmin() {
-        var pass = prompt('🔐 أدخل كلمة سر المشرف:');
-        if (pass === 'admin123') {
-            window.location.href = '/admin';
-        } else if (pass !== null) {
-            showToast('❌ كلمة السر غير صحيحة', true);
-        }
-    }
-
-    // ============================================================
-    // التحقق من جلسة المستخدم عند تحميل الصفحة
+    // تهيئة الصفحة (عرض صفحة الدخول دائماً)
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-        var user = localStorage.getItem('user');
-        if (user) {
-            try {
-                var userData = JSON.parse(user);
-                document.getElementById('welcomeUser').textContent = '👋 مرحباً ' + userData.name;
-                showDashboard();
-                loadDashboardData();
-            } catch (e) {
-                showLogin();
-            }
-        } else {
-            showLogin();
-        }
+        // دائماً نعرض صفحة الدخول
+        showLoginPage();
+        // تحديث معلومات الجلسة في صفحة الدخول
+        updateSessionInfo();
+        // نحمّل البيانات الأولية للواجهة الثانية (لكنها مخفية)
+        loadDashboardData();
+        loadAds();
+        // إذا كان هناك مستخدم في localStorage، نعرض رسالة في صفحة الدخول
+        // (يتم ذلك في updateSessionInfo)
     });
 
     // تحديث النشاط كل 10 ثوانٍ

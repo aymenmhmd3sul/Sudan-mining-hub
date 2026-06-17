@@ -461,7 +461,8 @@
         // ============================================================
         var currentChat = null;  // { opportunity_id, buyer_id, seller_id }
 
-        async function openChat(opportunityId, buyerId, sellerId) { closeModal('detailModal'); 
+        async function openChat(opportunityId, buyerId, sellerId) {
+            closeModal('detailModal');
             currentChat = { opportunity_id: opportunityId, buyer_id: buyerId, seller_id: sellerId };
             document.getElementById('chatTitle').textContent = `💬 محادثة الطلب #${opportunityId}`;
             await loadChatMessages();
@@ -512,7 +513,6 @@
             user = JSON.parse(user);
 
             var { opportunity_id, buyer_id, seller_id } = currentChat;
-            // تحديد المرسل والمستقبل
             var sender_id = user.id;
             var receiver_id = (user.id == buyer_id) ? seller_id : buyer_id;
 
@@ -582,11 +582,11 @@
                     html += `<h3 style="color:#fbbf24; margin-top:15px;">🤝 العروض المقدمة (${offers.length})</h3>`;
                     offers.forEach(o => {
                         html += `
-                            <div class="list-item" style="border-right-color: #a855f7;">
+                            <div class="list-item" style="border-right-color: #a855f7; padding: 15px;">
                                 <strong>${o.specs}</strong> - ${o.price} ج.س
                                 <br><small>التسليم: ${o.delivery_time} | الحالة: ${o.condition} | ${o.created_at}</small>
                                 <br>
-                                <button class="btn btn-chat" style="margin-top:5px;" onclick="openChat(${opp.id}, ${opp.buyer_id}, ${o.seller_id})">💬 فتح المحادثة</button>
+                                <button class="btn btn-chat" style="margin-top: 10px; width: 100%;" onclick="openChat(${opp.id}, ${opp.buyer_id}, ${o.seller_id})">💬 فتح المحادثة</button>
                             </div>
                         `;
                     });

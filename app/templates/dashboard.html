@@ -64,7 +64,7 @@
         .chat-message .sender { color: #fbbf24; font-weight: 600; }
         .chat-message .time { color: #94a3b8; font-size: 0.7rem; float: left; }
         .chat-input { display: flex; gap: 10px; margin-top: 10px; }
-        .chat-input input { flex: 1; }
+        .chat-input input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; }
     </style>
 </head>
 <body>
@@ -83,158 +83,37 @@
             <button class="btn btn-purple hidden" id="subscriptionBtn">📋 اشتراكي</button>
         </div>
 
-        <!-- رسالة ترحيب للمشتري -->
         <div id="welcomeBox" class="welcome-box hidden">
             <h3>👋 مرحباً بك!</h3>
             <p>يمكنك الآن <strong>إنشاء طلب جديد</strong> بالضغط على الزر الأصفر، أو تصفح الطلبات والعروض من البطاقات أدناه.</p>
         </div>
 
         <div class="grid">
-            <div class="card" id="ordersCard">
-                <span class="card-icon">📦</span>
-                <div class="card-number" id="orders">0</div>
-                <div class="card-label">الطلبات المفتوحة</div>
-            </div>
-            <div class="card" id="offersCard">
-                <span class="card-icon">🤝</span>
-                <div class="card-number green" id="offers">0</div>
-                <div class="card-label">العروض المقدمة</div>
-            </div>
-            <div class="card" id="chatsCard">
-                <span class="card-icon">💬</span>
-                <div class="card-number purple" id="chats">0</div>
-                <div class="card-label">المحادثات النشطة</div>
-            </div>
-            <div class="card" id="adsCard">
-                <span class="card-icon">📢</span>
-                <div class="card-number" id="adsCount" style="color:#ec4899;">0</div>
-                <div class="card-label">الإعلانات</div>
-            </div>
+            <div class="card" id="ordersCard"><span class="card-icon">📦</span><div class="card-number" id="orders">0</div><div class="card-label">الطلبات المفتوحة</div></div>
+            <div class="card" id="offersCard"><span class="card-icon">🤝</span><div class="card-number green" id="offers">0</div><div class="card-label">العروض المقدمة</div></div>
+            <div class="card" id="chatsCard"><span class="card-icon">💬</span><div class="card-number purple" id="chats">0</div><div class="card-label">المحادثات النشطة</div></div>
+            <div class="card" id="adsCard"><span class="card-icon">📢</span><div class="card-number" id="adsCount" style="color:#ec4899;">0</div><div class="card-label">الإعلانات</div></div>
         </div>
 
         <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px dashed rgba(255,255,255,0.1);">
             <h3 style="color: #fbbf24; margin-bottom: 15px;">🏅 أسعار الذهب المحلية</h3>
-            <div id="goldPrices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                <p style="color: #94a3b8;">جاري التحميل...</p>
-            </div>
+            <div id="goldPrices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;"><p style="color: #94a3b8;">جاري التحميل...</p></div>
         </div>
 
-        <div class="footer">
-            <p>© 2026 منصة السودان للتعدين — نظام مباشر 🚀</p>
-        </div>
+        <div class="footer"><p>© 2026 منصة السودان للتعدين — نظام مباشر 🚀</p></div>
     </div>
 
     <div class="toast" id="toast"></div>
 
-    <!-- نافذة تسجيل الدخول -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal('loginModal')">✕</button>
-            <h2>🔑 تسجيل الدخول</h2>
-            <form onsubmit="login(event)">
-                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required>
-                <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
-                <button type="submit" class="btn-submit">دخول</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- نافذة تسجيل جديد -->
-    <div class="modal" id="registerModal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal('registerModal')">✕</button>
-            <h2>📝 تسجيل جديد</h2>
-            <form onsubmit="register(event)">
-                <input type="text" id="regName" placeholder="الاسم الكامل" required>
-                <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required>
-                <input type="text" id="regPhone" placeholder="رقم الهاتف" required>
-                <select id="regRole" required>
-                    <option value="buyer">مشتري</option>
-                    <option value="seller">تاجر</option>
-                </select>
-                <input type="password" id="regPassword" placeholder="كلمة المرور" required>
-                <button type="submit" class="btn-submit">تسجيل</button>
-            </form>
-            <div id="registerMessage" style="margin-top:10px;text-align:center;"></div>
-        </div>
-    </div>
-
-    <!-- نافذة إنشاء طلب -->
-    <div class="modal" id="createOpportunityModal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal('createOpportunityModal')">✕</button>
-            <h2>➕ إنشاء طلب جديد</h2>
-            <form id="createOpportunityForm">
-                <select id="oppType" required>
-                    <option value="light_equipment">معدات خفيفة</option>
-                    <option value="heavy_equipment">معدات ثقيلة</option>
-                    <option value="mine">منجم</option>
-                    <option value="well">بئر</option>
-                    <option value="production_line">خط إنتاج</option>
-                    <option value="shop_rent">دكان للإيجار</option>
-                    <option value="service">خدمات</option>
-                </select>
-                <textarea id="oppSpecs" placeholder="المواصفات التفصيلية..." required></textarea>
-                <input type="number" id="oppBudget" placeholder="الميزانية (ج.س)" required>
-                <input type="text" id="oppLocation" placeholder="الموقع" required>
-                <input type="text" id="oppCity" placeholder="المدينة" required>
-                <button type="submit" class="btn-submit">✅ نشر الطلب</button>
-            </form>
-            <div id="oppMessage" style="margin-top:10px;text-align:center;"></div>
-        </div>
-    </div>
-
-    <!-- نافذة تقديم عرض (للتاجر) -->
-    <div class="modal" id="offerModal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal('offerModal')">✕</button>
-            <h2>🤝 تقديم عرض</h2>
-            <form id="offerForm">
-                <input type="hidden" id="offerOppId">
-                <div class="form-group">
-                    <label>السعر المقترح (ج.س) *</label>
-                    <input type="number" id="offerPrice" required>
-                </div>
-                <div class="form-group">
-                    <label>المواصفات المقدمة *</label>
-                    <textarea id="offerSpecs" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>مدة التسليم</label>
-                    <input type="text" id="offerDelivery" placeholder="مثال: 3 أيام">
-                </div>
-                <div class="form-group">
-                    <label>الحالة</label>
-                    <select id="offerCondition">
-                        <option value="new">جديد</option>
-                        <option value="used">مستعمل</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit">✅ إرسال العرض</button>
-            </form>
-            <div id="offerMessage" style="margin-top:10px;text-align:center;"></div>
-        </div>
-    </div>
-
-    <!-- نافذة تفاصيل الطلب (لعرض العروض وأزرار الاتفاق والمحادثة) -->
-    <div class="modal" id="detailModal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal('detailModal')">✕</button>
-            <h2 id="detailTitle">📋 تفاصيل الطلب</h2>
-            <div id="detailBody"></div>
-        </div>
-    </div>
-
-    <!-- نافذة عرض القوائم -->
-    <div class="modal" id="listModal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal('listModal')">✕</button>
-            <h2 id="listModalTitle">قائمة</h2>
-            <div id="listModalBody"></div>
-        </div>
-    </div>
-
-    <!-- نافذة المحادثة -->
+    <!-- نوافذ منبثقة -->
+    <div class="modal" id="loginModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('loginModal')">✕</button><h2>🔑 تسجيل الدخول</h2><form onsubmit="login(event)"><input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required><input type="password" id="loginPassword" placeholder="كلمة المرور" required><button type="submit" class="btn-submit">دخول</button></form></div></div>
+    <div class="modal" id="registerModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('registerModal')">✕</button><h2>📝 تسجيل جديد</h2><form onsubmit="register(event)"><input type="text" id="regName" placeholder="الاسم الكامل" required><input type="email" id="regEmail" placeholder="البريد الإلكتروني" required><input type="text" id="regPhone" placeholder="رقم الهاتف" required><select id="regRole" required><option value="buyer">مشتري</option><option value="seller">تاجر</option></select><input type="password" id="regPassword" placeholder="كلمة المرور" required><button type="submit" class="btn-submit">تسجيل</button></form><div id="registerMessage" style="margin-top:10px;text-align:center;"></div></div></div>
+    <div class="modal" id="createOpportunityModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('createOpportunityModal')">✕</button><h2>➕ إنشاء طلب جديد</h2><form id="createOpportunityForm"><select id="oppType" required><option value="light_equipment">معدات خفيفة</option><option value="heavy_equipment">معدات ثقيلة</option><option value="mine">منجم</option><option value="well">بئر</option><option value="production_line">خط إنتاج</option><option value="shop_rent">دكان للإيجار</option><option value="service">خدمات</option></select><textarea id="oppSpecs" placeholder="المواصفات التفصيلية..." required></textarea><input type="number" id="oppBudget" placeholder="الميزانية (ج.س)" required><input type="text" id="oppLocation" placeholder="الموقع" required><input type="text" id="oppCity" placeholder="المدينة" required><button type="submit" class="btn-submit">✅ نشر الطلب</button></form><div id="oppMessage" style="margin-top:10px;text-align:center;"></div></div></div>
+    <div class="modal" id="offerModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('offerModal')">✕</button><h2>🤝 تقديم عرض</h2><form id="offerForm"><input type="hidden" id="offerOppId"><div class="form-group"><label>السعر المقترح (ج.س) *</label><input type="number" id="offerPrice" required></div><div class="form-group"><label>المواصفات المقدمة *</label><textarea id="offerSpecs" required></textarea></div><div class="form-group"><label>مدة التسليم</label><input type="text" id="offerDelivery" placeholder="مثال: 3 أيام"></div><div class="form-group"><label>الحالة</label><select id="offerCondition"><option value="new">جديد</option><option value="used">مستعمل</option></select></div><button type="submit" class="btn-submit">✅ إرسال العرض</button></form><div id="offerMessage" style="margin-top:10px;text-align:center;"></div></div></div>
+    <div class="modal" id="detailModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('detailModal')">✕</button><h2 id="detailTitle">📋 تفاصيل الطلب</h2><div id="detailBody"></div></div></div>
+    <div class="modal" id="listModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('listModal')">✕</button><h2 id="listModalTitle">قائمة</h2><div id="listModalBody"></div></div></div>
+    
+    <!-- نافذة المحادثة (مع إصلاح الزر) -->
     <div class="modal" id="chatModal">
         <div class="modal-content">
             <button class="btn-close" onclick="closeModal('chatModal')">✕</button>
@@ -252,20 +131,10 @@
         // دوال النوافذ المنبثقة
         // ============================================================
         function openModal(type) {
-            var modalId = { 
-                'login': 'loginModal', 
-                'register': 'registerModal', 
-                'createOpportunity': 'createOpportunityModal',
-                'offer': 'offerModal',
-                'detail': 'detailModal',
-                'list': 'listModal',
-                'chat': 'chatModal'
-            }[type];
+            var modalId = { 'login': 'loginModal', 'register': 'registerModal', 'createOpportunity': 'createOpportunityModal', 'offer': 'offerModal', 'detail': 'detailModal', 'list': 'listModal', 'chat': 'chatModal' }[type];
             if (modalId) document.getElementById(modalId).classList.add('active');
         }
-        function closeModal(id) { 
-            document.getElementById(id).classList.remove('active'); 
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function showList(title, itemsHtml) {
             document.getElementById('listModalTitle').textContent = title;
@@ -292,41 +161,24 @@
             var subscriptionBtn = document.getElementById('subscriptionBtn');
 
             if (user) {
-                loginBtn.classList.add('hidden');
-                registerBtn.classList.add('hidden');
-                logoutBtn.classList.remove('hidden');
-                subscriptionBtn.classList.remove('hidden');
-
+                loginBtn.classList.add('hidden'); registerBtn.classList.add('hidden'); logoutBtn.classList.remove('hidden'); subscriptionBtn.classList.remove('hidden');
                 if (user.role === 'buyer') {
-                    welcomeBox.classList.remove('hidden');
-                    createBtn.classList.remove('hidden');
-                    subscriptionBtn.classList.add('hidden');
+                    welcomeBox.classList.remove('hidden'); createBtn.classList.remove('hidden'); subscriptionBtn.classList.add('hidden');
                     document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (مشتري)';
                 } else if (user.role === 'seller') {
-                    welcomeBox.classList.add('hidden');
-                    createBtn.classList.add('hidden');
-                    subscriptionBtn.classList.remove('hidden');
+                    welcomeBox.classList.add('hidden'); createBtn.classList.add('hidden'); subscriptionBtn.classList.remove('hidden');
                     document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (تاجر)';
                 } else {
-                    welcomeBox.classList.add('hidden');
-                    createBtn.classList.add('hidden');
-                    subscriptionBtn.classList.add('hidden');
+                    welcomeBox.classList.add('hidden'); createBtn.classList.add('hidden'); subscriptionBtn.classList.add('hidden');
                     document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name;
                 }
             } else {
-                loginBtn.classList.remove('hidden');
-                registerBtn.classList.remove('hidden');
-                logoutBtn.classList.add('hidden');
-                welcomeBox.classList.add('hidden');
-                createBtn.classList.add('hidden');
-                subscriptionBtn.classList.add('hidden');
+                loginBtn.classList.remove('hidden'); registerBtn.classList.remove('hidden'); logoutBtn.classList.add('hidden');
+                welcomeBox.classList.add('hidden'); createBtn.classList.add('hidden'); subscriptionBtn.classList.add('hidden');
                 document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
             }
         }
 
-        // ============================================================
-        // تسجيل الخروج
-        // ============================================================
         function logout() {
             localStorage.removeItem('user');
             updateUI(null);
@@ -342,27 +194,19 @@
             if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
             user = JSON.parse(user);
             if (user.role !== 'seller') { showToast('❌ هذه الميزة للتجار فقط', true); return; }
-
             try {
                 var r = await fetch('/api/payments/subscription/' + user.id);
                 var d = await r.json();
                 if (d.status === 'active') {
                     showList('📋 اشتراكي', `<p style="color:#22c55e;">✅ اشتراكك نشط حتى ${d.subscription_end}</p>`);
                 } else {
-                    showList('📋 اشتراكي', `
-                        <p style="color:#ef4444;">❌ ${d.message}</p>
-                        <div class="commission-box">
-                            <strong>🏦 رقم الحساب للدفع:</strong><br>
-                            ${d.bank_account || 'Sudan Mining Hub - Bank of Khartoum - Account: 123456789'}
-                        </div>
-                        <p style="color:#94a3b8; margin-top:10px;">بعد الدفع، يرجى التواصل مع المشرف لتفعيل حسابك.</p>
-                    `);
+                    showList('📋 اشتراكي', `<p style="color:#ef4444;">❌ ${d.message}</p><div class="commission-box"><strong>🏦 رقم الحساب للدفع:</strong><br>${d.bank_account || 'Sudan Mining Hub - Bank of Khartoum - Account: 123456789'}</div><p style="color:#94a3b8; margin-top:10px;">بعد الدفع، يرجى التواصل مع المشرف لتفعيل حسابك.</p>`);
                 }
             } catch (err) { showToast('❌ فشل تحميل الاشتراك', true); }
         }
 
         // ============================================================
-        // تقديم عرض (للتاجر)
+        // تقديم عرض
         // ============================================================
         function openOfferModal(opportunityId) {
             document.getElementById('offerOppId').value = opportunityId;
@@ -370,96 +214,61 @@
             document.getElementById('offerMessage').textContent = '';
             openModal('offer');
         }
-
         document.getElementById('offerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             var user = localStorage.getItem('user');
             if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
             user = JSON.parse(user);
             if (user.role !== 'seller') { showToast('❌ فقط التجار يمكنهم تقديم عروض', true); return; }
-
             var opportunity_id = parseInt(document.getElementById('offerOppId').value);
             var price = parseFloat(document.getElementById('offerPrice').value);
             var specs = document.getElementById('offerSpecs').value;
             var delivery_time = document.getElementById('offerDelivery').value || 'غير محدد';
             var condition = document.getElementById('offerCondition').value;
-
             try {
-                var r = await fetch('/api/opportunities/offer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ opportunity_id, seller_id: user.id, price, specs, delivery_time, condition })
-                });
+                var r = await fetch('/api/opportunities/offer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ opportunity_id, seller_id: user.id, price, specs, delivery_time, condition }) });
                 var d = await r.json();
-                if (d.status === 'success') {
-                    showToast('✅ تم تقديم العرض بنجاح!', false);
-                    closeModal('offerModal');
-                    loadStats();
-                } else {
-                    showToast('❌ ' + d.detail, true);
-                }
+                if (d.status === 'success') { showToast('✅ تم تقديم العرض بنجاح!', false); closeModal('offerModal'); loadStats(); } 
+                else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         });
 
         // ============================================================
-        // تأكيد الاتفاق
+        // تأكيد الاتفاق والاستلام
         // ============================================================
         async function confirmAgreement(opportunityId) {
             var user = localStorage.getItem('user');
             if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
             user = JSON.parse(user);
-
             try {
-                var r = await fetch(`/api/opportunities/confirm-agreement/${opportunityId}/${user.id}`, {
-                    method: 'POST'
-                });
+                var r = await fetch(`/api/opportunities/confirm-agreement/${opportunityId}/${user.id}`, { method: 'POST' });
                 var d = await r.json();
-                if (d.status === 'success') {
-                    showToast('✅ ' + d.message, false);
-                    closeModal('detailModal');
-                    loadStats();
-                } else {
-                    showToast('❌ ' + d.detail, true);
-                }
+                if (d.status === 'success') { showToast('✅ ' + d.message, false); closeModal('detailModal'); loadStats(); } 
+                else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
 
-        // ============================================================
-        // تأكيد الاستلام
-        // ============================================================
         async function confirmDelivery(opportunityId) {
             var user = localStorage.getItem('user');
             if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
             user = JSON.parse(user);
-
             try {
-                var r = await fetch(`/api/payments/confirm-delivery/${opportunityId}?user_id=${user.id}`, {
-                    method: 'POST'
-                });
+                var r = await fetch(`/api/payments/confirm-delivery/${opportunityId}?user_id=${user.id}`, { method: 'POST' });
                 var d = await r.json();
                 if (d.status === 'success') {
                     showToast('✅ ' + d.message, false);
                     var commission = d.commission_details;
-                    var html = `
-                        <div class="commission-box">
-                            <strong>💰 العمولة المستحقة:</strong> ${commission.commission_text}
-                            <br><strong>🏦 رقم الحساب للدفع:</strong><br>${d.bank_account}
-                            ${commission.final_price ? `<br><strong>قيمة الصفقة:</strong> ${commission.final_price} ج.س` : ''}
-                        </div>
-                        <p style="color:#94a3b8; margin-top:10px;">بعد الدفع، سيتم إتمام الصفقة رسمياً.</p>
-                    `;
+                    var html = `<div class="commission-box"><strong>💰 العمولة المستحقة:</strong> ${commission.commission_text}<br><strong>🏦 رقم الحساب للدفع:</strong><br>${d.bank_account}${commission.final_price ? `<br><strong>قيمة الصفقة:</strong> ${commission.final_price} ج.س` : ''}</div><p style="color:#94a3b8; margin-top:10px;">بعد الدفع، سيتم إتمام الصفقة رسمياً.</p>`;
                     showList('💳 تفاصيل الدفع', html);
                     loadStats();
-                } else {
-                    showToast('❌ ' + d.detail, true);
-                }
+                } else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
 
         // ============================================================
-        // غرفة المحادثة
+        // غرفة المحادثة (الإصدار المُصلح)
         // ============================================================
-        var currentChat = null;  // { opportunity_id, buyer_id, seller_id }
+        var currentChat = null;
 
         async function openChat(opportunityId, buyerId, sellerId) {
             closeModal('detailModal');
@@ -480,11 +289,7 @@
                     var user = JSON.parse(localStorage.getItem('user') || '{}');
                     var html = data.chat.messages.map(m => {
                         var isMine = (m.sender_id == user.id);
-                        return `<div class="chat-message" style="text-align: ${isMine ? 'left' : 'right'};">
-                            <span class="sender">${isMine ? 'أنت' : 'الطرف الآخر'}</span>
-                            <span class="time">${m.timestamp}</span>
-                            <div>${m.message}</div>
-                        </div>`;
+                        return `<div class="chat-message" style="text-align: ${isMine ? 'left' : 'right'};"><span class="sender">${isMine ? 'أنت' : 'الطرف الآخر'}</span><span class="time">${m.timestamp}</span><div>${m.message}</div></div>`;
                     }).join('');
                     container.innerHTML = html || '<p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ المحادثة!</p>';
                     container.scrollTop = container.scrollHeight;
@@ -493,19 +298,17 @@
                 }
             } catch (err) {
                 document.getElementById('chatMessages').innerHTML = '<p style="color:#ef4444;">فشل تحميل المحادثة</p>';
+                console.error('loadChatMessages error:', err);
             }
         }
 
-        // إرسال رسالة في المحادثة
-        document.getElementById('sendChatBtn').addEventListener('click', sendChatMessage);
-        document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendChatMessage();
-        });
-
+        // دالة إرسال الرسالة (معرفة في النطاق العام)
         async function sendChatMessage() {
+            console.log("sendChatMessage called");
             var input = document.getElementById('chatInput');
+            if (!input) { console.error("chatInput not found"); return; }
             var message = input.value.trim();
-            if (!message) return;
+            if (!message) { showToast('❌ اكتب رسالة أولاً', true); return; }
             if (!currentChat) { showToast('❌ لا توجد محادثة مفتوحة', true); return; }
 
             var user = localStorage.getItem('user');
@@ -520,14 +323,7 @@
                 var r = await fetch('/api/chat/send', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        opportunity_id,
-                        sender_id,
-                        receiver_id,
-                        message,
-                        buyer_id,
-                        seller_id
-                    })
+                    body: JSON.stringify({ opportunity_id, sender_id, receiver_id, message, buyer_id, seller_id })
                 });
                 var data = await r.json();
                 if (data.status === 'success') {
@@ -537,68 +333,42 @@
                         showToast('🤖 ' + data.message, false);
                     }
                 } else {
-                    showToast('❌ فشل إرسال الرسالة', true);
+                    showToast('❌ فشل إرسال الرسالة: ' + (data.detail || ''), true);
                 }
             } catch (err) {
                 showToast('❌ خطأ في الاتصال', true);
+                console.error('sendChatMessage error:', err);
             }
         }
 
-        // تحديث المحادثة كل 3 ثوانٍ (Polling)
-        setInterval(function() {
-            if (document.getElementById('chatModal').classList.contains('active')) {
-                loadChatMessages();
-            }
-        }, 3000);
-
         // ============================================================
-        // عرض تفاصيل الطلب (مع أزرار المحادثة والعروض)
+        // عرض تفاصيل الطلب
         // ============================================================
         async function showOpportunityDetail(oppId) {
             try {
                 var r1 = await fetch(`/api/opportunities/${oppId}`);
                 var oppData = await r1.json();
                 var opp = oppData.opportunity;
-
                 var r2 = await fetch(`/api/opportunities/offers/${oppId}`);
                 var offersData = await r2.json();
                 var offers = offersData.offers || [];
-
                 var user = localStorage.getItem('user');
                 var userId = user ? JSON.parse(user).id : null;
                 var userRole = user ? JSON.parse(user).role : null;
 
-                var html = `
-                    <div style="background:#0f172a; padding:15px; border-radius:12px; margin-bottom:15px;">
-                        <strong>المواصفات:</strong> ${opp.specs}
-                        <br><strong>الميزانية:</strong> ${opp.budget} ج.س
-                        <br><strong>المدينة:</strong> ${opp.city}
-                        <br><strong>الحالة:</strong> <span class="status-badge ${opp.status}">${opp.status === 'open' ? 'مفتوح' : opp.status === 'agreed' ? 'تم الاتفاق' : 'مكتمل'}</span>
-                    </div>
-                `;
+                var html = `<div style="background:#0f172a; padding:15px; border-radius:12px; margin-bottom:15px;"><strong>المواصفات:</strong> ${opp.specs}<br><strong>الميزانية:</strong> ${opp.budget} ج.س<br><strong>المدينة:</strong> ${opp.city}<br><strong>الحالة:</strong> <span class="status-badge ${opp.status}">${opp.status === 'open' ? 'مفتوح' : opp.status === 'agreed' ? 'تم الاتفاق' : 'مكتمل'}</span></div>`;
 
-                // عرض العروض مع زر المحادثة
                 if (offers.length > 0) {
                     html += `<h3 style="color:#fbbf24; margin-top:15px;">🤝 العروض المقدمة (${offers.length})</h3>`;
                     offers.forEach(o => {
-                        html += `
-                            <div class="list-item" style="border-right-color: #a855f7; padding: 15px;">
-                                <strong>${o.specs}</strong> - ${o.price} ج.س
-                                <br><small>التسليم: ${o.delivery_time} | الحالة: ${o.condition} | ${o.created_at}</small>
-                                <br>
-                                <button class="btn btn-chat" style="margin-top: 10px; width: 100%;" onclick="openChat(${opp.id}, ${opp.buyer_id}, ${o.seller_id})">💬 فتح المحادثة</button>
-                            </div>
-                        `;
+                        html += `<div class="list-item" style="border-right-color: #a855f7; padding: 15px;"><strong>${o.specs}</strong> - ${o.price} ج.س<br><small>التسليم: ${o.delivery_time} | الحالة: ${o.condition} | ${o.created_at}</small><br><button class="btn btn-chat" style="margin-top: 10px; width: 100%;" onclick="openChat(${opp.id}, ${opp.buyer_id}, ${o.seller_id})">💬 فتح المحادثة</button></div>`;
                     });
                 } else {
                     html += `<p style="color:#94a3b8;">لا توجد عروض حتى الآن</p>`;
                 }
 
-                // أزرار الإجراءات
                 if (user) {
-                    if (userRole === 'seller' && opp.status === 'open') {
-                        html += `<button class="btn btn-yellow" style="margin-top:15px; width:100%;" onclick="openOfferModal(${opp.id})">🤝 تقديم عرض</button>`;
-                    }
+                    if (userRole === 'seller' && opp.status === 'open') html += `<button class="btn btn-yellow" style="margin-top:15px; width:100%;" onclick="openOfferModal(${opp.id})">🤝 تقديم عرض</button>`;
                     if (opp.status === 'open' || opp.status === 'negotiating') {
                         if (userRole === 'buyer' || userRole === 'seller') {
                             var isConfirmed = (userRole === 'buyer' && opp.buyer_confirmed) || (userRole === 'seller' && opp.seller_confirmed);
@@ -607,12 +377,8 @@
                             html += `<button class="btn btn-blue" style="margin-top:10px; width:100%;" onclick="confirmAgreement(${opp.id})" ${disabledAttr}>${buttonLabel}</button>`;
                         }
                     }
-                    if (opp.status === 'agreed') {
-                        html += `<button class="btn btn-green" style="margin-top:10px; width:100%;" onclick="confirmDelivery(${opp.id})">📦 تأكيد الاستلام</button>`;
-                    }
-                    if (opp.status === 'completed') {
-                        html += `<p style="color:#22c55e; margin-top:10px;">✅ هذه الصفقة مكتملة.</p>`;
-                    }
+                    if (opp.status === 'agreed') html += `<button class="btn btn-green" style="margin-top:10px; width:100%;" onclick="confirmDelivery(${opp.id})">📦 تأكيد الاستلام</button>`;
+                    if (opp.status === 'completed') html += `<p style="color:#22c55e; margin-top:10px;">✅ هذه الصفقة مكتملة.</p>`;
                 } else {
                     html += `<p style="color:#fbbf24; margin-top:10px;">🔑 يرجى تسجيل الدخول للتفاعل مع هذا الطلب.</p>`;
                 }
@@ -622,85 +388,55 @@
                 openModal('detail');
             } catch (err) {
                 showToast('❌ فشل تحميل تفاصيل الطلب', true);
+                console.error(err);
             }
         }
 
         // ============================================================
-        // تحميل الإحصائيات والبيانات
+        // تحميل البيانات
         // ============================================================
         async function loadStats() {
             try {
                 var r = await fetch('/api/opportunities/list');
                 var d = await r.json();
                 document.getElementById('orders').textContent = d.opportunities ? d.opportunities.length : 0;
-                
                 var r2 = await fetch('/api/opportunities/all-offers');
                 var d2 = await r2.json();
                 document.getElementById('offers').textContent = d2.offers ? d2.offers.length : 0;
-                
                 var user = localStorage.getItem('user');
                 if (user) {
                     user = JSON.parse(user);
                     var r3 = await fetch('/api/chat/list/' + user.id);
                     var d3 = await r3.json();
                     document.getElementById('chats').textContent = d3.chats ? d3.chats.length : 0;
-                } else {
-                    document.getElementById('chats').textContent = 0;
-                }
+                } else { document.getElementById('chats').textContent = 0; }
             } catch (err) { console.error(err); }
         }
 
         async function loadAdsCount() {
-            try {
-                var r = await fetch('/api/admin/ads');
-                var d = await r.json();
-                var published = d.ads ? d.ads.filter(a => a.status === 'published') : [];
-                document.getElementById('adsCount').textContent = published.length;
-            } catch (err) { console.error(err); }
+            try { var r = await fetch('/api/admin/ads'); var d = await r.json(); var published = d.ads ? d.ads.filter(a => a.status === 'published') : []; document.getElementById('adsCount').textContent = published.length; } catch (err) { console.error(err); }
         }
 
         async function loadGoldPrices() {
-            try {
-                var r = await fetch('/api/admin/gold-prices');
-                var d = await r.json();
-                var c = document.getElementById('goldPrices');
-                if (d.prices && d.prices.length > 0) {
-                    c.innerHTML = d.prices.map(p => '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram||0) + ' ج.س/جم</div></div>').join('');
-                } else { c.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>'; }
-            } catch (err) { document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>'; }
+            try { var r = await fetch('/api/admin/gold-prices'); var d = await r.json(); var c = document.getElementById('goldPrices'); if (d.prices && d.prices.length > 0) { c.innerHTML = d.prices.map(p => '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram||0) + ' ج.س/جم</div></div>').join(''); } else { c.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>'; } } catch (err) { document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>'; }
         }
 
         async function loadGlobalGold() {
-            try {
-                var r = await fetch('/api/gold');
-                var d = await r.json();
-                if (d.gold !== undefined) {
-                    document.getElementById('goldPrice').innerHTML = '💰 USD ' + d.gold.toFixed(2) + ' <span>| PAXG</span>';
-                }
-            } catch (err) { console.error(err); }
+            try { var r = await fetch('/api/gold'); var d = await r.json(); if (d.gold !== undefined) { document.getElementById('goldPrice').innerHTML = '💰 USD ' + d.gold.toFixed(2) + ' <span>| PAXG</span>'; } } catch (err) { console.error(err); }
         }
 
         // ============================================================
-        // دوال تسجيل الدخول والتسجيل
+        // تسجيل الدخول والتسجيل
         // ============================================================
         async function login(e) {
             e.preventDefault();
             var email = document.getElementById('loginEmail').value;
             var password = document.getElementById('loginPassword').value;
             try {
-                var r = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
+                var r = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
                 var d = await r.json();
-                if (d.status === 'success') {
-                    showToast('✅ مرحباً ' + d.user.name, false);
-                    closeModal('loginModal');
-                    localStorage.setItem('user', JSON.stringify(d.user));
-                    updateUI(d.user);
-                    loadStats();
-                } else { showToast('❌ ' + d.detail, true); }
+                if (d.status === 'success') { showToast('✅ مرحباً ' + d.user.name, false); closeModal('loginModal'); localStorage.setItem('user', JSON.stringify(d.user)); updateUI(d.user); loadStats(); } 
+                else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
 
@@ -712,20 +448,10 @@
             var role = document.getElementById('regRole').value;
             var password = document.getElementById('regPassword').value;
             try {
-                var r = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, phone, role, password })
-                });
+                var r = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, phone, role, password }) });
                 var d = await r.json();
-                if (d.status === 'success') {
-                    showToast('✅ تم التسجيل بنجاح! يمكنك الآن تسجيل الدخول', false);
-                    closeModal('registerModal');
-                    document.getElementById('registerMessage').textContent = '';
-                } else {
-                    document.getElementById('registerMessage').textContent = '❌ ' + d.detail;
-                    document.getElementById('registerMessage').style.color = '#ef4444';
-                }
+                if (d.status === 'success') { showToast('✅ تم التسجيل بنجاح!', false); closeModal('registerModal'); document.getElementById('registerMessage').textContent = ''; } 
+                else { document.getElementById('registerMessage').textContent = '❌ ' + d.detail; document.getElementById('registerMessage').style.color = '#ef4444'; }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
 
@@ -733,18 +459,15 @@
         // تهيئة الصفحة
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
+            // الأزرار الأساسية
             document.getElementById('loginBtn').addEventListener('click', function() { openModal('login'); });
             document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
-            document.getElementById('adminBtn').addEventListener('click', function() {
-                window.location.href = '/admin';
-            });
+            document.getElementById('adminBtn').addEventListener('click', function() { window.location.href = '/admin'; });
             document.getElementById('logoutBtn').addEventListener('click', logout);
             document.getElementById('subscriptionBtn').addEventListener('click', showSubscription);
 
-            document.getElementById('createOpportunityBtn').addEventListener('click', function() {
-                openModal('createOpportunity');
-            });
-
+            // إنشاء طلب
+            document.getElementById('createOpportunityBtn').addEventListener('click', function() { openModal('createOpportunity'); });
             document.getElementById('createOpportunityForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 var user = localStorage.getItem('user');
@@ -755,120 +478,88 @@
                 var budget = parseFloat(document.getElementById('oppBudget').value);
                 var location = document.getElementById('oppLocation').value;
                 var city = document.getElementById('oppCity').value;
-
                 try {
-                    var res = await fetch('/api/opportunities/create', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ buyer_id: user.id, type, specs, budget, location, city })
-                    });
+                    var res = await fetch('/api/opportunities/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ buyer_id: user.id, type, specs, budget, location, city }) });
                     var data = await res.json();
-                    if (data.status === 'success') {
-                        showToast('✅ تم نشر الطلب بنجاح!', false);
-                        closeModal('createOpportunityModal');
-                        document.getElementById('createOpportunityForm').reset();
-                        loadStats();
-                    } else {
-                        showToast('❌ فشل النشر', true);
+                    if (data.status === 'success') { showToast('✅ تم نشر الطلب بنجاح!', false); closeModal('createOpportunityModal'); document.getElementById('createOpportunityForm').reset(); loadStats(); } 
+                    else { showToast('❌ فشل النشر', true); }
+                } catch (err) { showToast('❌ خطأ في الاتصال', true); }
+            });
+
+            // ============================================================
+            // ربط أزرار المحادثة (الإصلاح الأساسي)
+            // ============================================================
+            var sendBtn = document.getElementById('sendChatBtn');
+            var chatInput = document.getElementById('chatInput');
+            
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendChatMessage);
+                console.log("Send button listener attached successfully.");
+            } else {
+                console.error("Send button not found!");
+            }
+
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendChatMessage();
                     }
-                } catch (err) {
-                    showToast('❌ خطأ في الاتصال', true);
+                });
+                console.log("Chat input listener attached successfully.");
+            } else {
+                console.error("Chat input not found!");
+            }
+
+            // تحديث المحادثة كل 3 ثوانٍ
+            setInterval(function() {
+                if (document.getElementById('chatModal').classList.contains('active')) {
+                    loadChatMessages();
                 }
-            });
+            }, 3000);
 
-            // بطاقة الطلبات
+            // ربط البطاقات
             document.getElementById('ordersCard').addEventListener('click', function() {
-                fetch('/api/opportunities/list')
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.opportunities && data.opportunities.length > 0) {
-                            let html = data.opportunities.map(o => 
-                                `<div class="list-item" onclick="showOpportunityDetail(${o.id})">
-                                    <strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})
-                                    <br><small>${o.status} | ${o.created_at}</small>
-                                </div>`
-                            ).join('');
-                            showList('📦 الطلبات المفتوحة', html);
-                        } else {
-                            showList('📦 الطلبات المفتوحة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>');
-                        }
-                    })
-                    .catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
+                fetch('/api/opportunities/list').then(r => r.json()).then(data => {
+                    if (data.opportunities && data.opportunities.length > 0) {
+                        let html = data.opportunities.map(o => `<div class="list-item" onclick="showOpportunityDetail(${o.id})"><strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})<br><small>${o.status} | ${o.created_at}</small></div>`).join('');
+                        showList('📦 الطلبات المفتوحة', html);
+                    } else { showList('📦 الطلبات المفتوحة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>'); }
+                }).catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
             });
 
-            // بطاقة العروض
             document.getElementById('offersCard').addEventListener('click', function() {
-                fetch('/api/opportunities/all-offers')
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.offers && data.offers.length > 0) {
-                            let html = data.offers.map(o => 
-                                `<div class="list-item" onclick="showOpportunityDetail(${o.opportunity_id})">
-                                    <strong>${o.specs}</strong> - ${o.price} ج.س
-                                    <br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small>
-                                </div>`
-                            ).join('');
-                            showList('🤝 العروض المقدمة', html);
-                        } else {
-                            showList('🤝 العروض المقدمة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>');
-                        }
-                    })
-                    .catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
+                fetch('/api/opportunities/all-offers').then(r => r.json()).then(data => {
+                    if (data.offers && data.offers.length > 0) {
+                        let html = data.offers.map(o => `<div class="list-item" onclick="showOpportunityDetail(${o.opportunity_id})"><strong>${o.specs}</strong> - ${o.price} ج.س<br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small></div>`).join('');
+                        showList('🤝 العروض المقدمة', html);
+                    } else { showList('🤝 العروض المقدمة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>'); }
+                }).catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
             });
 
-            // بطاقة المحادثات
             document.getElementById('chatsCard').addEventListener('click', function() {
                 var user = localStorage.getItem('user');
-                if (!user) {
-                    showList('💬 المحادثات النشطة', '<p style="color:#fbbf24;">يرجى تسجيل الدخول أولاً لعرض المحادثات</p>');
-                    return;
-                }
+                if (!user) { showList('💬 المحادثات النشطة', '<p style="color:#fbbf24;">يرجى تسجيل الدخول أولاً لعرض المحادثات</p>'); return; }
                 user = JSON.parse(user);
-                fetch('/api/chat/list/' + user.id)
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.chats && data.chats.length > 0) {
-                            let html = data.chats.map(c => 
-                                `<div class="list-item" onclick="openChat(${c.opportunity_id}, ${c.buyer_id}, ${c.seller_id})">
-                                    <strong>الفرصة #${c.opportunity_id}</strong>
-                                    <br><small>الرسائل: ${c.messages.length} | الحالة: ${c.status}</small>
-                                </div>`
-                            ).join('');
-                            showList('💬 المحادثات النشطة', html);
-                        } else {
-                            showList('💬 المحادثات النشطة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>');
-                        }
-                    })
-                    .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
+                fetch('/api/chat/list/' + user.id).then(r => r.json()).then(data => {
+                    if (data.chats && data.chats.length > 0) {
+                        let html = data.chats.map(c => `<div class="list-item" onclick="openChat(${c.opportunity_id}, ${c.buyer_id}, ${c.seller_id})"><strong>الفرصة #${c.opportunity_id}</strong><br><small>الرسائل: ${c.messages.length} | الحالة: ${c.status}</small></div>`).join('');
+                        showList('💬 المحادثات النشطة', html);
+                    } else { showList('💬 المحادثات النشطة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>'); }
+                }).catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
             });
 
-            // بطاقة الإعلانات
             document.getElementById('adsCard').addEventListener('click', function() {
-                fetch('/api/admin/ads')
-                    .then(r => r.json())
-                    .then(data => {
-                        var publishedAds = data.ads ? data.ads.filter(a => a.status === 'published') : [];
-                        if (publishedAds.length > 0) {
-                            let html = publishedAds.map(a => `
-                                <div class="list-item" onclick="window.open('${a.link}', '_blank')" style="border-right-color: #ec4899;">
-                                    <div class="ad-item">
-                                        ${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}
-                                        <div style="flex:1;">
-                                            <strong>${a.title_ar}</strong>
-                                            <p style="color:#94a3b8; font-size:0.9rem; margin-top:4px;">${a.description || ''}</p>
-                                            <small style="color:#ec4899;">👆 اضغط لفتح الإعلان</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('');
-                            showList('📢 الإعلانات المنشورة', html);
-                        } else {
-                            showList('📢 الإعلانات', '<p style="color:#94a3b8;">لا توجد إعلانات منشورة حالياً</p>');
-                        }
-                    })
-                    .catch(() => showList('📢 الإعلانات', '<p style="color:#ef4444;">فشل تحميل الإعلانات</p>'));
+                fetch('/api/admin/ads').then(r => r.json()).then(data => {
+                    var publishedAds = data.ads ? data.ads.filter(a => a.status === 'published') : [];
+                    if (publishedAds.length > 0) {
+                        let html = publishedAds.map(a => `<div class="list-item" onclick="window.open('${a.link}', '_blank')" style="border-right-color: #ec4899;"><div class="ad-item">${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}<div style="flex:1;"><strong>${a.title_ar}</strong><p style="color:#94a3b8; font-size:0.9rem; margin-top:4px;">${a.description || ''}</p><small style="color:#ec4899;">👆 اضغط لفتح الإعلان</small></div></div></div>`).join('');
+                        showList('📢 الإعلانات المنشورة', html);
+                    } else { showList('📢 الإعلانات', '<p style="color:#94a3b8;">لا توجد إعلانات منشورة حالياً</p>'); }
+                }).catch(() => showList('📢 الإعلانات', '<p style="color:#ef4444;">فشل تحميل الإعلانات</p>'));
             });
 
+            // تحميل البيانات
             loadGlobalGold();
             loadGoldPrices();
             loadStats();
@@ -876,15 +567,8 @@
 
             var storedUser = localStorage.getItem('user');
             if (storedUser) {
-                try {
-                    var user = JSON.parse(storedUser);
-                    updateUI(user);
-                } catch (e) {
-                    updateUI(null);
-                }
-            } else {
-                updateUI(null);
-            }
+                try { var user = JSON.parse(storedUser); updateUI(user); } catch (e) { updateUI(null); }
+            } else { updateUI(null); }
         });
     </script>
 </body>

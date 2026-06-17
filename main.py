@@ -1,9 +1,16 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTMLResponse, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import httpx
 from datetime import datetime
+import json
+import os
 
 app = FastAPI()
+
+# إعداد القوالب (إن وجدت) أو استخدام HTML مباشر
+# templates = Jinja2Templates(directory="templates")
 
 async def get_gold_price():
     try:
@@ -15,6 +22,8 @@ async def get_gold_price():
             return 4315.09
     except:
         return 4315.09
+
+# ========== الصفحات العامة ==========
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -47,7 +56,7 @@ async def root():
         .card-label {{ color:#94a3b8; font-size:0.9rem; }}
         .card-sub {{ color:#64748b; font-size:0.75rem; margin-top:4px; }}
         .flex {{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:10px; }}
-        .btn {{ padding:10px 24px; background:#22c55e; border:none; color:white; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:0.2s; font-family:inherit; }}
+        .btn {{ padding:10px 24px; background:#22c55e; border:none; color:white; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:0.2s; font-family:inherit; text-decoration:none; display:inline-block; }}
         .btn:hover {{ transform:scale(1.05); box-shadow:0 8px 25px rgba(34,197,94,0.3); }}
         .btn-blue {{ background:#3b82f6; }}
         .btn-blue:hover {{ box-shadow:0 8px 25px rgba(59,130,246,0.3); }}
@@ -65,42 +74,31 @@ async def root():
             <div class="gold-price">💰 USD {gold} <span>| PAXG</span></div>
         </div>
         <div class="grid">
-            <div class="card" onclick="showSection('gold')">
-                <span class="card-icon">📊</span>
-                <div class="card-number green">{gold}</div>
-                <div class="card-label">سعر الأونصة</div>
-                <div class="card-sub">تحديث مباشر</div>
+            <div class="card" onclick="location.href='/buyer'">
+                <span class="card-icon">🛒</span>
+                <div class="card-number blue">واجهة المشتري</div>
+                <div class="card-label">تقديم طلب شراء</div>
+                <div class="card-sub">اطلب الذهب الآن</div>
             </div>
-            <div class="card" onclick="showSection('traders')">
-                <span class="card-icon">🏦</span>
-                <div class="card-number blue">٢٤</div>
-                <div class="card-label">التجار النشطون</div>
-                <div class="card-sub">قائمة معتمدة</div>
+            <div class="card" onclick="location.href='/seller'">
+                <span class="card-icon">🏪</span>
+                <div class="card-number purple">واجهة التاجر</div>
+                <div class="card-label">إدارة الطلبات</div>
+                <div class="card-sub">استجب لطلبات المشترين</div>
             </div>
-            <div class="card" onclick="showSection('orders')">
-                <span class="card-icon">📦</span>
-                <div class="card-number purple">١٤٢</div>
-                <div class="card-label">الطلبات المفتوحة</div>
-                <div class="card-sub">اليوم</div>
-            </div>
-            <div class="card" onclick="showSection('ads')">
-                <span class="card-icon">⚡</span>
-                <div class="card-number pink">٨</div>
-                <div class="card-label">إعلانات جديدة</div>
-                <div class="card-sub">آخر ساعة</div>
+            <div class="card" onclick="location.href='/admin'">
+                <span class="card-icon">⚙️</span>
+                <div class="card-number pink">لوحة المشرف</div>
+                <div class="card-label">إدارة النظام</div>
+                <div class="card-sub">المستخدمين، الإعلانات، الأسعار</div>
             </div>
         </div>
         <div class="section-title">🚀 التنقل السريع</div>
         <div class="flex">
-            <button class="btn" onclick="showSection('traders')">التجار</button>
-            <button class="btn btn-blue" onclick="showSection('orders')">الطلبات</button>
-            <button class="btn btn-blue" onclick="showSection('ads')">الإعلانات</button>
-            <button class="btn btn-blue" onclick="showSection('mining')">التعدين</button>
-            <button class="btn btn-blue" onclick="showSection('subscribe')">الاشتراك</button>
-        </div>
-        <div id="content" class="content-box" style="display:none;">
-            <h2 id="content-title"></h2>
-            <p id="content-text"></p>
+            <a href="/buyer" class="btn btn-blue">المشتري</a>
+            <a href="/seller" class="btn btn-blue">التاجر</a>
+            <a href="/admin" class="btn btn-blue">المشرف</a>
+            <a href="/dashboard" class="btn">لوحة التحكم</a>
         </div>
         <div style="margin-top:30px; padding:20px; background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
             🟢 النظام مباشر <span class="status-badge">Live</span> — آخر تحديث: {now}
@@ -109,29 +107,122 @@ async def root():
             منصة السودان للتعدين © 2026 — جميع الحقوق محفوظة
         </div>
     </div>
-    <script>
-        const sections = {{
-            'traders': {{ 'title':'👥 التجار', 'text':'قائمة التجار المعتمدين في منصة السودان للتعدين. يمكنك عرض ملفاتهم والتواصل معهم.' }},
-            'orders': {{ 'title':'📦 الطلبات', 'text':'جميع طلبات الشراء والبيع المفتوحة. يمكنك تصفيتها حسب النوع أو التاريخ.' }},
-            'ads': {{ 'title':'📢 الإعلانات', 'text':'إعلانات التعدين والذهب المضافة حديثاً. تواصل مع المعلنين مباشرة.' }},
-            'mining': {{ 'title':'⛏️ التعدين', 'text':'معلومات عن نشاط التعدين في السودان، أحدث المشاريع والفرص المتاحة.' }},
-            'subscribe': {{ 'title':'📝 الاشتراك', 'text':'اشترك الآن في منصة السودان للتعدين واحصل على مميزات حصرية.' }},
-            'gold': {{ 'title':'📊 سعر الذهب', 'text':'سعر الأونصة الذهب محدث مباشرة من الأسواق العالمية.' }}
-        }};
-        function showSection(section) {{
-            const content = document.getElementById('content');
-            const title = document.getElementById('content-title');
-            const text = document.getElementById('content-text');
-            if (sections[section]) {{
-                title.textContent = sections[section].title;
-                text.textContent = sections[section].text;
-                content.style.display = 'block';
-            }}
-        }}
-    </script>
 </body>
 </html>
 '''
+
+# ========== صفحات المشتري ==========
+
+@app.get("/buyer", response_class=HTMLResponse)
+async def buyer_dashboard():
+    gold = await get_gold_price()
+    return f'''
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><title>المشتري - منصة السودان للتعدين</title>
+<style>
+body {{ background:#0f172a; color:white; font-family:Tahoma; padding:20px; }}
+.container {{ max-width:800px; margin:auto; }}
+.box {{ background:#1e293b; padding:20px; margin:10px 0; border-radius:12px; }}
+.btn {{ padding:10px 20px; background:#22c55e; border:none; color:white; border-radius:8px; cursor:pointer; }}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🛒 واجهة المشتري</h1>
+    <div class="box">
+        <h3>تقديم طلب شراء</h3>
+        <form action="/api/orders/create" method="post">
+            <input type="text" name="item" placeholder="الذهب (جرام)" required><br><br>
+            <input type="number" name="quantity" placeholder="الكمية" required><br><br>
+            <input type="text" name="price" placeholder="السعر المطلوب" value="{gold}"><br><br>
+            <button class="btn" type="submit">إرسال الطلب</button>
+        </form>
+    </div>
+    <div class="box">
+        <h3>طلباتي الحالية</h3>
+        <p>سيتم عرض طلباتك هنا بعد الإرسال.</p>
+    </div>
+    <a href="/">⬅️ العودة للرئيسية</a>
+</div>
+</body>
+</html>
+'''
+
+# ========== صفحات التاجر ==========
+
+@app.get("/seller", response_class=HTMLResponse)
+async def seller_dashboard():
+    return f'''
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><title>التاجر - منصة السودان للتعدين</title>
+<style>
+body {{ background:#0f172a; color:white; font-family:Tahoma; padding:20px; }}
+.container {{ max-width:800px; margin:auto; }}
+.box {{ background:#1e293b; padding:20px; margin:10px 0; border-radius:12px; }}
+.btn {{ padding:10px 20px; background:#22c55e; border:none; color:white; border-radius:8px; cursor:pointer; }}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🏪 واجهة التاجر</h1>
+    <div class="box">
+        <h3>طلبات المشترين</h3>
+        <p>هنا تظهر طلبات الشراء الواردة.</p>
+        <ul>
+            <li>طلب #1: 5 جرام بسعر 4320$ <button class="btn" onclick="alert('تم قبول الطلب')">قبول</button> <button class="btn" style="background:#dc2626;">رفض</button></li>
+            <li>طلب #2: 10 جرام بسعر 4300$ <button class="btn" onclick="alert('تم قبول الطلب')">قبول</button> <button class="btn" style="background:#dc2626;">رفض</button></li>
+        </ul>
+    </div>
+    <a href="/">⬅️ العودة للرئيسية</a>
+</div>
+</body>
+</html>
+'''
+
+# ========== لوحة المشرف (admin) ==========
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard():
+    return f'''
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><title>المشرف - منصة السودان للتعدين</title>
+<style>
+body {{ background:#0f172a; color:white; font-family:Tahoma; padding:20px; }}
+.container {{ max-width:1000px; margin:auto; }}
+.box {{ background:#1e293b; padding:20px; margin:10px 0; border-radius:12px; }}
+.btn {{ padding:10px 20px; background:#22c55e; border:none; color:white; border-radius:8px; cursor:pointer; }}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>⚙️ لوحة المشرف</h1>
+    <div class="box">
+        <h3>إدارة المستخدمين</h3>
+        <p>قائمة المستخدمين (نموذج):</p>
+        <ul>
+            <li>مشتري تجريبي (buyer@test.com) - دور: مشتري</li>
+            <li>تاجر تجريبي (seller@test.com) - دور: تاجر</li>
+        </ul>
+    </div>
+    <div class="box">
+        <h3>إضافة إعلان جديد</h3>
+        <form>
+            <input type="text" placeholder="العنوان (عربي)"><br><br>
+            <input type="text" placeholder="العنوان (إنجليزي)"><br><br>
+            <textarea placeholder="الوصف"></textarea><br><br>
+            <button class="btn" type="submit">نشر الإعلان</button>
+        </form>
+    </div>
+    <a href="/">⬅️ العودة للرئيسية</a>
+</div>
+</body>
+</html>
+'''
+
+# ========== واجهات برمجة التطبيقات (API) الحالية ==========
 
 @app.get("/api/price")
 async def get_price():
@@ -151,43 +242,20 @@ async def dashboard():
     return f'''
 <!DOCTYPE html>
 <html>
-<head><title>Sudan Mining Hub</title>
-<meta charset="utf-8">
-<style>
-body {{ background:#0f172a; color:white; font-family:Arial; padding:20px; }}
-.box {{ background:#1e293b; padding:20px; margin:10px 0; border-radius:12px; }}
-button {{ padding:10px; background:#22c55e; border:none; color:white; border-radius:8px; cursor:pointer; }}
-button:hover {{ background:#16a34a; }}
-</style>
-</head>
-<body>
-<h1>🟡 Sudan Mining Hub</h1>
-<div class="box"><h3>Gold Price</h3><p style="font-size:24px">{gold} USD</p></div>
-<div class="box"><h3>Status</h3><p>✅ Running</p></div>
-<div class="box"><button onclick="alert('✅ زر يعمل بشكل صحيح!')">Test Button</button></div>
+<head><title>منصة السودان للتعدين</title></head>
+<body style="background:#0f172a;color:white;font-family:Arial;padding:20px;">
+<h1>⛏️ منصة السودان للتعدين</h1>
+<p>سعر الذهب: {gold} USD</p>
+<p>✅ النظام يعمل</p>
 </body>
 </html>
 '''
 
-@app.get("/traders")
-async def traders():
-    return {"page": "التجار", "message": "قائمة التجار"}
-
-@app.get("/orders")
-async def orders():
-    return {"page": "الطلبات", "message": "قائمة الطلبات"}
-
-@app.get("/ads")
-async def ads():
-    return {"page": "الإعلانات", "message": "قائمة الإعلانات"}
-
-@app.get("/mining")
-async def mining():
-    return {"page": "التعدين", "message": "معلومات التعدين"}
-
-@app.get("/subscribe")
-async def subscribe():
-    return {"page": "الاشتراك", "message": "صفحة الاشتراك"}
+# مسارات API إضافية للطلبات (نموذجية)
+@app.post("/api/orders/create")
+async def create_order(request: Request):
+    # هنا سنضيف منطق حفظ الطلب في قاعدة البيانات
+    return {"message": "تم إنشاء الطلب بنجاح"}
 
 if __name__ == "__main__":
     import uvicorn

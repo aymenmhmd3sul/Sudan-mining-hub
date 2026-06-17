@@ -1,30 +1,36 @@
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import Base
+import hashlib, secrets
+from fastapi import Request
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+users_db = {
+    "admin@test.com": {"name": "مدير النظام", "password": hashlib.sha256("admin123".encode()).hexdigest(), "role": "admin"}
+}
+sessions = {}
 
-if not DATABASE_URL:
-    raise Exception("DATABASE_URL is missing (Render env var not set)")
+def hash_password(pw):
+    return hashlib.sha256(pw.encode()).hexdigest()
 
-if DATABASE_URL.startswith("postgresql://"):
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql://", 1)
+def create_session(email):
+    token = secrets.token_urlsafe(32)
+    sessions[token] = email
+    return token
 
-engine = create_engine(
-    DATABASE_URL,
-    echo=False,
-    pool_pre_ping=True
-)
+def get_user(email):
+    return users_db.get(email)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+def get_user_from_cookie(request: Request):
+    token = request.cookies.get("session_token")
+    if not token or token not in sessions:
+        return None
+    email = sessions[token]
+    return users_db.get(email)
 
-def get_session():
-    db = SessionLocal()
+async def get_gold_price():
+    import httpx
     try:
-        yield db
-    finally:
-        db.close()
-
-def init_db():
-    Base.metadata.create_all(bind=engine)
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            r = await client.get("https://api.gold-api.com/price/XAU")
+            if r.status_code == 200:
+                return r.json().get("price", 4315.09)
+            return 4315.09
+    except:
+        return 4315.09

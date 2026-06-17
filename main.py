@@ -1,8 +1,7 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-import httpx
-from datetime import datetime
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from routers import auth, buyer, seller, admin, api
+from database import get_user_from_cookie
 
 app = FastAPI(title="منصة السودان للتعدين")
 
@@ -14,7 +13,20 @@ app.include_router(admin.router)
 app.include_router(api.router)
 
 @app.get("/", response_class=HTMLResponse)
-async def root():
+async def root(request: Request):
+    user = get_user_from_cookie(request)
+    
+    # إذا كان المستخدم مسجلاً، نوجهه إلى واجهته مباشرة
+    if user:
+        role = user.get("role")
+        if role == "buyer":
+            return RedirectResponse("/buyer", status_code=302)
+        elif role == "seller":
+            return RedirectResponse("/seller", status_code=302)
+        elif role == "admin":
+            return RedirectResponse("/admin", status_code=302)
+    
+    # غير مسجل → صفحة تسجيل الدخول
     return '''
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">

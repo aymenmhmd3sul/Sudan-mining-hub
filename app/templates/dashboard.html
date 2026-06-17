@@ -461,7 +461,7 @@
         // ============================================================
         var currentChat = null;  // { opportunity_id, buyer_id, seller_id }
 
-        async function openChat(opportunityId, buyerId, sellerId) {
+        async function openChat(opportunityId, buyerId, sellerId) { closeModal('detailModal'); 
             currentChat = { opportunity_id: opportunityId, buyer_id: buyerId, seller_id: sellerId };
             document.getElementById('chatTitle').textContent = `💬 محادثة الطلب #${opportunityId}`;
             await loadChatMessages();

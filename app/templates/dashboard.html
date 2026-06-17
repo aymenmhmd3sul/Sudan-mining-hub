@@ -32,6 +32,8 @@
         .btn-danger:hover { box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4); }
         .btn-purple { background: #a855f7; color: white; }
         .btn-purple:hover { box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
+        .btn-chat { background: #0ea5e9; color: white; }
+        .btn-chat:hover { box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 0.9rem; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
@@ -58,6 +60,11 @@
         .status-badge.completed { background: #22c55e; color: white; }
         .commission-box { background: #0f172a; padding: 15px; border-radius: 12px; margin: 10px 0; border-right: 4px solid #fbbf24; }
         .commission-box strong { color: #fbbf24; }
+        .chat-message { background: #0f172a; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; }
+        .chat-message .sender { color: #fbbf24; font-weight: 600; }
+        .chat-message .time { color: #94a3b8; font-size: 0.7rem; float: left; }
+        .chat-input { display: flex; gap: 10px; margin-top: 10px; }
+        .chat-input input { flex: 1; }
     </style>
 </head>
 <body>
@@ -209,7 +216,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الطلب (لعرض العروض وأزرار الاتفاق) -->
+    <!-- نافذة تفاصيل الطلب (لعرض العروض وأزرار الاتفاق والمحادثة) -->
     <div class="modal" id="detailModal">
         <div class="modal-content">
             <button class="btn-close" onclick="closeModal('detailModal')">✕</button>
@@ -227,6 +234,19 @@
         </div>
     </div>
 
+    <!-- نافذة المحادثة -->
+    <div class="modal" id="chatModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal('chatModal')">✕</button>
+            <h2 id="chatTitle">💬 المحادثة</h2>
+            <div id="chatMessages" style="max-height:300px; overflow-y:auto; margin-bottom:10px;"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="اكتب رسالتك...">
+                <button class="btn btn-blue" id="sendChatBtn">إرسال</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============================================================
         // دوال النوافذ المنبثقة
@@ -238,7 +258,8 @@
                 'createOpportunity': 'createOpportunityModal',
                 'offer': 'offerModal',
                 'detail': 'detailModal',
-                'list': 'listModal'
+                'list': 'listModal',
+                'chat': 'chatModal'
             }[type];
             if (modalId) document.getElementById(modalId).classList.add('active');
         }
@@ -404,7 +425,7 @@
         }
 
         // ============================================================
-        // تأكيد الاستلام (يظهر بعد الاتفاق)
+        // تأكيد الاستلام
         // ============================================================
         async function confirmDelivery(opportunityId) {
             var user = localStorage.getItem('user');
@@ -418,7 +439,6 @@
                 var d = await r.json();
                 if (d.status === 'success') {
                     showToast('✅ ' + d.message, false);
-                    // عرض تفاصيل العمولة ورقم الحساب
                     var commission = d.commission_details;
                     var html = `
                         <div class="commission-box">
@@ -437,7 +457,102 @@
         }
 
         // ============================================================
-        // عرض تفاصيل الطلب (مع العروض والأزرار)
+        // غرفة المحادثة
+        // ============================================================
+        var currentChat = null;  // { opportunity_id, buyer_id, seller_id }
+
+        async function openChat(opportunityId, buyerId, sellerId) {
+            currentChat = { opportunity_id: opportunityId, buyer_id: buyerId, seller_id: sellerId };
+            document.getElementById('chatTitle').textContent = `💬 محادثة الطلب #${opportunityId}`;
+            await loadChatMessages();
+            openModal('chat');
+        }
+
+        async function loadChatMessages() {
+            if (!currentChat) return;
+            var { opportunity_id, buyer_id, seller_id } = currentChat;
+            try {
+                var r = await fetch(`/api/chat/${opportunity_id}/${buyer_id}/${seller_id}`);
+                var data = await r.json();
+                var container = document.getElementById('chatMessages');
+                if (data.chat && data.chat.messages) {
+                    var user = JSON.parse(localStorage.getItem('user') || '{}');
+                    var html = data.chat.messages.map(m => {
+                        var isMine = (m.sender_id == user.id);
+                        return `<div class="chat-message" style="text-align: ${isMine ? 'left' : 'right'};">
+                            <span class="sender">${isMine ? 'أنت' : 'الطرف الآخر'}</span>
+                            <span class="time">${m.timestamp}</span>
+                            <div>${m.message}</div>
+                        </div>`;
+                    }).join('');
+                    container.innerHTML = html || '<p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ المحادثة!</p>';
+                    container.scrollTop = container.scrollHeight;
+                } else {
+                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ المحادثة!</p>';
+                }
+            } catch (err) {
+                document.getElementById('chatMessages').innerHTML = '<p style="color:#ef4444;">فشل تحميل المحادثة</p>';
+            }
+        }
+
+        // إرسال رسالة في المحادثة
+        document.getElementById('sendChatBtn').addEventListener('click', sendChatMessage);
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        async function sendChatMessage() {
+            var input = document.getElementById('chatInput');
+            var message = input.value.trim();
+            if (!message) return;
+            if (!currentChat) { showToast('❌ لا توجد محادثة مفتوحة', true); return; }
+
+            var user = localStorage.getItem('user');
+            if (!user) { showToast('❌ يرجى تسجيل الدخول', true); return; }
+            user = JSON.parse(user);
+
+            var { opportunity_id, buyer_id, seller_id } = currentChat;
+            // تحديد المرسل والمستقبل
+            var sender_id = user.id;
+            var receiver_id = (user.id == buyer_id) ? seller_id : buyer_id;
+
+            try {
+                var r = await fetch('/api/chat/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        opportunity_id,
+                        sender_id,
+                        receiver_id,
+                        message,
+                        buyer_id,
+                        seller_id
+                    })
+                });
+                var data = await r.json();
+                if (data.status === 'success') {
+                    input.value = '';
+                    await loadChatMessages();
+                    if (data.ai_detected) {
+                        showToast('🤖 ' + data.message, false);
+                    }
+                } else {
+                    showToast('❌ فشل إرسال الرسالة', true);
+                }
+            } catch (err) {
+                showToast('❌ خطأ في الاتصال', true);
+            }
+        }
+
+        // تحديث المحادثة كل 3 ثوانٍ (Polling)
+        setInterval(function() {
+            if (document.getElementById('chatModal').classList.contains('active')) {
+                loadChatMessages();
+            }
+        }, 3000);
+
+        // ============================================================
+        // عرض تفاصيل الطلب (مع أزرار المحادثة والعروض)
         // ============================================================
         async function showOpportunityDetail(oppId) {
             try {
@@ -462,7 +577,7 @@
                     </div>
                 `;
 
-                // عرض العروض
+                // عرض العروض مع زر المحادثة
                 if (offers.length > 0) {
                     html += `<h3 style="color:#fbbf24; margin-top:15px;">🤝 العروض المقدمة (${offers.length})</h3>`;
                     offers.forEach(o => {
@@ -470,6 +585,8 @@
                             <div class="list-item" style="border-right-color: #a855f7;">
                                 <strong>${o.specs}</strong> - ${o.price} ج.س
                                 <br><small>التسليم: ${o.delivery_time} | الحالة: ${o.condition} | ${o.created_at}</small>
+                                <br>
+                                <button class="btn btn-chat" style="margin-top:5px;" onclick="openChat(${opp.id}, ${opp.buyer_id}, ${o.seller_id})">💬 فتح المحادثة</button>
                             </div>
                         `;
                     });
@@ -477,7 +594,7 @@
                     html += `<p style="color:#94a3b8;">لا توجد عروض حتى الآن</p>`;
                 }
 
-                // أزرار الإجراءات (تعتمد على الدور والحالة)
+                // أزرار الإجراءات
                 if (user) {
                     if (userRole === 'seller' && opp.status === 'open') {
                         html += `<button class="btn btn-yellow" style="margin-top:15px; width:100%;" onclick="openOfferModal(${opp.id})">🤝 تقديم عرض</button>`;
@@ -659,7 +776,7 @@
                 }
             });
 
-            // بطاقة الطلبات: عند النقر، نعرض قائمة الطلبات، وعند النقر على طلب معين نفتح التفاصيل
+            // بطاقة الطلبات
             document.getElementById('ordersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/list')
                     .then(r => r.json())
@@ -679,7 +796,7 @@
                     .catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
             });
 
-            // بطاقة العروض: تعرض جميع العروض، وعند النقر على عرض معين تفتح تفاصيل الطلب المرتبط
+            // بطاقة العروض
             document.getElementById('offersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/all-offers')
                     .then(r => r.json())
@@ -699,7 +816,7 @@
                     .catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
             });
 
-            // باقي البطاقات (المحادثات والإعلانات)
+            // بطاقة المحادثات
             document.getElementById('chatsCard').addEventListener('click', function() {
                 var user = localStorage.getItem('user');
                 if (!user) {
@@ -712,7 +829,7 @@
                     .then(data => {
                         if (data.chats && data.chats.length > 0) {
                             let html = data.chats.map(c => 
-                                `<div class="list-item" onclick="showOpportunityDetail(${c.opportunity_id})">
+                                `<div class="list-item" onclick="openChat(${c.opportunity_id}, ${c.buyer_id}, ${c.seller_id})">
                                     <strong>الفرصة #${c.opportunity_id}</strong>
                                     <br><small>الرسائل: ${c.messages.length} | الحالة: ${c.status}</small>
                                 </div>`
@@ -725,6 +842,7 @@
                     .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
             });
 
+            // بطاقة الإعلانات
             document.getElementById('adsCard').addEventListener('click', function() {
                 fetch('/api/admin/ads')
                     .then(r => r.json())

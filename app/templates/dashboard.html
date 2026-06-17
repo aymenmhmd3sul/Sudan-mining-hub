@@ -30,6 +30,8 @@
         .btn-yellow:hover { box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4); }
         .btn-danger { background: #ef4444; color: white; }
         .btn-danger:hover { box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4); }
+        .btn-purple { background: #a855f7; color: white; }
+        .btn-purple:hover { box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 0.9rem; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
@@ -50,6 +52,12 @@
         .welcome-box { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
         .welcome-box h3 { color: #fbbf24; }
         .welcome-box p { color: #94a3b8; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .status-badge.open { background: #3b82f6; color: white; }
+        .status-badge.agreed { background: #fbbf24; color: #0f172a; }
+        .status-badge.completed { background: #22c55e; color: white; }
+        .commission-box { background: #0f172a; padding: 15px; border-radius: 12px; margin: 10px 0; border-right: 4px solid #fbbf24; }
+        .commission-box strong { color: #fbbf24; }
     </style>
 </head>
 <body>
@@ -65,12 +73,13 @@
             <button class="btn btn-admin" id="adminBtn">🛠️ لوحة المشرف</button>
             <button class="btn btn-yellow hidden" id="createOpportunityBtn">➕ إنشاء طلب</button>
             <button class="btn btn-danger hidden" id="logoutBtn">🚪 تسجيل خروج</button>
+            <button class="btn btn-purple hidden" id="subscriptionBtn">📋 اشتراكي</button>
         </div>
 
-        <!-- رسالة ترحيب للمشتري (تظهر فقط للمشتري) -->
+        <!-- رسالة ترحيب للمشتري -->
         <div id="welcomeBox" class="welcome-box hidden">
             <h3>👋 مرحباً بك!</h3>
-            <p>يمكنك الآن <strong>إنشاء طلب جديد</strong> بالضغط على الزر الأصفر أعلاه، أو تصفح الطلبات والعروض من البطاقات أدناه.</p>
+            <p>يمكنك الآن <strong>إنشاء طلب جديد</strong> بالضغط على الزر الأصفر، أو تصفح الطلبات والعروض من البطاقات أدناه.</p>
         </div>
 
         <div class="grid">
@@ -168,6 +177,47 @@
         </div>
     </div>
 
+    <!-- نافذة تقديم عرض (للتاجر) -->
+    <div class="modal" id="offerModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal('offerModal')">✕</button>
+            <h2>🤝 تقديم عرض</h2>
+            <form id="offerForm">
+                <input type="hidden" id="offerOppId">
+                <div class="form-group">
+                    <label>السعر المقترح (ج.س) *</label>
+                    <input type="number" id="offerPrice" required>
+                </div>
+                <div class="form-group">
+                    <label>المواصفات المقدمة *</label>
+                    <textarea id="offerSpecs" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>مدة التسليم</label>
+                    <input type="text" id="offerDelivery" placeholder="مثال: 3 أيام">
+                </div>
+                <div class="form-group">
+                    <label>الحالة</label>
+                    <select id="offerCondition">
+                        <option value="new">جديد</option>
+                        <option value="used">مستعمل</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">✅ إرسال العرض</button>
+            </form>
+            <div id="offerMessage" style="margin-top:10px;text-align:center;"></div>
+        </div>
+    </div>
+
+    <!-- نافذة تفاصيل الطلب (لعرض العروض وأزرار الاتفاق) -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal('detailModal')">✕</button>
+            <h2 id="detailTitle">📋 تفاصيل الطلب</h2>
+            <div id="detailBody"></div>
+        </div>
+    </div>
+
     <!-- نافذة عرض القوائم -->
     <div class="modal" id="listModal">
         <div class="modal-content">
@@ -182,25 +232,26 @@
         // دوال النوافذ المنبثقة
         // ============================================================
         function openModal(type) {
-            var modalId = { 'login': 'loginModal', 'register': 'registerModal', 'createOpportunity': 'createOpportunityModal' }[type];
+            var modalId = { 
+                'login': 'loginModal', 
+                'register': 'registerModal', 
+                'createOpportunity': 'createOpportunityModal',
+                'offer': 'offerModal',
+                'detail': 'detailModal',
+                'list': 'listModal'
+            }[type];
             if (modalId) document.getElementById(modalId).classList.add('active');
         }
         function closeModal(id) { 
             document.getElementById(id).classList.remove('active'); 
         }
 
-        // ============================================================
-        // عرض قائمة في نافذة منبثقة
-        // ============================================================
         function showList(title, itemsHtml) {
             document.getElementById('listModalTitle').textContent = title;
             document.getElementById('listModalBody').innerHTML = itemsHtml;
             document.getElementById('listModal').classList.add('active');
         }
 
-        // ============================================================
-        // إشعارات (Toast)
-        // ============================================================
         function showToast(msg, err) {
             var t = document.getElementById('toast');
             t.textContent = msg; t.style.display = 'block';
@@ -209,7 +260,7 @@
         }
 
         // ============================================================
-        // تحديث واجهة المستخدم بناءً على حالة تسجيل الدخول والدور
+        // تحديث واجهة المستخدم
         // ============================================================
         function updateUI(user) {
             var welcomeBox = document.getElementById('welcomeBox');
@@ -217,36 +268,37 @@
             var logoutBtn = document.getElementById('logoutBtn');
             var loginBtn = document.getElementById('loginBtn');
             var registerBtn = document.getElementById('registerBtn');
+            var subscriptionBtn = document.getElementById('subscriptionBtn');
 
             if (user) {
-                // ✅ مستخدم مسجل الدخول
                 loginBtn.classList.add('hidden');
                 registerBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
+                subscriptionBtn.classList.remove('hidden');
 
                 if (user.role === 'buyer') {
-                    // 👤 مشتري: تظهر الرسالة الترحيبية وزر إنشاء طلب
                     welcomeBox.classList.remove('hidden');
                     createBtn.classList.remove('hidden');
+                    subscriptionBtn.classList.add('hidden');
                     document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (مشتري)';
                 } else if (user.role === 'seller') {
-                    // 👤 تاجر: تختفي الرسالة وزر إنشاء طلب
                     welcomeBox.classList.add('hidden');
                     createBtn.classList.add('hidden');
+                    subscriptionBtn.classList.remove('hidden');
                     document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (تاجر)';
                 } else {
-                    // 👤 مشرف أو دور آخر
                     welcomeBox.classList.add('hidden');
                     createBtn.classList.add('hidden');
+                    subscriptionBtn.classList.add('hidden');
                     document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name;
                 }
             } else {
-                // ❌ مستخدم غير مسجل الدخول
                 loginBtn.classList.remove('hidden');
                 registerBtn.classList.remove('hidden');
                 logoutBtn.classList.add('hidden');
                 welcomeBox.classList.add('hidden');
                 createBtn.classList.add('hidden');
+                subscriptionBtn.classList.add('hidden');
                 document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
             }
         }
@@ -258,12 +310,261 @@
             localStorage.removeItem('user');
             updateUI(null);
             showToast('✅ تم تسجيل الخروج بنجاح', false);
-            // تحديث الإحصائيات (للمستخدم غير المسجل)
             loadStats();
         }
 
         // ============================================================
-        // تسجيل الدخول
+        // عرض اشتراك التاجر
+        // ============================================================
+        async function showSubscription() {
+            var user = localStorage.getItem('user');
+            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
+            user = JSON.parse(user);
+            if (user.role !== 'seller') { showToast('❌ هذه الميزة للتجار فقط', true); return; }
+
+            try {
+                var r = await fetch('/api/payments/subscription/' + user.id);
+                var d = await r.json();
+                if (d.status === 'active') {
+                    showList('📋 اشتراكي', `<p style="color:#22c55e;">✅ اشتراكك نشط حتى ${d.subscription_end}</p>`);
+                } else {
+                    showList('📋 اشتراكي', `
+                        <p style="color:#ef4444;">❌ ${d.message}</p>
+                        <div class="commission-box">
+                            <strong>🏦 رقم الحساب للدفع:</strong><br>
+                            ${d.bank_account || 'Sudan Mining Hub - Bank of Khartoum - Account: 123456789'}
+                        </div>
+                        <p style="color:#94a3b8; margin-top:10px;">بعد الدفع، يرجى التواصل مع المشرف لتفعيل حسابك.</p>
+                    `);
+                }
+            } catch (err) { showToast('❌ فشل تحميل الاشتراك', true); }
+        }
+
+        // ============================================================
+        // تقديم عرض (للتاجر)
+        // ============================================================
+        function openOfferModal(opportunityId) {
+            document.getElementById('offerOppId').value = opportunityId;
+            document.getElementById('offerForm').reset();
+            document.getElementById('offerMessage').textContent = '';
+            openModal('offer');
+        }
+
+        document.getElementById('offerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var user = localStorage.getItem('user');
+            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
+            user = JSON.parse(user);
+            if (user.role !== 'seller') { showToast('❌ فقط التجار يمكنهم تقديم عروض', true); return; }
+
+            var opportunity_id = parseInt(document.getElementById('offerOppId').value);
+            var price = parseFloat(document.getElementById('offerPrice').value);
+            var specs = document.getElementById('offerSpecs').value;
+            var delivery_time = document.getElementById('offerDelivery').value || 'غير محدد';
+            var condition = document.getElementById('offerCondition').value;
+
+            try {
+                var r = await fetch('/api/opportunities/offer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ opportunity_id, seller_id: user.id, price, specs, delivery_time, condition })
+                });
+                var d = await r.json();
+                if (d.status === 'success') {
+                    showToast('✅ تم تقديم العرض بنجاح!', false);
+                    closeModal('offerModal');
+                    loadStats();
+                } else {
+                    showToast('❌ ' + d.detail, true);
+                }
+            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
+        });
+
+        // ============================================================
+        // تأكيد الاتفاق
+        // ============================================================
+        async function confirmAgreement(opportunityId) {
+            var user = localStorage.getItem('user');
+            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
+            user = JSON.parse(user);
+
+            try {
+                var r = await fetch(`/api/opportunities/confirm-agreement/${opportunityId}/${user.id}`, {
+                    method: 'POST'
+                });
+                var d = await r.json();
+                if (d.status === 'success') {
+                    showToast('✅ ' + d.message, false);
+                    closeModal('detailModal');
+                    loadStats();
+                } else {
+                    showToast('❌ ' + d.detail, true);
+                }
+            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
+        }
+
+        // ============================================================
+        // تأكيد الاستلام (يظهر بعد الاتفاق)
+        // ============================================================
+        async function confirmDelivery(opportunityId) {
+            var user = localStorage.getItem('user');
+            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
+            user = JSON.parse(user);
+
+            try {
+                var r = await fetch(`/api/payments/confirm-delivery/${opportunityId}?user_id=${user.id}`, {
+                    method: 'POST'
+                });
+                var d = await r.json();
+                if (d.status === 'success') {
+                    showToast('✅ ' + d.message, false);
+                    // عرض تفاصيل العمولة ورقم الحساب
+                    var commission = d.commission_details;
+                    var html = `
+                        <div class="commission-box">
+                            <strong>💰 العمولة المستحقة:</strong> ${commission.commission_text}
+                            <br><strong>🏦 رقم الحساب للدفع:</strong><br>${d.bank_account}
+                            ${commission.final_price ? `<br><strong>قيمة الصفقة:</strong> ${commission.final_price} ج.س` : ''}
+                        </div>
+                        <p style="color:#94a3b8; margin-top:10px;">بعد الدفع، سيتم إتمام الصفقة رسمياً.</p>
+                    `;
+                    showList('💳 تفاصيل الدفع', html);
+                    loadStats();
+                } else {
+                    showToast('❌ ' + d.detail, true);
+                }
+            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
+        }
+
+        // ============================================================
+        // عرض تفاصيل الطلب (مع العروض والأزرار)
+        // ============================================================
+        async function showOpportunityDetail(oppId) {
+            try {
+                var r1 = await fetch(`/api/opportunities/${oppId}`);
+                var oppData = await r1.json();
+                var opp = oppData.opportunity;
+
+                var r2 = await fetch(`/api/opportunities/offers/${oppId}`);
+                var offersData = await r2.json();
+                var offers = offersData.offers || [];
+
+                var user = localStorage.getItem('user');
+                var userId = user ? JSON.parse(user).id : null;
+                var userRole = user ? JSON.parse(user).role : null;
+
+                var html = `
+                    <div style="background:#0f172a; padding:15px; border-radius:12px; margin-bottom:15px;">
+                        <strong>المواصفات:</strong> ${opp.specs}
+                        <br><strong>الميزانية:</strong> ${opp.budget} ج.س
+                        <br><strong>المدينة:</strong> ${opp.city}
+                        <br><strong>الحالة:</strong> <span class="status-badge ${opp.status}">${opp.status === 'open' ? 'مفتوح' : opp.status === 'agreed' ? 'تم الاتفاق' : 'مكتمل'}</span>
+                    </div>
+                `;
+
+                // عرض العروض
+                if (offers.length > 0) {
+                    html += `<h3 style="color:#fbbf24; margin-top:15px;">🤝 العروض المقدمة (${offers.length})</h3>`;
+                    offers.forEach(o => {
+                        html += `
+                            <div class="list-item" style="border-right-color: #a855f7;">
+                                <strong>${o.specs}</strong> - ${o.price} ج.س
+                                <br><small>التسليم: ${o.delivery_time} | الحالة: ${o.condition} | ${o.created_at}</small>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<p style="color:#94a3b8;">لا توجد عروض حتى الآن</p>`;
+                }
+
+                // أزرار الإجراءات (تعتمد على الدور والحالة)
+                if (user) {
+                    if (userRole === 'seller' && opp.status === 'open') {
+                        html += `<button class="btn btn-yellow" style="margin-top:15px; width:100%;" onclick="openOfferModal(${opp.id})">🤝 تقديم عرض</button>`;
+                    }
+                    if (opp.status === 'open' || opp.status === 'negotiating') {
+                        if (userRole === 'buyer' || userRole === 'seller') {
+                            var isConfirmed = (userRole === 'buyer' && opp.buyer_confirmed) || (userRole === 'seller' && opp.seller_confirmed);
+                            var buttonLabel = isConfirmed ? '✅ تم تأكيد موافقتك' : '✅ تأكيد الاتفاق';
+                            var disabledAttr = isConfirmed ? 'disabled' : '';
+                            html += `<button class="btn btn-blue" style="margin-top:10px; width:100%;" onclick="confirmAgreement(${opp.id})" ${disabledAttr}>${buttonLabel}</button>`;
+                        }
+                    }
+                    if (opp.status === 'agreed') {
+                        html += `<button class="btn btn-green" style="margin-top:10px; width:100%;" onclick="confirmDelivery(${opp.id})">📦 تأكيد الاستلام</button>`;
+                    }
+                    if (opp.status === 'completed') {
+                        html += `<p style="color:#22c55e; margin-top:10px;">✅ هذه الصفقة مكتملة.</p>`;
+                    }
+                } else {
+                    html += `<p style="color:#fbbf24; margin-top:10px;">🔑 يرجى تسجيل الدخول للتفاعل مع هذا الطلب.</p>`;
+                }
+
+                document.getElementById('detailTitle').textContent = `📋 الطلب #${opp.id}`;
+                document.getElementById('detailBody').innerHTML = html;
+                openModal('detail');
+            } catch (err) {
+                showToast('❌ فشل تحميل تفاصيل الطلب', true);
+            }
+        }
+
+        // ============================================================
+        // تحميل الإحصائيات والبيانات
+        // ============================================================
+        async function loadStats() {
+            try {
+                var r = await fetch('/api/opportunities/list');
+                var d = await r.json();
+                document.getElementById('orders').textContent = d.opportunities ? d.opportunities.length : 0;
+                
+                var r2 = await fetch('/api/opportunities/all-offers');
+                var d2 = await r2.json();
+                document.getElementById('offers').textContent = d2.offers ? d2.offers.length : 0;
+                
+                var user = localStorage.getItem('user');
+                if (user) {
+                    user = JSON.parse(user);
+                    var r3 = await fetch('/api/chat/list/' + user.id);
+                    var d3 = await r3.json();
+                    document.getElementById('chats').textContent = d3.chats ? d3.chats.length : 0;
+                } else {
+                    document.getElementById('chats').textContent = 0;
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadAdsCount() {
+            try {
+                var r = await fetch('/api/admin/ads');
+                var d = await r.json();
+                var published = d.ads ? d.ads.filter(a => a.status === 'published') : [];
+                document.getElementById('adsCount').textContent = published.length;
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadGoldPrices() {
+            try {
+                var r = await fetch('/api/admin/gold-prices');
+                var d = await r.json();
+                var c = document.getElementById('goldPrices');
+                if (d.prices && d.prices.length > 0) {
+                    c.innerHTML = d.prices.map(p => '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram||0) + ' ج.س/جم</div></div>').join('');
+                } else { c.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>'; }
+            } catch (err) { document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>'; }
+        }
+
+        async function loadGlobalGold() {
+            try {
+                var r = await fetch('/api/gold');
+                var d = await r.json();
+                if (d.gold !== undefined) {
+                    document.getElementById('goldPrice').innerHTML = '💰 USD ' + d.gold.toFixed(2) + ' <span>| PAXG</span>';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        // ============================================================
+        // دوال تسجيل الدخول والتسجيل
         // ============================================================
         async function login(e) {
             e.preventDefault();
@@ -281,14 +582,11 @@
                     closeModal('loginModal');
                     localStorage.setItem('user', JSON.stringify(d.user));
                     updateUI(d.user);
-                    loadStats(); // تحديث الإحصائيات بعد الدخول
+                    loadStats();
                 } else { showToast('❌ ' + d.detail, true); }
             } catch (err) { showToast('❌ خطأ في الاتصال', true); }
         }
 
-        // ============================================================
-        // تسجيل جديد
-        // ============================================================
         async function register(e) {
             e.preventDefault();
             var name = document.getElementById('regName').value;
@@ -315,94 +613,25 @@
         }
 
         // ============================================================
-        // تحميل أسعار الذهب المحلية
-        // ============================================================
-        async function loadGoldPrices() {
-            try {
-                var r = await fetch('/api/admin/gold-prices');
-                var d = await r.json();
-                var c = document.getElementById('goldPrices');
-                if (d.prices && d.prices.length > 0) {
-                    c.innerHTML = d.prices.map(p => '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram||0) + ' ج.س/جم</div></div>').join('');
-                } else { c.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>'; }
-            } catch (err) { document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>'; }
-        }
-
-        // ============================================================
-        // تحميل الإحصائيات (الطلبات، العروض، المحادثات)
-        // ============================================================
-        async function loadStats() {
-            try {
-                var r = await fetch('/api/opportunities/list');
-                var d = await r.json();
-                document.getElementById('orders').textContent = d.opportunities ? d.opportunities.length : 0;
-                
-                var r2 = await fetch('/api/opportunities/all-offers');
-                var d2 = await r2.json();
-                document.getElementById('offers').textContent = d2.offers ? d2.offers.length : 0;
-                
-                var user = localStorage.getItem('user');
-                if (user) {
-                    user = JSON.parse(user);
-                    var r3 = await fetch('/api/chat/list/' + user.id);
-                    var d3 = await r3.json();
-                    document.getElementById('chats').textContent = d3.chats ? d3.chats.length : 0;
-                } else {
-                    document.getElementById('chats').textContent = 0;
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        // ============================================================
-        // تحميل عدد الإعلانات المنشورة
-        // ============================================================
-        async function loadAdsCount() {
-            try {
-                var r = await fetch('/api/admin/ads');
-                var d = await r.json();
-                var published = d.ads ? d.ads.filter(a => a.status === 'published') : [];
-                document.getElementById('adsCount').textContent = published.length;
-            } catch (err) { console.error(err); }
-        }
-
-        // ============================================================
-        // تحميل سعر الذهب العالمي
-        // ============================================================
-        async function loadGlobalGold() {
-            try {
-                var r = await fetch('/api/gold');
-                var d = await r.json();
-                if (d.gold !== undefined) {
-                    document.getElementById('goldPrice').innerHTML = '💰 USD ' + d.gold.toFixed(2) + ' <span>| PAXG</span>';
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        // ============================================================
-        // تهيئة الصفحة عند التحميل
+        // تهيئة الصفحة
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // ربط الأزرار
             document.getElementById('loginBtn').addEventListener('click', function() { openModal('login'); });
             document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
             document.getElementById('adminBtn').addEventListener('click', function() {
                 window.location.href = '/admin';
             });
             document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('subscriptionBtn').addEventListener('click', showSubscription);
 
-            // زر إنشاء طلب
             document.getElementById('createOpportunityBtn').addEventListener('click', function() {
                 openModal('createOpportunity');
             });
 
-            // نموذج إنشاء الطلب
             document.getElementById('createOpportunityForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 var user = localStorage.getItem('user');
-                if (!user) {
-                    showToast('❌ يرجى تسجيل الدخول أولاً', true);
-                    return;
-                }
+                if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
                 user = JSON.parse(user);
                 var type = document.getElementById('oppType').value;
                 var specs = document.getElementById('oppSpecs').value;
@@ -430,14 +659,17 @@
                 }
             });
 
-            // بطاقة الطلبات
+            // بطاقة الطلبات: عند النقر، نعرض قائمة الطلبات، وعند النقر على طلب معين نفتح التفاصيل
             document.getElementById('ordersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/list')
                     .then(r => r.json())
                     .then(data => {
                         if (data.opportunities && data.opportunities.length > 0) {
                             let html = data.opportunities.map(o => 
-                                `<div class="list-item"><strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})<br><small>${o.status} | ${o.created_at}</small></div>`
+                                `<div class="list-item" onclick="showOpportunityDetail(${o.id})">
+                                    <strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})
+                                    <br><small>${o.status} | ${o.created_at}</small>
+                                </div>`
                             ).join('');
                             showList('📦 الطلبات المفتوحة', html);
                         } else {
@@ -447,14 +679,17 @@
                     .catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
             });
 
-            // بطاقة العروض
+            // بطاقة العروض: تعرض جميع العروض، وعند النقر على عرض معين تفتح تفاصيل الطلب المرتبط
             document.getElementById('offersCard').addEventListener('click', function() {
                 fetch('/api/opportunities/all-offers')
                     .then(r => r.json())
                     .then(data => {
                         if (data.offers && data.offers.length > 0) {
                             let html = data.offers.map(o => 
-                                `<div class="list-item"><strong>${o.specs}</strong> - ${o.price} ج.س<br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small></div>`
+                                `<div class="list-item" onclick="showOpportunityDetail(${o.opportunity_id})">
+                                    <strong>${o.specs}</strong> - ${o.price} ج.س
+                                    <br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small>
+                                </div>`
                             ).join('');
                             showList('🤝 العروض المقدمة', html);
                         } else {
@@ -464,7 +699,7 @@
                     .catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
             });
 
-            // بطاقة المحادثات
+            // باقي البطاقات (المحادثات والإعلانات)
             document.getElementById('chatsCard').addEventListener('click', function() {
                 var user = localStorage.getItem('user');
                 if (!user) {
@@ -477,7 +712,10 @@
                     .then(data => {
                         if (data.chats && data.chats.length > 0) {
                             let html = data.chats.map(c => 
-                                `<div class="list-item"><strong>الفرصة #${c.opportunity_id}</strong><br><small>الرسائل: ${c.messages.length} | الحالة: ${c.status}</small></div>`
+                                `<div class="list-item" onclick="showOpportunityDetail(${c.opportunity_id})">
+                                    <strong>الفرصة #${c.opportunity_id}</strong>
+                                    <br><small>الرسائل: ${c.messages.length} | الحالة: ${c.status}</small>
+                                </div>`
                             ).join('');
                             showList('💬 المحادثات النشطة', html);
                         } else {
@@ -487,7 +725,6 @@
                     .catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
             });
 
-            // بطاقة الإعلانات
             document.getElementById('adsCard').addEventListener('click', function() {
                 fetch('/api/admin/ads')
                     .then(r => r.json())
@@ -514,13 +751,11 @@
                     .catch(() => showList('📢 الإعلانات', '<p style="color:#ef4444;">فشل تحميل الإعلانات</p>'));
             });
 
-            // تحميل البيانات الأولية
             loadGlobalGold();
             loadGoldPrices();
             loadStats();
             loadAdsCount();
 
-            // استعادة حالة تسجيل الدخول
             var storedUser = localStorage.getItem('user');
             if (storedUser) {
                 try {

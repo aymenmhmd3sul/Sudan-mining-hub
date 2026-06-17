@@ -6,570 +6,766 @@
     <title>منصة السودان للتعدين</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Tahoma', sans-serif; background: #0f172a; color: #f1f5f9; padding: 20px; }
-        .container { max-width: 1300px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
-        .header h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gold-price { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 12px 24px; border-radius: 12px; font-size: 1.3rem; font-weight: 600; color: #fbbf24; }
-        .gold-price span { font-size: 0.8rem; color: #94a3b8; font-weight: 400; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 20px; text-align: center; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; }
-        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
-        .card-icon { font-size: 2.5rem; margin-bottom: 8px; display: block; }
-        .card-number { font-size: 2rem; font-weight: 700; color: #fbbf24; margin: 6px 0; }
-        .card-number.green { color: #22c55e; }
-        .card-number.purple { color: #a855f7; }
-        .card-label { color: #94a3b8; font-size: 0.9rem; }
-        .btn { padding: 10px 24px; background: #22c55e; border: none; color: white; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3); }
-        .btn-blue { background: #3b82f6; }
-        .btn-blue:hover { box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); }
-        .btn-admin { background: #8b5cf6; }
-        .btn-admin:hover { box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3); }
-        .btn-yellow { background: #fbbf24; color: #0f172a; font-weight: 700; }
-        .btn-yellow:hover { box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4); }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn-danger:hover { box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4); }
-        .btn-purple { background: #a855f7; color: white; }
-        .btn-purple:hover { box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
-        .btn-chat { background: #0ea5e9; color: white; }
-        .btn-chat:hover { box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
-        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 0.9rem; }
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 600px; width: 90%; border: 1px solid rgba(255,255,255,0.1); max-height: 80vh; overflow-y: auto; }
-        .modal-content h2 { color: #fbbf24; margin-bottom: 20px; text-align: center; }
-        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; }
-        .modal-content .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; color: #0f172a; font-weight: 700; border-radius: 10px; font-size: 1rem; cursor: pointer; }
-        .modal-content .btn-close { background: #ef4444; border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; float: left; }
-        .list-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid #fbbf24; cursor: pointer; transition: 0.2s; }
+        body {
+            font-family: 'Tahoma', Arial, sans-serif;
+            background: #0b1121;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at 10% 20%, rgba(251, 191, 36, 0.03) 0%, transparent 50%);
+        }
+        .main-container {
+            max-width: 1300px;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+        /* ====== الهيدر ====== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+            margin-bottom: 25px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand .icon { font-size: 2.8rem; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.2)); }
+        .brand h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand .sub { font-size: 0.8rem; color: #94a3b8; -webkit-text-fill-color: #94a3b8; }
+        .gold-ticker {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 1rem;
+            color: #fbbf24;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .gold-ticker span { color: #f8fafc; font-weight: 400; }
+        /* ====== سياسة المنصة ====== */
+        .policy {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border-right: 4px solid #fbbf24;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+        .policy strong { color: #fbbf24; }
+        /* ====== الأخبار والإعلانات (جنباً إلى جنب) ====== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+        .card-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+        .card-box:hover { border-color: rgba(251, 191, 36, 0.2); }
+        .card-box h3 {
+            color: #fbbf24;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-box p, .card-box li {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            list-style: none;
+            line-height: 1.6;
+        }
+        /* ====== مساحة الإعلانات (موحدة) ====== */
+        .ads-uni {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .ads-uni h3 { color: #fbbf24; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .ad-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .ad-item:hover { border-color: rgba(251, 191, 36, 0.3); transform: translateY(-2px); }
+        .ad-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; }
+        .ad-item .info strong { color: #fbbf24; display: block; }
+        .ad-item .info p { font-size: 0.8rem; color: #94a3b8; margin: 4px 0 0; }
+        /* ====== الأزرار الرئيسية (4) ====== */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        @media (max-width: 768px) { .grid-4 { grid-template-columns: 1fr 1fr; } }
+        .main-btn {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #f8fafc;
+        }
+        .main-btn:hover { transform: scale(1.02); border-color: #fbbf24; box-shadow: 0 8px 30px rgba(251, 191, 36, 0.1); }
+        .main-btn .icon { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+        .main-btn .label { font-weight: 600; }
+        .main-btn .sub { font-size: 0.7rem; color: #94a3b8; }
+        /* ====== زر المشرف ====== */
+        .admin-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0 30px;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 60px;
+            border: 1px dashed rgba(239, 68, 68, 0.2);
+        }
+        .admin-area button {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 8px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .admin-area button:hover { background: #ef4444; color: white; }
+        .admin-area .hint { color: #64748b; font-size: 0.75rem; }
+        /* ====== الفوتر (روابط التواصل) ====== */
+        .footer {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .footer .social {
+            display: flex;
+            gap: 18px;
+        }
+        .footer .social a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+        }
+        .footer .social a:hover { color: #fbbf24; }
+        .footer .copy { color: #64748b; font-size: 0.8rem; }
+        /* ====== النوافذ المنبثقة (تغطي الشاشة كاملة) ====== */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.94);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .overlay.active { display: flex; }
+        .overlay-content {
+            background: #1e293b;
+            max-width: 900px;
+            width: 100%;
+            border-radius: 32px;
+            padding: 35px;
+            border: 1px solid rgba(255,255,255,0.06);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        }
+        .overlay-content .close-btn {
+            position: sticky;
+            top: 0;
+            float: left;
+            background: #ef4444;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .overlay-content h2 {
+            color: #fbbf24;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 12px;
+            font-size: 1.8rem;
+        }
+        .list-item {
+            background: #0f172a;
+            padding: 14px 18px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            border-right: 4px solid #fbbf24;
+            cursor: pointer;
+            transition: 0.2s;
+        }
         .list-item:hover { background: #1e293b; }
         .list-item strong { color: #fbbf24; }
         .list-item small { color: #94a3b8; }
-        .list-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
-        .flex-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-        .ad-item { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
-        .hidden { display: none; }
-        .welcome-box { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .welcome-box h3 { color: #fbbf24; }
-        .welcome-box p { color: #94a3b8; }
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-        .status-badge.open { background: #3b82f6; color: white; }
-        .status-badge.agreed { background: #fbbf24; color: #0f172a; }
-        .status-badge.completed { background: #22c55e; color: white; }
-        .commission-box { background: #0f172a; padding: 15px; border-radius: 12px; margin: 10px 0; border-right: 4px solid #fbbf24; }
-        .commission-box strong { color: #fbbf24; }
-        .chat-message { background: #0f172a; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; }
-        .chat-message .sender { color: #fbbf24; font-weight: 600; }
-        .chat-message .time { color: #94a3b8; font-size: 0.7rem; float: left; }
-        .chat-input { display: flex; gap: 10px; margin-top: 10px; }
-        .chat-input input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; }
+        .input-group { margin-bottom: 18px; }
+        .input-group label { display: block; color: #94a3b8; margin-bottom: 5px; font-weight: 500; }
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+        }
+        .btn-gold {
+            background: #fbbf24;
+            color: #0f172a;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+        .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(251, 191, 36, 0.3); }
+        .btn-green {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+        .btn-green:hover { transform: scale(1.03); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .stat-card {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .stat-card .num { font-size: 2.4rem; font-weight: 700; color: #fbbf24; }
+        .stat-card .lbl { color: #94a3b8; font-size: 0.85rem; margin-top: 4px; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            border: 1px solid #22c55e;
+            padding: 14px 28px;
+            border-radius: 16px;
+            display: none;
+            z-index: 9999;
+            font-weight: 500;
+            text-align: center;
+            max-width: 90%;
+        }
+        .flex-actions { display: flex; gap: 15px; flex-wrap: wrap; margin: 20px 0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 id="mainTitle">⛏️ منصة السودان للتعدين</h1>
-            <div class="gold-price" id="goldPrice">💰 USD 0.00 <span>| PAXG</span></div>
-        </div>
 
-        <div class="flex-buttons" style="margin-bottom:20px;">
-            <button class="btn" id="loginBtn">🔑 تسجيل الدخول</button>
-            <button class="btn btn-blue" id="registerBtn">📝 تسجيل جديد</button>
-            <button class="btn btn-admin" id="adminBtn">🛠️ لوحة المشرف</button>
-            <button class="btn btn-yellow hidden" id="createOpportunityBtn">➕ إنشاء طلب</button>
-            <button class="btn btn-danger hidden" id="logoutBtn">🚪 تسجيل خروج</button>
-            <button class="btn btn-purple hidden" id="subscriptionBtn">📋 اشتراكي</button>
-        </div>
+<div class="main-container">
 
-        <div id="welcomeBox" class="welcome-box hidden">
-            <h3>👋 مرحباً بك!</h3>
-            <p>يمكنك الآن <strong>إنشاء طلب جديد</strong> بالضغط على الزر الأصفر، أو تصفح الطلبات والعروض من البطاقات أدناه.</p>
+    <!-- ====== الهيدر ====== -->
+    <div class="header">
+        <div class="brand">
+            <span class="icon">⛏️</span>
+            <div>
+                <h1>منصة السودان للتعدين</h1>
+                <div class="sub">السوق المباشر للمعدات والخدمات</div>
+            </div>
         </div>
-
-        <div class="grid">
-            <div class="card" id="ordersCard"><span class="card-icon">📦</span><div class="card-number" id="orders">0</div><div class="card-label">الطلبات المفتوحة</div></div>
-            <div class="card" id="offersCard"><span class="card-icon">🤝</span><div class="card-number green" id="offers">0</div><div class="card-label">العروض المقدمة</div></div>
-            <div class="card" id="chatsCard"><span class="card-icon">💬</span><div class="card-number purple" id="chats">0</div><div class="card-label">المحادثات النشطة</div></div>
-            <div class="card" id="adsCard"><span class="card-icon">📢</span><div class="card-number" id="adsCount" style="color:#ec4899;">0</div><div class="card-label">الإعلانات</div></div>
+        <div class="gold-ticker">
+            🟡 <span id="globalGold">جاري التحميل...</span> <span>| PAXG/USD</span>
         </div>
-
-        <div style="background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px dashed rgba(255,255,255,0.1);">
-            <h3 style="color: #fbbf24; margin-bottom: 15px;">🏅 أسعار الذهب المحلية</h3>
-            <div id="goldPrices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;"><p style="color: #94a3b8;">جاري التحميل...</p></div>
-        </div>
-
-        <div class="footer"><p>© 2026 منصة السودان للتعدين — نظام مباشر 🚀</p></div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <!-- ====== سياسة المنصة ====== -->
+    <div class="policy">
+        <strong>📜 سياسة المنصة وإخلاء المسؤولية:</strong>
+        منصة السودان للتعدين هي وسيط بين المشترين والتجار. نحن لا نتحمل أي مسؤولية قانونية أو مالية عن أي سلوك أو اتفاق أو نزاع يحدث بين الطرفين خارج نطاق توثيق المنصة. جميع الصفقات تتم تحت مسؤولية المستخدمين، وتلتزم المنصة بتقديم بيئة آمنة للتواصل فقط.
+    </div>
 
-    <!-- نوافذ منبثقة -->
-    <div class="modal" id="loginModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('loginModal')">✕</button><h2>🔑 تسجيل الدخول</h2><form onsubmit="login(event)"><input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required><input type="password" id="loginPassword" placeholder="كلمة المرور" required><button type="submit" class="btn-submit">دخول</button></form></div></div>
-    <div class="modal" id="registerModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('registerModal')">✕</button><h2>📝 تسجيل جديد</h2><form onsubmit="register(event)"><input type="text" id="regName" placeholder="الاسم الكامل" required><input type="email" id="regEmail" placeholder="البريد الإلكتروني" required><input type="text" id="regPhone" placeholder="رقم الهاتف" required><select id="regRole" required><option value="buyer">مشتري</option><option value="seller">تاجر</option></select><input type="password" id="regPassword" placeholder="كلمة المرور" required><button type="submit" class="btn-submit">تسجيل</button></form><div id="registerMessage" style="margin-top:10px;text-align:center;"></div></div></div>
-    <div class="modal" id="createOpportunityModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('createOpportunityModal')">✕</button><h2>➕ إنشاء طلب جديد</h2><form id="createOpportunityForm"><select id="oppType" required><option value="light_equipment">معدات خفيفة</option><option value="heavy_equipment">معدات ثقيلة</option><option value="mine">منجم</option><option value="well">بئر</option><option value="production_line">خط إنتاج</option><option value="shop_rent">دكان للإيجار</option><option value="service">خدمات</option></select><textarea id="oppSpecs" placeholder="المواصفات التفصيلية..." required></textarea><input type="number" id="oppBudget" placeholder="الميزانية (ج.س)" required><input type="text" id="oppLocation" placeholder="الموقع" required><input type="text" id="oppCity" placeholder="المدينة" required><button type="submit" class="btn-submit">✅ نشر الطلب</button></form><div id="oppMessage" style="margin-top:10px;text-align:center;"></div></div></div>
-    <div class="modal" id="offerModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('offerModal')">✕</button><h2>🤝 تقديم عرض</h2><form id="offerForm"><input type="hidden" id="offerOppId"><div class="form-group"><label>السعر المقترح (ج.س) *</label><input type="number" id="offerPrice" required></div><div class="form-group"><label>المواصفات المقدمة *</label><textarea id="offerSpecs" required></textarea></div><div class="form-group"><label>مدة التسليم</label><input type="text" id="offerDelivery" placeholder="مثال: 3 أيام"></div><div class="form-group"><label>الحالة</label><select id="offerCondition"><option value="new">جديد</option><option value="used">مستعمل</option></select></div><button type="submit" class="btn-submit">✅ إرسال العرض</button></form><div id="offerMessage" style="margin-top:10px;text-align:center;"></div></div></div>
-    <div class="modal" id="detailModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('detailModal')">✕</button><h2 id="detailTitle">📋 تفاصيل الطلب</h2><div id="detailBody"></div></div></div>
-    <div class="modal" id="listModal"><div class="modal-content"><button class="btn-close" onclick="closeModal('listModal')">✕</button><h2 id="listModalTitle">قائمة</h2><div id="listModalBody"></div></div></div>
-    
-    <!-- نافذة المحادثة (مع إصلاح الزر) -->
-    <div class="modal" id="chatModal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal('chatModal')">✕</button>
-            <h2 id="chatTitle">💬 المحادثة</h2>
-            <div id="chatMessages" style="max-height:300px; overflow-y:auto; margin-bottom:10px;"></div>
-            <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="اكتب رسالتك...">
-                <button class="btn btn-blue" id="sendChatBtn">إرسال</button>
+    <!-- ====== الأخبار + الإعلانات (جنباً إلى جنب) ====== -->
+    <div class="grid-2">
+        <div class="card-box">
+            <h3>📰 أخبار الذهب</h3>
+            <div id="newsContainer">
+                <p>• الذهب يسجل أعلى مستوى له هذا الشهر بدعم من الطلب الآسيوي.</p>
+                <p>• السودان: توقعات بارتفاع الطلب على المعدن الأصفر مع موسم التعدين.</p>
+                <p>• الأسواق العالمية تترقب قرار الفيدرالي الأمريكي بشأن أسعار الفائدة.</p>
+            </div>
+        </div>
+        <div class="card-box">
+            <h3>📢 إعلانات مميزة</h3>
+            <div id="adsSide">
+                <p style="color:#94a3b8;">جاري تحميل الإعلانات...</p>
             </div>
         </div>
     </div>
 
-    <script>
-        // ============================================================
-        // دوال النوافذ المنبثقة
-        // ============================================================
-        function openModal(type) {
-            var modalId = { 'login': 'loginModal', 'register': 'registerModal', 'createOpportunity': 'createOpportunityModal', 'offer': 'offerModal', 'detail': 'detailModal', 'list': 'listModal', 'chat': 'chatModal' }[type];
-            if (modalId) document.getElementById(modalId).classList.add('active');
+    <!-- ====== مساحة الإعلانات الموحدة (عرض كامل) ====== -->
+    <div class="ads-uni">
+        <h3>📢 مساحة إعلانات (عرض كامل)</h3>
+        <div class="ads-grid" id="adsFullGrid">
+            <p style="color:#94a3b8; grid-column:1/-1; text-align:center;">لا توجد إعلانات منشورة حالياً</p>
+        </div>
+    </div>
+
+    <!-- ====== الأزرار الرئيسية (4) ====== -->
+    <div class="grid-4">
+        <div class="main-btn" onclick="openOverlay('buyer')">
+            <span class="icon">🛒</span>
+            <div class="label">مشتري / زائر</div>
+            <div class="sub">تصفح الطلبات والعروض</div>
+        </div>
+        <div class="main-btn" onclick="openOverlay('offers')">
+            <span class="icon">🤝</span>
+            <div class="label">العروض</div>
+            <div class="sub">استعراض العروض المقدمة</div>
+        </div>
+        <div class="main-btn" onclick="openOverlay('register')">
+            <span class="icon">📝</span>
+            <div class="label">التسجيل للتاجر</div>
+            <div class="sub">انضم كتاجر معتمد</div>
+        </div>
+        <div class="main-btn" onclick="openOverlay('activity')">
+            <span class="icon">📊</span>
+            <div class="label">النشاط</div>
+            <div class="sub">إحصائيات المنصة</div>
+        </div>
+    </div>
+
+    <!-- ====== لوحة المشرف (محمية) ====== -->
+    <div class="admin-area">
+        <button onclick="promptAdmin()">🛠️ لوحة المشرف (محمية)</button>
+        <span class="hint">🔑 كلمة السر: admin123</span>
+    </div>
+
+    <!-- ====== الفوتر ====== -->
+    <div class="footer">
+        <div class="social">
+            <a href="#" onclick="alert('واتساب: +249 123 456 789')">📱 واتساب</a>
+            <a href="#" onclick="alert('فيسبوك: SudanMiningHub')">📘 فيسبوك</a>
+            <a href="#" onclick="alert('البريد: info@sudanmining.com')">✉️ جيميل</a>
+        </div>
+        <div class="copy">© 2026 منصة السودان للتعدين</div>
+    </div>
+
+</div>
+
+<!-- ====== النوافذ المنبثقة (كاملة الشاشة) ====== -->
+
+<!-- 1. مشتري / زائر -->
+<div class="overlay" id="overlay-buyer">
+    <div class="overlay-content">
+        <button class="close-btn" onclick="closeOverlay('buyer')">✕ إغلاق</button>
+        <h2>🛒 الطلبات المفتوحة</h2>
+        <div class="flex-actions">
+            <button class="btn-gold" onclick="createSampleOpportunity()">➕ إنشاء طلب جديد</button>
+        </div>
+        <div id="buyerList"><p style="color:#94a3b8;">جاري التحميل...</p></div>
+    </div>
+</div>
+
+<!-- 2. العروض -->
+<div class="overlay" id="overlay-offers">
+    <div class="overlay-content">
+        <button class="close-btn" onclick="closeOverlay('offers')">✕ إغلاق</button>
+        <h2>🤝 جميع العروض المقدمة</h2>
+        <div id="offersList"><p style="color:#94a3b8;">جاري التحميل...</p></div>
+    </div>
+</div>
+
+<!-- 3. تسجيل تاجر -->
+<div class="overlay" id="overlay-register">
+    <div class="overlay-content">
+        <button class="close-btn" onclick="closeOverlay('register')">✕ إغلاق</button>
+        <h2>📝 تسجيل تاجر جديد</h2>
+        <p style="color:#94a3b8; margin-bottom:20px;">قم بملء البيانات، سيتم مراجعة طلبك وتفعيل حسابك من قبل المشرف.</p>
+        <form id="sellerRegisterForm">
+            <div class="input-group"><label>الاسم الكامل</label><input type="text" id="sName" required></div>
+            <div class="input-group"><label>البريد الإلكتروني</label><input type="email" id="sEmail" required></div>
+            <div class="input-group"><label>رقم الهاتف</label><input type="text" id="sPhone" required></div>
+            <div class="input-group"><label>كلمة المرور</label><input type="password" id="sPassword" required></div>
+            <button type="submit" class="btn-gold">✅ تسجيل كتاجر</button>
+        </form>
+        <div id="registerMessage" style="margin-top:15px;"></div>
+    </div>
+</div>
+
+<!-- 4. النشاط -->
+<div class="overlay" id="overlay-activity">
+    <div class="overlay-content">
+        <button class="close-btn" onclick="closeOverlay('activity')">✕ إغلاق</button>
+        <h2>📊 نشاط المنصة</h2>
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card"><div class="num" id="statUsers">0</div><div class="lbl">إجمالي المستخدمين</div></div>
+            <div class="stat-card"><div class="num" id="statTraders">0</div><div class="lbl">التجار المسجلين</div></div>
+            <div class="stat-card"><div class="num" id="statOrders">0</div><div class="lbl">الطلبات المفتوحة</div></div>
+            <div class="stat-card"><div class="num" id="statOffers">0</div><div class="lbl">العروض المقدمة</div></div>
+            <div class="stat-card"><div class="num" id="statChats">0</div><div class="lbl">المحادثات النشطة</div></div>
+            <div class="stat-card"><div class="num" style="color:#10b981;" id="statCompleted">0</div><div class="lbl">الصفقات المكتملة</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== Toast ====== -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // ============================================================
+    // النوافذ المنبثقة
+    // ============================================================
+    function openOverlay(type) {
+        document.getElementById('overlay-' + type).classList.add('active');
+        document.body.style.overflow = 'hidden';
+        if (type === 'buyer') loadBuyerData();
+        if (type === 'offers') loadOffersData();
+        if (type === 'activity') loadActivityData();
+    }
+    function closeOverlay(type) {
+        document.getElementById('overlay-' + type).classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+    document.querySelectorAll('.overlay').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (e.target === this) { this.classList.remove('active'); document.body.style.overflow = 'auto'; }
+        });
+    });
+
+    // ============================================================
+    // Toast
+    // ============================================================
+    function showToast(msg, err) {
+        var t = document.getElementById('toast');
+        t.textContent = msg; t.style.display = 'block';
+        t.style.borderColor = err ? '#ef4444' : '#22c55e';
+        setTimeout(function() { t.style.display = 'none'; }, 4000);
+    }
+
+    // ============================================================
+    // سعر الذهب
+    // ============================================================
+    async function updateGoldPrice() {
+        try {
+            var res = await fetch('/api/gold');
+            var data = await res.json();
+            if (data.gold !== undefined) {
+                document.getElementById('globalGold').textContent = '$ ' + data.gold.toFixed(2);
+            }
+        } catch (e) { console.error(e); }
+    }
+    setInterval(updateGoldPrice, 30000);
+    updateGoldPrice();
+
+    // ============================================================
+    // الإعلانات (موحدة)
+    // ============================================================
+    async function loadAds() {
+        try {
+            var res = await fetch('/api/admin/ads');
+            var data = await res.json();
+            var published = data.ads ? data.ads.filter(a => a.status === 'published') : [];
+
+            // الجانب الأيمن
+            var side = document.getElementById('adsSide');
+            if (published.length > 0) {
+                side.innerHTML = published.slice(0, 3).map(a => `
+                    <div style="background:#0f172a; padding:10px; border-radius:10px; margin-bottom:8px; display:flex; gap:10px; align-items:center; cursor:pointer;" onclick="window.open('${a.link}','_blank')">
+                        ${a.image_url ? `<img src="${a.image_url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">` : ''}
+                        <div><strong style="color:#fbbf24;">${a.title_ar}</strong><p style="font-size:0.75rem; color:#94a3b8;">${a.description || ''}</p></div>
+                    </div>
+                `).join('');
+            } else {
+                side.innerHTML = '<p style="color:#94a3b8;">لا توجد إعلانات</p>';
+            }
+
+            // المساحة الموحدة
+            var full = document.getElementById('adsFullGrid');
+            if (published.length > 0) {
+                full.innerHTML = published.map(a => `
+                    <div class="ad-item" onclick="window.open('${a.link}','_blank')">
+                        ${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}
+                        <div class="info">
+                            <strong>${a.title_ar}</strong>
+                            <p>${a.description || ''}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                full.innerHTML = '<p style="color:#94a3b8; grid-column:1/-1; text-align:center;">لا توجد إعلانات منشورة حالياً</p>';
+            }
+        } catch (e) {
+            document.getElementById('adsSide').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
+            document.getElementById('adsFullGrid').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
         }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    }
+    loadAds();
 
-        function showList(title, itemsHtml) {
-            document.getElementById('listModalTitle').textContent = title;
-            document.getElementById('listModalBody').innerHTML = itemsHtml;
-            document.getElementById('listModal').classList.add('active');
+    // ============================================================
+    // إنشاء طلب عينة (للمشتري)
+    // ============================================================
+    async function createSampleOpportunity() {
+        var user = localStorage.getItem('user');
+        if (!user) {
+            showToast('❌ يرجى تسجيل الدخول أولاً كمشتري', true);
+            return;
         }
-
-        function showToast(msg, err) {
-            var t = document.getElementById('toast');
-            t.textContent = msg; t.style.display = 'block';
-            t.style.borderColor = err ? '#ef4444' : '#22c55e';
-            setTimeout(function() { t.style.display = 'none'; }, 4000);
+        user = JSON.parse(user);
+        if (user.role !== 'buyer') {
+            showToast('❌ فقط المشترين يمكنهم إنشاء طلبات', true);
+            return;
         }
+        var specs = prompt('📝 أدخل مواصفات الطلب:');
+        if (!specs) return;
+        var budget = prompt('💰 أدخل الميزانية (ج.س):');
+        if (!budget) return;
+        var city = prompt('📍 أدخل المدينة:');
+        if (!city) return;
 
-        // ============================================================
-        // تحديث واجهة المستخدم
-        // ============================================================
-        function updateUI(user) {
-            var welcomeBox = document.getElementById('welcomeBox');
-            var createBtn = document.getElementById('createOpportunityBtn');
-            var logoutBtn = document.getElementById('logoutBtn');
-            var loginBtn = document.getElementById('loginBtn');
-            var registerBtn = document.getElementById('registerBtn');
-            var subscriptionBtn = document.getElementById('subscriptionBtn');
+        try {
+            var res = await fetch('/api/opportunities/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    buyer_id: user.id,
+                    type: 'heavy_equipment',
+                    specs: specs,
+                    budget: parseFloat(budget),
+                    location: city,
+                    city: city
+                })
+            });
+            var data = await res.json();
+            if (data.status === 'success') {
+                showToast('✅ تم إنشاء الطلب بنجاح!', false);
+                loadBuyerData(); // تحديث القائمة
+            } else {
+                showToast('❌ فشل إنشاء الطلب', true);
+            }
+        } catch (e) {
+            showToast('❌ خطأ في الاتصال', true);
+        }
+    }
 
+    // ============================================================
+    // تحميل بيانات المشتري (الطلبات)
+    // ============================================================
+    async function loadBuyerData() {
+        try {
+            var res = await fetch('/api/opportunities/list');
+            var data = await res.json();
+            var container = document.getElementById('buyerList');
+            if (data.opportunities && data.opportunities.length > 0) {
+                container.innerHTML = data.opportunities.map(o => `
+                    <div class="list-item" onclick="showOpportunityDetail(${o.id})">
+                        <strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})
+                        <br><small>الحالة: ${o.status} | ${o.created_at}</small>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<p style="color:#94a3b8;">لا توجد طلبات حالياً</p>';
+            }
+        } catch (e) {
+            document.getElementById('buyerList').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
+        }
+    }
+
+    // ============================================================
+    // تحميل بيانات العروض
+    // ============================================================
+    async function loadOffersData() {
+        try {
+            var res = await fetch('/api/opportunities/all-offers');
+            var data = await res.json();
+            var container = document.getElementById('offersList');
+            if (data.offers && data.offers.length > 0) {
+                container.innerHTML = data.offers.map(o => `
+                    <div class="list-item">
+                        <strong>${o.specs}</strong> - ${o.price} ج.س
+                        <br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<p style="color:#94a3b8;">لا توجد عروض حالياً</p>';
+            }
+        } catch (e) {
+            document.getElementById('offersList').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
+        }
+    }
+
+    // ============================================================
+    // تسجيل تاجر جديد
+    // ============================================================
+    document.getElementById('sellerRegisterForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var name = document.getElementById('sName').value;
+        var email = document.getElementById('sEmail').value;
+        var phone = document.getElementById('sPhone').value;
+        var password = document.getElementById('sPassword').value;
+        var msgDiv = document.getElementById('registerMessage');
+        try {
+            var res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, phone, role: 'seller', password })
+            });
+            var data = await res.json();
+            if (data.status === 'success') {
+                showToast('✅ تم التسجيل كتاجر! سيقوم المشرف بتفعيل حسابك.', false);
+                msgDiv.innerHTML = '<p style="color:#10b981;">✅ تم التسجيل بنجاح! يرجى الانتظار حتى التفعيل.</p>';
+                this.reset();
+            } else {
+                msgDiv.innerHTML = '<p style="color:#ef4444;">❌ ' + data.detail + '</p>';
+            }
+        } catch (err) {
+            msgDiv.innerHTML = '<p style="color:#ef4444;">❌ خطأ في الاتصال</p>';
+        }
+    });
+
+    // ============================================================
+    // تحميل بيانات النشاط
+    // ============================================================
+    async function loadActivityData() {
+        try {
+            var res1 = await fetch('/api/admin/users');
+            var data1 = await res1.json();
+            var users = data1.users || [];
+            document.getElementById('statUsers').textContent = users.length;
+            document.getElementById('statTraders').textContent = users.filter(u => u.role === 'seller').length;
+
+            var res2 = await fetch('/api/opportunities/list');
+            var data2 = await res2.json();
+            var orders = data2.opportunities || [];
+            document.getElementById('statOrders').textContent = orders.length;
+            document.getElementById('statCompleted').textContent = orders.filter(o => o.status === 'completed').length;
+
+            var res3 = await fetch('/api/opportunities/all-offers');
+            var data3 = await res3.json();
+            document.getElementById('statOffers').textContent = (data3.offers || []).length;
+
+            var user = localStorage.getItem('user');
             if (user) {
-                loginBtn.classList.add('hidden'); registerBtn.classList.add('hidden'); logoutBtn.classList.remove('hidden'); subscriptionBtn.classList.remove('hidden');
-                if (user.role === 'buyer') {
-                    welcomeBox.classList.remove('hidden'); createBtn.classList.remove('hidden'); subscriptionBtn.classList.add('hidden');
-                    document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (مشتري)';
-                } else if (user.role === 'seller') {
-                    welcomeBox.classList.add('hidden'); createBtn.classList.add('hidden'); subscriptionBtn.classList.remove('hidden');
-                    document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name + ' (تاجر)';
-                } else {
-                    welcomeBox.classList.add('hidden'); createBtn.classList.add('hidden'); subscriptionBtn.classList.add('hidden');
-                    document.getElementById('mainTitle').textContent = '⛏️ مرحباً ' + user.name;
-                }
-            } else {
-                loginBtn.classList.remove('hidden'); registerBtn.classList.remove('hidden'); logoutBtn.classList.add('hidden');
-                welcomeBox.classList.add('hidden'); createBtn.classList.add('hidden'); subscriptionBtn.classList.add('hidden');
-                document.getElementById('mainTitle').textContent = '⛏️ منصة السودان للتعدين';
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('user');
-            updateUI(null);
-            showToast('✅ تم تسجيل الخروج بنجاح', false);
-            loadStats();
-        }
-
-        // ============================================================
-        // عرض اشتراك التاجر
-        // ============================================================
-        async function showSubscription() {
-            var user = localStorage.getItem('user');
-            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
-            user = JSON.parse(user);
-            if (user.role !== 'seller') { showToast('❌ هذه الميزة للتجار فقط', true); return; }
-            try {
-                var r = await fetch('/api/payments/subscription/' + user.id);
-                var d = await r.json();
-                if (d.status === 'active') {
-                    showList('📋 اشتراكي', `<p style="color:#22c55e;">✅ اشتراكك نشط حتى ${d.subscription_end}</p>`);
-                } else {
-                    showList('📋 اشتراكي', `<p style="color:#ef4444;">❌ ${d.message}</p><div class="commission-box"><strong>🏦 رقم الحساب للدفع:</strong><br>${d.bank_account || 'Sudan Mining Hub - Bank of Khartoum - Account: 123456789'}</div><p style="color:#94a3b8; margin-top:10px;">بعد الدفع، يرجى التواصل مع المشرف لتفعيل حسابك.</p>`);
-                }
-            } catch (err) { showToast('❌ فشل تحميل الاشتراك', true); }
-        }
-
-        // ============================================================
-        // تقديم عرض
-        // ============================================================
-        function openOfferModal(opportunityId) {
-            document.getElementById('offerOppId').value = opportunityId;
-            document.getElementById('offerForm').reset();
-            document.getElementById('offerMessage').textContent = '';
-            openModal('offer');
-        }
-        document.getElementById('offerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            var user = localStorage.getItem('user');
-            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
-            user = JSON.parse(user);
-            if (user.role !== 'seller') { showToast('❌ فقط التجار يمكنهم تقديم عروض', true); return; }
-            var opportunity_id = parseInt(document.getElementById('offerOppId').value);
-            var price = parseFloat(document.getElementById('offerPrice').value);
-            var specs = document.getElementById('offerSpecs').value;
-            var delivery_time = document.getElementById('offerDelivery').value || 'غير محدد';
-            var condition = document.getElementById('offerCondition').value;
-            try {
-                var r = await fetch('/api/opportunities/offer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ opportunity_id, seller_id: user.id, price, specs, delivery_time, condition }) });
-                var d = await r.json();
-                if (d.status === 'success') { showToast('✅ تم تقديم العرض بنجاح!', false); closeModal('offerModal'); loadStats(); } 
-                else { showToast('❌ ' + d.detail, true); }
-            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
-        });
-
-        // ============================================================
-        // تأكيد الاتفاق والاستلام
-        // ============================================================
-        async function confirmAgreement(opportunityId) {
-            var user = localStorage.getItem('user');
-            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
-            user = JSON.parse(user);
-            try {
-                var r = await fetch(`/api/opportunities/confirm-agreement/${opportunityId}/${user.id}`, { method: 'POST' });
-                var d = await r.json();
-                if (d.status === 'success') { showToast('✅ ' + d.message, false); closeModal('detailModal'); loadStats(); } 
-                else { showToast('❌ ' + d.detail, true); }
-            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
-        }
-
-        async function confirmDelivery(opportunityId) {
-            var user = localStorage.getItem('user');
-            if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
-            user = JSON.parse(user);
-            try {
-                var r = await fetch(`/api/payments/confirm-delivery/${opportunityId}?user_id=${user.id}`, { method: 'POST' });
-                var d = await r.json();
-                if (d.status === 'success') {
-                    showToast('✅ ' + d.message, false);
-                    var commission = d.commission_details;
-                    var html = `<div class="commission-box"><strong>💰 العمولة المستحقة:</strong> ${commission.commission_text}<br><strong>🏦 رقم الحساب للدفع:</strong><br>${d.bank_account}${commission.final_price ? `<br><strong>قيمة الصفقة:</strong> ${commission.final_price} ج.س` : ''}</div><p style="color:#94a3b8; margin-top:10px;">بعد الدفع، سيتم إتمام الصفقة رسمياً.</p>`;
-                    showList('💳 تفاصيل الدفع', html);
-                    loadStats();
-                } else { showToast('❌ ' + d.detail, true); }
-            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
-        }
-
-        // ============================================================
-        // غرفة المحادثة (الإصدار المُصلح)
-        // ============================================================
-        var currentChat = null;
-
-        async function openChat(opportunityId, buyerId, sellerId) {
-            closeModal('detailModal');
-            currentChat = { opportunity_id: opportunityId, buyer_id: buyerId, seller_id: sellerId };
-            document.getElementById('chatTitle').textContent = `💬 محادثة الطلب #${opportunityId}`;
-            await loadChatMessages();
-            openModal('chat');
-        }
-
-        async function loadChatMessages() {
-            if (!currentChat) return;
-            var { opportunity_id, buyer_id, seller_id } = currentChat;
-            try {
-                var r = await fetch(`/api/chat/${opportunity_id}/${buyer_id}/${seller_id}`);
-                var data = await r.json();
-                var container = document.getElementById('chatMessages');
-                if (data.chat && data.chat.messages) {
-                    var user = JSON.parse(localStorage.getItem('user') || '{}');
-                    var html = data.chat.messages.map(m => {
-                        var isMine = (m.sender_id == user.id);
-                        return `<div class="chat-message" style="text-align: ${isMine ? 'left' : 'right'};"><span class="sender">${isMine ? 'أنت' : 'الطرف الآخر'}</span><span class="time">${m.timestamp}</span><div>${m.message}</div></div>`;
-                    }).join('');
-                    container.innerHTML = html || '<p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ المحادثة!</p>';
-                    container.scrollTop = container.scrollHeight;
-                } else {
-                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد رسائل بعد. ابدأ المحادثة!</p>';
-                }
-            } catch (err) {
-                document.getElementById('chatMessages').innerHTML = '<p style="color:#ef4444;">فشل تحميل المحادثة</p>';
-                console.error('loadChatMessages error:', err);
-            }
-        }
-
-        // دالة إرسال الرسالة (معرفة في النطاق العام)
-        async function sendChatMessage() {
-            console.log("sendChatMessage called");
-            var input = document.getElementById('chatInput');
-            if (!input) { console.error("chatInput not found"); return; }
-            var message = input.value.trim();
-            if (!message) { showToast('❌ اكتب رسالة أولاً', true); return; }
-            if (!currentChat) { showToast('❌ لا توجد محادثة مفتوحة', true); return; }
-
-            var user = localStorage.getItem('user');
-            if (!user) { showToast('❌ يرجى تسجيل الدخول', true); return; }
-            user = JSON.parse(user);
-
-            var { opportunity_id, buyer_id, seller_id } = currentChat;
-            var sender_id = user.id;
-            var receiver_id = (user.id == buyer_id) ? seller_id : buyer_id;
-
-            try {
-                var r = await fetch('/api/chat/send', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ opportunity_id, sender_id, receiver_id, message, buyer_id, seller_id })
-                });
-                var data = await r.json();
-                if (data.status === 'success') {
-                    input.value = '';
-                    await loadChatMessages();
-                    if (data.ai_detected) {
-                        showToast('🤖 ' + data.message, false);
-                    }
-                } else {
-                    showToast('❌ فشل إرسال الرسالة: ' + (data.detail || ''), true);
-                }
-            } catch (err) {
-                showToast('❌ خطأ في الاتصال', true);
-                console.error('sendChatMessage error:', err);
-            }
-        }
-
-        // ============================================================
-        // عرض تفاصيل الطلب
-        // ============================================================
-        async function showOpportunityDetail(oppId) {
-            try {
-                var r1 = await fetch(`/api/opportunities/${oppId}`);
-                var oppData = await r1.json();
-                var opp = oppData.opportunity;
-                var r2 = await fetch(`/api/opportunities/offers/${oppId}`);
-                var offersData = await r2.json();
-                var offers = offersData.offers || [];
-                var user = localStorage.getItem('user');
-                var userId = user ? JSON.parse(user).id : null;
-                var userRole = user ? JSON.parse(user).role : null;
-
-                var html = `<div style="background:#0f172a; padding:15px; border-radius:12px; margin-bottom:15px;"><strong>المواصفات:</strong> ${opp.specs}<br><strong>الميزانية:</strong> ${opp.budget} ج.س<br><strong>المدينة:</strong> ${opp.city}<br><strong>الحالة:</strong> <span class="status-badge ${opp.status}">${opp.status === 'open' ? 'مفتوح' : opp.status === 'agreed' ? 'تم الاتفاق' : 'مكتمل'}</span></div>`;
-
-                if (offers.length > 0) {
-                    html += `<h3 style="color:#fbbf24; margin-top:15px;">🤝 العروض المقدمة (${offers.length})</h3>`;
-                    offers.forEach(o => {
-                        html += `<div class="list-item" style="border-right-color: #a855f7; padding: 15px;"><strong>${o.specs}</strong> - ${o.price} ج.س<br><small>التسليم: ${o.delivery_time} | الحالة: ${o.condition} | ${o.created_at}</small><br><button class="btn btn-chat" style="margin-top: 10px; width: 100%;" onclick="openChat(${opp.id}, ${opp.buyer_id}, ${o.seller_id})">💬 فتح المحادثة</button></div>`;
-                    });
-                } else {
-                    html += `<p style="color:#94a3b8;">لا توجد عروض حتى الآن</p>`;
-                }
-
-                if (user) {
-                    if (userRole === 'seller' && opp.status === 'open') html += `<button class="btn btn-yellow" style="margin-top:15px; width:100%;" onclick="openOfferModal(${opp.id})">🤝 تقديم عرض</button>`;
-                    if (opp.status === 'open' || opp.status === 'negotiating') {
-                        if (userRole === 'buyer' || userRole === 'seller') {
-                            var isConfirmed = (userRole === 'buyer' && opp.buyer_confirmed) || (userRole === 'seller' && opp.seller_confirmed);
-                            var buttonLabel = isConfirmed ? '✅ تم تأكيد موافقتك' : '✅ تأكيد الاتفاق';
-                            var disabledAttr = isConfirmed ? 'disabled' : '';
-                            html += `<button class="btn btn-blue" style="margin-top:10px; width:100%;" onclick="confirmAgreement(${opp.id})" ${disabledAttr}>${buttonLabel}</button>`;
-                        }
-                    }
-                    if (opp.status === 'agreed') html += `<button class="btn btn-green" style="margin-top:10px; width:100%;" onclick="confirmDelivery(${opp.id})">📦 تأكيد الاستلام</button>`;
-                    if (opp.status === 'completed') html += `<p style="color:#22c55e; margin-top:10px;">✅ هذه الصفقة مكتملة.</p>`;
-                } else {
-                    html += `<p style="color:#fbbf24; margin-top:10px;">🔑 يرجى تسجيل الدخول للتفاعل مع هذا الطلب.</p>`;
-                }
-
-                document.getElementById('detailTitle').textContent = `📋 الطلب #${opp.id}`;
-                document.getElementById('detailBody').innerHTML = html;
-                openModal('detail');
-            } catch (err) {
-                showToast('❌ فشل تحميل تفاصيل الطلب', true);
-                console.error(err);
-            }
-        }
-
-        // ============================================================
-        // تحميل البيانات
-        // ============================================================
-        async function loadStats() {
-            try {
-                var r = await fetch('/api/opportunities/list');
-                var d = await r.json();
-                document.getElementById('orders').textContent = d.opportunities ? d.opportunities.length : 0;
-                var r2 = await fetch('/api/opportunities/all-offers');
-                var d2 = await r2.json();
-                document.getElementById('offers').textContent = d2.offers ? d2.offers.length : 0;
-                var user = localStorage.getItem('user');
-                if (user) {
-                    user = JSON.parse(user);
-                    var r3 = await fetch('/api/chat/list/' + user.id);
-                    var d3 = await r3.json();
-                    document.getElementById('chats').textContent = d3.chats ? d3.chats.length : 0;
-                } else { document.getElementById('chats').textContent = 0; }
-            } catch (err) { console.error(err); }
-        }
-
-        async function loadAdsCount() {
-            try { var r = await fetch('/api/admin/ads'); var d = await r.json(); var published = d.ads ? d.ads.filter(a => a.status === 'published') : []; document.getElementById('adsCount').textContent = published.length; } catch (err) { console.error(err); }
-        }
-
-        async function loadGoldPrices() {
-            try { var r = await fetch('/api/admin/gold-prices'); var d = await r.json(); var c = document.getElementById('goldPrices'); if (d.prices && d.prices.length > 0) { c.innerHTML = d.prices.map(p => '<div style="background:#0f172a;padding:10px;border-radius:10px;"><strong>' + p.city + '</strong><div>🟡 ' + (p.price_gram||0) + ' ج.س/جم</div></div>').join(''); } else { c.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>'; } } catch (err) { document.getElementById('goldPrices').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>'; }
-        }
-
-        async function loadGlobalGold() {
-            try { var r = await fetch('/api/gold'); var d = await r.json(); if (d.gold !== undefined) { document.getElementById('goldPrice').innerHTML = '💰 USD ' + d.gold.toFixed(2) + ' <span>| PAXG</span>'; } } catch (err) { console.error(err); }
-        }
-
-        // ============================================================
-        // تسجيل الدخول والتسجيل
-        // ============================================================
-        async function login(e) {
-            e.preventDefault();
-            var email = document.getElementById('loginEmail').value;
-            var password = document.getElementById('loginPassword').value;
-            try {
-                var r = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-                var d = await r.json();
-                if (d.status === 'success') { showToast('✅ مرحباً ' + d.user.name, false); closeModal('loginModal'); localStorage.setItem('user', JSON.stringify(d.user)); updateUI(d.user); loadStats(); } 
-                else { showToast('❌ ' + d.detail, true); }
-            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
-        }
-
-        async function register(e) {
-            e.preventDefault();
-            var name = document.getElementById('regName').value;
-            var email = document.getElementById('regEmail').value;
-            var phone = document.getElementById('regPhone').value;
-            var role = document.getElementById('regRole').value;
-            var password = document.getElementById('regPassword').value;
-            try {
-                var r = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, phone, role, password }) });
-                var d = await r.json();
-                if (d.status === 'success') { showToast('✅ تم التسجيل بنجاح!', false); closeModal('registerModal'); document.getElementById('registerMessage').textContent = ''; } 
-                else { document.getElementById('registerMessage').textContent = '❌ ' + d.detail; document.getElementById('registerMessage').style.color = '#ef4444'; }
-            } catch (err) { showToast('❌ خطأ في الاتصال', true); }
-        }
-
-        // ============================================================
-        // تهيئة الصفحة
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // الأزرار الأساسية
-            document.getElementById('loginBtn').addEventListener('click', function() { openModal('login'); });
-            document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
-            document.getElementById('adminBtn').addEventListener('click', function() { window.location.href = '/admin'; });
-            document.getElementById('logoutBtn').addEventListener('click', logout);
-            document.getElementById('subscriptionBtn').addEventListener('click', showSubscription);
-
-            // إنشاء طلب
-            document.getElementById('createOpportunityBtn').addEventListener('click', function() { openModal('createOpportunity'); });
-            document.getElementById('createOpportunityForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                var user = localStorage.getItem('user');
-                if (!user) { showToast('❌ يرجى تسجيل الدخول أولاً', true); return; }
                 user = JSON.parse(user);
-                var type = document.getElementById('oppType').value;
-                var specs = document.getElementById('oppSpecs').value;
-                var budget = parseFloat(document.getElementById('oppBudget').value);
-                var location = document.getElementById('oppLocation').value;
-                var city = document.getElementById('oppCity').value;
-                try {
-                    var res = await fetch('/api/opportunities/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ buyer_id: user.id, type, specs, budget, location, city }) });
-                    var data = await res.json();
-                    if (data.status === 'success') { showToast('✅ تم نشر الطلب بنجاح!', false); closeModal('createOpportunityModal'); document.getElementById('createOpportunityForm').reset(); loadStats(); } 
-                    else { showToast('❌ فشل النشر', true); }
-                } catch (err) { showToast('❌ خطأ في الاتصال', true); }
-            });
-
-            // ============================================================
-            // ربط أزرار المحادثة (الإصلاح الأساسي)
-            // ============================================================
-            var sendBtn = document.getElementById('sendChatBtn');
-            var chatInput = document.getElementById('chatInput');
-            
-            if (sendBtn) {
-                sendBtn.addEventListener('click', sendChatMessage);
-                console.log("Send button listener attached successfully.");
+                var res4 = await fetch('/api/chat/list/' + user.id);
+                var data4 = await res4.json();
+                document.getElementById('statChats').textContent = data4.chats ? data4.chats.length : 0;
             } else {
-                console.error("Send button not found!");
+                document.getElementById('statChats').textContent = '0';
             }
+        } catch (e) { console.error(e); }
+    }
 
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        sendChatMessage();
-                    }
-                });
-                console.log("Chat input listener attached successfully.");
-            } else {
-                console.error("Chat input not found!");
-            }
+    // ============================================================
+    // فتح تفاصيل الطلب (مؤقت)
+    // ============================================================
+    function showOpportunityDetail(oppId) {
+        closeOverlay('buyer');
+        showToast('🚧 سيتم فتح تفاصيل الطلب قريباً', false);
+    }
 
-            // تحديث المحادثة كل 3 ثوانٍ
-            setInterval(function() {
-                if (document.getElementById('chatModal').classList.contains('active')) {
-                    loadChatMessages();
-                }
-            }, 3000);
+    // ============================================================
+    // لوحة المشرف
+    // ============================================================
+    function promptAdmin() {
+        var pass = prompt('🔐 أدخل كلمة سر المشرف:');
+        if (pass === 'admin123') {
+            window.location.href = '/admin';
+        } else if (pass !== null) {
+            showToast('❌ كلمة السر غير صحيحة', true);
+        }
+    }
 
-            // ربط البطاقات
-            document.getElementById('ordersCard').addEventListener('click', function() {
-                fetch('/api/opportunities/list').then(r => r.json()).then(data => {
-                    if (data.opportunities && data.opportunities.length > 0) {
-                        let html = data.opportunities.map(o => `<div class="list-item" onclick="showOpportunityDetail(${o.id})"><strong>${o.specs}</strong> - ${o.budget} ج.س (${o.city})<br><small>${o.status} | ${o.created_at}</small></div>`).join('');
-                        showList('📦 الطلبات المفتوحة', html);
-                    } else { showList('📦 الطلبات المفتوحة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>'); }
-                }).catch(() => showList('📦 الطلبات المفتوحة', '<p style="color:#ef4444;">فشل تحميل الطلبات</p>'));
-            });
+    // ============================================================
+    // الترحيب
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        var user = localStorage.getItem('user');
+        if (user) {
+            var userData = JSON.parse(user);
+            document.querySelector('.brand .sub').textContent = '👋 مرحباً ' + userData.name;
+        }
+    });
 
-            document.getElementById('offersCard').addEventListener('click', function() {
-                fetch('/api/opportunities/all-offers').then(r => r.json()).then(data => {
-                    if (data.offers && data.offers.length > 0) {
-                        let html = data.offers.map(o => `<div class="list-item" onclick="showOpportunityDetail(${o.opportunity_id})"><strong>${o.specs}</strong> - ${o.price} ج.س<br><small>حالة: ${o.status} | التسليم: ${o.delivery_time}</small></div>`).join('');
-                        showList('🤝 العروض المقدمة', html);
-                    } else { showList('🤝 العروض المقدمة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>'); }
-                }).catch(() => showList('🤝 العروض المقدمة', '<p style="color:#ef4444;">فشل تحميل العروض</p>'));
-            });
-
-            document.getElementById('chatsCard').addEventListener('click', function() {
-                var user = localStorage.getItem('user');
-                if (!user) { showList('💬 المحادثات النشطة', '<p style="color:#fbbf24;">يرجى تسجيل الدخول أولاً لعرض المحادثات</p>'); return; }
-                user = JSON.parse(user);
-                fetch('/api/chat/list/' + user.id).then(r => r.json()).then(data => {
-                    if (data.chats && data.chats.length > 0) {
-                        let html = data.chats.map(c => `<div class="list-item" onclick="openChat(${c.opportunity_id}, ${c.buyer_id}, ${c.seller_id})"><strong>الفرصة #${c.opportunity_id}</strong><br><small>الرسائل: ${c.messages.length} | الحالة: ${c.status}</small></div>`).join('');
-                        showList('💬 المحادثات النشطة', html);
-                    } else { showList('💬 المحادثات النشطة', '<p style="color:#94a3b8;">لا يوجد نشاط حالياً</p>'); }
-                }).catch(() => showList('💬 المحادثات النشطة', '<p style="color:#ef4444;">فشل تحميل المحادثات</p>'));
-            });
-
-            document.getElementById('adsCard').addEventListener('click', function() {
-                fetch('/api/admin/ads').then(r => r.json()).then(data => {
-                    var publishedAds = data.ads ? data.ads.filter(a => a.status === 'published') : [];
-                    if (publishedAds.length > 0) {
-                        let html = publishedAds.map(a => `<div class="list-item" onclick="window.open('${a.link}', '_blank')" style="border-right-color: #ec4899;"><div class="ad-item">${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}<div style="flex:1;"><strong>${a.title_ar}</strong><p style="color:#94a3b8; font-size:0.9rem; margin-top:4px;">${a.description || ''}</p><small style="color:#ec4899;">👆 اضغط لفتح الإعلان</small></div></div></div>`).join('');
-                        showList('📢 الإعلانات المنشورة', html);
-                    } else { showList('📢 الإعلانات', '<p style="color:#94a3b8;">لا توجد إعلانات منشورة حالياً</p>'); }
-                }).catch(() => showList('📢 الإعلانات', '<p style="color:#ef4444;">فشل تحميل الإعلانات</p>'));
-            });
-
-            // تحميل البيانات
-            loadGlobalGold();
-            loadGoldPrices();
-            loadStats();
-            loadAdsCount();
-
-            var storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                try { var user = JSON.parse(storedUser); updateUI(user); } catch (e) { updateUI(null); }
-            } else { updateUI(null); }
-        });
-    </script>
+    // تحديث النشاط كل 10 ثوانٍ
+    setInterval(() => {
+        if (document.getElementById('overlay-activity').classList.contains('active')) {
+            loadActivityData();
+        }
+    }, 10000);
+</script>
 </body>
 </html>

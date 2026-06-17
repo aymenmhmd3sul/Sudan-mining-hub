@@ -34,11 +34,67 @@ def save_users(users):
     with open(USERS_FILE, "w") as f:
         json.dump(users, f, indent=2)
 
+# ============================================================
+# دالة البذور (Seed) لإنشاء الحسابات الثابتة تلقائياً
+# ============================================================
+def seed_default_users():
+    users = get_users()
+    updated = False
+
+    # 1. التأكد من وجود المشتري (أحمد)
+    ahmed_exists = any(u["email"] == "ahmed@test.com" for u in users)
+    if not ahmed_exists:
+        users.append({
+            "id": len(users) + 1,
+            "name": "أحمد المشتري",
+            "email": "ahmed@test.com",
+            "phone": "0911111111",
+            "role": "buyer",
+            "password": "123456",
+            "is_active": True,
+            "subscription_end": None,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        updated = True
+        print("✅ تم إنشاء حساب المشتري (أحمد) تلقائياً.")
+
+    # 2. التأكد من وجود التاجر (التاجر التجريبي)
+    trader_exists = any(u["email"] == "trader@test.com" for u in users)
+    if not trader_exists:
+        users.append({
+            "id": len(users) + 1,
+            "name": "تاجر تجريبي",
+            "email": "trader@test.com",
+            "phone": "0922222222",
+            "role": "seller",
+            "password": "123456",
+            "is_active": True,  # مُفعل تلقائياً
+            "subscription_end": (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d %H:%M:%S"),
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        updated = True
+        print("✅ تم إنشاء حساب التاجر (التاجر التجريبي) تلقائياً مع تفعيل الاشتراك.")
+
+    # 3. إذا كان التاجر موجوداً ولكن غير نشط، نفعله
+    for u in users:
+        if u["email"] == "trader@test.com" and u.get("is_active") is False:
+            u["is_active"] = True
+            u["subscription_end"] = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d %H:%M:%S")
+            updated = True
+            print("✅ تم تفعيل حساب التاجر (التاجر التجريبي) تلقائياً.")
+
+    if updated:
+        save_users(users)
+
+# استدعاء دالة البذور عند بدء تشغيل الروتر
+seed_default_users()
+
+# ============================================================
+# نقاط النهاية (Endpoints)
+# ============================================================
 @router.post("/register")
 def register(user: UserRegister):
     users = get_users()
-    
-    # التحقق من أن البريد غير مستخدم
     for u in users:
         if u["email"] == user.email:
             raise HTTPException(status_code=400, detail="البريد الإلكتروني مسجل مسبقاً")
@@ -49,7 +105,7 @@ def register(user: UserRegister):
         "email": user.email,
         "phone": user.phone,
         "role": user.role,
-        "password": user.password,  # في المستقبل: تشفير
+        "password": user.password,
         "is_active": False if user.role == "seller" else True,
         "subscription_end": None,
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")

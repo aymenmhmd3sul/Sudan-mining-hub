@@ -27,7 +27,6 @@
             padding: 35px 30px;
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.03);
         }
-        /* ===== صفحة الدخول (تظهر دائماً أولاً) ===== */
         .login-page { display: block; }
         .login-page.hidden { display: none; }
         .brand-large {
@@ -53,7 +52,11 @@
         .login-form { max-width: 400px; margin: 0 auto; }
         .login-form .input-group { margin-bottom: 18px; }
         .login-form .input-group label { display: block; color: #94a3b8; font-size: 0.85rem; margin-bottom: 6px; font-weight: 500; }
-        .login-form .input-group input {
+        .login-form .input-group .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .login-form .input-group .input-wrapper input {
             width: 100%;
             padding: 16px 18px;
             border-radius: 16px;
@@ -62,9 +65,27 @@
             color: #f8fafc;
             font-size: 1rem;
             transition: 0.3s;
+            padding-left: 50px; /* مكان للأيقونة */
         }
-        .login-form .input-group input:focus { outline: none; border-color: #fbbf24; box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1); }
-        .login-form .input-group input::placeholder { color: #64748b; }
+        .login-form .input-group .input-wrapper input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        }
+        .login-form .input-group .input-wrapper input::placeholder { color: #64748b; }
+        .login-form .input-group .input-wrapper .toggle-password {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            padding: 5px;
+        }
+        .login-form .input-group .input-wrapper .toggle-password:hover { color: #fbbf24; }
         .login-form .forgot-link { text-align: left; margin: -10px 0 20px; }
         .login-form .forgot-link a { color: #94a3b8; font-size: 0.8rem; text-decoration: none; }
         .login-form .forgot-link a:hover { color: #fbbf24; }
@@ -114,7 +135,7 @@
             text-decoration: underline;
         }
         .session-info .logout-link:hover { color: #fbbf24; }
-        /* ===== الواجهة الثانية (لوحة المستخدم) ===== */
+        /* ===== الواجهة الثانية ===== */
         .dashboard-page { display: none; }
         .dashboard-page.active { display: block; }
         .dash-header {
@@ -151,74 +172,6 @@
             font-weight: 600;
         }
         .dash-gold span { color: #f8fafc; font-weight: 400; }
-        .policy {
-            background: rgba(30, 41, 59, 0.4);
-            padding: 14px 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            border-right: 4px solid #fbbf24;
-            font-size: 0.9rem;
-            color: #94a3b8;
-            line-height: 1.8;
-        }
-        .policy strong { color: #fbbf24; }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
-        .card-box {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 20px;
-            transition: 0.3s;
-        }
-        .card-box:hover { border-color: rgba(251, 191, 36, 0.2); }
-        .card-box h3 {
-            color: #fbbf24;
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .card-box p, .card-box li {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            list-style: none;
-            line-height: 1.6;
-        }
-        .ads-uni {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        .ads-uni h3 { color: #fbbf24; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .ads-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-        }
-        .ad-item {
-            background: #0f172a;
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid transparent;
-        }
-        .ad-item:hover { border-color: rgba(251, 191, 36, 0.3); transform: translateY(-2px); }
-        .ad-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; }
-        .ad-item .info strong { color: #fbbf24; display: block; }
-        .ad-item .info p { font-size: 0.8rem; color: #94a3b8; margin: 4px 0 0; }
         .dash-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -267,6 +220,7 @@
         }
         .dash-footer .social a:hover { color: #fbbf24; }
         .dash-footer .copy { color: #64748b; font-size: 0.75rem; }
+        /* ===== النوافذ المنبثقة (مختصرة للوضوح) ===== */
         .overlay {
             display: none;
             position: fixed;
@@ -425,16 +379,18 @@
             <h1>منصة السودان للتعدين</h1>
             <div class="sub">Sudan Mining Hub — السوق المباشر للمعدات والخدمات</div>
         </div>
-        <!-- رسالة الجلسة الحالية (إن وجدت) -->
         <div id="sessionInfo" class="session-info"></div>
         <div class="login-form">
             <div class="input-group">
                 <label>📱 رقم الهاتف أو البريد الإلكتروني</label>
-                <input type="text" id="loginEmail" placeholder="أدخل رقم الهاتف أو البريد" value="ahmed@test.com">
+                <input type="text" id="loginEmail" placeholder="أدخل رقم الهاتف أو البريد">
             </div>
             <div class="input-group">
                 <label>🔑 كلمة المرور</label>
-                <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور" value="123456">
+                <div class="input-wrapper">
+                    <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور">
+                    <button type="button" class="toggle-password" id="togglePasswordBtn" aria-label="إظهار/إخفاء كلمة المرور">👁️</button>
+                </div>
             </div>
             <div class="forgot-link">
                 <a href="#" onclick="showToast('🔐 سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.', false)">نسيت كلمة المرور؟</a>
@@ -465,35 +421,6 @@
                 🟡 <span id="dashGoldPrice">جاري التحميل...</span> <span>| PAXG/USD</span>
             </div>
             <button onclick="logoutUser()" style="background:transparent; border:1px solid #64748b; color:#94a3b8; padding:6px 20px; border-radius:40px; cursor:pointer;">🚪 خروج</button>
-        </div>
-
-        <div class="policy">
-            <strong>📜 سياسة المنصة وإخلاء المسؤولية:</strong>
-            منصة السودان للتعدين هي وسيط بين المشترين والتجار. نحن لا نتحمل أي مسؤولية قانونية أو مالية عن أي سلوك أو اتفاق أو نزاع يحدث بين الطرفين خارج نطاق توثيق المنصة. جميع الصفقات تتم تحت مسؤولية المستخدمين، وتلتزم المنصة بتقديم بيئة آمنة للتواصل فقط.
-        </div>
-
-        <div class="grid-2">
-            <div class="card-box">
-                <h3>📰 أخبار الذهب</h3>
-                <div id="newsContainer">
-                    <p>• الذهب يسجل أعلى مستوى له هذا الشهر بدعم من الطلب الآسيوي.</p>
-                    <p>• السودان: توقعات بارتفاع الطلب على المعدن الأصفر مع موسم التعدين.</p>
-                    <p>• الأسواق العالمية تترقب قرار الفيدرالي الأمريكي بشأن أسعار الفائدة.</p>
-                </div>
-            </div>
-            <div class="card-box">
-                <h3>📢 إعلانات مميزة</h3>
-                <div id="adsSide">
-                    <p style="color:#94a3b8;">جاري تحميل الإعلانات...</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="ads-uni">
-            <h3>📢 مساحة إعلانات (عرض كامل)</h3>
-            <div class="ads-grid" id="adsFullGrid">
-                <p style="color:#94a3b8; grid-column:1/-1; text-align:center;">لا توجد إعلانات منشورة حالياً</p>
-            </div>
         </div>
 
         <div class="dash-grid">
@@ -528,19 +455,14 @@
             <div class="copy">© 2026 منصة السودان للتعدين</div>
         </div>
     </div>
-
 </div>
 
-<!-- ====== النوافذ المنبثقة ====== -->
-
-<!-- 1. مشتري -->
+<!-- ====== النوافذ المنبثقة (مختصرة) ====== -->
 <div class="overlay" id="overlay-buyer">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('buyer')">✕ إغلاق</button>
         <h2>🛒 الطلبات المفتوحة</h2>
-        <div class="flex-actions">
-            <button class="btn-gold-full" onclick="document.getElementById('createOpportunityFormContainer').style.display='block'">➕ إنشاء طلب جديد</button>
-        </div>
+        <div class="flex-actions"><button class="btn-gold-full" onclick="document.getElementById('createOpportunityFormContainer').style.display='block'">➕ إنشاء طلب جديد</button></div>
         <div id="createOpportunityFormContainer" style="display:none; background:#0f172a; padding:20px; border-radius:16px; margin-top:15px;">
             <h3 style="color:#fbbf24; margin-bottom:15px;">📝 تفاصيل الطلب</h3>
             <form id="createOpportunityForm">
@@ -558,7 +480,6 @@
     </div>
 </div>
 
-<!-- 2. العروض -->
 <div class="overlay" id="overlay-offers">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('offers')">✕ إغلاق</button>
@@ -567,7 +488,6 @@
     </div>
 </div>
 
-<!-- 3. تفاصيل العرض -->
 <div class="overlay" id="overlay-offer-detail">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('offer-detail')">✕ إغلاق</button>
@@ -576,7 +496,6 @@
     </div>
 </div>
 
-<!-- 4. تسجيل تاجر -->
 <div class="overlay" id="overlay-register">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('register')">✕ إغلاق</button>
@@ -593,7 +512,6 @@
     </div>
 </div>
 
-<!-- 5. النشاط -->
 <div class="overlay" id="overlay-activity">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('activity')">✕ إغلاق</button>
@@ -609,7 +527,6 @@
     </div>
 </div>
 
-<!-- 6. المحادثة -->
 <div class="overlay" id="overlay-chat">
     <div class="overlay-content">
         <button class="close-btn" onclick="closeOverlay('chat')">✕ إغلاق</button>
@@ -619,31 +536,25 @@
         </div>
         <div style="display:flex; gap:10px; margin-top:10px;">
             <input type="text" id="chatInput" placeholder="أدخل طلب التفاوض الخاص بك..." style="flex:1; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.06); background:#0f172a; color:white;">
-            <button class="btn-gold-full" onclick="sendChatMessage()" style="padding:12px 24px;">إرسال</button>
+            <button class="btn-gold-full" id="sendChatBtn" style="padding:12px 24px;">إرسال</button>
         </div>
     </div>
 </div>
 
-<!-- ====== Toast ====== -->
 <div class="toast" id="toast"></div>
 
 <script>
     // ============================================================
-    // عرض صفحة الدخول دائماً عند التحميل
+    // دوال العرض
     // ============================================================
     function showLoginPage() {
         document.getElementById('loginPage').classList.remove('hidden');
         document.getElementById('dashboardPage').classList.remove('active');
     }
-
     function showDashboardPage() {
         document.getElementById('loginPage').classList.add('hidden');
         document.getElementById('dashboardPage').classList.add('active');
     }
-
-    // ============================================================
-    // إدارة الجلسة (عرض معلومات المستخدم في صفحة الدخول)
-    // ============================================================
     function updateSessionInfo() {
         var user = localStorage.getItem('user');
         var infoDiv = document.getElementById('sessionInfo');
@@ -660,17 +571,7 @@
     }
 
     // ============================================================
-    // تسجيل الخروج (من أي مكان)
-    // ============================================================
-    function logoutUser() {
-        localStorage.removeItem('user');
-        showLoginPage();
-        updateSessionInfo();
-        showToast('✅ تم تسجيل الخروج بنجاح', false);
-    }
-
-    // ============================================================
-    // تسجيل الدخول (مع توجيه المشرف)
+    // تسجيل الدخول والخروج
     // ============================================================
     async function loginUser() {
         var email = document.getElementById('loginEmail').value.trim();
@@ -691,7 +592,6 @@
                     document.getElementById('welcomeUser').textContent = '👋 مرحباً ' + data.user.name;
                     showDashboardPage();
                     loadDashboardData();
-                    loadAds();
                     showToast('✅ تم تسجيل الدخول بنجاح!', false);
                 }
             } else {
@@ -700,6 +600,13 @@
         } catch (e) {
             showToast('❌ خطأ في الاتصال بالخادم', true);
         }
+    }
+
+    function logoutUser() {
+        localStorage.removeItem('user');
+        showLoginPage();
+        updateSessionInfo();
+        showToast('✅ تم تسجيل الخروج بنجاح', false);
     }
 
     // ============================================================
@@ -743,7 +650,21 @@
     }
 
     // ============================================================
-    // تحميل البيانات (سعر الذهب، الإعلانات، إلخ)
+    // أيقونة العين لإظهار/إخفاء كلمة المرور
+    // ============================================================
+    document.getElementById('togglePasswordBtn').addEventListener('click', function() {
+        var passwordInput = document.getElementById('loginPassword');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            this.textContent = '🙈'; // تغيير الأيقونة
+        } else {
+            passwordInput.type = 'password';
+            this.textContent = '👁️';
+        }
+    });
+
+    // ============================================================
+    // تحميل سعر الذهب
     // ============================================================
     async function loadDashboardData() {
         try {
@@ -756,46 +677,8 @@
     }
     setInterval(loadDashboardData, 30000);
 
-    async function loadAds() {
-        try {
-            var res = await fetch('/api/admin/ads');
-            var data = await res.json();
-            var published = data.ads ? data.ads.filter(a => a.status === 'published') : [];
-
-            var side = document.getElementById('adsSide');
-            if (published.length > 0) {
-                side.innerHTML = published.slice(0, 3).map(a => `
-                    <div style="background:#0f172a; padding:10px; border-radius:10px; margin-bottom:8px; display:flex; gap:10px; align-items:center; cursor:pointer;" onclick="window.open('${a.link}','_blank')">
-                        ${a.image_url ? `<img src="${a.image_url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">` : ''}
-                        <div><strong style="color:#fbbf24;">${a.title_ar}</strong><p style="font-size:0.75rem; color:#94a3b8;">${a.description || ''}</p></div>
-                    </div>
-                `).join('');
-            } else {
-                side.innerHTML = '<p style="color:#94a3b8;">لا توجد إعلانات</p>';
-            }
-
-            var full = document.getElementById('adsFullGrid');
-            if (published.length > 0) {
-                full.innerHTML = published.map(a => `
-                    <div class="ad-item" onclick="window.open('${a.link}','_blank')">
-                        ${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}
-                        <div class="info">
-                            <strong>${a.title_ar}</strong>
-                            <p>${a.description || ''}</p>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                full.innerHTML = '<p style="color:#94a3b8; grid-column:1/-1; text-align:center;">لا توجد إعلانات منشورة حالياً</p>';
-            }
-        } catch (e) {
-            document.getElementById('adsSide').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
-            document.getElementById('adsFullGrid').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
-        }
-    }
-
     // ============================================================
-    // دوال الطلبات والعروض والمحادثة (نفس ما كان سابقاً)
+    // دوال الطلبات والعروض والمحادثة
     // ============================================================
     async function loadBuyerData() {
         try {
@@ -919,6 +802,8 @@
         }
     }
 
+    var currentChat = null;
+
     async function openChatFromOffer(opportunityId, buyerId, sellerId) {
         closeOverlay('offer-detail');
         closeOverlay('offers');
@@ -926,9 +811,8 @@
         document.getElementById('chatTitle').textContent = `💬 التفاوض - الطلب #${opportunityId}`;
         await loadChatMessages();
         openOverlay('chat');
+        setTimeout(() => document.getElementById('chatInput').focus(), 100);
     }
-
-    var currentChat = null;
 
     async function loadChatMessages() {
         if (!currentChat) return;
@@ -954,11 +838,14 @@
             }
         } catch (err) {
             document.getElementById('chatMessages').innerHTML = '<p style="color:#ef4444;">فشل تحميل المحادثة</p>';
+            console.error(err);
         }
     }
 
     async function sendChatMessage() {
+        console.log('sendChatMessage called');
         var input = document.getElementById('chatInput');
+        if (!input) { console.error('chatInput not found'); return; }
         var message = input.value.trim();
         if (!message) { showToast('❌ اكتب رسالة أولاً', true); return; }
         if (!currentChat) { showToast('❌ لا توجد محادثة مفتوحة', true); return; }
@@ -984,12 +871,35 @@
                     showToast('🤖 ' + data.message, false);
                 }
             } else {
-                showToast('❌ فشل إرسال الرسالة', true);
+                showToast('❌ فشل إرسال الرسالة: ' + (data.detail || ''), true);
             }
         } catch (err) {
             showToast('❌ خطأ في الاتصال', true);
+            console.error(err);
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var sendBtn = document.getElementById('sendChatBtn');
+        var chatInput = document.getElementById('chatInput');
+        if (sendBtn) {
+            sendBtn.addEventListener('click', sendChatMessage);
+        }
+        if (chatInput) {
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            });
+        }
+    });
+
+    setInterval(() => {
+        if (document.getElementById('overlay-chat').classList.contains('active')) {
+            loadChatMessages();
+        }
+    }, 3000);
 
     document.getElementById('sellerRegisterForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -1047,22 +957,12 @@
         } catch (e) { console.error(e); }
     }
 
-    // ============================================================
-    // تهيئة الصفحة (عرض صفحة الدخول دائماً)
-    // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-        // دائماً نعرض صفحة الدخول
         showLoginPage();
-        // تحديث معلومات الجلسة في صفحة الدخول
         updateSessionInfo();
-        // نحمّل البيانات الأولية للواجهة الثانية (لكنها مخفية)
         loadDashboardData();
-        loadAds();
-        // إذا كان هناك مستخدم في localStorage، نعرض رسالة في صفحة الدخول
-        // (يتم ذلك في updateSessionInfo)
     });
 
-    // تحديث النشاط كل 10 ثوانٍ
     setInterval(() => {
         if (document.getElementById('overlay-activity').classList.contains('active')) {
             loadActivityData();

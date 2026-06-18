@@ -5,7 +5,7 @@
     "email": "buyer@test.com",
     "phone": "0911111111",
     "role": "buyer",
-    "password": "123456",
+    "password": "scrypt:32768:8:1$lg5VnOLmaMsIlkRR$93dc7c62b08669d3f480857e9b4ce3f8207620055a357781ceb8c7d65f4d911dc14d031fa8c5a599fdc8174828468ffc506aab433a893b1f9afe0babbae0e9c1",
     "is_active": true,
     "subscription_end": null,
     "created_at": "2026-06-17 01:32:08"
@@ -16,7 +16,7 @@
     "email": "seller@test.com",
     "phone": "0922222222",
     "role": "seller",
-    "password": "123456",
+    "password": "scrypt:32768:8:1$L6W3YL50htqPzz3B$afafcaf52606cc9f13cad5c3f6c8f10281392c3402e2e3eb82c42f5bc22efe5e103469c0d0fd2bf6b66a592db5ba65c96214fc3b991e4788013f080ea4d9c2c6",
     "is_active": true,
     "subscription_end": "2026-07-17 12:45:12",
     "created_at": "2026-06-17 01:32:08"
@@ -27,7 +27,7 @@
     "email": "ahmed@test.com",
     "phone": "0912345678",
     "role": "buyer",
-    "password": "123456",
+    "password": "scrypt:32768:8:1$bAAhqaDWjw0xAmb7$683efd182db377f44d671509e231d97987eab6a97299130dbc34c0cb625a8e1c01d292ca4efcd703af82f7ebc90d86b3d0b92ba2bac410da048fce8aec664f35",
     "is_active": true,
     "subscription_end": null,
     "created_at": "2026-06-17 01:34:40"
@@ -38,7 +38,7 @@
     "email": "khaled@test.com",
     "phone": "0923456789",
     "role": "seller",
-    "password": "123456",
+    "password": "scrypt:32768:8:1$7D1yYGsQ7wQMb0Cu$1fd27398c887512697b2d2053bfc6c3b63f1fe24040b5f98739f877f06f2e74c4d5d4ac3ab8c7e2b1fbeeb9f91cb2d3feb9d83620b0702f528b08acf57a65d77",
     "is_active": true,
     "subscription_end": "2026-07-17 12:45:19",
     "created_at": "2026-06-17 01:34:40"
@@ -49,7 +49,7 @@
     "email": "trader@test.com",
     "phone": "0922222222",
     "role": "seller",
-    "password": "123456",
+    "password": "scrypt:32768:8:1$MyXdVcTGKkYheP56$d3153ce42d6b829804ac82c7ab2119e3446190d1403eff728365b1a60e1176244c94bba192a58118932fbf61c5c616380ec10c56abf6d0081dbfebbef056abde",
     "is_active": true,
     "subscription_end": "2026-07-17 12:45:20",
     "created_at": "2026-06-17 12:43:07"
@@ -60,9 +60,9 @@
     "email": "Asd@yahoo.com",
     "phone": "9087990780",
     "role": "seller",
-    "password": "123456",
+    "password": "scrypt:32768:8:1$j7rBfKIFZ18f22pJ$47331f7cb108d472ec34c44bef8be4ec565ce44763590a8ea640fb9778ab12fff78052fc37c9efb3d87660f033675ff96eca0c5d2bde728cf8b7b17c4f2e8310",
     "is_active": true,
-    "subscription_end": "2026-07-17 19:30:56",
+    "subscription_end": "2026-07-18 07:13:21",
     "created_at": "2026-06-17 19:29:13"
   },
   {
@@ -71,9 +71,42 @@
     "email": "qqq@yaho.com",
     "phone": "0912343455",
     "role": "seller",
-    "password": "123456",
+    "password": "scrypt:32768:8:1$fpTWotUptZHypKSM$6203a9f492ecef08c8b68f54439021c49294a7b9575ce9710ef7e477c2bad635a97955d500052f899b182ac4d1fb8f779e989dedaa6f5109cff3de37f084fcc3",
     "is_active": true,
-    "subscription_end": "2026-07-17 20:44:47",
+    "subscription_end": "2026-07-18 07:13:22",
     "created_at": "2026-06-17 20:43:44"
+  },
+  {
+    "id": 8,
+    "name": "\u0627\u0644\u0645\u0634\u0631\u0641",
+    "email": "admin@test.com",
+    "phone": "0912345678",
+    "role": "admin",
+    "password": "scrypt:32768:8:1$R2ijbIQxYYNkAhx7$efd551ea5e6ad7dcf7b0054d524be6d30890ccd79670bd96122b5d8e384958df5c308583289ceb6940a039c0e33073dc1070c0bd041ddea790abf9be186ab4b9",
+    "is_active": true,
+    "subscription_end": null,
+    "created_at": "2026-06-17 22:32:09"
+  },
+  {
+    "id": 9,
+    "name": "Buyer1",
+    "email": "buyer1@test.com",
+    "phone": "0912343455",
+    "role": "seller",
+    "password": "scrypt:32768:8:1$zS8TOXTnn0zpUxE1$a426f9ce672522a0cd6e0d4eed73ee06acc4af8af4d69a9182cc4023ec3c227f0fabc2f41b8a241a3a1e28bed710dc232bb40167b9bdc6bab0007fd187e7500e",
+    "is_active": true,
+    "subscription_end": "2026-07-18 07:13:51",
+    "created_at": "2026-06-18 07:09:01"
+  },
+  {
+    "id": 10,
+    "name": "trader",
+    "email": "trader1@test.com",
+    "phone": "0912343434",
+    "role": "seller",
+    "password": "scrypt:32768:8:1$QpB2u3ndGfBrU6BT$6af419c8718cca79d769693d26afbe23c37644b52e79a8227d190dc7e1ce8e8705a0ef1335bf9061a5242cb9d4cddb821f250a2d0d2e3f6e4d7ad485882effae",
+    "is_active": false,
+    "subscription_end": null,
+    "created_at": "2026-06-18 07:19:15"
   }
 ]

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Private Deal Room Test</title>
+</head>
+<body>
+
+<h3>Private Deal Room Test</h3>
+
+<input id="opportunity" placeholder="opportunity">
+<input id="buyer" placeholder="buyer">
+<input id="seller" placeholder="seller">
+<input id="sender" placeholder="sender">
+<input id="payment_ref" placeholder="رقم التحويل">
+
+<br><br>
+
+<button onclick="connect()">Connect</button>
+
+<br><br>
+
+<!-- أزرار الصفقات -->
+<button onclick="sendDeal('light')">معدات خفيفة</button>
+<button onclick="sendDeal('heavy')">معدات ثقيلة</button>
+<button onclick="sendDeal('project')">مشروع</button>
+
+<br><br>
+
+<!-- أزرار الحالة -->
+<button onclick="sendStatus('delivered')">تم التسلم</button>
+<button onclick="sendStatus('approved')">موافق</button>
+<button onclick="sendStatus('rejected')">رفض</button>
+
+<br><br>
+
+<pre id="log"></pre>
+
+<script>
+let ws;
+
+function log(m){
+  document.getElementById("log").innerText += m + "\n";
+}
+
+function connect(){
+  const o = document.getElementById("opportunity").value;
+  const b = document.getElementById("buyer").value;
+  const s = document.getElementById("seller").value;
+
+  const url = `ws://127.0.0.1:8000/ws/chat/${o}/${b}/${s}`;
+  ws = new WebSocket(url);
+
+  ws.onopen = ()=>log("CONNECTED");
+  ws.onmessage = (e)=>log("RECEIVED: " + e.data);
+  ws.onerror = ()=>log("ERROR");
+  ws.onclose = ()=>log("CLOSED");
+}
+
+function sendDeal(type){
+
+  let value = 50000;
+  let desc = "معدات خفيفة";
+
+  if(type === "heavy"){
+    value = 20000000;
+    desc = "معدات ثقيلة";
+  }
+
+  if(type === "project"){
+    value = 500000000;
+    desc = "مشروع كبير";
+  }
+
+  const ref = document.getElementById("payment_ref").value;
+
+  ws.send(JSON.stringify({
+    type: "deal_event",
+    action: "confirm_payment",
+    deal_type: type,
+    value: value,
+    description: desc,
+    payment_ref: ref,
+    payment_last4: ref.slice(-4),
+    sender_id: document.getElementById("sender").value,
+    timestamp: new Date().toISOString()
+  }));
+}
+
+function sendStatus(action){
+  ws.send(JSON.stringify({
+    type: "deal_event",
+    action: action,
+    sender_id: document.getElementById("sender").value,
+    timestamp: new Date().toISOString()
+  }));
+}
+</script>
+
+</body>
+</html>

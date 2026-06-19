@@ -1,55 +1,146 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
-from routers import auth, buyer, seller, admin, api
-from database import get_user_from_cookie
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from typing import Dict, List
+import json
+from pathlib import Path
 
-app = FastAPI(title="منصة السودان للتعدين")
+app = FastAPI(title="Sudan Mining Hub - Smart Deals")
 
-# تضمين الراوترات
-app.include_router(auth.router)
-app.include_router(buyer.router)
-app.include_router(seller.router)
-app.include_router(admin.router)
-app.include_router(api.router)
+# =====================
+# CONNECTIONS
+# =====================
+active_connections: Dict[str, List[WebSocket]] = {}
 
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    user = get_user_from_cookie(request)
-    
-    # إذا كان المستخدم مسجلاً، نوجهه إلى واجهته مباشرة
-    if user:
-        role = user.get("role")
-        if role == "buyer":
-            return RedirectResponse("/buyer", status_code=302)
-        elif role == "seller":
-            return RedirectResponse("/seller", status_code=302)
-        elif role == "admin":
-            return RedirectResponse("/admin", status_code=302)
-    
-    # غير مسجل → صفحة تسجيل الدخول
-    return '''
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>منصة السودان للتعدين</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:Tahoma, Arial, sans-serif; background:#0f172a; color:#f1f5f9; min-height:100vh; padding:20px; }
-.container { max-width:800px; margin:auto; }
-.box { background:#1e293b; padding:30px; border-radius:16px; margin:15px 0; text-align:center; }
-.btn { display:inline-block; padding:12px 30px; background:#fbbf24; color:#0f172a; text-decoration:none; border-radius:30px; font-weight:bold; margin:5px; }
-.btn-blue { background:#3b82f6; color:white; }
-</style>
-</head>
-<body>
-<div class="container">
-<div class="box"><h1>⛏️ منصة السودان للتعدين</h1><p>نظام إدارة طلبات الذهب</p></div>
-<div class="box"><a href="/auth/login" class="btn btn-blue">تسجيل الدخول</a> <a href="/auth/register" class="btn">إنشاء حساب</a></div>
-<div class="box" style="color:#94a3b8;">🟢 النظام مباشر</div>
-</div>
-</body>
-</html>
-'''
+# =====================
+# STORAGE
+# =====================
+CHAT_STORE = Path("data/chat_messages.json")
+CHAT_STORE.parent.mkdir(exist_ok=True)
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+def load_messages():
+    if CHAT_STORE.exists():
+        return json.loads(CHAT_STORE.read_text() or "{}")
+    return {}
+
+def save_messages(data):
+    CHAT_STORE.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+
+# =====================
+# SMART DEAL ENGINE v2
+# =====================
+
+def classify_deal(deal_type, value=0, description=""):
+    if deal_type in ["light", "heavy", "project"]:
+        return deal_type
+
+    value = float(value or 0)
+    text = (description or "").lower()
+
+    if any(k in text for k in ["مصنع", "خط إنتاج", "بئر", "شركة", "طاقة", "معدات ثقيلة"]):
+        return "project"
+
+    if value <= 1000000:
+        return "light"
+    elif value <= 50000000:
+        return "heavy"
+    else:
+        return "project"
+
+
+def calculate_commission(deal_type, value):
+    if deal_type == "light":
+        return {
+            "type": "fixed",
+            "value": 100000,
+            "payer": "seller"
+        }
+
+    if deal_type == "heavy":
+        return {
+            "type": "percent",
+            "value": float(value) * 0.0025,
+            "rate": "0.25%",
+            "payer": "negotiated"
+        }
+
+    if deal_type == "project":
+        return {
+            "type": "agreement",
+            "value": None,
+            "payer": "manual"
+        }
+
+    return {"type": "unknown", "value": 0, "payer": "none"}
+
+# =====================
+# WEB SOCKET
+# =====================
+@app.websocket("/ws/chat/{opportunity_id}/{buyer_id}/{seller_id}")
+async def chat_websocket(websocket: WebSocket, opportunity_id: str, buyer_id: str, seller_id: str):
+
+    await websocket.accept()
+
+    room = f"{opportunity_id}:{buyer_id}:{seller_id}"
+
+    if room not in active_connections:
+        active_connections[room] = []
+
+    active_connections[room].append(websocket)
+
+    store = load_messages()
+    if room not in store:
+        store[room] = []
+
+    try:
+        while True:
+            data = await websocket.receive_json()
+
+            msg_type = data.get("type", "chat")
+
+            message = {
+                "room": room,
+                "type": msg_type,
+                "sender_id": data.get("sender_id"),
+                "message": data.get("message"),
+                "status": data.get("status"),
+                "value": data.get("value"),
+                "description": data.get("description"),
+                "timestamp": data.get("timestamp")
+            }
+
+            # =====================
+            # DEAL COMPLETION LOGIC
+            # =====================
+            if data.get("status") == "تم التسلم":
+
+                deal_type = classify_deal(
+                    data.get("deal_type"),
+                    data.get("value"),
+                    data.get("description")
+                )
+
+                commission = calculate_commission(
+                    deal_type,
+                    data.get("value", 0)
+                )
+
+                message["system"] = "DEAL_COMPLETED"
+                message["deal_type"] = deal_type
+                message["commission"] = commission
+
+            # SAVE
+            store[room].append(message)
+            save_messages(store)
+
+            # BROADCAST
+            for conn in list(active_connections[room]):
+                try:
+                    await conn.send_json(message)
+                except:
+                    active_connections[room].remove(conn)
+
+    except WebSocketDisconnect:
+        if websocket in active_connections.get(room, []):
+            active_connections[room].remove(websocket)
+
+        if room in active_connections and not active_connections[room]:
+            del active_connections[room]

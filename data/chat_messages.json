@@ -1,0 +1,249 @@
+{
+  "1:1:2": [
+    {
+      "room": "1:1:2",
+      "type": "chat",
+      "sender_id": "2",
+      "message": "{   \"type\": \"status\",   \"status\": \"تم التسلم\",   \"deal_type\": \"light\",   \"value\": 50000,   \"description\": \"معدات خفيفة\" }",
+      "status": null,
+      "value": null,
+      "description": null,
+      "timestamp": "2026-06-19T05:49:49.611Z"
+    },
+    {
+      "room": "1:1:2",
+      "type": "chat",
+      "sender_id": "1",
+      "message": "ws.send(JSON.stringify({   type: \"status\",   status: \"تم التسلم\",   deal_type: \"light\",   value: 50000,   description: \"معدات خفيفة\",   sender_id: \"2\",   timestamp: new Date().toISOString() }))",
+      "status": null,
+      "value": null,
+      "description": null,
+      "timestamp": "2026-06-19T05:54:29.651Z"
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T06:23:18.969Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "2",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T06:24:23.669Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "2",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T06:26:43.069Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T06:29:42.441Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T06:30:42.036Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T06:47:34.315Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "2",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T06:47:50.175Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T11:30:39.833Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 20000000,
+      "description": "معدات ثقيلة",
+      "timestamp": "2026-06-19T11:30:42.232Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "heavy",
+      "commission": {
+        "type": "percent",
+        "value": 50000.0,
+        "rate": "0.25%",
+        "payer": "negotiated"
+      }
+    },
+    {
+      "room": "1:1:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 500000000,
+      "description": "مشروع كبير",
+      "timestamp": "2026-06-19T11:30:44.174Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "project",
+      "commission": {
+        "type": "agreement",
+        "value": null,
+        "payer": "manual"
+      }
+    }
+  ],
+  "1:2:2": [
+    {
+      "room": "1:2:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 50000,
+      "description": "معدات خفيفة",
+      "timestamp": "2026-06-19T11:31:04.590Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "light",
+      "commission": {
+        "type": "fixed",
+        "value": 100000,
+        "payer": "seller"
+      }
+    },
+    {
+      "room": "1:2:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 20000000,
+      "description": "معدات ثقيلة",
+      "timestamp": "2026-06-19T11:31:05.609Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "heavy",
+      "commission": {
+        "type": "percent",
+        "value": 50000.0,
+        "rate": "0.25%",
+        "payer": "negotiated"
+      }
+    },
+    {
+      "room": "1:2:2",
+      "type": "status",
+      "sender_id": "1",
+      "message": null,
+      "status": "تم التسلم",
+      "value": 500000000,
+      "description": "مشروع كبير",
+      "timestamp": "2026-06-19T11:31:06.583Z",
+      "system": "DEAL_COMPLETED",
+      "deal_type": "project",
+      "commission": {
+        "type": "agreement",
+        "value": null,
+        "payer": "manual"
+      }
+    }
+  ]
+}

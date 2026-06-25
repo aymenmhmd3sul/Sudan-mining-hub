@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.templating import Jinja2Templates  # ✅ تمت إضافة هذا الاستيراد
 from pydantic import BaseModel
 import json
 import os
@@ -13,10 +14,9 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 router = APIRouter()
-
-# ✅ تم التحديث هنا: دعم كلاً من scrypt (للمستخدمين الحاليين) و bcrypt (للمستخدمين الجدد)
 pwd_context = CryptContext(schemes=["scrypt", "bcrypt"], deprecated="auto")
 USERS_FILE = "data/users.json"
+templates = Jinja2Templates(directory="templates") # ✅ تعريف القوالب هنا لتجنب الاستيراد الدائري
 
 def get_users():
     if not os.path.exists(USERS_FILE):
@@ -33,7 +33,6 @@ def get_user_by_email(email: str):
 
 def verify_password(plain_password, hashed_password):
     try:
-        # ✅ تمت إضافة try/except لضمان عدم حدوث خطأ 500 إذا فشلت عملية التحقق
         return pwd_context.verify(plain_password, hashed_password)
     except Exception:
         return False
@@ -66,7 +65,6 @@ def get_current_user(token: str):
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    from app.main import templates
     return templates.TemplateResponse("login.html", {"request": request})
 
 @router.post("/login")

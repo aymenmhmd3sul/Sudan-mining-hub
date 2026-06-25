@@ -13,7 +13,9 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# ✅ تم التحديث هنا: دعم كلاً من scrypt (للمستخدمين الحاليين) و bcrypt (للمستخدمين الجدد)
+pwd_context = CryptContext(schemes=["scrypt", "bcrypt"], deprecated="auto")
 USERS_FILE = "data/users.json"
 
 def get_users():
@@ -30,7 +32,11 @@ def get_user_by_email(email: str):
     return None
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        # ✅ تمت إضافة try/except لضمان عدم حدوث خطأ 500 إذا فشلت عملية التحقق
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception:
+        return False
 
 def authenticate_user(email: str, password: str):
     user = get_user_by_email(email)
@@ -58,14 +64,11 @@ def get_current_user(token: str):
     except JWTError:
         return None
 
-# ================== نقطة نهاية عرض صفحة الدخول (HTML) - الجديدة ==================
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    # استيراد قوالب ملفات HTML من main.py
     from app.main import templates
     return templates.TemplateResponse("login.html", {"request": request})
 
-# ================== نقطة نهاية تسجيل الدخول (تجهيز البيانات) ==================
 @router.post("/login")
 async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(form_data.username, form_data.password)
@@ -87,14 +90,12 @@ async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends
 
     return {"access_token": access_token, "token_type": "bearer", "user": {"email": user["email"], "role": user["role"]}}
 
-# ================== نقطة نهاية الخروج ==================
 @router.get("/logout")
 async def logout():
     response = RedirectResponse(url="/auth/login", status_code=303)
     response.delete_cookie("access_token")
     return response
 
-# ================== نقطة نهاية التحقق من المستخدم الحالي ==================
 @router.get("/me")
 def read_users_me(token: str = Depends()):
     current_user = get_current_user(token)

@@ -1,4 +1,4 @@
-from fastapi import Header, HTTPException
+from fastapi import Header, HTTPException, Depends
 from app.core.security import decode_token
 
 def get_current_user(authorization: str = Header(None)):

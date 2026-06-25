@@ -1,315 +1,78 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم المشرف</title>
+    <title>لوحة الإدارة</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Tahoma', sans-serif; background: #0f172a; color: #f1f5f9; padding: 20px; }
-        .container { max-width: 1300px; margin: 0 auto; }
-        h1 { color: #fbbf24; margin-bottom: 30px; text-align: center; }
-        .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.05); }
-        .card h2 { color: #fbbf24; margin-bottom: 15px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        th { color: #94a3b8; }
-        .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-green { background: #22c55e; color: white; }
-        .btn-red { background: #ef4444; color: white; }
-        .btn-blue { background: #3b82f6; color: white; }
-        .btn-yellow { background: #fbbf24; color: #0f172a; font-weight: 700; }
-        input, select, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: white; margin-bottom: 10px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; color: #94a3b8; margin-bottom: 5px; }
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #22c55e; padding: 12px 24px; border-radius: 12px; display: none; z-index: 999; }
-        .flex { display: flex; gap: 10px; flex-wrap: wrap; }
-        .ad-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; border-right: 3px solid #ec4899; }
-        .ad-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
-        .ad-item .info { flex: 1; }
-        .ad-item .info strong { color: #fbbf24; }
-        .ad-item .info small { color: #94a3b8; }
-        small.hint { color: #64748b; font-size: 0.8rem; }
+        body { font-family: Arial; background:#0a1628; color:white; padding:20px; }
+        .box { background:#1a2a4a; padding:20px; border-radius:12px; }
+        table { width:100%; border-collapse:collapse; margin-top:20px; }
+        th, td { padding:10px; border-bottom:1px solid #2a3a5a; text-align:center; }
+        .btn-toggle { padding:5px 10px; border:none; border-radius:6px; cursor:pointer; }
+        .btn-delete { background:red; color:white; border:none; padding:5px 10px; border-radius:6px; }
+        .admin-badge { color:#ffd700; font-weight:bold; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🛠️ لوحة تحكم المشرف</h1>
 
-        <!-- إدارة المستخدمين -->
-        <div class="card">
-            <h2>👤 إدارة المستخدمين</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>الاسم</th>
-                        <th>البريد</th>
-                        <th>الدور</th>
-                        <th>التاجر نشط؟</th>
-                        <th>إجراء</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTableBody">
-                    <tr><td colspan="6" style="text-align:center;color:#94a3b8;">جاري التحميل...</td></tr>
-                </tbody>
-            </table>
+<div class="box">
+
+    <h2>لوحة الإدارة</h2>
+
+    {% if admin_user is defined %}
+        <div class="admin-badge">
+            {{ admin_user.full_name or admin_user.email }}
         </div>
+    {% else %}
+        <div class="admin-badge">Admin</div>
+    {% endif %}
 
-        <!-- إضافة إعلان جديد -->
-        <div class="card">
-            <h2>📢 إضافة إعلان جديد</h2>
-            <form id="adForm" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label>العنوان (عربي) *</label>
-                    <input type="text" id="adTitleAr" required>
-                </div>
-                <div class="form-group">
-                    <label>العنوان (إنجليزي) *</label>
-                    <input type="text" id="adTitleEn" required>
-                </div>
-                <div class="form-group">
-                    <label>الوصف *</label>
-                    <textarea id="adDescription" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>رابط الوجهة (عند الضغط) *</label>
-                    <input type="url" id="adLink" placeholder="https://example.com" required>
-                </div>
-                <div class="form-group">
-                    <label>الموقع *</label>
-                    <select id="adPosition">
-                        <option value="top">أعلى الصفحة</option>
-                        <option value="sidebar">الجانب</option>
-                        <option value="bottom">أسفل الصفحة</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>رفع صورة الإعلان</label>
-                    <input type="file" id="adImageFile" accept="image/*">
-                    <small class="hint">يمكنك أيضاً إدخال رابط صورة بدلاً من الرفع</small>
-                </div>
-                <div class="form-group">
-                    <label>رابط الصورة (احتياطي)</label>
-                    <input type="url" id="adImageUrl" placeholder="https://example.com/image.jpg">
-                </div>
-                <div class="form-group">
-                    <label>الحالة *</label>
-                    <select id="adStatus">
-                        <option value="published">📢 منشور</option>
-                        <option value="draft">📝 مسودة (غير منشور)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-blue">➕ نشر الإعلان</button>
-            </form>
-            <div id="adMessage" style="margin-top:10px;"></div>
-        </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>الاسم</th>
+                <th>الإيميل</th>
+                <th>الحالة</th>
+                <th>إجراء</th>
+            </tr>
+        </thead>
 
-        <!-- عرض الإعلانات الحالية -->
-        <div class="card">
-            <h2>📢 الإعلانات الحالية</h2>
-            <div id="adsList"></div>
-        </div>
+        <tbody>
+        {% for u in users_list %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.full_name }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                    {% if u.is_active == 1 %}
+                        نشط
+                    {% else %}
+                        موقوف
+                    {% endif %}
+                </td>
 
-        <!-- إضافة سعر ذهب محلي -->
-        <div class="card">
-            <h2>🏅 إضافة سعر ذهب محلي</h2>
-            <form id="goldPriceForm">
-                <div class="form-group">
-                    <label>المدينة</label>
-                    <input type="text" id="gpCity" required>
-                </div>
-                <div class="form-group">
-                    <label>سعر الجرام (ج.س)</label>
-                    <input type="number" id="gpGram" required>
-                </div>
-                <div class="form-group">
-                    <label>سعر الأونصة (ج.س)</label>
-                    <input type="number" id="gpOunce" required>
-                </div>
-                <button type="submit" class="btn btn-blue">➕ إضافة سعر</button>
-            </form>
-            <div id="gpMessage" style="margin-top:10px;"></div>
-        </div>
+                <td>
+                    <form method="post" action="/admin/users/{{ u.id }}/toggle" style="display:inline;">
+                        <button class="btn-toggle" type="submit">
+                            {% if u.is_active == 1 %}تعطيل{% else %}تفعيل{% endif %}
+                        </button>
+                    </form>
 
-        <!-- عرض أسعار الذهب المحلية الحالية -->
-        <div class="card">
-            <h2>🏅 أسعار الذهب المحلية الحالية</h2>
-            <div id="goldPricesList" style="color:#94a3b8;">جاري التحميل...</div>
-        </div>
+                    {% if admin_user is defined and u.id == admin_user.id %}
+                        <span>(أنت)</span>
+                    {% else %}
+                        <form method="post" action="/admin/users/{{ u.id }}/delete" style="display:inline;">
+                            <button class="btn-delete" onclick="return confirm('حذف المستخدم؟')">🗑</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-        <div style="margin-top:30px;text-align:center;">
-            <a href="/dashboard" style="color:#fbbf24;">⬅️ العودة إلى لوحة التحكم الرئيسية</a>
-        </div>
-    </div>
+</div>
 
-    <div class="toast" id="toast"></div>
-
-    <script>
-        function showToast(msg, err) {
-            var t = document.getElementById('toast');
-            t.textContent = msg;
-            t.style.display = 'block';
-            t.style.borderColor = err ? '#ef4444' : '#22c55e';
-            setTimeout(function() { t.style.display = 'none'; }, 4000);
-        }
-
-        async function loadUsers() {
-            try {
-                var res = await fetch('/api/admin/users');
-                var data = await res.json();
-                var tbody = document.getElementById('usersTableBody');
-                if (data.users && data.users.length > 0) {
-                    tbody.innerHTML = data.users.map(u => `
-                        <tr>
-                            <td>${u.id}</td>
-                            <td>${u.name}</td>
-                            <td>${u.email}</td>
-                            <td>${u.role}</td>
-                            <td>${u.role === 'seller' ? (u.is_active ? '✅ نشط' : '❌ غير نشط') : '—'}</td>
-                            <td>
-                                ${u.role === 'seller' ? `
-                                    <button class="btn btn-green" onclick="toggleSeller(${u.id}, true)">تفعيل</button>
-                                    <button class="btn btn-red" onclick="toggleSeller(${u.id}, false)">إلغاء</button>
-                                ` : '—'}
-                            </td>
-                        </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;">لا يوجد مستخدمون</td></tr>';
-                }
-            } catch (err) {
-                document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#ef4444;">فشل التحميل</td></tr>';
-            }
-        }
-
-        async function toggleSeller(id, activate) {
-            try {
-                var res = await fetch(`/api/admin/${activate ? 'activate' : 'deactivate'}-seller/${id}`, { method: 'POST' });
-                var data = await res.json();
-                if (data.status === 'success') {
-                    showToast(data.message, false);
-                    loadUsers();
-                } else {
-                    showToast('❌ فشل', true);
-                }
-            } catch (err) {
-                showToast('❌ خطأ', true);
-            }
-        }
-
-        // نموذج الإعلان
-        document.getElementById('adForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            var formData = new FormData();
-            formData.append('title_ar', document.getElementById('adTitleAr').value);
-            formData.append('title_en', document.getElementById('adTitleEn').value);
-            formData.append('description', document.getElementById('adDescription').value);
-            formData.append('link', document.getElementById('adLink').value);
-            formData.append('position', document.getElementById('adPosition').value);
-            formData.append('status', document.getElementById('adStatus').value);
-            
-            var imageFile = document.getElementById('adImageFile').files[0];
-            if (imageFile) {
-                formData.append('image_file', imageFile);
-            } else {
-                formData.append('image_url', document.getElementById('adImageUrl').value || '');
-            }
-
-            try {
-                var res = await fetch('/api/admin/ad', {
-                    method: 'POST',
-                    body: formData
-                });
-                var data = await res.json();
-                if (data.status === 'success') {
-                    showToast('✅ تم نشر الإعلان بنجاح!', false);
-                    document.getElementById('adForm').reset();
-                    loadAds();
-                } else {
-                    showToast('❌ فشل النشر: ' + (data.detail || ''), true);
-                }
-            } catch (err) {
-                showToast('❌ خطأ في الاتصال', true);
-            }
-        });
-
-        // تحميل الإعلانات (مرة واحدة فقط)
-        async function loadAds() {
-            try {
-                var res = await fetch('/api/admin/ads');
-                var data = await res.json();
-                var container = document.getElementById('adsList');
-                if (data.ads && data.ads.length > 0) {
-                    container.innerHTML = data.ads.map(a => `
-                        <div class="ad-item">
-                            ${a.image_url ? `<img src="${a.image_url}" alt="${a.title_ar}">` : ''}
-                            <div class="info">
-                                <strong>${a.title_ar}</strong>
-                                <p style="color:#94a3b8; font-size:0.9rem;">${a.description || ''}</p>
-                                <small>الحالة: ${a.status === 'published' ? '📢 منشور' : '📝 مسودة'} | ${a.created_at}</small>
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد إعلانات</p>';
-                }
-            } catch (err) {
-                document.getElementById('adsList').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
-            }
-        }
-
-        // نموذج سعر الذهب
-        document.getElementById('goldPriceForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            var city = document.getElementById('gpCity').value;
-            var price_gram = parseFloat(document.getElementById('gpGram').value);
-            var price_ounce = parseFloat(document.getElementById('gpOunce').value);
-
-            try {
-                var res = await fetch('/api/admin/gold-price', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ city, price_gram, price_ounce })
-                });
-                var data = await res.json();
-                if (data.status === 'success') {
-                    showToast('✅ تم إضافة السعر', false);
-                    document.getElementById('goldPriceForm').reset();
-                    loadGoldPrices();
-                } else {
-                    showToast('❌ فشل', true);
-                }
-            } catch (err) {
-                showToast('❌ خطأ', true);
-            }
-        });
-
-        async function loadGoldPrices() {
-            try {
-                var res = await fetch('/api/admin/gold-prices');
-                var data = await res.json();
-                var container = document.getElementById('goldPricesList');
-                if (data.prices && data.prices.length > 0) {
-                    container.innerHTML = data.prices.map(p => `
-                        <div style="background:#0f172a;padding:10px;border-radius:8px;margin-bottom:8px;">
-                            <strong>${p.city}</strong> — 🟡 ${p.price_gram} ج.س/جم | ${p.price_ounce} ج.س/أونصة
-                            <br><small>آخر تحديث: ${p.updated_at}</small>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<p style="color:#94a3b8;">لا توجد أسعار</p>';
-                }
-            } catch (err) {
-                document.getElementById('goldPricesList').innerHTML = '<p style="color:#ef4444;">فشل التحميل</p>';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadUsers();
-            loadAds();
-            loadGoldPrices();
-        });
-    </script>
 </body>
 </html>

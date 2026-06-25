@@ -1,2 +1,4 @@
 __pycache__/
-local.db
+*.pyc
+*.db
+.env

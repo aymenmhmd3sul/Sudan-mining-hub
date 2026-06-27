@@ -1,45 +1,25 @@
-from datetime import datetime, timedelta
 import jwt
+import os
+from datetime import datetime, timedelta
 
-# =========================
-# CONFIG
-# =========================
-SECRET_KEY = "CHANGE_ME_SUPER_SECRET_KEY"
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-me")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
-# =========================
-# CREATE TOKEN
-# =========================
-def create_token(user_id: str, role: str = "user"):
+def create_token(data: dict):
+    payload = data.copy()
+
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    payload.update({"exp": expire})
 
-    payload = {
-        "user_id": user_id,
-        "role": role,
-        "exp": expire
-    }
-
-    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-    return token
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
-# =========================
-# DECODE TOKEN
-# =========================
 def decode_token(token: str):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except jwt.ExpiredSignatureError:
         return None
     except jwt.InvalidTokenError:
         return None
-
-
-# =========================
-# VERIFY TOKEN (helper)
-# =========================
-def verify_token(token: str):
-    return decode_token(token)

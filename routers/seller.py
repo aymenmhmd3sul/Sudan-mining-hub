@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from database import get_user_from_cookie
+from app.db.compat import get_user_from_cookie
 
 router = APIRouter(prefix="/seller", tags=["seller"])
 

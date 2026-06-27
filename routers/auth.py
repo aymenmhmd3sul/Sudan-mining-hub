@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, HTTPException, Cookie
 from fastapi.responses import HTMLResponse, RedirectResponse
 import hashlib, secrets
-from database import users_db, sessions, get_user, create_session, hash_password
+from app.db.legacy_adapter import get_user, create_session, hash_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

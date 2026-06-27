@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from database import get_gold_price
+from app.db.compat import get_gold_price
 
 router = APIRouter(prefix="/api", tags=["api"])
 

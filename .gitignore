@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 *.db
 .env
+cookies.txt
+error.log
+uvicorn.log

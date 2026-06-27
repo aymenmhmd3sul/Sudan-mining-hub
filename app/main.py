@@ -46,3 +46,9 @@ app.include_router(negotiation_router)
 from app.routers.market import router as market_router
 
 app.include_router(market_router)
+
+from app.routers.negotiation_ws import router as ws_router
+app.include_router(ws_router)
+
+from app.routers.negotiation_ws import router as ws_router
+app.include_router(ws_router)

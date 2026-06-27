@@ -38,3 +38,11 @@ def root():
 @app.get("/market/requests")
 def market_requests():
     return []
+
+from app.routers.negotiation import router as negotiation_router
+
+app.include_router(negotiation_router)
+
+from app.routers.market import router as market_router
+
+app.include_router(market_router)

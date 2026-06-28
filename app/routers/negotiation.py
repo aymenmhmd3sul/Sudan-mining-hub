@@ -1,140 +1,52 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
-import sqlite3
-
 from app.core.security.jwt import get_current_user
+from app.schemas.negotiation import CreateRoom, MessageIn
+from app.services.negotiation_service import (
+    get_active_offer,
+    room_exists,
+    create_room_logic,
+    get_user_rooms,
+    get_room_messages
+)
+from app.services.security import assert_user_valid
 
-router = APIRouter(prefix="/negotiation", tags=["Negotiation"])
-
-DB = "local.db"
-
-
-# =========================
-# DB Helper
-# =========================
-def get_db():
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
-    return conn
+router = APIRouter()
 
 
-# =========================
-# Schemas
-# =========================
-class CreateRoom(BaseModel):
-    offer_id: int
-
-
-class MessageIn(BaseModel):
-    room_id: int
-    message: str
-
-
-# =========================
-# 1. Create Room (SECURE)
-# =========================
+# ---------------- CREATE ROOM ----------------
 @router.post("/rooms")
 def create_room(data: CreateRoom, user=Depends(get_current_user)):
-    conn = get_db()
-    cur = conn.cursor()
 
-    offer = cur.execute(
-        "SELECT seller_id FROM trader_offers WHERE id=?",
-        (data.offer_id,)
-    ).fetchone()
+    assert_user_valid(user)
+
+    offer = get_active_offer(data.offer_id)
 
     if not offer:
-        raise HTTPException(status_code=404, detail="Offer not found")
+        raise HTTPException(status_code=404, detail="Invalid or inactive offer")
 
-    buyer_id = user["user_id"]
+    buyer_id = user["id"]
     seller_id = offer["seller_id"]
 
-    # منع إنشاء غرفة لنفسه
     if buyer_id == seller_id:
-        raise HTTPException(status_code=400, detail="Invalid negotiation")
+        raise HTTPException(status_code=400, detail="Self negotiation not allowed")
 
-    cur.execute("""
-        INSERT INTO negotiation_rooms (offer_id, buyer_id, seller_id)
-        VALUES (?, ?, ?)
-    """, (data.offer_id, buyer_id, seller_id))
+    if room_exists(data.offer_id, buyer_id):
+        raise HTTPException(status_code=409, detail="Room already exists")
 
-    conn.commit()
+    room_id = create_room_logic(data.offer_id, buyer_id, seller_id)
 
-    return {"status": "room created"}
+    return {"room_id": room_id}
 
 
-# =========================
-# 2. Get My Rooms (SECURE)
-# =========================
+# ---------------- GET ROOMS ----------------
 @router.get("/rooms")
 def get_rooms(user=Depends(get_current_user)):
-    conn = get_db()
-    cur = conn.cursor()
-
-    user_id = user["user_id"]
-
-    rooms = cur.execute("""
-        SELECT * FROM negotiation_rooms
-        WHERE buyer_id=? OR seller_id=?
-    """, (user_id, user_id)).fetchall()
-
-    return [dict(r) for r in rooms]
+    assert_user_valid(user)
+    return get_user_rooms(user["id"])
 
 
-# =========================
-# 3. Send Message (SECURE)
-# =========================
-@router.post("/message")
-def send_message(data: MessageIn, user=Depends(get_current_user)):
-    conn = get_db()
-    cur = conn.cursor()
-
-    user_id = user["user_id"]
-
-    # تحقق أن المستخدم داخل الغرفة
-    room = cur.execute("""
-        SELECT * FROM negotiation_rooms WHERE id=?
-    """, (data.room_id,)).fetchone()
-
-    if not room:
-        raise HTTPException(status_code=404, detail="Room not found")
-
-    if user_id not in (room["buyer_id"], room["seller_id"]):
-        raise HTTPException(status_code=403, detail="Not allowed")
-
-    cur.execute("""
-        INSERT INTO messages (room_id, sender_id, message)
-        VALUES (?, ?, ?)
-    """, (data.room_id, user_id, data.message))
-
-    conn.commit()
-
-    return {"status": "message sent"}
-
-
-# =========================
-# 4. Get Messages (SECURE)
-# =========================
-@router.get("/{room_id}/messages")
-def get_messages(room_id: int, user=Depends(get_current_user)):
-    conn = get_db()
-    cur = conn.cursor()
-
-    user_id = user["user_id"]
-
-    room = cur.execute("""
-        SELECT * FROM negotiation_rooms WHERE id=?
-    """, (room_id,)).fetchone()
-
-    if not room:
-        raise HTTPException(status_code=404, detail="Room not found")
-
-    if user_id not in (room["buyer_id"], room["seller_id"]):
-        raise HTTPException(status_code=403, detail="Not allowed")
-
-    msgs = cur.execute("""
-        SELECT * FROM messages WHERE room_id=?
-        ORDER BY created_at ASC
-    """, (room_id,)).fetchall()
-
-    return [dict(m) for m in msgs]
+# ---------------- GET MESSAGES ----------------
+@router.get("/messages/{room_id}")
+def messages(room_id: int, user=Depends(get_current_user)):
+    assert_user_valid(user)
+    return get_room_messages(room_id)

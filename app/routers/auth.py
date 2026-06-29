@@ -8,34 +8,41 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 # ---------------- LOGIN ----------------
 @router.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
-    db = get_db()
+    try:
+        db = get_db()
 
-    user = db.execute(
-        "SELECT * FROM users WHERE email = ?",
-        (username,)
-    ).fetchone()
+        user = db.execute(
+            "SELECT * FROM users WHERE email = ?",
+            (username,)
+        ).fetchone()
 
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # verify password properly
-    if not sha256_crypt.verify(password, user["password_hash"]):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        # safe password verification
+        try:
+            if not sha256_crypt.verify(password, user["password_hash"]):
+                raise HTTPException(status_code=401, detail="Invalid credentials")
+        except Exception:
+            raise HTTPException(status_code=500, detail="Password verification failed")
 
-    token = create_token({
-        "sub": user["email"],
-        "role": user["role"]
-    })
-
-    return {
-        "message": "login successful",
-        "access_token": token,
-        "token_type": "bearer",
-        "user": {
-            "email": user["email"],
+        token = create_token({
+            "sub": user["email"],
             "role": user["role"]
+        })
+
+        return {
+            "message": "login successful",
+            "access_token": token,
+            "token_type": "bearer",
+            "user": {
+                "email": user["email"],
+                "role": user["role"]
+            }
         }
-    }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # ---------------- ME ----------------

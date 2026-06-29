@@ -5,3 +5,6 @@ __pycache__/
 cookies.txt
 error.log
 uvicorn.log
+*.db*
+*.sqlite
+__pycache__/

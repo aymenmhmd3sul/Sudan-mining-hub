@@ -1,7 +1,9 @@
-from fastapi import HTTPException
+from passlib.hash import sha256_crypt
 
+# -------- PASSWORD HASHING --------
 
-def assert_user_valid(user):
-    if not user or "id" not in user:
-        raise HTTPException(status_code=401, detail="Invalid authentication")
-    return True
+def hash_password(password: str) -> str:
+    return sha256_crypt.hash(password)
+
+def verify_password(password: str, hashed: str) -> bool:
+    return sha256_crypt.verify(password, hashed)

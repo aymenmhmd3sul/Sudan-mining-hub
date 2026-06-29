@@ -1,22 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException, Header, Form
+from fastapi import APIRouter, HTTPException, Form, Header
+from app.core.db import get_db
 from app.core.security.jwt import create_token, decode_token
+from passlib.hash import sha256_crypt
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-
 
 # ---------------- LOGIN ----------------
 @router.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
-
-    # مؤقتاً (حسب نظامك الحالي في sqlite)
-    from app.core.db import get_db
     db = get_db()
+
     user = db.execute(
-        "SELECT * FROM users WHERE email = ? AND password_hash = ?",
-        (username, password)
+        "SELECT * FROM users WHERE email = ?",
+        (username,)
     ).fetchone()
 
     if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    # verify password properly
+    if not sha256_crypt.verify(password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_token({
@@ -26,18 +29,18 @@ def login(username: str = Form(...), password: str = Form(...)):
 
     return {
         "message": "login successful",
+        "access_token": token,
+        "token_type": "bearer",
         "user": {
             "email": user["email"],
             "role": user["role"]
-        },
-        "access_token": token
+        }
     }
 
 
 # ---------------- ME ----------------
 @router.get("/me")
 def me(authorization: str = Header(None)):
-
     if not authorization:
         raise HTTPException(status_code=401, detail="Missing token")
 

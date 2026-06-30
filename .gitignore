@@ -1,10 +1,6 @@
 __pycache__/
 *.pyc
-*.db
-.env
-cookies.txt
-error.log
-uvicorn.log
-*.db*
-*.sqlite
-__pycache__/
+local.db
+local.db-journal
+.venv/
+env/

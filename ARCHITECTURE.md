@@ -1,17 +1,12 @@
-# Sudan Mining Hub - Architecture v1
+# Sudan Mining Hub - Architecture Layer Documentation
 
-## Core System
-- FastAPI app in app/main.py
-- Active routers system (DO NOT REMOVE)
-- Authentication handled via routers/auth.py
+## 🔐 1. Authentication & Security (Stabilized)
+* **Core Security:** `app/core/security.py` 
+  * *Schemes:* `pbkdf2_sha256` (Primary) & `sha256_crypt` (Legacy Support).
+  * *JWT Config:* HS256 with 32-byte production secure key.
+* **Database Entry:** `app/core/db.py`
+  * Single Source of Truth for SQLite database operations on `local.db`.
 
-## Modules
-- routers/ = active API layer
-- app/services/ = business logic (future migration)
-- app/db/ = database layer (future abstraction)
-
-## Rules
-- No direct database imports outside db layer
-- No mixing old and new architecture without migration plan
-- Routers remain active until full refactor approval
-
+## 📂 2. Directory Mappings
+* Routers are systematically isolated in `app/routers/`.
+* Legacy routers and adapters are strictly moved to `./legacy/` to prevent Python runtime conflicts.

@@ -1,10 +1,12 @@
 import sqlite3
 
-DB = "local.db"
+DATABASE_PATH = "local.db"
 
-def get_db():
-    conn = sqlite3.connect(DB, timeout=30)
-    conn.execute("PRAGMA journal_mode=WAL;")
-    conn.execute("PRAGMA busy_timeout=5000;")
+def get_db_connection():
+    """
+    مصدر الحقيقة الموحد لفتح اتصال بقاعدة البيانات.
+    يضمن تفعيل Row factory لقراءة الحقول كـ Dictionaries.
+    """
+    conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
     return conn

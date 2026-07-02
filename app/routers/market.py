@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.core.security.deps import get_current_user
+from app.core.security import get_current_user
 
 router = APIRouter(prefix="/market", tags=["market"])
 

@@ -1,14 +1,16 @@
+import jwt
 from passlib.context import CryptContext
 from datetime import datetime, timezone, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-import jwt
 
+# إعدادات الأمان الأساسية للمنصة العالمية
 SECRET_KEY = "SUDAN_MINING_HUB_SECURE_PRODUCTION_KEY_2026"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-pwd_context = CryptContext(schemes=["pbkdf2_sha256", "sha256_crypt"], deprecated="auto")
+# جعل pbkdf2_sha256 الخوارزمية الأولى لتطابق الهاش الحي في قاعدة البيانات فورا
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 def hash_password(password: str) -> str:
@@ -31,10 +33,30 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
+        
+        # استخراج البيانات الهيكلية الكاملة لتوحيد الصلاحيات في المنصة
+        user_id: str = payload.get("id")
+        email: str = payload.get("sub")
         role: str = payload.get("role")
-        if username is None:
+        is_active: bool = payload.get("is_active", True)
+        status_user: str = payload.get("status", "ACTIVE")
+        
+        if email is None or user_id is None:
             raise credentials_exception
-        return {"email": username, "role": role}
+            
+        # منع الحسابات المعطلة أو المحظورة فوراً من العبور لأي Endpoint
+        if not is_active or status_user in ["SUSPENDED", "REJECTED"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="This account is inactive or suspended"
+            )
+            
+        return {
+            "id": user_id,
+            "email": email,
+            "role": role,
+            "is_active": is_active,
+            "status": status_user
+        }
     except jwt.PyJWTError:
         raise credentials_exception

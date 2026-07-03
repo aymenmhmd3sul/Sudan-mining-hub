@@ -1,0 +1,21 @@
+{
+  "title": "حفار كاتر بيلر 320D ثقيل",
+  "description": "حفار بحالة ممتازة جاهز للعمل الفوري في مناطق الإنتاج",
+  "main_category": "MINING_EQUIPMENT",
+  "sub_category": "EXCAVATOR",
+  "price": 125000.0,
+  "currency": "USD",
+  "is_negotiable": true,
+  "state_province": "ولاية نهر النيل",
+  "locality": "أبوحمد",
+  "coordinates": "19.5303, 33.3742",
+  "images_urls": ["http://example.com/cat320_front.jpg", "http://example.com/cat320_side.jpg"],
+  "specific_specs": {
+      "brand": "CAT",
+      "model": "320D",
+      "year": 2019,
+      "working_hours": 6400,
+      "condition": "Excellent",
+      "bucket_capacity": "1.2 m3"
+  }
+}

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Sudan Mining Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        
+        /* قفل الشاشة بناءً على الارتفاع الديناميكي الفعلي للمتصفح ومنع التمرير نهائياً */
+        html, body {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh; /* تتكيف مع ظهور واختفاء شريط المتصفح */
+            overflow: hidden;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .phone { 
+            width: 100%; 
+            max-width: 410px; 
+            height: 100%;
+            background: white; 
+            display: flex; 
+            flex-direction: column;
+            position: relative;
+        }
+
+        @media (min-width: 450px) {
+            body { padding: 10px; }
+            .phone {
+                height: 820px;
+                border-radius: 35px;
+                border: 8px solid #222;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            }
+        }
+        
+        /* تقليص الارتفاعات العلوية لتوفير مساحة للأزرار السفلية */
+        .lang-bar { width: 100%; padding: 6px 15px 4px 15px; display: flex; justify-content: flex-start; background: linear-gradient(135deg, #cc1818 0%, #b31414 100%); }
+        .lang-btn { background: rgba(255, 255, 255, 0.2); color: white; border: none; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        
+        .header { background: linear-gradient(135deg, #cc1818 0%, #990000 100%); color: white; padding: 12px 15px; text-align: center; }
+        
+        /* موازنة حجم الشعار ليكون بارزاً دون أن يستهلك مساحة الشاشة كاملة */
+        .logo-combined-container { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 20px; 
+            margin-bottom: 8px; 
+            font-size: 42px; 
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3)); 
+        }
+        
+        .header h2 { font-size: 19px; font-weight: 900; }
+        .header p { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+        
+        .gold-bar-fixed { background: #222; color: #d4af37; padding: 6px 15px; font-size: 11px; font-weight: bold; text-align: center; border-bottom: 2px solid #d4af37; border-radius: 0 0 12px 12px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); z-index: 5; }
+        
+        /* استمارة مرنة ومضغوطة تضمن بقاء كل شيء بالداخل */
+        .form { padding: 15px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .input-group { margin-bottom: 12px; position: relative; }
+        .input-group label { display: block; margin-bottom: 4px; color: #555; font-size: 12.5px; font-weight: bold; }
+        
+        .input-group input.standard-input { width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 13.5px; text-align: center; outline: none; background: #f8fafc; transition: all 0.3s ease; }
+        .input-group input:focus { border-color: #cc1818; background: white; box-shadow: 0 0 0 3px rgba(204,24,24,0.08); }
+        
+        .password-container { position: relative; }
+        .password-container input { padding-left: 45px; }
+        .eye-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; cursor: pointer; font-size: 14px; z-index: 10; }
+        
+        button.login-btn { width: 100%; padding: 11px; background: linear-gradient(90deg, #d4af37 0%, #aa8c2c 100%); color: white; border: none; border-radius: 8px; font-size: 14.5px; font-weight: bold; cursor: pointer; margin-top: 2px; box-shadow: 0 3px 10px rgba(212,175,55,0.25); }
+        
+        .options { display: flex; justify-content: space-around; margin: 12px 0; font-size: 12px; font-weight: bold; }
+        .options span { color: #cc1818; cursor: pointer; }
+        .options .separator { color: #ccc; }
+        
+        /* تجميل وتثبيت منطقة التذييل لتظهر دائماً بالأسفل بشكل واضح */
+        .footer-info { text-align: center; padding: 10px; background: #fafafa; border-top: 1px solid #eee; margin-top: auto; }
+        .about-title { font-size: 11.5px; font-weight: bold; color: #cc1818; margin-bottom: 4px; cursor: pointer; text-decoration: underline; }
+        .help-phone { font-size: 11.5px; color: #666; margin-bottom: 8px; }
+        .help-phone a { color: #cc1818; text-decoration: none; font-weight: bold; }
+        
+        .social-media { display: flex; justify-content: center; gap: 30px; }
+        .social-media a { font-size: 20px; text-decoration: none; }
+        .social-media .fb { color: #1877f2; }
+        .social-media .wa { color: #25d366; }
+        
+        .disclaimer-box { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
+        .disclaimer-content { background: white; padding: 20px; border-radius: 20px; max-width: 340px; text-align: justify; font-size: 13px; line-height: 1.6; border-top: 5px solid #cc1818; }
+        .close-btn { background: #cc1818; color: white; border: none; padding: 8px 20px; border-radius: 10px; margin-top: 15px; width: 100%; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="phone" id="phoneContainer">
+    <div class="lang-bar">
+        <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">EN</button>
+    </div>
+
+    <div class="header">
+        <div class="logo-combined-container">
+            <span>⛏️</span>
+            <span>⚖️</span>
+        </div>
+        <h2 id="mainTitle">منصة السودان للتعدين</h2>
+        <p id="subTitle">بوابة إدارة قطاع التعدين الذكية</p>
+    </div>
+
+    <div class="gold-bar-fixed" id="goldBarText">
+        بورصة الذهب مباشر 🔴 | الأونصة: $2,345 | عيار 24: $75.40
+    </div>
+
+    <div class="form">
+        <div class="input-group">
+            <label id="lblEmail">البريد الإلكتروني الحسابي الآمن</label>
+            <input type="email" class="standard-input" id="email-field" placeholder="aymenmhmd3sul@gmail.com" style="direction: ltr;">
+        </div>
+        
+        <div class="input-group">
+            <label id="lblPassword">كلمة المرور</label>
+            <div class="password-container">
+                <i class="fa-solid fa-eye eye-icon" onclick="togglePassword()"></i>
+                <input type="password" class="standard-input" placeholder="••••••••" id="pass-field">
+            </div>
+        </div>
+
+        <button class="login-btn" id="btnSubmit" onclick="handleLoginPreview()">تسجيل الدخول الآمن</button>
+
+        <div class="options">
+            <span id="optReg" onclick="alert('الانتقال لصفحة التسجيل...')">التسجيل لأول مرة</span>
+            <span class="separator">|</span>
+            <span id="optGuest" onclick="alert('دخول كزائر...')">دخول كزائر</span>
+        </div>
+    </div>
+
+    <div class="footer-info">
+        <div class="about-title" id="lblAbout" onclick="openDisclaimer()">
+            ⚖️ الشروط القانونية وإخلاء المسؤولية
+        </div>
+        <div class="help-phone" id="lblHelp">
+            لا تستطيع الدخول؟ <a href="tel:+249123456789">اتصل بالدعم: +249123456789</a>
+        </div>
+        <div class="social-media">
+            <a href="https://facebook.com" target="_blank" class="fb"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://wa.me/249123456789" target="_blank" class="wa"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+    </div>
+</div>
+
+<div class="disclaimer-box" id="disclaimerPop">
+    <div class="disclaimer-content">
+        <h3 style="text-align: center; margin-bottom: 10px; color: #cc1818;">إخلاء مسؤولية قانوني</h3>
+        <p>تلتزم منصة <b>Sudan Mining Hub</b> بالقوانين واللوائح السارية بجمهورية السودان المنظمة للمعلوماتية والتجارة الإلكترونية. إن المنصة عبارة عن نظام تقني وسيط لتسهيل وتنسيق التفاوض بين الأطراف في قطاع التعدين، ولا تعتبر المنصة شريكاً مالياً أو ضامناً لأي تعاملات تجارية خارج إطارها التقني. يقع عبء التحقق من التراخيص الرسمية والامتثال لضوابط قطاع التعدين المحلي على عاتق المستخدم وحده دون أدنى مسؤولية قانونية أو مالية على إدارة المنصة.</p>
+        <button class="close-btn" onclick="closeDisclaimer()">موافق وقبول الشروط</button>
+    </div>
+</div>
+
+<script>
+    let currentLang = 'ar';
+
+    const dictionary = {
+        ar: {
+            title: "منصة السودان للتعدين", sub: "بوابة إدارة قطاع التعدين الذكية",
+            email: "البريد الإلكتروني الحسابي الآمن", pass: "كلمة المرور", button: "تسجيل الدخول الآمن",
+            reg: "التسجيل لأول مرة", guest: "دخول كزائر", about: "⚖️ الشروط القانونية وإخلاء المسؤولية",
+            ticker: "بورصة الذهب مباشر 🔴 | الأونصة: $2,345 | عيار 24: $75.40"
+        },
+        en: {
+            title: "Sudan Mining Hub Platform", sub: "Smart Mining Sector Management Gateway",
+            email: "Secure Account Email", pass: "Password", button: "Secure Login",
+            reg: "First Time Registration", guest: "Login as Guest", about: "⚖️ Legal Terms & Disclaimer",
+            ticker: "Gold Market Live 🔴 | Ounce: $2,345 | 24K: $75.40"
+        }
+    };
+
+    function toggleLanguage() {
+        const doc = document.getElementById("phoneContainer");
+        if (currentLang === 'ar') {
+            currentLang = 'en'; doc.dir = "ltr"; document.getElementById("langToggleBtn").innerText = "AR";
+        } else {
+            currentLang = 'ar'; doc.dir = "rtl"; document.getElementById("langToggleBtn").innerText = "EN";
+        }
+        document.getElementById("mainTitle").innerText = dictionary[currentLang].title;
+        document.getElementById("subTitle").innerText = dictionary[currentLang].sub;
+        document.getElementById("lblEmail").innerText = dictionary[currentLang].email;
+        document.getElementById("lblPassword").innerText = dictionary[currentLang].pass;
+        document.getElementById("btnSubmit").innerText = dictionary[currentLang].button;
+        document.getElementById("optReg").innerText = dictionary[currentLang].reg;
+        document.getElementById("optGuest").innerText = dictionary[currentLang].guest;
+        document.getElementById("lblAbout").innerText = dictionary[currentLang].about;
+        document.getElementById("goldBarText").innerText = dictionary[currentLang].ticker;
+    }
+
+    function handleLoginPreview() {
+        const email = document.getElementById("email-field").value;
+        if (email === "aymenmhmd3sul@gmail.com") {
+            alert(currentLang === 'ar' ? "مرحباً بالمسؤول الرئيسي (Super Admin)! تم توثيق هويتك، جاري فتح لوحة التحكم الشاملة وصلاحيات المشرفين." : "Welcome Super Admin! Identity verified. Opening global management and sub-admin controls.");
+        } else if (email.includes("supervisor")) {
+            alert(currentLang === 'ar' ? "مرحباً بالمشرف! تم التعرف على قسمك المخصص وتوجيهك إليه تلقائياً." : "Welcome Supervisor! Redirecting to your pre-assigned department configuration.");
+        } else {
+            alert(currentLang === 'ar' ? "مرحباً بك! جاري الانتقال للوحة الحساب العادية." : "Welcome back! Redirecting to standard account layout.");
+        }
+    }
+
+    function togglePassword() {
+        var x = document.getElementById("pass-field");
+        x.type = (x.type === "password") ? "text" : "password";
+    }
+    function openDisclaimer() { document.getElementById("disclaimerPop").style.display = "flex"; }
+    function closeDisclaimer() { document.getElementById("disclaimerPop").style.display = "none"; }
+</script>
+
+</body>
+</html>

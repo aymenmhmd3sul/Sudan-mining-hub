@@ -1,27 +1,26 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, negotiation, marketplace, services, admin
+from app.api.routers.assets import router as asset_router
+from app.api.routers.reports import router as report_router
+from app.api.routers.views import router as web_views_router
+from app.api.routers.commercial import router as commercial_router
 
 app = FastAPI(
-    title="Sudan Mining Hub API",
-    description="منصة المعاملات الشاملة لأصول التعدين في السودان - نسخة 2026",
-    version="2.0.0"
+    title="Mining Hub API",
+    description="المنصة الرقمية الإقليمية لإدارة وتداول الأصول والموارد التعدينية في السودان",
+    version="1.0.0"
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# تضمين كافة المسارات والمحركات (المبيعات، الأصول، البلاغات، الواجهات)
+app.include_router(asset_router)
+app.include_router(report_router)
+app.include_router(web_views_router)
+app.include_router(commercial_router)
 
-app.include_router(auth.router, prefix="/api/auth")
-app.include_router(negotiation.router, prefix="/api/negotiation")
-app.include_router(marketplace.router, prefix="/api/assets")
-app.include_router(services.router, prefix="/api/services")
-app.include_router(admin.router, prefix="/api/admin")
-
-@app.get("/")
-def read_root():
-    return {"status": "online", "platform": "Sudan Mining Hub"}
+@app.get("/", tags=["Health Check"])
+async def root():
+    return {
+        "status": "healthy",
+        "project": "Mining Hub",
+        "region": "Sudan",
+        "message": "المحرك التجاري ومركز القيادة لـ Sudan Mining Hub جاهز ومكتمل بالكامل"
+    }

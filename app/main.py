@@ -74,8 +74,7 @@ async def login(
     # البحث عن المستخدم
     user = db.query(User).filter(User.email == username).first()
     if not user or not verify_password(password, user.hashed_password):
-        # في حال الخطأ نرجعه لصفحة اللوجن مع رسالة خطأ (أو ارجاع استثناء مناسب)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
+        return RedirectResponse(url="/login?error=1", status_code=status.HTTP_303_SEE_OTHER)
     
     # استخراج الأدوار
     roles = [role.name for role in user.roles]

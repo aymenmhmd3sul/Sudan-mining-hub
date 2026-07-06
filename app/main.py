@@ -13,7 +13,9 @@ app = FastAPI(title="Sudan Mining Hub")
 
 # إعداد المجلدات الثابتة والقوالب
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+import pathlib
+BASE_DIR = pathlib.Path(__file__).parent.parent
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # --- Dependency: التحقق من الهوية واستخراج المستخدم الحالي من الـ Cookie ---
 async def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:

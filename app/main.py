@@ -1,85 +1,97 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Form, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-import os
-from datetime import timedelta
+from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
+import jwt
 
-# 🔐 الاستيراد الجذري من نواة النظام الأمنية والموديلات المعتمدة لديك
-from app.core.security import create_access_token
-# تم إلغاء استدعاء الـ config الوهمي
-from jose import jwt, JWTError
+from app.database import get_db
+from app.models.user import User
+from app.core.security import verify_password, create_access_token, SECRET_KEY, ALGORITHM
 
-app = FastAPI(title="Sudan Mining Hub - Command Center Core")
-templates = Jinja2Templates(directory="app/templates")
+app = FastAPI(title="Sudan Mining Hub")
 
-# سحب المفاتيح الرسمية من الإعدادات المركزية لضمان تطابق التوكن مع الـ Guard بنسبة 100%
-from app.core.security import SECRET_KEY, ALGORITHM
-# تم سحب الثوابت من الأمنية مباشرة
+# إعداد المجلدات الثابتة والقوالب
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
-# 🗺️ سجل الوحدات الحقيقي للمنظومة (4 منصات + وكلاء + معدات ثقيلة وخفيفة)
-MODULE_REGISTRY = {
-    "dashboard": {"title": "لوحة المعلومات", "icon": "fa-chart-line", "target": "All Layers"},
-    "users": {"title": "التوثيق والصلاحيات", "icon": "fa-shield-alt", "target": "All Layers"},
-    "agents": {"title": "الوكلاء الدوليين", "icon": "fa-globe-americas", "target": "Autopilot Layer"},
-    "investors": {"title": "المستثمرين وعقود LOI", "icon": "fa-file-signature", "target": "Business Layer"},
-    "traders_heavy": {"title": "تجار المعدات الثقيلة", "icon": "fa-truck-monster", "target": "Business Layer"},
-    "traders_light": {"title": "تجار المعدات الخفيفة", "icon": "fa-tools", "target": "Business Layer"},
-    "prices": {"title": "محرك أسعار الذهب", "icon": "fa-coins", "target": "Public & Business"},
-    "orders": {"title": "الإدارة المالية والشحنات", "icon": "fa-file-invoice-dollar", "target": "Business & Autopilot"},
-    "settings": {"title": "الضبط العام والرقابة", "icon": "fa-sliders-h", "target": "All Layers"}
-}
-
-# 🛡️ بواب التحقق الصارم المتوافق مع معايير الـ Backend لديك
-def verify_admin_token(request: Request):
-    auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing Token")
+# --- Dependency: التحقق من الهوية واستخراج المستخدم الحالي من الـ Cookie ---
+async def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="غير مسجل دخول")
     
-    token = auth_header.split(" ")[1]
+    # تنظيف بادئة Bearer إذا وجدت
+    if token.startswith("Bearer "):
+        token = token.replace("Bearer ", "")
+        
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        role: str = payload.get("role")
-        if role != "admin":
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied")
-        return payload
-    except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session Expired or Tampered")
+        email: str = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="توكن غير صالح")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="انتهت صلاحية الجلسة")
+        
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="المستخدم غير موجود")
+    return user
+
+# --- الواجهات الرسومية (Views) ---
 
 @app.get("/")
 @app.get("/login", response_class=HTMLResponse)
 async def read_login(request: Request):
+    # إذا كان العميل مسجل دخول بالفعل، وجهه فوراً للوحة التحكم
+    if request.cookies.get("access_token"):
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
     return templates.TemplateResponse(request=request, name="login_master.html")
 
 @app.get("/admin", response_class=HTMLResponse)
-async def admin_route(request: Request):
-    return templates.TemplateResponse(request=request, name="admin.html")
+async def admin_route(request: Request, current_user: User = Depends(get_current_user)):
+    # حماية المسار: فقط من يحمل دور ADMIN يمكنه الرؤية
+    user_roles = [role.name for role in current_user.roles]
+    if "ADMIN" not in user_roles:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="غير مصرح لك بدخول لوحة التحكم")
+        
+    return templates.TemplateResponse(request=request, name="admin.html", context={"user": current_user})
+
+# --- مسارات العمليات الخلفية (API Endpoints) ---
 
 @app.post("/api/auth/login")
-async def api_login(username: str = Form(...), password: str = Form(...)):
-    user_email = username.strip()
-    if user_email == "aymen.mhmd3@gmail.com" and password == "12345678":
-        # إنشاء التوكن بالاعتماد على الدالة الأصلية للنظام لمنع أي تعارض أمني
-        access_token = create_access_token(
-            data={"sub": user_email, "role": "admin"}
-        )
-        return JSONResponse(content={"access_token": access_token, "role": "admin"})
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="بيانات الاعتماد غير صحيحة")
-
-@app.get("/api/admin/permitted-modules")
-async def get_permitted_modules(current_user: dict = Depends(verify_admin_token)):
-    return JSONResponse(content={"modules": MODULE_REGISTRY, "operator": current_user.get("sub")})
-
-@app.get("/admin/api/modules/{module_name}", response_class=HTMLResponse)
-async def get_module_fragment(module_name: str, request: Request, current_user: dict = Depends(verify_admin_token)):
-    if module_name not in MODULE_REGISTRY:
-        raise HTTPException(status_code=404, detail="Module Not Found")
+async def login(
+    response_class=RedirectResponse,
+    username: str = Form(...),  # يستقبل الـ Form اسم المستخدم (الايميل) هنا
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    # البحث عن المستخدم
+    user = db.query(User).filter(User.email == username).first()
+    if not user or not verify_password(password, user.hashed_password):
+        # في حال الخطأ نرجعه لصفحة اللوجن مع رسالة خطأ (أو ارجاع استثناء مناسب)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
     
-    fragment_path = f"modules/{module_name}.html"
-    full_path = os.path.join("app/templates", fragment_path)
+    # استخراج الأدوار
+    roles = [role.name for role in user.roles]
     
-    if not os.path.exists(full_path):
-        return HTMLResponse(
-            content=f"<div style='color:#ff4444; padding:30px; text-align:center; background:#1e1e1e; border-radius:8px; border:1px dashed #8B0000; margin-top:20px;'>⚙️ وحدة [{MODULE_REGISTRY[module_name]['title']}] مستقرة أمنياً وجاهزة للربط مع طبقة ({MODULE_REGISTRY[module_name]['target']}).</div>",
-            status_code=200
-        )
-    return templates.TemplateResponse(request=request, name=fragment_path)
+    # توليد التوكن
+    access_token = create_access_token(subject=user.email, roles=roles)
+    
+    # توجيه المستخدم للوحة التحكم وحقن التوكن في الـ Cookie أمنياً
+    response = RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {access_token}",
+        httponly=True,  # حماية ضد هجمات XSS
+        max_age=60 * 60 * 24, # يوم كامل
+        samesite="lax"
+    )
+    return response
+
+@app.get("/api/auth/logout")
+async def logout():
+    # تسجيل الخروج بمسح الـ Cookie التلقائي
+    response = RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie("access_token")
+    return response

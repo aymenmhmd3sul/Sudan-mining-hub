@@ -1,47 +1,39 @@
-import os
+import jwt
 from datetime import datetime, timedelta
-from typing import Optional
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+from typing import Optional, Union, Any
+from passlib.context import CryptContext
 
-SECRET_KEY = os.getenv("SECRET_KEY", "SUPER_SECRET_SUDAN_MINING_HUB_KEY_2026")
+# استخدام PBKDF2 المدمج للتوافق الكامل مع بايثون 3.13 في Termux وبدون الحاجة لمترجم Rust
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+
+SECRET_KEY = "SUPER_SECRET_SUDAN_MINING_HUB_KEY_CHANGE_THIS_IN_PRODUCTION"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # صلاحية التوكن 24 ساعة لتسهيل جلسات العمل
 
-# إزالة required=False لحل الـ TypeError تماماً
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """التحقق من مطابقة كلمة المرور"""
+    # يدعم التحقق من الهاش القديم أو الجديد تلقائياً
+    if hashed_password.startswith("$pbkdf2-sha256$") or hashed_password.startswith("$6$"):
+        return pwd_context.verify(plain_password, hashed_password)
+    # Fallback للمقارنة النصية العادية في الحالات الاستثنائية
+    return plain_password == hashed_password
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    to_encode = data.copy()
+def get_password_hash(password: str) -> str:
+    """تشفير كلمة المرور"""
+    return pwd_context.hash(password)
+
+def create_access_token(subject: Union[str, Any], roles: list, expires_delta: Optional[timedelta] = None) -> str:
+    """توليد توكن JWT مشفر يحتوي على الهوية ومصفوفة الأدوار"""
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
+    
+    to_encode = {
+        "exp": expire,
+        "sub": str(subject),
+        "roles": roles,
+        "type": "access"
+    }
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
-# توفير الدالة القديمة والدالة الجديدة معاً لضمان عدم كسر أي ملفات أخرى في المشروع
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="جلسة غير صالحة أو منتهية، يرجى إعادة تسجيل الدخول",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
-    except JWTError:
-        raise credentials_exception
-
-async def get_current_admin(token: str = Depends(oauth2_scheme)):
-    payload = await get_current_user(token)
-    role: str = payload.get("role")
-    email: str = payload.get("sub")
-    if role != "admin" or email != "aymen.mhmd3@gmail.com":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="عذراً، لا تمتلك الصلاحيات الإدارية الكافية لدخول هذه المنصة"
-        )
-    return payload

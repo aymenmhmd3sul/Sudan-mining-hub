@@ -1,4 +1,9 @@
 import os
+import pathlib
+from fastapi.templating import Jinja2Templates
+
+BASE_DIR = pathlib.Path(__file__).parent.parent
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 from fastapi import FastAPI, Depends, HTTPException, status, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -14,9 +19,6 @@ app = FastAPI(title="Sudan Mining Hub")
 
 # إعداد المجلدات الثابتة والقوالب
 app.mount("/static", StaticFiles(directory="static"), name="static")
-import pathlib
-BASE_DIR = pathlib.Path(__file__).parent.parent
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # --- Dependency: التحقق من الهوية واستخراج المستخدم الحالي من الـ Cookie ---
 async def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
@@ -49,7 +51,7 @@ async def read_login(request: Request):
     # إذا كان العميل مسجل دخول بالفعل، وجهه فوراً للوحة التحكم
     if request.cookies.get("access_token"):
         return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
-    return templates.TemplateResponse(name="login_master.html", context={"request": request})
+    return templates.TemplateResponse("login_master.html", {"request": request})
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_route(request: Request, current_user: User = Depends(get_current_user)):

@@ -48,11 +48,11 @@ def verify_admin_token(request: Request):
 @app.get("/")
 @app.get("/login", response_class=HTMLResponse)
 async def read_login(request: Request):
-    return templates.TemplateResponse("login_master.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="login_master.html")
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_route(request: Request):
-    return templates.TemplateResponse("admin.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="admin.html")
 
 @app.post("/api/auth/login")
 async def api_login(username: str = Form(...), password: str = Form(...)):
@@ -82,4 +82,4 @@ async def get_module_fragment(module_name: str, request: Request, current_user: 
             content=f"<div style='color:#ff4444; padding:30px; text-align:center; background:#1e1e1e; border-radius:8px; border:1px dashed #8B0000; margin-top:20px;'>⚙️ وحدة [{MODULE_REGISTRY[module_name]['title']}] مستقرة أمنياً وجاهزة للربط مع طبقة ({MODULE_REGISTRY[module_name]['target']}).</div>",
             status_code=200
         )
-    return templates.TemplateResponse(fragment_path, {"request": request})
+    return templates.TemplateResponse(request=request, name=fragment_path)

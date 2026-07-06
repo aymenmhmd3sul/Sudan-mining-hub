@@ -48,7 +48,7 @@ async def read_login(request: Request):
     # إذا كان العميل مسجل دخول بالفعل، وجهه فوراً للوحة التحكم
     if request.cookies.get("access_token"):
         return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
-    return templates.TemplateResponse(request=request, name="login_master.html")
+    return templates.TemplateResponse(name="login_master.html", context={"request": request})
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_route(request: Request, current_user: User = Depends(get_current_user)):

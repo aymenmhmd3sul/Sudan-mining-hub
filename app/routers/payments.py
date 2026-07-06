@@ -1,157 +1,56 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from app.security.auth import get_db, get_current_user
+from app.security.policy import AuthorizationPolicy
+from app.models.identity import User
+from app.models.operations import FinancialTransaction
 from pydantic import BaseModel
-import json
-import os
-from datetime import datetime, timedelta
 
-router = APIRouter()
-TRANSACTIONS_FILE = "data/transactions.json"
-OPPORTUNITIES_FILE = "data/opportunities.json"
-OFFERS_FILE = "data/offers.json"
+router = APIRouter(prefix="/payments", tags=["Financial & Subscriptions Engine"])
 
-os.makedirs("data", exist_ok=True)
+class PaymentSubmit(BaseModel):
+    amount: float
+    payment_method: str      # e.g., "Bank_of_Khartoum", "Cash", "International"
+    reference_number: str    # رقم المعاملة أو الإشعار
 
-if not os.path.exists(TRANSACTIONS_FILE):
-    with open(TRANSACTIONS_FILE, "w") as f:
-        json.dump([], f)
+class PaymentReview(BaseModel):
+    transaction_id: int
+    action: str              # APPROVED أو REJECTED
 
-def get_opportunities():
-    with open(OPPORTUNITIES_FILE, "r") as f:
-        return json.load(f)
+@router.post("/submit")
+def submit_payment_proof(req: PaymentSubmit, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """رفع إشعار تحويل مالي لتفعيل اشتراك أو دفع عمولة صفقة"""
+    existing = db.query(FinancialTransaction).filter(FinancialTransaction.reference_number == req.reference_number).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="رقم الإشعار هذا تم رفعه مسبقاً في النظام.")
+        
+    tx = FinancialTransaction(
+        user_id=current_user.id,
+        amount=req.amount,
+        payment_method=req.payment_method,
+        reference_number=req.reference_number,
+        status="PENDING"
+    )
+    db.add(tx)
+    db.commit()
+    return {"message": "✅ تم رفع إشعار الدفع بنجاح، جاري مراجعته من قبل إدارة العمليات التمويلية."}
 
-def save_opportunities(data):
-    with open(OPPORTUNITIES_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+@router.get("/pending-reviews")
+def list_pending_payments(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """لوحة الإدارة: استعراض كافة الحوالات والمدفوعات المعلقة المترقبة للموافقة"""
+    AuthorizationPolicy.can_manage_platform(current_user)
+    txs = db.query(FinancialTransaction).filter(FinancialTransaction.status == "PENDING").all()
+    return {"status": "success", "data": txs}
 
-def get_offers():
-    with open(OFFERS_FILE, "r") as f:
-        return json.load(f)
-
-def get_transactions():
-    with open(TRANSACTIONS_FILE, "r") as f:
-        return json.load(f)
-
-def save_transactions(data):
-    with open(TRANSACTIONS_FILE, "w") as f:
-        json.dump(data, f, indent=2)
-
-@router.get("/commission/{opportunity_id}")
-def calculate_commission(opportunity_id: int):
-    """
-    حساب العمولة بناءً على نوع المعدات في الطلب
-    """
-    opportunities = get_opportunities()
-    opp = None
-    for o in opportunities:
-        if o["id"] == opportunity_id:
-            opp = o
-            break
-    if not opp:
-        raise HTTPException(status_code=404, detail="الطلب غير موجود")
+@router.post("/review")
+def review_payment(req: PaymentReview, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """لوحة الإدارة: اعتماد أو رفض المدفوعات والحوالات بشكل فوري"""
+    AuthorizationPolicy.can_manage_platform(current_user)
     
-    opp_type = opp.get("type", "light_equipment")
-    
-    commission_fixed = None
-    commission_percentage = None
-    commission_text = ""
-    
-    if opp_type == "light_equipment":
-        commission_fixed = 100000  # 100,000 ج.س
-        commission_text = "100,000 ج.س (عمولة ثابتة)"
-    elif opp_type == "heavy_equipment":
-        commission_percentage = 0.25  # 0.25%
-        commission_text = "0.25% من قيمة الصفقة"
-    else:
-        commission_fixed = 50000  # قيمة افتراضية للأنواع الأخرى
-        commission_text = "50,000 ج.س (عمولة افتراضية)"
-    
-    # جلب سعر العرض المختار إن وجد
-    final_price = None
-    if opp.get("selected_offer_id"):
-        offers = get_offers()
-        for of in offers:
-            if of["id"] == opp["selected_offer_id"]:
-                final_price = of["price"]
-                break
-    
-    return {
-        "opportunity_id": opportunity_id,
-        "commission_fixed": commission_fixed,
-        "commission_percentage": commission_percentage,
-        "commission_text": commission_text,
-        "final_price": final_price,
-        "bank_account": "🏦 Sudan Mining Hub - Bank of Khartoum - Account: 123456789 (يرجى إيداع العمولة في هذا الحساب)"
-    }
-
-@router.post("/confirm-delivery/{opportunity_id}")
-def confirm_delivery(opportunity_id: int, user_id: int):
-    """
-    تأكيد الاستلام من أحد الطرفين (المشتري أو التاجر)
-    """
-    opportunities = get_opportunities()
-    opp = None
-    for o in opportunities:
-        if o["id"] == opportunity_id:
-            opp = o
-            break
-    if not opp:
-        raise HTTPException(status_code=404, detail="الطلب غير موجود")
-    
-    if opp["status"] != "agreed":
-        raise HTTPException(status_code=400, detail="لا يمكن تأكيد الاستلام إلا بعد الاتفاق")
-    
-    # تغيير الحالة إلى مكتمل
-    opp["status"] = "completed"
-    save_opportunities(opportunities)
-    
-    # حساب العمولة
-    commission_data = calculate_commission(opportunity_id)
-    
-    # حفظ المعاملة
-    transactions = get_transactions()
-    new_trans = {
-        "id": len(transactions) + 1,
-        "opportunity_id": opportunity_id,
-        "commission_fixed": commission_data.get("commission_fixed"),
-        "commission_percentage": commission_data.get("commission_percentage"),
-        "final_price": commission_data.get("final_price"),
-        "confirmed_by": user_id,
-        "confirmed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "status": "pending_payment"
-    }
-    transactions.append(new_trans)
-    save_transactions(transactions)
-    
-    return {
-        "status": "success",
-        "message": "✅ تم تأكيد الاستلام. يجب على التاجر دفع العمولة الآن.",
-        "commission_details": commission_data,
-        "bank_account": "🏦 Sudan Mining Hub - Bank of Khartoum - Account: 123456789"
-    }
-
-@router.get("/subscription/{seller_id}")
-def get_subscription(seller_id: int):
-    """
-    التحقق من اشتراك التاجر وعرض رقم الحساب للدفع
-    """
-    users_file = "data/users.json"
-    if not os.path.exists(users_file):
-        raise HTTPException(status_code=404, detail="لا يوجد مستخدمون")
-    with open(users_file, "r") as f:
-        users = json.load(f)
-    
-    for u in users:
-        if u["id"] == seller_id and u["role"] == "seller":
-            if u.get("is_active", False):
-                return {
-                    "status": "active",
-                    "subscription_end": u.get("subscription_end"),
-                    "message": "✅ اشتراكك نشط"
-                }
-            else:
-                return {
-                    "status": "inactive",
-                    "message": "❌ اشتراكك غير نشط. يرجى دفع 3,000 ج.س شهرياً",
-                    "bank_account": "🏦 Sudan Mining Hub - Bank of Khartoum - Account: 123456789 (للاشتراك الشهري)"
-                }
-    raise HTTPException(status_code=404, detail="المستخدم غير موجود أو ليس تاجراً")
+    tx = db.query(FinancialTransaction).filter(FinancialTransaction.id == req.transaction_id).first()
+    if not tx:
+        raise HTTPException(status_code=404, detail="المعاملة المالية غير موجودة.")
+        
+    tx.status = req.action.upper()
+    db.commit()
+    return {"message": f"✅ تم تحديث حالة المعاملة بنجاح إلى: {tx.status}"}

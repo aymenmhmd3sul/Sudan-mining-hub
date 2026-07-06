@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="page-title">منصة السودان للتعدين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            background: #121212; 
+            color: #fff; 
+            font-family: sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow-x: hidden;
+        }
+        .top-bar { 
+            background: #8B0000; 
+            padding: 12px 15px; 
+            border-bottom: 3px solid #DAA520; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-title { flex: 1; text-align: center; }
+        .header-title h2 { margin: 0; font-size: 18px; color: #fff; }
+        .header-title p { margin: 3px 0 0 0; font-size: 11px; color: #ddd; }
+        
+        .lang-btn { 
+            background: rgba(0, 0, 0, 0.3); 
+            border: 1px solid #DAA520; 
+            color: #DAA520; 
+            padding: 6px 12px; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-size: 13px; 
+            font-weight: bold;
+        }
+        .gold-ticker { 
+            background: #1e1e1e; 
+            padding: 8px; 
+            text-align: center; 
+            color: #DAA520; 
+            border-bottom: 1px solid #333; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
+        .main-container { 
+            flex: 1; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 15px;
+            background: linear-gradient(135deg, #121212 0%, #1c1c1c 100%);
+        }
+        .login-card { 
+            background: #1e1e1e; 
+            padding: 30px 20px; 
+            border-radius: 12px; 
+            width: 100%; 
+            max-width: 400px; 
+            border-top: 5px solid #8B0000; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7); 
+        }
+        h3 { text-align: center; margin: 0 0 20px 0; color: #fff; font-size: 20px; }
+        
+        .input-group { margin-bottom: 15px; }
+        
+        /* تصميم حقول الإدخال القياسية */
+        input.field { 
+            width: 100%; 
+            padding: 14px; 
+            background: #2a2a2a; 
+            border: 1px solid #444; 
+            color: #fff; 
+            border-radius: 8px; 
+            font-size: 15px;
+        }
+        input:focus { border-color: #DAA520; outline: none; }
+        
+        /* الحاوية المحصنة لحقل كلمة المرور والعين بنظام Flexbox منعاً للهروب */
+        .pass-wrapper {
+            display: flex;
+            align-items: center;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            width: 100%;
+        }
+        .pass-wrapper:focus-within { border-color: #DAA520; }
+        .pass-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 14px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+        }
+        .toggle-pass { 
+            padding: 0 15px;
+            cursor: pointer; 
+            color: #aaa; 
+            font-size: 18px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* التحكم باتجاه النصوص التلقائي حسب لغة الجسد */
+        body[dir="rtl"] input { text-align: right; }
+        body[dir="ltr"] input { text-align: left; }
+
+        button.btn-login { 
+            width: 100%; 
+            padding: 14px; 
+            background: #DAA520; 
+            border: none; 
+            font-weight: bold; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            color: #000; 
+            font-size: 16px; 
+            margin-top: 10px;
+        }
+        
+        .links { display: flex; justify-content: space-between; margin-top: 20px; font-size: 14px; }
+        .links a { color: #DAA520; text-decoration: none; }
+        .visitor-link { text-align: center; margin-top: 20px; font-size: 15px; }
+        .visitor-link a { color: #aaa; text-decoration: none; display: inline-block; padding: 5px; }
+        .social-bar { text-align: center; margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
+        .social-bar i { font-size: 28px; margin: 0 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="lang-btn" id="lang-btn" onclick="toggleLanguage()">EN</button>
+        <div class="header-title">
+            <h2 id="main-title">⚖️ ⛏️ منصة السودان للتعدين</h2>
+            <p id="sub-title">بوابة إدارة قطاع التعدين الذكية</p>
+        </div>
+        <div style="width: 45px;"></div>
+    </div>
+    
+    <div class="gold-ticker" id="ticker">
+        بورصة الذهب مباشر | الأونصة: $2,345 | عيار 24: $75.40
+    </div>
+    
+    <div class="main-container">
+        <div class="login-card">
+            <h3 id="card-title">تسجيل الدخول الآمن</h3>
+            <div class="input-group">
+                <input type="email" id="email" class="field" placeholder="البريد الإلكتروني">
+            </div>
+            
+            <div class="input-group">
+                <div class="pass-wrapper">
+                    <input type="password" id="pass" placeholder="كلمة المرور">
+                    <div class="toggle-pass" onclick="togglePass()">
+                        <i class="fa fa-eye" id="eye-icon"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-login" id="login-btn" onclick="login()">دخول</button>
+            <div id="msg" style="margin-top:12px; color:#ff4444; text-align:center; font-size:14px; font-weight:bold;"></div>
+            
+            <div class="links">
+                <a href="#" id="register-lnk" onclick="alert('جاري الانتقال لصفحة إنشاء حساب مستثمر جديد...')">تسجيل جديد</a>
+                <a href="#" id="forgot-lnk" onclick="alert('جاري تحويلك لنظام استعادة الحساب الآمن عبر البريد...')">نسيت كلمة المرور؟</a>
+            </div>
+            <div class="visitor-link">
+                <a href="/dashboard" id="visitor-lnk">دخول كزائر <i class="fa fa-arrow-left" id="arrow-icon" style="font-size:12px;"></i></a>
+            </div>
+            <div class="social-bar">
+                <a href="#" target="_blank"><i class="fab fa-whatsapp" style="color:#25D366;"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-facebook" style="color:#1877F2;"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePass() {
+            const p = document.getElementById("pass");
+            const icon = document.getElementById("eye-icon");
+            if (p.type === "password") {
+                p.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                p.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function toggleLanguage() {
+            const body = document.body;
+            const btn = document.getElementById("lang-btn");
+            
+            if (body.getAttribute("dir") === "rtl") {
+                body.setAttribute("dir", "ltr");
+                btn.innerText = "AR";
+                
+                document.getElementById("main-title").innerText = "⚖️ ⛏️ Sudan Mining Hub";
+                document.getElementById("sub-title").innerText = "Smart Mining Sector Management Portal";
+                document.getElementById("ticker").innerText = "Live Gold Market | Ounce: $2,345 | 24K: $75.40";
+                document.getElementById("card-title").innerText = "Secure Login";
+                document.getElementById("email").placeholder = "Email Address";
+                document.getElementById("pass").placeholder = "Password";
+                document.getElementById("login-btn").innerText = "Login";
+                document.getElementById("register-lnk").innerText = "Register";
+                document.getElementById("forgot-lnk").innerText = "Forgot Password?";
+                document.getElementById("visitor-lnk").innerHTML = 'Enter as Visitor <i class="fa fa-arrow-right" style="font-size:12px;"></i>';
+            } else {
+                body.setAttribute("dir", "rtl");
+                btn.innerText = "EN";
+                
+                document.getElementById("main-title").innerText = "⚖️ ⛏️ منصة السودان للتعدين";
+                document.getElementById("sub-title").innerText = "بوابة إدارة قطاع التعدين الذكية";
+                document.getElementById("ticker").innerText = "بورصة الذهب مباشر | الأونصة: $2,345 | عيار 24: $75.40";
+                document.getElementById("card-title").innerText = "تسجيل الدخول الآمن";
+                document.getElementById("email").placeholder = "البريد الإلكتروني";
+                document.getElementById("pass").placeholder = "كلمة المرور";
+                document.getElementById("login-btn").innerText = "دخول";
+                document.getElementById("register-lnk").innerText = "تسجيل جديد";
+                document.getElementById("forgot-lnk").innerText = "نسيت كلمة المرور؟";
+                document.getElementById("visitor-lnk").innerHTML = 'دخول كزائر <i class="fa fa-arrow-left" style="font-size:12px;"></i>';
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById("email").value;
+            const password = document.getElementById("pass").value;
+            const msg = document.getElementById("msg");
+            
+            if(!username || !password) {
+                msg.innerText = document.body.getAttribute("dir") === "rtl" ? "الرجاء إدخال الحقول المطلوبة" : "Please fill in all fields";
+                return;
+            }
+            
+            const body = new URLSearchParams({ username, password });
+            
+            try {
+                const res = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    body: body
+                });
+                
+                if(res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem("token", data.access_token);
+                    localStorage.setItem("role", data.role);
+                    window.location.href = "/admin";
+                } else {
+                    const errData = await res.json();
+                    msg.innerText = errData.detail || "خطأ في صلاحيات الدخول";
+                }
+            } catch (error) {
+                msg.innerText = "فشل الاتصال بالسيرفر المركزي";
+            }
+        }
+    </script>
+</body>
+</html>

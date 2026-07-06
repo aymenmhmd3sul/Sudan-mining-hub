@@ -1,20 +1,27 @@
 from fastapi import Depends, HTTPException, status
 from app.core.security import get_current_user
+from app.models.user import User
+from sqlalchemy.orm import Session
+from app.core.db import get_db
 
-class RoleChecker:
-    def __init__(self, allowed_roles: list):
-        self.allowed_roles = allowed_roles
+class PermissionChecker:
+    def __init__(self, required_permission: str):
+        self.required_permission = required_permission
 
-    def __call__(self, current_user: dict = Depends(get_current_user)):
-        if current_user["role"] not in self.allowed_roles:
+    def __call__(self, payload: dict = Depends(get_current_user), db: Session = Depends(get_db)) -> User:
+        email = payload.get("sub")
+        user = db.query(User).filter(User.email == email).first()
+        
+        if not user or not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="الحساب غير موجود أو تم تجميده أمنياً"
+            )
+            
+        if self.required_permission not in user.permissions_set:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"غير مصرح لك بإجراء هذه العملية. الصلاحيات المطلوبة: {self.allowed_roles}"
+                detail=f"عذراً، لا تمتلك الصلاحية التشغيلية للمنصة: [{self.required_permission}]"
             )
-        return current_user
-
-# تعريف الصلاحيات الجاهزة للاستخدام في الـ Routers
-require_admin = RoleChecker(["superadmin"])
-require_seller = RoleChecker(["superadmin", "seller"])
-require_buyer = RoleChecker(["superadmin", "buyer"])
-require_any_user = RoleChecker(["superadmin", "seller", "buyer"])
+            
+        return user

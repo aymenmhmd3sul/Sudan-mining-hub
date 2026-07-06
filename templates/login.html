@@ -3,72 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - Sudan Mining Hub</title>
+    <title>منصة السودان للتعدين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .login-container { background: #1e293b; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #334155; }
-        .logo-area { text-align: center; margin-bottom: 30px; }
-        .logo-area h1 { color: #fbbf24; font-size: 24px; font-weight: bold; }
-        .logo-area p { color: #94a3b8; font-size: 14px; margin-top: 5px; }
-        .input-group { margin-bottom: 20px; position: relative; }
-        .input-group label { display: block; color: #cbd5e1; margin-bottom: 8px; font-size: 14px; }
-        .input-group input { width: 100%; padding: 12px 16px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #fff; font-size: 16px; outline: none; transition: border 0.3s; }
-        .input-group input:focus { border-color: #fbbf24; }
-        .input-group .toggle-pass { position: absolute; left: 12px; top: 42px; color: #94a3b8; cursor: pointer; user-select: none; }
-        .btn-submit { width: 100%; padding: 14px; background: #fbbf24; color: #0f172a; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
-        .btn-submit:hover { background: #f59e0b; }
-        .footer-links { margin-top: 25px; display: flex; justify-content: space-between; font-size: 14px; color: #94a3b8; }
-        .footer-links a { color: #fbbf24; text-decoration: none; }
-        .footer-links a:hover { text-decoration: underline; }
-        .contact-links { margin-top: 25px; text-align: center; border-top: 1px solid #334155; padding-top: 20px; }
-        .contact-links span { color: #94a3b8; font-size: 14px; display: block; margin-bottom: 10px; }
-        .contact-icons a { color: #94a3b8; margin: 0 8px; font-size: 20px; text-decoration: none; }
-        .contact-icons a:hover { color: #fbbf24; }
+        body { background: #121212; color: #fff; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .top-bar { background: #8B0000; padding: 15px; text-align: center; border-bottom: 3px solid #DAA520; position: relative; }
+        .gold-ticker { background: #1e1e1e; padding: 10px; text-align: center; color: #DAA520; border-bottom: 1px solid #333; font-size: 14px; font-weight: bold; }
+        .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: #1e1e1e; padding: 25px; border-radius: 12px; width: 100%; max-width: 380px; border-top: 5px solid #8B0000; box-shadow: 0 8px 24px rgba(0,0,0,0.5); box-sizing: border-box; }
+        h3 { text-align: center; margin-top: 0; color: #fff; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        .pass-container { position: relative; }
+        .toggle-pass { position: absolute; left: 12px; top: 22px; cursor: pointer; color: #aaa; z-index: 10; }
+        button { width: 100%; padding: 12px; background: #DAA520; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; color: #000; font-size: 15px; margin-top: 10px; }
+        .links { display: flex; justify-content: space-between; margin-top: 15px; font-size: 13px; }
+        .links a { color: #DAA520; text-decoration: none; }
+        .visitor-link { text-align: center; margin-top: 15px; font-size: 14px; }
+        .visitor-link a { color: #aaa; text-decoration: none; }
+        .social-bar { text-align: center; margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; }
+        .social-bar i { font-size: 24px; margin: 0 12px; cursor: pointer; }
+        .lang-btn { position: absolute; left: 15px; top: 15px; background: none; border: 1px solid #DAA520; color: #DAA520; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo-area">
-            <h1>🔐 منصة التعدين السودانية</h1>
-            <p>Sudan Mining Hub</p>
-        </div>
-
-        <form action="/auth/login" method="post">
-            <div class="input-group">
-                <label>البريد الإلكتروني أو الهاتف</label>
-                <input type="text" name="username" placeholder="admin@test.com" required>
+    <div class="top-bar">
+        <button class="lang-btn" onclick="alert('جاري تبديل اللغة...')">EN</button>
+        <h2 style="margin:0 0 5px 0;">⚖️ ⛏️ منصة السودان للتعدين</h2>
+        <p style="margin:0; font-size:13px; color:#ddd;">بوابة إدارة قطاع التعدين الذكية</p>
+    </div>
+    <div class="gold-ticker">
+        بورصة الذهب مباشر | الأونصة: $2,345 | عيار 24: $75.40
+    </div>
+    <div class="main-container">
+        <div class="login-card">
+            <h3>تسجيل الدخول الآمن</h3>
+            <input type="email" id="email" placeholder="البريد الإلكتروني">
+            <div class="pass-container">
+                <input type="password" id="pass" placeholder="كلمة المرور">
+                <i class="fa fa-eye toggle-pass" onclick="togglePass()"></i>
             </div>
-            <div class="input-group">
-                <label>كلمة المرور</label>
-                <input type="password" name="password" id="passwordInput" placeholder="••••••••" required>
-                <span class="toggle-pass" onclick="togglePassword()">👁️</span>
+            <button onclick="login()">دخول</button>
+            <div id="msg" style="margin-top:10px; color:#ff4444; text-align:center; font-size:13px;"></div>
+            <div class="links">
+                <a href="#">تسجيل جديد</a>
+                <a href="#">نسيت كلمة المرور؟</a>
             </div>
-            <button type="submit" class="btn-submit">دخول</button>
-        </form>
-
-        <div class="footer-links">
-            <a href="#">نسيت كلمة المرور؟</a>
-            <a href="#">ليس لديك حساب؟ سجل الآن</a>
-        </div>
-
-        <div class="contact-links">
-            <span>تواصل معنا</span>
-            <div class="contact-icons">
-                <a href="#">📞</a>
-                <a href="#">📧</a>
-                <a href="#">💬</a>
+            <div class="visitor-link">
+                <a href="#">دخول كزائر <i class="fa fa-arrow-left" style="font-size:11px;"></i></a>
+            </div>
+            <div class="social-bar">
+                <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+                <i class="fab fa-facebook" style="color:#1877F2;"></i>
             </div>
         </div>
     </div>
-
     <script>
-        function togglePassword() {
-            var x = document.getElementById("passwordInput");
-            if (x.type === "password") {
-                x.type = "text";
+        function togglePass() {
+            const p = document.getElementById("pass");
+            p.type = p.type === "password" ? "text" : "password";
+        }
+        async function login() {
+            const username = document.getElementById("email").value;
+            const password = document.getElementById("pass").value;
+            const body = new URLSearchParams({ username, password });
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: body
+            });
+            if(res.ok) {
+                window.location.href = "/admin";
             } else {
-                x.type = "password";
+                document.getElementById("msg").innerText = "خطأ في بيانات الدخول";
             }
         }
     </script>

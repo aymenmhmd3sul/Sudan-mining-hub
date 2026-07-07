@@ -14,13 +14,13 @@ class AssetCreate(BaseModel):
     locality: str = Field(..., example="أبوحمد")
     coordinates: Optional[str] = None
     images_urls: List[str] = []
-    # 🧠 هنا قلب المرونة المعمارية: استقبال أي مواصفات خاصة كقاموس بايثون تلقائي
     specific_specs: Dict[str, Any] = Field(default_factory=dict, example={
         "brand": "CAT", "model": "320D", "working_hours": 6400, "condition": "Excellent"
     })
 
 class AssetResponse(BaseModel):
     id: int
+    owner_id: int # تصحيح النوع إلى رقمي مطابق للهوية
     title: str
     description: Optional[str]
     main_category: str
@@ -28,13 +28,12 @@ class AssetResponse(BaseModel):
     price: float
     currency: str
     is_negotiable: bool
-    state: str
-    owner_id: str
-    state_province: str
+    state_province: str # المطابقة الجغرافية الصارمة وحذف الحقل الزائد
     locality: str
     coordinates: Optional[str]
     images_urls: List[str]
     specific_specs: Dict[str, Any]
+    status: str # إعادة إدراج الحقل التشغيلي لفرز الأصول
     created_at: datetime
     updated_at: datetime
 

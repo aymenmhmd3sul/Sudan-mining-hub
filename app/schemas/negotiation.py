@@ -1,11 +1,24 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from typing import Optional, List
 
-# ---------------- CREATE ROOM ----------------
-class CreateRoom(BaseModel):
-    offer_id: int = Field(..., gt=0)
+# --- نماذج المحادثات القديمة المستقرة ---
+class CreateRoomPayload(BaseModel):
+    asset_id: int
 
+class SendMessagePayload(BaseModel):
+    message: str
+    offer_price: Optional[float] = None
 
-# ---------------- MESSAGE ----------------
-class MessageIn(BaseModel):
-    room_id: int = Field(..., gt=0)
-    message: str = Field(..., min_length=1, max_length=2000)
+class RoomStatusPayload(BaseModel):
+    status: str
+
+# --- نماذج محرك العقود والـ Milestones الموحد الجديد ---
+class DealCreatePayload(BaseModel):
+    listing_id: int
+    buyer_id: int
+    final_price: float
+    currency: str = "SDG"
+    milestones: List[str] # قائمة بعناوين الخطوات (فحص، شحن، توريد)
+
+class MilestoneUpdatePayload(BaseModel):
+    status: str # PENDING, IN_PROGRESS, VERIFIED, FAILED

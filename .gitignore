@@ -1,5 +1,23 @@
+# Python cache
 __pycache__/
 *.pyc
-.env
-*.db
+*.pyo
+*.pyd
 .pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Databases & local storage
+*.db
+*.sqlite3
+static/uploads/assets/*
+!static/uploads/assets/.gitkeep
+
+# Termux / OS temporary files
+.DS_Store
+.thumbs

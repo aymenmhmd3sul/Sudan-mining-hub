@@ -83,7 +83,7 @@
     </div>
 
     <script>
-        const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwic2Vzc2lvbl9pZCI6ImRlZmF1bHRfc2Vzc2lvbiIsImV4cCI6MTc4MzUxNzMyOX0.C59Mua4Ysq8z4VioBQKp4d8xhuTMiPIbKUdXF60k5I0";
+        const TOKEN = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
         let marketChart = null;
         let dealsChart = null;
         let updateInterval = null;

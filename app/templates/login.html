@@ -39,6 +39,38 @@
         z-index: 10;
     }
     
+
+    /* قفل الشاشة بالكامل ضد التحديد، النسخ، والبحث المنبثق في كروم/سفاري */
+    * {
+        -webkit-touch-callout: none !important; /* يمنع القائمة المنبثقة للضغط المطول */
+        -webkit-user-select: none !important;   /* يمنع تحديد النص */
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+        -webkit-tap-highlight-color: transparent; /* يمنع وميض المربع الرمادي عند النقر */
+    }
+
+    /* استثناء حقول الإدخال فقط لتسمح بالكتابة والتفاعل */
+    input {
+        -webkit-touch-callout: default !important;
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+        user-select: text !important;
+    }
+
+    /* إضاءة العين لتصبح بيضاء وناصعة */
+    .password-toggle {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #ffffff !important;
+        opacity: 1;
+        z-index: 10;
+    }
+    
 </style>
 </head>
 <body>
@@ -98,6 +130,20 @@
         document.querySelectorAll('input').forEach(input => {
             input.value = '';
         });
+    });
+    
+
+    window.addEventListener('pageshow', function (event) {
+        const emailField = document.querySelector('input[type="email"]');
+        const passwordField = document.querySelector('input[type="password"]');
+        if (emailField) {
+            emailField.value = '';
+            emailField.setAttribute('autocomplete', 'off');
+        }
+        if (passwordField) {
+            passwordField.value = '';
+            passwordField.setAttribute('autocomplete', 'new-password');
+        }
     });
     
 </script>

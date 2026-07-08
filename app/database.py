@@ -12,7 +12,7 @@ if DATABASE_URL.startswith("postgres://"):
 # إعداد المحرك برمجياً
 if "sqlite" in DATABASE_URL:
     engine = create_engine(
-        DATABASE_URL, 
+        DATABASE_URL,
         connect_args={"check_same_thread": False, "timeout": 30} # رفع مهلة الانتظار لمنع قفل البيانات
     )
     
@@ -24,7 +24,8 @@ if "sqlite" in DATABASE_URL:
         cursor.execute("PRAGMA journal_mode=WAL") # وضع الكتابة المسبقة لرفع أداء التزامن
         cursor.close()
 else:
-    engine = create_engine(engine, pool_pre_ping=True, pool_size=10, max_overflow=20)
+    # تم تصحيح المتغير هنا لتمرير DATABASE_URL مباشرة بدلاً من engine
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_size=10, max_overflow=20)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

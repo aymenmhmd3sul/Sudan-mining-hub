@@ -86,6 +86,61 @@
         .grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
         .analytics-section { grid-template-columns: 1fr 2fr; }
     }
+
+    .admin-actions-section {
+        margin-bottom: 25px;
+    }
+    .actions-group-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #475569;
+        margin: 15px 0 8px 0;
+        border-right: 3px solid #3b82f6;
+        padding-right: 8px;
+    }
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* زرين في كل صف للهاتف */
+        gap: 10px;
+    }
+    .btn-action {
+        background: #ffffff;
+        color: #1e293b;
+        border: 1px solid #e2e8f0;
+        padding: 12px 10px;
+        border-radius: 10px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        transition: all 0.2s;
+    }
+    .btn-action:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+    .btn-action.primary {
+        background: #3b82f6;
+        color: #ffffff;
+        border: none;
+    }
+    .btn-action.primary:hover { background: #2563eb; }
+    .btn-action.danger {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+    .btn-action.danger:hover { background: #ffeeee; }
+
+    @media (min-width: 768px) {
+        .actions-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
 </style>
 </head>
 <body>
@@ -99,6 +154,27 @@
             <div>حالة التحديث: <span id="sync-status" style="color: #10b981; font-weight:600;">ذكي ومستمر</span></div>
             <div id="api-timestamp">آخر تحديث للبيانات: -</div>
         </div>
+    </div>
+
+    
+    <div class="admin-actions-section">
+        
+        <div class="actions-group-title">💰 إدارة النظام المالي والعمولات</div>
+        <div class="actions-grid">
+            <button class="btn-action" onclick="window.location.href='/admin-portal/finance/bank-accounts'">🏦 الحسابات البنكية</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/finance/commissions'">📈 نسب العمولات</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/subscriptions/traders'">💎 اشتراكات التجار</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/finance/reports'">📊 التقارير المالية</button>
+        </div>
+
+        <div class="actions-group-title">👥 الحسابات والتحقق من الهوية</div>
+        <div class="actions-grid">
+            <button class="btn-action" onclick="window.location.href='/admin-portal/users/clients'">🤝 إدارة العملاء</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/users/verifications'">🪪 طلبات التوثيق</button>
+            <button class="btn-action primary" onclick="fetchAnalyticsData()">🔄 تحديث البيانات حياً</button>
+            <button class="btn-action danger" onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='/login';">🚪 خروج أمن</button>
+        </div>
+
     </div>
 
     <div class="grid">

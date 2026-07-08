@@ -2,98 +2,201 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة المشرف - محرك الأتمتة</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحليلات الإدارة | Sudan Mining Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        html, body { height: 100%; overflow: hidden; }
-        .bankak-btn {
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 4px 6px rgba(0,0,0,0.15);
-            transition: all 0.2s ease;
-        }
-        .bankak-btn:active { transform: scale(0.95); }
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }
+        .header { background: #0f172a; color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .timestamp-container { font-size: 13px; color: #94a3b8; text-align: left; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-right: 5px solid #3b82f6; }
+        .card.success { border-right-color: #10b981; }
+        .card.warning { border-right-color: #f59e0b; }
+        .card.purple { border-right-color: #8b5cf6; }
+        .card h3 { margin: 0 0 8px 0; font-size: 13px; color: #64748b; }
+        .card .value { font-size: 26px; font-weight: 700; color: #0f172a; }
+        .card .sub-text { font-size: 12px; color: #64748b; margin-top: 5px; }
+        .analytics-section { display: grid; grid-template-columns: 1fr 2fr; gap: 25px; margin-bottom: 25px; }
+        @media (max-width: 768px) { .analytics-section { grid-template-columns: 1fr; } }
+        .chart-container { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); min-height: 280px; }
+        .system-status { background: #fff; padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .badge { background: #d1fae5; color: #065f46; padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 600; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-800 antialiased flex flex-col justify-between h-full select-none">
+<body>
 
-    <header class="bg-gradient-to-r from-red-700 via-red-800 to-red-900 text-white px-4 pt-5 pb-4 shadow-md w-full max-w-md mx-auto flex-shrink-0 flex justify-between items-center rounded-b-[1.5rem]">
-        <a href="/" class="text-white hover:text-red-200 text-2xl p-1"><i class="fas fa-power-off"></i></a>
-        
-        <div class="flex items-center space-x-reverse space-x-2 bg-black/20 px-3 py-1.5 rounded-full border border-white/10">
-            <span class="text-[10px] font-black tracking-wide" id="autoStatusText">القيادة الآلية: نشطة</span>
-            <input type="checkbox" id="autoToggle" checked onclick="toggleAutomationSystem()" class="w-4 h-4 accent-amber-500 cursor-pointer">
+    <div class="header">
+        <div>
+            <h1 style="margin:0; font-size: 22px; font-weight: 700;">منصة تعدين السودان — مركز التحليلات والقرار</h1>
+            <small id="admin-email">جاري التحقق من الهوية الفدرالية...</small>
         </div>
-        
-        <button onclick="alert('النظام يعمل ومستقر')" class="relative p-1 text-2xl"><i class="fas fa-robot text-amber-400"></i></button>
-    </header>
-
-    <div class="w-full max-w-md mx-auto px-6 pt-5 pb-1 flex-shrink-0">
-        <h2 class="text-xl font-bold text-slate-800">مساء الخير، <span class="text-red-700 font-black">Ayman Mohamed</span></h2>
-        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">لوحة اختبار التحكم والأتمتة الذاتية</p>
+        <div class="timestamp-container">
+            <div>حالة التحديث: <span id="sync-status" style="color: #10b981; font-weight:600;">ذكي ومستمر</span></div>
+            <div id="api-timestamp">آخر تحديث للبيانات: -</div>
+        </div>
     </div>
 
-    <main class="max-w-md mx-auto px-6 flex-grow w-full flex flex-col justify-center overflow-hidden">
-        <div class="grid grid-cols-3 gap-x-4 gap-y-6 text-center">
-            
-            <div class="flex flex-col items-center">
-                <button onclick="triggerSmartSimulation()" class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl ring-4 ring-amber-500/40">
-                    <i class="fas fa-vial-circle-check"></i>
-                </button>
-                <span class="text-xs font-black text-amber-600 mt-2">تجربة دفع تاجر</span>
-            </div>
-            
-            <div class="flex flex-col items-center"><button class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl"><i class="fas fa-users-cog"></i></button><span class="text-xs font-bold text-slate-700 mt-2">التجار</span></div>
-            <div class="flex flex-col items-center"><button class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl"><i class="fas fa-boxes-stacked"></i></button><span class="text-xs font-bold text-slate-700 mt-2">الأصول</span></div>
-            <div class="flex flex-col items-center"><button class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl"><i class="fas fa-wallet"></i></button><span class="text-xs font-bold text-slate-700 mt-2">الإدارة المالية</span></div>
-            <div class="flex flex-col items-center"><button class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl"><i class="fas fa-bullhorn"></i></button><span class="text-xs font-bold text-slate-700 mt-2">التسويق والمميز</span></div>
-            <div class="flex flex-col items-center"><button class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl"><i class="fas fa-file-shield"></i></button><span class="text-xs font-bold text-slate-700 mt-2">التوثيق</span></div>
-            <div class="flex flex-col items-center"><button class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl"><i class="fas fa-chart-line"></i></button><span class="text-xs font-bold text-slate-700 mt-2">التقارير</span></div>
-            <div class="flex flex-col items-center"><button class="bankak-btn w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl"><i class="fas fa-sliders"></i></button><span class="text-xs font-bold text-slate-700 mt-2">الضبط العام</span></div>
-            <div class="flex flex-col items-center opacity-25"><div class="w-20 h-20 rounded-2xl border-2 border-dashed border-slate-400 flex items-center justify-center text-slate-400 text-2xl"><i class="fas fa-plus"></i></div><span class="text-[10px] font-bold text-slate-400 mt-2">قريباً</span></div>
+    <div class="grid">
+        <div class="card">
+            <h3>المستثمرون</h3>
+            <div class="value" id="total-investors">-</div>
+            <div class="sub-text" id="verified-investors">الموثقون: -</div>
         </div>
-    </main>
+        <div class="card purple">
+            <h3>إجمالي المعروض في السوق</h3>
+            <div class="value" id="total-assets">-</div>
+            <div class="sub-text">أصول تعدينية منوعة</div>
+        </div>
+        <div class="card success">
+            <h3>العروض النشطة الحية</h3>
+            <div class="value" id="active-listings">-</div>
+            <div class="sub-text">تستقبل طلبات الشراء الآن</div>
+        </div>
+        <div class="card warning">
+            <h3>قيد المراجعة والتحقق</h3>
+            <div class="value" id="pending-verification">-</div>
+            <div class="sub-text" id="pending-orders">طلبات معلقة: -</div>
+        </div>
+        <div class="card purple">
+            <h3>غرف المفاوضات النشطة</h3>
+            <div class="value" id="open-rooms">-</div>
+            <div class="sub-text" id="completed-deals">المكتملة بنجاح: -</div>
+        </div>
+    </div>
 
-    <footer class="py-4 text-center border-t border-slate-200 bg-white w-full max-w-md mx-auto flex-shrink-0">
-        <p class="text-[10px] font-bold text-slate-400">نظام محاكاة الأتمتة والذكاء الذاتي © 2026</p>
-    </footer>
+    <div class="analytics-section">
+        <div class="chart-container">
+            <h3 style="margin-top:0; color:#475569;">توزيع حالات أصول السوق</h3>
+            <canvas id="marketShareChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3 style="margin-top:0; color:#475569;">مؤشر حركية المفاوضات والصفقات</h3>
+            <canvas id="dealsTrendChart"></canvas>
+        </div>
+    </div>
+
+    <div class="system-status">
+        <span>النواة التحليلية والاتصال بالـ API:</span>
+        <span class="badge" id="system-health">جاري الفحص...</span>
+    </div>
 
     <script>
-        // إشارة التبديل بين الآلي واليدوي للسيرفر
-        async function toggleAutomationSystem() {
-            const isChecked = document.getElementById('autoToggle').checked;
-            const textStatus = document.getElementById('autoStatusText');
-            textStatus.textContent = isChecked ? "القيادة الآلية: نشطة" : "القيادة الآلية: معطلة";
-            
-            let formData = new FormData();
-            formData.append('enabled', isChecked);
-            await fetch('/admin/toggle-automation', { method: 'POST', body: formData });
+        const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwic2Vzc2lvbl9pZCI6ImRlZmF1bHRfc2Vzc2lvbiIsImV4cCI6MTc4MzUxNzMyOX0.C59Mua4Ysq8z4VioBQKp4d8xhuTMiPIbKUdXF60k5I0";
+        let marketChart = null;
+        let dealsChart = null;
+        let updateInterval = null;
+
+        function initCharts(active, pending, totalRooms, openRooms, completed) {
+            const ctxMarket = document.getElementById('marketShareChart').getContext('2d');
+            marketChart = new Chart(ctxMarket, {
+                type: 'doughnut',
+                data: {
+                    labels: ['أصول نشطة', 'قيد التحقق'],
+                    datasets: [{
+                        data: [active, pending],
+                        backgroundColor: ['#10b981', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            const ctxDeals = document.getElementById('dealsTrendChart').getContext('2d');
+            dealsChart = new Chart(ctxDeals, {
+                type: 'bar',
+                data: {
+                    labels: ['إجمالي الغرف', 'المفاوضات المفتوحة', 'الصفقات الناجحة'],
+                    datasets: [{
+                        label: 'عدد العمليات الحية',
+                        data: [totalRooms, openRooms, completed],
+                        backgroundColor: ['#8b5cf6', '#3b82f6', '#10b981'],
+                        borderRadius: 6
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
         }
 
-        // دالة ذكية تولد أرقام عمليات مختلفة لمنع كبسولة التكرار الدائم
-        function triggerSmartSimulation() {
-            // توليد رقم عشوائي فريد لكل ضغطة محاكاة (مثال: BKNK-4829)
-            const randomTxn = "BKNK-" + Math.floor(1000 + Math.random() * 9000);
-            simulateTraderAction(35000, randomTxn);
-        }
+        function updateCharts(active, pending, totalRooms, openRooms, completed) {
+            if(marketChart && dealsChart) {
+                marketChart.data.datasets[0].data = [active, pending];
+                marketChart.update();
 
-        async function simulateTraderAction(amount, txnNum) {
-            let formData = new FormData();
-            formData.append('amount', amount);
-            formData.append('transaction_number', txnNum);
-            
-            let response = await fetch('/api/trader/submit-payment', { method: 'POST', body: formData });
-            let result = await response.json();
-            
-            if (result.status === "REJECTED") {
-                alert(`[استجابة النظام الآلي]:\nحالة العملية: REJECTED ❌\nالرسالة: ${result.reason}`);
-            } else if (result.status === "AUTO_APPROVED") {
-                alert(`[استجابة النظام الآلي]:\nحالة العملية: AUTO_APPROVED ✅\nالرسالة: ${result.message}\nرقم العملية التجريبي: ${txnNum}`);
+                dealsChart.data.datasets[0].data = [totalRooms, openRooms, completed];
+                dealsChart.update();
             } else {
-                alert(`[استجابة النظام الآلي]:\nحالة العملية: PENDING ⏳\nالرسالة: ${result.message}`);
+                initCharts(active, pending, totalRooms, openRooms, completed);
             }
         }
+
+        async function fetchAnalyticsData() {
+            try {
+                const response = await fetch('/admin-portal/api/dashboard-data', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' }
+                });
+                if (!response.ok) throw new Error('Unauthenticated');
+
+                const result = await response.json();
+                if (result.status === "success") {
+                    // تحديث الطوابع الزمنية والمعلومات
+                    const genTime = new Date(result.generated_at);
+                    document.getElementById('api-timestamp').innerText = `آخر تحديث للبيانات: ${genTime.toLocaleTimeString('ar-SD')}`;
+                    document.getElementById('admin-email').innerText = `المسؤول الحالي: ${result.admin_info.email}`;
+
+                    // تحديث العدادات المتقدمة
+                    document.getElementById('total-investors').innerText = result.data.users.total;
+                    document.getElementById('verified-investors').innerText = `الموثقون: ${result.data.users.verified}`;
+                    document.getElementById('total-assets').innerText = result.data.market.total_assets;
+                    document.getElementById('active-listings').innerText = result.data.market.active_listings;
+                    document.getElementById('pending-verification').innerText = result.data.market.pending_verification;
+                    document.getElementById('pending-orders').innerText = `طلبات معلقة: ${result.data.market.pending_orders}`;
+                    document.getElementById('open-rooms').innerText = result.data.negotiations.open_rooms;
+                    document.getElementById('completed-deals').innerText = `المكتملة بنجاح: ${result.data.negotiations.completed_deals}`;
+
+                    // التحديث الديناميكي للرسوم البيانية الحية
+                    updateCharts(
+                        result.data.market.active_listings,
+                        result.data.market.pending_verification,
+                        result.data.negotiations.total_rooms,
+                        result.data.negotiations.open_rooms,
+                        result.data.negotiations.completed_deals
+                    );
+
+                    document.getElementById('system-health').innerText = "مستقر ومحدث حياً";
+                }
+            } catch (error) {
+                console.error("حدث خطأ في جلب التحليلات:", error);
+                document.getElementById('sync-status').innerText = "متوقف مؤقتاً";
+                document.getElementById('sync-status').style.color = "#ef4444";
+            }
+        }
+
+        // إدارة آلية التحديث الذكي والـ VisibilityState
+        function startSmartSync() {
+            fetchAnalyticsData(); // استدعاء فوري عند التحميل
+            updateInterval = setInterval(fetchAnalyticsData, 60000); // تحديث دوري كل 60 ثانية
+        }
+
+        function stopSmartSync() {
+            clearInterval(updateInterval);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                document.getElementById('sync-status').innerText = "ذكي ومستمر";
+                document.getElementById('sync-status').style.color = "#10b981";
+                startSmartSync();
+            } else {
+                document.getElementById('sync-status').innerText = "خامل (حفاظاً على موارد الخادم)";
+                document.getElementById('sync-status').style.color = "#64748b";
+                stopSmartSync();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', startSmartSync);
     </script>
 </body>
 </html>

@@ -7,58 +7,103 @@
             <p class="text-xs text-gray-400 mt-1">Sudan Mining Hub — Command System v1.0</p>
         </div>
         <div class="bg-yellow-600/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-mono border border-yellow-500/30">
-            <i class="fas fa-user-shield"></i> المشرف الرئيسي
+            <i class="fas fa-user-shield"></i> المؤشرات الحية
         </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="p-4 bg-blue-950/40 border border-blue-800/50 rounded-lg">
             <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">1. Public Layer</span>
+                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">الأصول والمناجم</span>
                 <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
             </div>
             <div class="mt-2">
-                <h3 class="text-xl font-bold text-white">منصة الزوار</h3>
-                <p class="text-xs text-gray-400 mt-1">أسعار الذهب، صفحات التسويق، ونماذج التواصل العامة.</p>
+                <h3 class="text-3xl font-extrabold text-white" id="stat-total-assets">...</h3>
+                <p class="text-xs text-gray-400 mt-1">النشطة حالياً: <span class="text-green-400 font-bold" id="stat-active-assets">...</span></p>
             </div>
         </div>
 
         <div class="p-4 bg-yellow-950/40 border border-yellow-800/50 rounded-lg">
             <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-yellow-400 uppercase tracking-wider">2. Business Layer</span>
+                <span class="text-xs font-bold text-yellow-400 uppercase tracking-wider">المستثمرون</span>
                 <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
             </div>
             <div class="mt-2">
-                <h3 class="text-xl font-bold text-white">التجار والمستثمرين</h3>
-                <p class="text-xs text-gray-400 mt-1">إدارة العروض، طلبات المواد الخام، وخطابات LOI الحالية.</p>
-            </div>
-        </div>
-
-        <div class="p-4 bg-red-950/40 border border-red-800/50 rounded-lg">
-            <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-red-400 uppercase tracking-wider">3. Admin Core</span>
-                <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
-            </div>
-            <div class="mt-2">
-                <h3 class="text-xl font-bold text-white">منصة الإدارة</h3>
-                <p class="text-xs text-gray-400 mt-1">الوحدات التسع المستقلة ونظام التحكم المركزي (Shell).</p>
+                <h3 class="text-3xl font-extrabold text-white" id="stat-total-investors">...</h3>
+                <p class="text-xs text-gray-400 mt-1">عدد الملفات الاستثمارية المسجلة بنجاح.</p>
             </div>
         </div>
 
         <div class="p-4 bg-purple-950/40 border border-purple-800/50 rounded-lg">
             <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">4. Autopilot Layer</span>
+                <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">غرف التفاوض</span>
+                <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
+            </div>
+            <div class="mt-2">
+                <h3 class="text-3xl font-extrabold text-white" id="stat-open-rooms">...</h3>
+                <p class="text-xs text-gray-400 mt-1">غرف نقاش الصفقات النشطة والمفتوحة.</p>
+            </div>
+        </div>
+
+        <div class="p-4 bg-red-950/40 border border-red-800/50 rounded-lg">
+            <div class="flex justify-between items-start">
+                <span class="text-xs font-bold text-red-400 uppercase tracking-wider">طلبات الاهتمام (LOIs)</span>
                 <span class="flex h-2 w-2 rounded-full bg-yellow-500 animate-pulse"></span>
             </div>
             <div class="mt-2">
-                <h3 class="text-xl font-bold text-white">الـ Autopilot الخارجي</h3>
-                <p class="text-xs text-gray-400 mt-1">الوكلاء الدوليين، الفواتير، وأتمتة العقود الخارجية.</p>
+                <div class="text-xs text-gray-300 grid grid-cols-2 gap-1 font-mono">
+                    <div>مسودة: <span class="text-gray-400 font-bold" id="loi-draft">0</span></div>
+                    <div>مقدمة: <span class="text-blue-400 font-bold" id="loi-submitted">0</span></div>
+                    <div>مقبولة: <span class="text-green-400 font-bold" id="loi-accepted">0</span></div>
+                    <div>مرفوضة: <span class="text-red-400 font-bold" id="loi-rejected">0</span></div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="bg-gray-950 p-4 rounded-lg border border-gray-800 font-mono text-sm">
-        <div class="text-green-400 mb-1">>>> [System Health]: All integrations operating safely within architecture strict standards.</div>
-        <div class="text-gray-400">>>> [Module Loader]: dashboard.html connected as an independent monolithic module.</div>
+        <div class="text-green-400 mb-1">>>> [System Health]: Connecting Client-side Fetch to Live Backend Services.</div>
+        <div class="text-gray-400" id="admin-session-log">>>> [Session Guard]: Awaiting active administrator verification token...</div>
     </div>
 </div>
+
+<script>
+    async function loadLiveDashboardStats() {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+            const res = await fetch("/admin/api/dashboard-data", {
+                method: "GET",
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (!res.ok) throw new Error("Unauthorized stats collection");
+            const data = await res.json();
+            
+            if (data.status === "success") {
+                const stats = data.system_stats;
+                
+                // حقن البيانات الحية في بطاقات العرض ديناميكياً
+                document.getElementById("stat-total-assets").innerText = stats.total_assets;
+                document.getElementById("stat-active-assets").innerText = stats.active_assets;
+                document.getElementById("stat-total-investors").innerText = stats.total_investors;
+                document.getElementById("stat-open-rooms").innerText = stats.open_negotiation_rooms;
+                
+                // تحديث حالات الـ LOI تفصيلياً
+                document.getElementById("loi-draft").innerText = stats.lois_by_status.Draft || 0;
+                document.getElementById("loi-submitted").innerText = stats.lois_by_status.Submitted || 0;
+                document.getElementById("loi-accepted").innerText = stats.lois_by_status.Accepted || 0;
+                document.getElementById("loi-rejected").innerText = stats.lois_by_status.Rejected || 0;
+                
+                document.getElementById("admin-session-log").innerText = `>>> [Secure Connection]: Real-time counters rendered smoothly for ${data.admin_email}`;
+            }
+        } catch (err) {
+            document.getElementById("admin-session-log").innerText = "❌ [Error]: Failed to stream stats from the backend secure channel.";
+            document.getElementById("admin-session-log").style.color = "#ff4444";
+        }
+    }
+
+    // تشغيل الدالة فور تحميل الموديول المقتطع ديناميكياً داخل الـ SPA
+    loadLiveDashboardStats();
+</script>

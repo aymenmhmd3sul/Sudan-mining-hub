@@ -65,3 +65,7 @@ async def get_module_fragment(module_name: str, request: Request, current_user: 
     if not os.path.exists(os.path.join("app/templates", fragment_path)):
         return HTMLResponse(content=f"<div style='color:#ff4444; padding:30px; text-align:center;'>⚙️ وحدة [{MODULE_REGISTRY[module_name]['title']}] مستقرة وجاهزة.</div>")
     return templates.TemplateResponse(fragment_path, {"request": request})
+
+
+from app.routers import admin
+app.include_router(admin.router)

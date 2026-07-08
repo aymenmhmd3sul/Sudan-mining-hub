@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
-from app.models.identity import User
+from app.models.user import User
 
 # إعدادات الرمز الرقمي الآمن (JWT)
 SECRET_KEY = "SUPER_SECRET_SUDAN_MINING_HUB_KEY_CHANGE_THIS_IN_PRODUCTION"

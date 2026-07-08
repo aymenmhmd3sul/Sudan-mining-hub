@@ -1,46 +1,69 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
 
 class MarketDeal(Base):
-    __tablename__ = 'market_deals'
-    __table_args__ = {'extend_existing': True}
+    __tablename__ = "negotiation_rooms"
 
     id = Column(Integer, primary_key=True, index=True)
-    listing_id = Column(Integer, ForeignKey('market_listings.id', ondelete='RESTRICT'), nullable=False)
-    buyer_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    seller_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    asset_id = Column(Integer, ForeignKey("mining_assets.id"), nullable=False)
+    seller_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    buyer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String, default="OPEN") # OPEN, ACCEPTED, REJECTED, CLOSED
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # علاقة عكسية لجلب الرسائل المرتبطة بالغرفة
+    messages = relationship("NegotiationMessage", back_populates="room", cascade="all, delete-orphan")
     
-    final_price = Column(Float, nullable=False)
-    currency = Column(String(20), default='SDG')
+    asset = relationship("MiningAsset", backref="market_deals")
+    seller = relationship("User", foreign_keys=[seller_id], backref="sales_deals")
+    buyer = relationship("User", foreign_keys=[buyer_id], backref="purchase_deals")
+
+
+class NegotiationMessage(Base):
+    __tablename__ = "negotiation_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("negotiation_rooms.id"), nullable=False)
+    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    message_type = Column(String, default="TEXT") # TEXT, OFFER, SYSTEM
+    message = Column(String, nullable=False)
     
-    # حالة الصفقة الكلية: PENDING_APPROVAL, ACTIVE_DISPATCH, IN_LAB_TESTING, COMPLETED, DISPUTED
-    status = Column(String(50), default='PENDING_APPROVAL')
-    
-    # توثيق الحسابات والعمولات المترتبة بناء على قواعد النظام
-    calculated_commission = Column(Float, default=0.0)
-    is_commission_paid = Column(Boolean, default=False)
+    # حقول استثمار المستقبل
+    offer_id = Column(Integer, ForeignKey("offers.id"), nullable=True)
+    reply_to_id = Column(Integer, ForeignKey("negotiation_messages.id"), nullable=True)
+    is_read = Column(Boolean, default=False)
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    milestones = relationship('DealMilestone', back_populates='deal', cascade='all, delete-orphan')
+    # العلاقات
+    room = relationship("MarketDeal", back_populates="messages")
+    sender = relationship("User", backref="sent_messages")
+    replied_to = relationship("NegotiationMessage", remote_side=[id], backref="replies")
 
-class DealMilestone(Base):
-    __tablename__ = 'deal_milestones'
-    __table_args__ = {'extend_existing': True}
+
+class Offer(Base):
+    __tablename__ = "offers"
 
     id = Column(Integer, primary_key=True, index=True)
-    deal_id = Column(Integer, ForeignKey('market_deals.id', ondelete='CASCADE'), nullable=False)
-    
-    title = Column(String(150), nullable=False) # مثل: فحص عينة الذهب بالمعمل، الشحن، السداد
-    description = Column(Text, nullable=True)
-    step_order = Column(Integer, default=1) # ترتيب الخطوة في التنفيذ
-    
-    status = Column(String(50), default='PENDING') # PENDING, IN_PROGRESS, VERIFIED, FAILED
-    is_critical = Column(Boolean, default=True) # هل الخطوة إلزامية لإغلاق الصفقة؟
-    
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    room_id = Column(Integer, ForeignKey("negotiation_rooms.id"), nullable=False)
+    amount = Column(Float, nullable=False)
+    currency = Column(String, default="USD")
+    status = Column(String, default="PENDING") # PENDING, ACCEPTED, REJECTED
+    created_at = Column(DateTime, default=datetime.utcnow)
 
-    deal = relationship('MarketDeal', back_populates='milestones')
+    room = relationship("MarketDeal", backref="offers")
+    # تم ربط العرض بالرسالة عبر ForeignKey داخل كلاس NegotiationMessage
+    message_entry = relationship("NegotiationMessage", backref="linked_offer", foreign_keys=[NegotiationMessage.offer_id], uselist=False)
+
+class DealMilestone(Base):
+    __tablename__ = "deal_milestones"
+
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("negotiation_rooms.id"), nullable=False)
+    title = Column(String, nullable=False)
+    status = Column(String, default="PENDING")
+    created_at = Column(DateTime, default=datetime.utcnow)

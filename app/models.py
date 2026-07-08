@@ -94,3 +94,50 @@ class InvoiceEscrow(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     invoice = relationship("InternationalInvoice", back_populates="escrow")
+
+# ==============================================================================
+# IDENTITY & ORGANIZATION CORE LAYER (ADDED FOR MULTI-TENANCY)
+# ==============================================================================
+import enum
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum
+from sqlalchemy.orm import relationship
+
+class OrganizationRole(str, enum.Enum):
+    OWNER = "OWNER"
+    EXECUTIVE_MANAGER = "EXECUTIVE_MANAGER"
+    SALES_MANAGER = "SALES_MANAGER"
+    FINANCE_MANAGER = "FINANCE_MANAGER"
+    LABORATORY_MANAGER = "LABORATORY_MANAGER"
+    LOGISTICS_MANAGER = "LOGISTICS_MANAGER"
+
+class OrganizationStatus(str, enum.Enum):
+    PENDING = "PENDING"
+    ACTIVE = "ACTIVE"
+    SUSPENDED = "SUSPENDED"
+
+class Organization(Base):
+    __tablename__ = "organizations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False, index=True)
+    registration_number = Column(String, unique=True, nullable=True, index=True)
+    business_type = Column(String, nullable=False)
+    status = Column(Enum(OrganizationStatus), default=OrganizationStatus.PENDING, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+    memberships = relationship("Membership", back_populates="organization", cascade="all, delete-orphan")
+
+class Membership(Base):
+    __tablename__ = "memberships"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    organization_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False)
+    role = Column(Enum(OrganizationRole), nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+    organization = relationship("Organization", back_populates="memberships")
+    user = relationship("User", backref="memberships")

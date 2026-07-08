@@ -23,7 +23,23 @@
         .social-bar { text-align: center; margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; }
         .social-bar i { font-size: 24px; margin: 0 12px; cursor: pointer; }
         .lang-btn { position: absolute; left: 15px; top: 15px; background: none; border: 1px solid #DAA520; color: #DAA520; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-size: 12px; }
-    </style>
+    
+    .input-group {
+        position: relative;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    .password-toggle {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #94a3b8;
+        z-index: 10;
+    }
+    
+</style>
 </head>
 <body>
     <div class="top-bar">
@@ -37,9 +53,9 @@
     <div class="main-container">
         <div class="login-card">
             <h3>تسجيل الدخول الآمن</h3>
-            <input type="email" id="email" placeholder="البريد الإلكتروني">
+            <input type="email" autocomplete="off" id="email" placeholder="البريد الإلكتروني">
             <div class="pass-container">
-                <input type="password" id="pass" placeholder="كلمة المرور">
+                <input type="password" autocomplete="new-password" id="pass" placeholder="كلمة المرور">
                 <i class="fa fa-eye toggle-pass" onclick="togglePass()"></i>
             </div>
             <button onclick="login()">دخول</button>
@@ -77,6 +93,13 @@
                 document.getElementById("msg").innerText = "خطأ في بيانات الدخول";
             }
         }
-    </script>
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input').forEach(input => {
+            input.value = '';
+        });
+    });
+    
+</script>
 </body>
 </html>

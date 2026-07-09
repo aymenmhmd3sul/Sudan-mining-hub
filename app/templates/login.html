@@ -1,131 +1,232 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; overflow: hidden; touch-action: none;">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة السودان للتعدين</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-
-    
-    
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>منصة السودان للتعدين | دخول</title>
     <style>
-    html, body {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100dvh !important;
-        overflow: hidden !important;
-        touch-action: none !important;
-    }
-    *, *::before, *::after, body, div, h2, p, a, span {
-        -webkit-touch-callout: none !important;
-        -webkit-user-select: none !important;
-        -khtml-user-select: none !important;
-        -moz-user-select: none !important;
-        -ms-user-select: none !important;
-        user-select: none !important;
-    }
-    input {
-        -webkit-user-select: text !important;
-        user-select: text !important;
-    }
-    .password-container {
-        position: relative !important;
-        width: 100% !important;
-    }
-    /* الأيقونة النصية الناصعة المستقرة داخل الحقل */
-    .custom-eye-toggle {
-        position: absolute !important;
-        left: 15px !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        color: #ffffff !important;
-        font-size: 20px !important;
-        cursor: pointer !important;
-        z-index: 1000 !important;
-        font-style: normal !important;
-        line-height: 1 !important;
-        opacity: 1 !important;
-    }
+        /* قفل المتصفح ومنع السحب والنسخ كلياً */
+        html, body {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100dvh !important;
+            overflow: hidden !important;
+            touch-action: none !important;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            font-family: sans-serif;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+        }
+
+        /* منع التحديد والظلال الزرقاء */
+        *, *::before, *::after {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        /* السماح بالكتابة داخل الحقول فقط بدون نسخ */
+        input {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+        }
+
+        /* حاوية النموذج */
+        .wrapper {
+            width: 100%;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            background: #121212;
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, #8b0000, #5a0000);
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 3px solid #d4af37;
+        }
+
+        .ticker-bar {
+            background: #1e1e1e;
+            color: #d4af37;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 8px;
+            border-bottom: 1px solid #333;
+        }
+
+        .login-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-top: 4px solid #8b0000;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+            text-align: right;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            box-sizing: border-box;
+            background: #262626;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            text-align: right;
+        }
+
+        /* حاوية كلمة المرور لضبط تموضع العين بدقة */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrapper input {
+            padding-left: 45px !important; /* مساحة للعين على اليسار */
+            padding-right: 15px !important;
+        }
+
+        /* العين النصية الناصعة المستقرة بالداخل تماماً */
+        .eye-icon {
+            position: absolute !important;
+            left: 12px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #ffffff !important;
+            font-size: 22px !important;
+            cursor: pointer !important;
+            line-height: 1 !important;
+            font-style: normal !important;
+            opacity: 1 !important;
+            z-index: 10 !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #d4af37;
+            border: none;
+            border-radius: 6px;
+            color: #121212;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .links-group {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .links-group a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .visitor-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
     </style>
-    
 </head>
 <body>
-    <div class="top-bar">
-        <button class="lang-btn" onclick="alert('جاري تبديل اللغة...')">EN</button>
-        <h2 style="margin:0 0 5px 0;">⚖️ ⛏️ منصة السودان للتعدين</h2>
-        <p style="margin:0; font-size:13px; color:#ddd;">بوابة إدارة قطاع التعدين الذكية</p>
+
+<div class="wrapper">
+    <div class="header-bar">
+        <h1 style="margin:0; font-size:1.3rem;">منصة السودان للتعدين 🔨⚖️</h1>
+        <small>بوابة إدارة قطاع التعدين الذكية</small>
     </div>
-    <div class="gold-ticker">
-        بورصة الذهب مباشر | الأونصة: $2,345 | عيار 24: $75.40
+
+    <div class="ticker-bar">
+        بورصة الذهب مباشرة | الأونصة: $2,345 | عيار 24: $75.40
     </div>
-    <div class="main-container">
+
+    <div class="login-container">
         <div class="login-card">
-            <h3>تسجيل الدخول الآمن</h3>
-            <input type="email" autocomplete="off" id="email" placeholder="البريد الإلكتروني">
-            <div class="pass-container">
-                <div class="password-container"><input type="password" autocomplete="new-password" id="pass" placeholder="كلمة المرور"><i class="custom-eye-toggle" id="togglePasswordIcon">👁️</i></div>
-                <i class="fa fa-eye toggle-pass" onclick="togglePass()"></i>
-            </div>
-            <button onclick="login()">دخول</button>
-            <div id="msg" style="margin-top:10px; color:#ff4444; text-align:center; font-size:13px;"></div>
-            <div class="links">
+            <h2>تسجيل الدخول الآمن</h2>
+            
+            <form onsubmit="return false;">
+                <div class="input-group">
+                    <input type="email" placeholder="البريد الإلكتروني" autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <div class="password-wrapper">
+                        <input type="password" id="passwordField" placeholder="كلمة المرور" autocomplete="off">
+                        <span class="eye-icon" id="eyeToggle" onclick="togglePass()">👁️</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit">دخول</button>
+            </form>
+
+            <div class="links-group">
                 <a href="#">تسجيل جديد</a>
                 <a href="#">نسيت كلمة المرور؟</a>
             </div>
-            <div class="visitor-link">
-                <a href="#">دخول كزائر <i class="fa fa-arrow-left" style="font-size:11px;"></i></a>
-            </div>
-            <div class="social-bar">
-                <i class="fab fa-whatsapp" style="color:#25D366;"></i>
-                <i class="fab fa-facebook" style="color:#1877F2;"></i>
-            </div>
+
+            <a href="#" class="visitor-link">دخول كزائر ←</a>
         </div>
     </div>
-    <script>
-        function togglePass() {
-            const p = document.getElementById("pass");
-            p.type = p.type === "password" ? "text" : "password";
-        }
-        async function login() {
-            const username = document.getElementById("email").value;
-            const password = document.getElementById("pass").value;
-            const body = new URLSearchParams({ username, password });
-            const res = await fetch("/login", {
-                method: "POST",
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                body: body
-            });
-            if(res.ok) {
-                window.location.href = "/admin";
-            } else {
-                document.getElementById("msg").innerText = "خطأ في بيانات الدخول";
-            }
-        }
-    
-    window.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('input').forEach(input => {
-            input.value = '';
-        });
-    });
-    
+</div>
 
-    window.addEventListener('pageshow', function (event) {
-        const emailField = document.querySelector('input[type="email"]');
-        const passwordField = document.querySelector('input[type="password"]');
-        if (emailField) {
-            emailField.value = '';
-            emailField.setAttribute('autocomplete', 'off');
+<script>
+    function togglePass() {
+        var x = document.getElementById("passwordField");
+        var icon = document.getElementById("eyeToggle");
+        if (x.type === "password") {
+            x.type = "text";
+            icon.textContent = "👁️‍🗨️"; // شكل العين المفتوحة أو تظل ثابتة بنقاء
+        } else {
+            x.type = "password";
+            icon.textContent = "👁️";
         }
-        if (passwordField) {
-            passwordField.value = '';
-            passwordField.setAttribute('autocomplete', 'new-password');
-        }
-    });
-    
+    }
+
+    // منع حركة الصفحة نهائياً عند السحب بالإصبع على الشاشة
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    }, { passive: false });
 </script>
+
 </body>
 </html>

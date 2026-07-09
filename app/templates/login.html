@@ -5,88 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة السودان للتعدين</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { background: #121212; color: #fff; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .top-bar { background: #8B0000; padding: 15px; text-align: center; border-bottom: 3px solid #DAA520; position: relative; }
-        .gold-ticker { background: #1e1e1e; padding: 10px; text-align: center; color: #DAA520; border-bottom: 1px solid #333; font-size: 14px; font-weight: bold; }
-        .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: #1e1e1e; padding: 25px; border-radius: 12px; width: 100%; max-width: 380px; border-top: 5px solid #8B0000; box-shadow: 0 8px 24px rgba(0,0,0,0.5); box-sizing: border-box; }
-        h3 { text-align: center; margin-top: 0; color: #fff; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 6px; box-sizing: border-box; }
-        .pass-container { position: relative; }
-        .toggle-pass { position: absolute; left: 12px; top: 22px; cursor: pointer; color: #aaa; z-index: 10; }
-        button { width: 100%; padding: 12px; background: #DAA520; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; color: #000; font-size: 15px; margin-top: 10px; }
-        .links { display: flex; justify-content: space-between; margin-top: 15px; font-size: 13px; }
-        .links a { color: #DAA520; text-decoration: none; }
-        .visitor-link { text-align: center; margin-top: 15px; font-size: 14px; }
-        .visitor-link a { color: #aaa; text-decoration: none; }
-        .social-bar { text-align: center; margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; }
-        .social-bar i { font-size: 24px; margin: 0 12px; cursor: pointer; }
-        .lang-btn { position: absolute; left: 15px; top: 15px; background: none; border: 1px solid #DAA520; color: #DAA520; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-size: 12px; }
-    
-    .input-group {
-        position: relative;
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    .password-toggle {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #94a3b8;
-        z-index: 10;
-    }
     
 
-    /* قفل الشاشة بالكامل ضد التحديد، النسخ، والبحث المنبثق في كروم/سفاري */
-    * {
-        -webkit-touch-callout: none !important; /* يمنع القائمة المنبثقة للضغط المطول */
-        -webkit-user-select: none !important;   /* يمنع تحديد النص */
-        -moz-user-select: none !important;
-        -ms-user-select: none !important;
-        user-select: none !important;
-        -webkit-tap-highlight-color: transparent; /* يمنع وميض المربع الرمادي عند النقر */
-    }
-
-    /* استثناء حقول الإدخال فقط لتسمح بالكتابة والتفاعل */
-    input {
-        -webkit-touch-callout: default !important;
-        -webkit-user-select: text !important;
-        -moz-user-select: text !important;
-        -ms-user-select: text !important;
-        user-select: text !important;
-    }
-
-    /* إضاءة العين لتصبح بيضاء وناصعة */
-    .password-toggle {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #ffffff !important;
-        opacity: 1;
-        z-index: 10;
-    }
     
-</style>
+    
 
     <style>
-    /* قفل كامل لأبعاد الشاشة لمنع السحب لأعلى أو أسفل */
     html, body {
-        position: fixed;
-        top: 0;
-        left: 0;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
         width: 100% !important;
-        height: 100dvh !important; /* الارتفاع الفعلي للشاشة الذكية استبعاداً للأشرطة */
+        height: 100dvh !important;
         overflow: hidden !important;
-        -webkit-overflow-scrolling: touch;
-        touch-action: none; /* يمنع سحب المتصفح كلياً */
+        touch-action: none !important;
     }
-
-    /* قفل شامل وجذري لمنع التحديد والنسخ والقوائم المنبثقة */
     *, *::before, *::after, body, div, h2, p, a, span {
         -webkit-touch-callout: none !important;
         -webkit-user-select: none !important;
@@ -95,28 +28,27 @@
         -ms-user-select: none !important;
         user-select: none !important;
     }
-
-    /* استثناء حقول الإدخال لتسمح بالكتابة فقط */
-    input, input:focus {
+    input {
         -webkit-user-select: text !important;
         user-select: text !important;
     }
-
-    /* منع ظهور التحديد الأزرق عند الضغط المطول */
-    ::-moz-selection { background: transparent; color: inherit; }
-    ::selection { background: transparent; color: inherit; }
-
-    /* تعديل جذري لأيقونة العين لتصبح ناصعة البياض وواضحة كلياً */
-    .password-toggle {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #ffffff !important; /* لون أبيض ناصع */
+    .password-container {
+        position: relative !important;
+        width: 100% !important;
+    }
+    /* الأيقونة النصية الناصعة المستقرة داخل الحقل */
+    .custom-eye-toggle {
+        position: absolute !important;
+        left: 15px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #ffffff !important;
+        font-size: 20px !important;
+        cursor: pointer !important;
+        z-index: 1000 !important;
+        font-style: normal !important;
+        line-height: 1 !important;
         opacity: 1 !important;
-        font-size: 1.2rem;
-        z-index: 999;
     }
     </style>
     
@@ -135,7 +67,7 @@
             <h3>تسجيل الدخول الآمن</h3>
             <input type="email" autocomplete="off" id="email" placeholder="البريد الإلكتروني">
             <div class="pass-container">
-                <input type="password" autocomplete="new-password" id="pass" placeholder="كلمة المرور">
+                <div class="password-container"><input type="password" autocomplete="new-password" id="pass" placeholder="كلمة المرور"><i class="custom-eye-toggle" id="togglePasswordIcon">👁️</i></div>
                 <i class="fa fa-eye toggle-pass" onclick="togglePass()"></i>
             </div>
             <button onclick="login()">دخول</button>

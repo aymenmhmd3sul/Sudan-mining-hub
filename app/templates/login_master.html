@@ -146,6 +146,32 @@
             }
         </style>
         
+
+        <style>
+            .pass-wrapper {
+                position: relative !important;
+                display: flex !important;
+                align-items: center !important;
+                width: 100% !important;
+            }
+            .pass-wrapper input {
+                width: 100% !important;
+                padding-left: 40px !important; /* ترك مساحة للعين بالداخل */
+                padding-right: 15px !important;
+            }
+            .toggle-pass {
+                position: absolute !important;
+                left: 12px !important; /* تثبيت العين بالداخل يساراً */
+                right: auto !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                z-index: 5 !important;
+                cursor: pointer !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+        </style>
+    
 </head>
 <body>
     <div class="top-bar">

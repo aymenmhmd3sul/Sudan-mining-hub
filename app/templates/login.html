@@ -228,5 +228,37 @@
     }, { passive: false });
 </script>
 
+
+<script>
+    // افتراضياً: نتحقق إذا كان المستخدم مشرفاً (يمكنك تمريرها ديناميكياً من السيرفر لاحقاً)
+    // أو فحص وجود كلمة 'admin' في الرابط الحالي كمؤشر أولي
+    const isAdmin = window.location.pathname.includes('admin') || (typeof userRole !== 'undefined' && userRole === 'admin');
+
+    if (!isAdmin) {
+        // 1. التعمية اللحظية للمستخدمين العاديين فقط
+        window.addEventListener('blur', function() {
+            document.body.style.filter = 'blur(30px)';
+            document.body.style.transition = 'filter 0.1s ease';
+        });
+
+        window.addEventListener('focus', function() {
+            document.body.style.filter = 'none';
+        });
+
+        // 2. منع أزرار تصوير الشاشة (Print Screen) لغير المشرفين
+        document.addEventListener('keyup', function(e) {
+            if (e.key === 'PrintScreen') {
+                navigator.clipboard.writeText('');
+                alert('❌ عذراً، غير مسموح بالتقاط شاشة المنصة لأسباب أمنية.');
+            }
+        });
+
+        // منع زر الفأرة الأيمن للمستخدم العادي
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    } else {
+        console.log("⚡ وضع المشرف نشط: تم تعطيل قيود التعمية والحجب للرقابة والمتابعة.");
+    }
+</script>
+
 </body>
 </html>

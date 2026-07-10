@@ -67,5 +67,14 @@ async def get_module_fragment(module_name: str, request: Request, current_user: 
     return templates.TemplateResponse(fragment_path, {"request": request})
 
 
-from app.routers import admin
+
+# تفعيل خطوط الاتصال والروائت المركزية للمنصة
+from app.routers import admin, auth, users, opportunities, market, trade_desk
+
 app.include_router(admin.router)
+app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(opportunities.router)
+app.include_router(market.router)
+app.include_router(trade_desk.router)
+

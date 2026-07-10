@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.security.auth import get_db, get_current_user
-from app.models.identity import User
+from app.models.user import User
 from app.models.opportunities import Opportunity
 from pydantic import BaseModel
 from datetime import datetime

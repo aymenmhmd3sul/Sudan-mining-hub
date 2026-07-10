@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from datetime import datetime, timezone
 from typing import Optional
 from app.core.db import get_db_connection
-from app.core.security import get_current_user
+from app.security.auth import get_current_user
 
 router = APIRouter(prefix="/api/admin/users", tags=["Admin Users Management"])
 

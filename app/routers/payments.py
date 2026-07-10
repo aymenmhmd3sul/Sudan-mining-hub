@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.security.auth import get_db, get_current_user
 from app.security.policy import AuthorizationPolicy
-from app.models.identity import User
+from app.models.user import User
 from app.models.operations import FinancialTransaction
 from pydantic import BaseModel
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
 from datetime import datetime, timezone
 import json
 from app.core.db import get_db_connection
-from app.core.security import get_current_user
+from app.security.auth import get_current_user
 
 router = APIRouter(prefix="/ws/negotiation", tags=["Negotiation WebSockets"])
 

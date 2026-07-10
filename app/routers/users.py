@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.core.security import get_current_user
+from app.security.auth import get_current_user
 
 # توحيد البادئة البرمجية للراوتر لضمان الاتساق الهيكلي
 router = APIRouter(prefix="/api/users", tags=["Users"])

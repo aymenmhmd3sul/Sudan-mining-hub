@@ -7,10 +7,22 @@ from fastapi.templating import Jinja2Templates
 from jose import jwt, JWTError
 
 
-from app.core.database import Base, engine
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Sudan Mining Hub")
+
+# كود تهيئة قاعدة البيانات الآمن استباقياً
+try:
+    from app.core.database import Base, engine
+    # استدعاء الموديلات لتتعرف عليها قاعدة البيانات مسبقاً
+    from app.models.user import User
+    try:
+        from app.models.opportunity import Opportunity
+    except ImportError:
+        pass
+    Base.metadata.create_all(bind=engine)
+    print("🚀 [DB INIT] All database tables initialized successfully.")
+except Exception as db_err:
+    print(f"⚠️ [DB INIT ERROR] Failed to initialize tables: {db_err}")
 templates = Jinja2Templates(directory="app/templates")
 
 SECRET_KEY = "SUPER_SECRET_KEY_FOR_SUDAN_MINING_HUB_2026"

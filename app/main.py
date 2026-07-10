@@ -8,9 +8,9 @@ from fastapi.responses import HTMLResponse
 
 # 1. إعداد وحماية النواة وقاعدة البيانات بشكل صارم وموحد عند الإقلاع
 try:
-    from app.database import Base, engine
+    from app.database import Base, engine, SessionLocal
     
-    # 🎯 استيراد الموديولات بشكل كامل لتخليق الجداول والعلاقات المترابطة تلقائياً
+    # استيراد الموديولات بشكل كامل لتخليق الجداول والعلاقات
     from app.models import (
         user, role, identity, investor_core, 
         market_core, marketplace, negotiation, 
@@ -20,7 +20,36 @@ try:
 
     # بناء الجداول المترابطة دفعة واحدة بنقاء هندسي
     Base.metadata.create_all(bind=engine)
-    print("🚀 [RADICAL DB SUCCESS] Database unified: All schema models and foreign keys established flawlessly.")
+    print("🚀 [RADICAL DB SUCCESS] Database unified and schemas verified.")
+    
+    # 🎯 حقن الحساب المركزي برمجياً لضمان وجوده في قاعدة البيانات الجديدة
+    db = SessionLocal()
+    try:
+        admin_email = "aymen.mhmd3@gmail.com"
+        # التحقق مما إذا كان المستخدم موجوداً بالفعل
+        exists = db.query(user.User).filter(user.User.email == admin_email).first()
+        if not exists:
+            from passlib.context import CryptContext
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            # تشفير كلمة المرور 12345678 بشكل آمن متوافق مع نظام الـ Auth
+            hashed_pwd = pwd_context.hash("12345678")
+            
+            new_admin = user.User(
+                full_name="Ayman Mohamed",
+                email=admin_email,
+                hashed_password=hashed_pwd,
+                is_active=True,
+                created_at=datetime.datetime.utcnow(),
+                updated_at=datetime.datetime.utcnow()
+            )
+            db.add(new_admin)
+            db.commit()
+            print("👤 [DATA SEED] Admin account created successfully in SQLite.")
+    except Exception as seed_err:
+        print(f"⚠️ [SEED WARN] Bypassed admin seeding: {seed_err}")
+    finally:
+        db.close()
+
 except Exception as db_err:
     print(f"⚠️ [DB STARTUP WARN] Database setup bypassed: {db_err}")
 
@@ -62,7 +91,6 @@ app.include_router(trade_desk.router, prefix="/trade", tags=["Trade Desk"])
 # 🔄 مسار جسر مستعار وحاسم لحل مشكلة الدخول فوراً بدون تعديل الـ HTML
 @app.post("/api/auth/login")
 async def api_login_bridge(request: Request):
-    """جسر برمجي يستقبل طلبات الواجهة القديمة ويدفعها مباشرة لراوتر الـ Auth المعتمد"""
     from app.routers.auth import login as auth_login_func
     form_data = await request.form()
     
@@ -73,7 +101,6 @@ async def api_login_bridge(request: Request):
     
     mock_form = MockLoginForm(username=form_data.get("username"), password=form_data.get("password"))
     
-    from app.database import SessionLocal
     db = SessionLocal()
     try:
         return await auth_login_func(form_data=mock_form, db=db)

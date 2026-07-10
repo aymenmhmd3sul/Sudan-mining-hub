@@ -9,11 +9,18 @@ from fastapi.responses import HTMLResponse
 # 1. إعداد وحماية النواة وقاعدة البيانات بشكل صارم وموحد عند الإقلاع
 try:
     from app.database import Base, engine
-    # 🎯 استيراد موديل المستخدم والروابط صراحة لضمان قيام SQLAlchemy بتخليق الجداول فوراً في السيرفر
-    from app.models.user import User
     
+    # 🎯 استيراد الموديولات بشكل كامل لتخليق الجداول والعلاقات المترابطة تلقائياً
+    from app.models import (
+        user, role, identity, investor_core, 
+        market_core, marketplace, negotiation, 
+        opportunities, financial, communication, 
+        audit, analytics, commercial, operations, trade_desk
+    )
+
+    # بناء الجداول المترابطة دفعة واحدة بنقاء هندسي
     Base.metadata.create_all(bind=engine)
-    print("🚀 [RADICAL DB SUCCESS] Database engine fully unified and tables (including users) verified.")
+    print("🚀 [RADICAL DB SUCCESS] Database unified: All schema models and foreign keys established flawlessly.")
 except Exception as db_err:
     print(f"⚠️ [DB STARTUP WARN] Database setup bypassed: {db_err}")
 
@@ -73,8 +80,7 @@ async def api_login_bridge(request: Request):
     finally:
         db.close()
 
-# 6. مسارات العرض للواجهات الأمامية والتناغم التاريخي المسترجع (Gold Layout)
-
+# 6. مسارات العرض للواجهات الأمامية والتناغم التاريخي المسترجع
 @app.get("/")
 @app.get("/login", response_class=HTMLResponse)
 def render_login(request: Request):

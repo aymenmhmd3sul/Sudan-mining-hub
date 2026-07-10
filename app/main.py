@@ -1,6 +1,6 @@
 import datetime
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -49,6 +49,27 @@ app.include_router(negotiation.router, prefix="/negotiation", tags=["Negotiation
 app.include_router(communication.router, prefix="/communication", tags=["Communications & Audit"])
 app.include_router(trade_desk.router, prefix="/trade", tags=["Trade Desk"])
 
+# 🔄 مسار جسر مستعار وحاسم لحل مشكلة الدخول فوراً بدون تعديل الـ HTML
+@app.post("/api/auth/login")
+async def api_login_bridge(request: Request):
+    """جسر برمجي يستقبل طلبات الواجهة القديمة ويدفعها مباشرة لراوتر الـ Auth المعتمد"""
+    from app.routers.auth import login as auth_login_func
+    form_data = await request.form()
+    
+    class MockLoginForm:
+        def __init__(self, username, password):
+            self.username = username
+            self.password = password
+    
+    mock_form = MockLoginForm(username=form_data.get("username"), password=form_data.get("password"))
+    
+    from app.database import SessionLocal
+    db = SessionLocal()
+    try:
+        return await auth_login_func(form_data=mock_form, db=db)
+    finally:
+        db.close()
+
 # 6. مسارات العرض للواجهات الأمامية والتناغم التاريخي المسترجع (Gold Layout)
 
 @app.get("/")
@@ -62,15 +83,28 @@ def render_admin(request: Request):
 
 @app.get("/api/admin/permitted-modules")
 def get_permitted_modules():
-    # الاحتفاظ بنفس البنية والمنطق الأصلي للموديولات المصرحة
-    return ["investors", "opportunities", "payments", "market", "negotiation", "communication", "trade_desk"]
+    return ["investors", "dashboard", "opportunities", "payments", "market", "negotiation", "communication", "trade_desk"]
 
 @app.get("/admin/api/modules/{module_name}", response_class=HTMLResponse)
 def render_module_fragment(module_name: str, request: Request):
+    # تحديد المسار المتوقع للموديول تلقائياً
     fragment_path = f"modules/{module_name}.html"
-    if not os.path.exists(os.path.join("app/templates", fragment_path)):
-        return HTMLResponse(content="<p class='text-danger'>الموديول المطلق غير موجود حالياً.</p>", status_code=404)
-    return templates.TemplateResponse(fragment_path, {"request": request})
+    full_path = os.path.join("app/templates", fragment_path)
+    
+    # إذا كان الملف موجوداً ومفعلاً، يتم عرضه فوراً بكامل تناغمه
+    if os.path.exists(full_path):
+        return templates.TemplateResponse(fragment_path, {"request": request})
+        
+    # خطة الطوارئ المستقبلية المستدامة: إذا لم يتم إنشاء الملف بعد (القسم تحت التطوير)
+    # بدلاً من الفشل، نعرض واجهة انتظار احترافية مرنة متوافقة مع التصميم
+    placeholder_html = f"""
+    <div style="background: #1e1e1e; color: #fff; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #DAA520; margin: 20px;">
+        <h4 style="color: #DAA520; margin-bottom: 15px;"><i class="fas fa-tools"></i> قسم {module_name.upper()} قيد التنشيط الربطي</h4>
+        <p style="color: #ccc; font-size: 14px;">يجري العمل حالياً على ربط واجهات هذا القسم بالنواة المركزية وتأمين قنوات تدفق البيانات.</p>
+        <div style="margin-top: 15px; color: #DAA520;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+    </div>
+    """
+    return HTMLResponse(content=placeholder_html, status_code=200)
 
 # 7. نقطة فحص برمجية مخصصة لحالة النظام الأساسي
 @app.get("/api/health")

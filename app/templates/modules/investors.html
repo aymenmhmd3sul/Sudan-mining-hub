@@ -1,0 +1,71 @@
+<div class="module-container" style="padding: 20px; color: #fff; background: #1a1a1a; border-radius: 12px;">
+    <h3 style="border-bottom: 2px solid #cc0000; padding-bottom: 10px; color: #cc0000; display: flex; align-items: center; gap: 10px;">
+        <i class="fa fa-file-signature"></i> إدارة المستثمرين وعقود ومركز الفرص (LOIs)
+    </h3>
+    
+    <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+        <div style="background: #262626; padding: 15px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 4px solid #cc0000;">
+            <h4 style="margin: 0; color: #aaa; font-size: 14px;">الفرص الاستثمارية النشطة</h4>
+            <p id="stat-active-opps" style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0; color: #fff;">...</p>
+        </div>
+    </div>
+
+    <div style="overflow-x: auto; margin-top: 25px;">
+        <table style="width: 100%; border-collapse: collapse; background: #222; border-radius: 8px; overflow: hidden; text-align: right;">
+            <thead>
+                <tr style="background: #cc0000; color: #fff;">
+                    <th style="padding: 12px;">العنوان</th>
+                    <th style="padding: 12px;">النوع</th>
+                    <th style="padding: 12px;">المبلغ المستهدف</th>
+                    <th style="padding: 12px;">الوصف</th>
+                </tr>
+            </thead>
+            <tbody id="opportunities-table-body">
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #888;">🔄 جاري استدعاء حقول قاعدة البيانات حية...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    async function fetchLiveOpportunities() {
+        const tableBody = document.getElementById("opportunities-table-body");
+        const statActive = document.getElementById("stat-active-opps");
+        
+        try {
+            // الاستعلام المباشر من الـ Endpoint الفعلي المكتشف
+            const res = await fetch("/opportunity-center/explore");
+            if (res.ok) {
+                const result = await res.json();
+                if (result.status === "success" && result.data.length > 0) {
+                    statActive.innerText = result.data.length;
+                    let rows = "";
+                    result.data.forEach(opp => {
+                        rows += `
+                            <tr style="border-bottom: 1px solid #333;">
+                                <td style="padding: 12px; font-weight: bold;">${opp.title}</td>
+                                <td style="padding: 12px;"><span style="background: #444; padding: 3px 8px; border-radius: 4px; font-size: 12px;">${opp.opportunity_type}</span></td>
+                                <td style="padding: 12px; color: #ffcc00; font-weight: bold;">${opp.target_amount ? '$' + opp.target_amount.toLocaleString() : 'غير محدد'}</td>
+                                <td style="padding: 12px; color: #ccc; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${opp.description || 'لا يوجد وصف'}</td>
+                            </tr>
+                        `;
+                    });
+                    tableBody.innerHTML = rows;
+                } else {
+                    statActive.innerText = "0";
+                    tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: #888;">📭 لا توجد فرص استثمارية مفتوحة حالياً في قاعدة البيانات.</td></tr>`;
+                }
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: red;">❌ فشل جلب البيانات من السيرفر.</td></tr>`;
+            }
+        } catch (err) {
+            console.error("Error fetching opportunities:", err);
+            tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: red;">❌ خطأ في الاتصال بالشبكة.</td></tr>`;
+        }
+    }
+
+    // التنفيذ الفوري عند تحميل الموديل
+    fetchLiveOpportunities();
+</script>

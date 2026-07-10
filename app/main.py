@@ -1,6 +1,6 @@
 import datetime
 import os
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -9,8 +9,11 @@ from fastapi.responses import HTMLResponse
 # 1. إعداد وحماية النواة وقاعدة البيانات بشكل صارم وموحد عند الإقلاع
 try:
     from app.database import Base, engine
+    # 🎯 استيراد موديل المستخدم والروابط صراحة لضمان قيام SQLAlchemy بتخليق الجداول فوراً في السيرفر
+    from app.models.user import User
+    
     Base.metadata.create_all(bind=engine)
-    print("🚀 [RADICAL DB SUCCESS] Database engine fully unified and tables verified via Gold Layout.")
+    print("🚀 [RADICAL DB SUCCESS] Database engine fully unified and tables (including users) verified.")
 except Exception as db_err:
     print(f"⚠️ [DB STARTUP WARN] Database setup bypassed: {db_err}")
 
@@ -87,16 +90,12 @@ def get_permitted_modules():
 
 @app.get("/admin/api/modules/{module_name}", response_class=HTMLResponse)
 def render_module_fragment(module_name: str, request: Request):
-    # تحديد المسار المتوقع للموديول تلقائياً
     fragment_path = f"modules/{module_name}.html"
     full_path = os.path.join("app/templates", fragment_path)
     
-    # إذا كان الملف موجوداً ومفعلاً، يتم عرضه فوراً بكامل تناغمه
     if os.path.exists(full_path):
         return templates.TemplateResponse(fragment_path, {"request": request})
         
-    # خطة الطوارئ المستقبلية المستدامة: إذا لم يتم إنشاء الملف بعد (القسم تحت التطوير)
-    # بدلاً من الفشل، نعرض واجهة انتظار احترافية مرنة متوافقة مع التصميم
     placeholder_html = f"""
     <div style="background: #1e1e1e; color: #fff; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #DAA520; margin: 20px;">
         <h4 style="color: #DAA520; margin-bottom: 15px;"><i class="fas fa-tools"></i> قسم {module_name.upper()} قيد التنشيط الربطي</h4>

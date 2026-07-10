@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 from app.database import get_db
-from app.core.dependencies import require_any_user
+from app.security.auth import get_current_user as require_any_user
 from app.models.communication import Notification, DealEventLog
 
 router = APIRouter(prefix="/communications", tags=["Communication & Audit Trail"])

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 import os
-from app.core.security import get_current_admin
+from app.routers.admin_control import get_current_admin
 
 router = APIRouter(prefix="/admin/api/modules", tags=["Admin Modules Loader"])
 

@@ -6,6 +6,10 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from jose import jwt, JWTError
 
+
+from app.core.database import Base, engine
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(title="Sudan Mining Hub")
 templates = Jinja2Templates(directory="app/templates")
 

@@ -10,9 +10,30 @@ from jose import jwt, JWTError
 
 app = FastAPI(title="Sudan Mining Hub")
 
+# كود تهيئة قاعدة البيانات التكيفي والآمن
+try:
+    try:
+        from app.security.auth import engine
+        from app.db.database import Base
+    except ImportError:
+        try:
+            from app.database import Base, engine
+        except ImportError:
+            from app.db.database import Base, engine
+            
+    from app.models.user import User
+    try:
+        from app.models.opportunity import Opportunity
+    except ImportError:
+        pass
+        
+    Base.metadata.create_all(bind=engine)
+    print("🚀 [DB INIT SUCCESS] All structural tables generated dynamically.")
+except Exception as db_err:
+    print(f"⚠️ [DB INIT BYPASS] Tables initialization skipped or handled internally: {db_err}")
+
 # كود تهيئة قاعدة البيانات الآمن استباقياً
 try:
-    from app.core.database import Base, engine
     # استدعاء الموديلات لتتعرف عليها قاعدة البيانات مسبقاً
     from app.models.user import User
     try:

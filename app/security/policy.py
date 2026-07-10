@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from app.models.identity import User
+from app.models.user import User
 
 class AuthorizationPolicy:
     @staticmethod

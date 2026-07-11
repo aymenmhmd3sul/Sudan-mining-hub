@@ -3,9 +3,10 @@ from sqlalchemy.orm import Session
 from app.security.auth import get_db, get_current_user
 from app.security.policy import AuthorizationPolicy
 from app.models.user import User
-from app.models.finance import Invoice, EscrowTransaction, FinancialTransaction
-from app.schemas.invoice import InvoiceCreate, InvoiceResponse
-from app.schemas.escrow import EscrowCreate, EscrowResponse
+from app.models.finance import Invoice as InvoiceModel, Escrow as EscrowModel
+from app.models.operations import FinancialTransaction
+from app.schemas.invoice import InvoiceCreate, Invoice as InvoiceSchema
+from app.schemas.escrow import EscrowCreate, Escrow as EscrowSchema
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/payments", tags=["Financial & Escrow Engine"])
@@ -36,13 +37,12 @@ def submit_payment_proof(req: PaymentSubmit, current_user: User = Depends(get_cu
         amount=req.amount,
         payment_method=req.payment_method,
         reference_number=req.reference_number,
-        invoice_id=req.invoice_id,
         status="PENDING"
     )
     db.add(tx)
     
     if req.invoice_id:
-        invoice = db.query(Invoice).filter(Invoice.id == req.invoice_id).first()
+        invoice = db.query(InvoiceModel).filter(InvoiceModel.id == req.invoice_id).first()
         if invoice:
             invoice.status = "PROCESSING"
             
@@ -53,38 +53,47 @@ def submit_payment_proof(req: PaymentSubmit, current_user: User = Depends(get_cu
 # 2. محرك الفواتير (Invoice Endpoints)
 # ==========================================
 
-@router.post("/invoices", response_model=InvoiceResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/invoices", response_model=InvoiceSchema, status_code=status.HTTP_201_CREATED)
 def create_invoice(req: InvoiceCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """إنشاء فاتورة جديدة مرتبطة بصفقة تعدينية أو رسوم منصة"""
-    invoice = Invoice(
-        user_id=current_user.id,
-        amount=req.amount,
-        description=req.description,
-        status="UNPAID"
+    """إنشاء فاتورة جديدة مرتبطة بصفقة تعدينية"""
+    import uuid
+    from decimal import Decimal
+    invoice = InvoiceModel(
+        opportunity_id=req.opportunity_id,
+        buyer_id=current_user.id,
+        seller_id=req.seller_id,
+        invoice_number=f"INV-{uuid.uuid4().hex[:8].upper()}",
+        status="draft",
+        subtotal=Decimal(str(req.subtotal)),
+        total_amount=Decimal(str(req.total_amount)),
+        currency="USD"
     )
     db.add(invoice)
     db.commit()
     db.refresh(invoice)
     return invoice
 
-@router.get("/invoices/my-invoices", response_model=list[InvoiceResponse])
+@router.get("/invoices/my-invoices", response_model=list[InvoiceSchema])
 def get_my_invoices(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """استعراض الفواتير الخاصة بالمستخدم الحالي"""
-    return db.query(Invoice).filter(Invoice.user_id == current_user.id).all()
+    """استعراض الفواتير التي يكون المستخدم مشترياً فيها"""
+    return db.query(InvoiceModel).filter(InvoiceModel.buyer_id == current_user.id).all()
 
 # ==========================================
 # 3. محرك الضمان المالي (Escrow Endpoints)
 # ==========================================
 
-@router.post("/escrow/initiate", response_model=EscrowResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/escrow/initiate", response_model=EscrowSchema, status_code=status.HTTP_201_CREATED)
 def initiate_escrow(req: EscrowCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """إنشاء حساب ضمان مالي لحماية المشتري والبائع في صفقات المعادن"""
-    escrow = EscrowTransaction(
-        buyer_id=current_user.id,
-        seller_id=req.seller_id,
-        deal_id=req.deal_id,
-        amount=req.amount,
-        status="HOLD"
+    """إنشاء حساب ضمان مالي وربطه بفاتورة معينة لحماية الصفقة"""
+    invoice = db.query(InvoiceModel).filter(InvoiceModel.id == req.invoice_id).first()
+    if not invoice:
+        raise HTTPException(status_code=404, detail="الفاتورة المحددة غير موجودة لتفعيل الضمان عليها.")
+        
+    escrow = EscrowModel(
+        invoice_id=req.invoice_id,
+        amount=invoice.total_amount,
+        currency=invoice.currency,
+        status="pending"
     )
     db.add(escrow)
     db.commit()
@@ -93,18 +102,17 @@ def initiate_escrow(req: EscrowCreate, current_user: User = Depends(get_current_
 
 @router.post("/escrow/{escrow_id}/release")
 def release_escrow(escrow_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """تأكيد الاستلام من قبل المشتري والإفراج عن الأموال للبائع"""
-    escrow = db.query(EscrowTransaction).filter(EscrowTransaction.id == escrow_id).first()
+    """تأكيد الاستلام من قبل المشتري والإفراج عن الأموال"""
+    escrow = db.query(EscrowModel).filter(EscrowModel.id == escrow_id).first()
     if not escrow:
         raise HTTPException(status_code=404, detail="حساب الضمان غير موجود.")
-    if escrow.buyer_id != current_user.id:
-        raise HTTPException(status_code=403, detail="غير مصرح لك بالإفراج عن هذه الأموال.")
-    if escrow.status != "HOLD":
-        raise HTTPException(status_code=400, detail="حالة الحساب الحالي لا تسمح بالإفراج.")
+    
+    if escrow.invoice.buyer_id != current_user.id:
+        raise HTTPException(status_code=403, detail="غير مصرح لك بالإفراج عن هذه الأموال، المشتري فقط من يملك الصلاحية.")
         
-    escrow.status = "RELEASED"
+    escrow.status = "released"
     db.commit()
-    return {"message": "✅ تم الإفراج عن الأموال وتحويلها لحساب البائع بنجاح."}
+    return {"message": "✅ تم الإفراج عن الضمان المالي وتحويله لحساب البائع بنجاح."}
 
 # ==========================================
 # 4. لوحة الإدارة والرقابة المالية (Admin Center)
@@ -128,11 +136,5 @@ def review_payment(req: PaymentReview, current_user: User = Depends(get_current_
     
     action_upper = req.action.upper()
     tx.status = action_upper
-    
-    if tx.invoice_id:
-        invoice = db.query(Invoice).filter(Invoice.id == tx.invoice_id).first()
-        if invoice:
-            invoice.status = "PAID" if action_upper == "APPROVED" else "UNPAID"
-            
     db.commit()
     return {"message": f"✅ تم تحديث حالة المعاملة بنجاح إلى: {tx.status}"}

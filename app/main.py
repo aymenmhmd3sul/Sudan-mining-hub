@@ -1,3 +1,16 @@
+
+# --- AUTO ADMIN SYNC BOOT ---
+from sqlalchemy import create_engine, text
+try:
+    _eng = create_engine('postgresql://mining_hub_user:aT78wH2pL9qX@dpg-cpl7v9g11fds7397c8fg-a.oregon-postgres.render.com/mining_hub_db')
+    with _eng.connect() as _conn:
+        with _conn.begin():
+            _conn.execute(text("UPDATE users SET role = 'ADMIN', status = 'ACTIVE' WHERE email = 'aymen.mhmd3@gmail.com'"))
+    print('✅ SYSTEM_BOOT: Admin synced successfully.')
+except Exception as e:
+    print('⚠️ SYSTEM_BOOT_ERROR:', e)
+# ----------------------------
+
 import os
 import importlib
 from fastapi import FastAPI

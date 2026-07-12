@@ -4,9 +4,13 @@ from sqlalchemy import text
 from app.database import engine
 from app.core.security import get_password_hash
 
+# استيراد الروترز الحقيقي بناءً على هيكلة المجلدات المكتشفة
+from app.routers.auth import router as auth_router
+from app.routers.users import router as users_router
+
 app = FastAPI(title="Sudan Mining Hub API")
 
-# ضبط الـ CORS
+# ضبط الـ CORS لضمان استقبال الطلبات من التطبيق
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,11 +19,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ربط المسار الفعلي لنظام المصادقة وتوليد الـ Token
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["Auth"])
+app.include_router(users_router, prefix="/api/v1/users", tags=["Users"])
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Sudan Mining Hub API", "status": "running"}
 
-# دالة الترقية المركزية - تبدأ من أول السطر بدون مسافات أفقية مسببة للأخطاء
+# دالة الترقية المركزية المستقرة (تبدأ من مستوى السطر الصفري)
 @app.on_event("startup")
 def sync_admin_account_clean():
     try:

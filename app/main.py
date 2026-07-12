@@ -4,13 +4,13 @@ from sqlalchemy import text
 from app.database import engine
 from app.core.security import get_password_hash
 
-# استيراد الروترز الحقيقي بناءً على هيكلة المجلدات المكتشفة
+# استيراد الروترز الحقيقي المؤكد
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 
 app = FastAPI(title="Sudan Mining Hub API")
 
-# ضبط الـ CORS لضمان استقبال الطلبات من التطبيق
+# ضبط الـ CORS لضمان استقبال الطلبات
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,15 +19,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ربط المسار الفعلي لنظام المصادقة وتوليد الـ Token
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["Auth"])
-app.include_router(users_router, prefix="/api/v1/users", tags=["Users"])
+# ربط المسارات بشكل مباشر ليطابق تماماً روابط الفحص
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(users_router, prefix="/users", tags=["Users"])
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Sudan Mining Hub API", "status": "running"}
 
-# دالة الترقية المركزية المستقرة (تبدأ من مستوى السطر الصفري)
+# دالة الترقية المركزية المستقرة دون أي إزاحات حروف
 @app.on_event("startup")
 def sync_admin_account_clean():
     try:

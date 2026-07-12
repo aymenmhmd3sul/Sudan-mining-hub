@@ -7,8 +7,8 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/", response_class=HTMLResponse)
 async def render_login_gateway(request: Request):
-    return templates.TemplateResponse("gateway.html", {"request": request})
+    return templates.TemplateResponse(request, "gateway.html")
 
 @router.get("/explore", response_class=HTMLResponse)
 async def explore_page(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse(request, "dashboard.html")

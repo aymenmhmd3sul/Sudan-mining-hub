@@ -2,20 +2,23 @@ import bcrypt
 from datetime import datetime, timedelta
 from typing import Any, Union
 import jwt
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     SECRET_KEY: str = "SUPER_SECRET_MINING_HUB_KEY_2026_PRODUCTION"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # أسبوع كامل للمستكشفين والوكلاء
 
-    class Config:
-        env_file = ".env"
+    # هنا الحل الجذري: نطلب من Pydantic تجاهل أي متغيرات بيئة إضافية في ريندر وعدم قفل السيرفر بسببها
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore"
+    )
 
 settings = Settings()
 
 def get_password_hash(password: str) -> str:
-    """توليد هاش آمن ومستدام للمستقبل باستخدام الكود الأصيل لحزمة bcrypt"""
+    """توليد هاش آمن للمستقبل باستخدام الكود الأصيل لحزمة bcrypt"""
     pwd_bytes = password.encode('utf-8')
     salt = bcrypt.gensalt(rounds=12)
     hashed = bcrypt.hashpw(pwd_bytes, salt)

@@ -1,32 +1,15 @@
 import os
-import sqlite3
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlmodel import create_engine, Session, SQLModel
 
-# 1. إعداد المسارات المطلقة لقاعدة البيانات
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DATABASE_PATH = os.path.join(BASE_DIR, "local.db")
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
+# الحصول على عنوان قاعدة البيانات من البيئة (Render سيقوم بتوفير DATABASE_URL)
+# إذا لم يوجد، سنستخدم قاعدة بيانات محلية للتطوير
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./local.db")
 
-# 2. إعداد محرك ومولد جلسات SQLAlchemy (للمستقبل والـ ORM والإدارة)
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+# إعدادات المحرك: SQLite يحتاج لـ check_same_thread=False
+connect_args = {"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
 
-# [النمط الأول المستقبلي]: مولد جلسات ORM يغلق الاتصال تلقائياً بعد كل طلب
+engine = create_engine(DATABASE_URL, echo=True, connect_args=connect_args)
+
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-# [النمط الثاني الحالي]: الاتصال الخام لملفات الـ Marketplace القديمة
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    with Session(engine) as session:
+        yield session

@@ -1,8 +1,16 @@
 import os
 import importlib
 from fastapi import FastAPI
+from sqlmodel import SQLModel
+from app.core.db import engine
 
-app = FastAPI()
+# استيراد النماذج لضمان تعيينها لـ SQLModel قبل إنشاء الجداول
+from app.models.auth import User
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+app = FastAPI(on_startup=[create_db_and_tables])
 
 # Auto-discovery for routers
 routers_dir = os.path.join(os.path.dirname(__file__), "routers")

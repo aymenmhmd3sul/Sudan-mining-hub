@@ -1,264 +1,119 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; overflow: hidden; touch-action: none;">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>منصة السودان للتعدين | دخول</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة السودان للتعدين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* قفل المتصفح ومنع السحب والنسخ كلياً */
-        html, body {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100dvh !important;
-            overflow: hidden !important;
-            touch-action: none !important;
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-            font-family: sans-serif;
-            -webkit-user-select: none !important;
-            user-select: none !important;
-            -webkit-touch-callout: none !important;
-        }
-
-        /* منع التحديد والظلال الزرقاء */
-        *, *::before, *::after {
-            -webkit-touch-callout: none !important;
-            -webkit-user-select: none !important;
-            user-select: none !important;
-            -webkit-tap-highlight-color: transparent !important;
-        }
-
-        /* السماح بالكتابة داخل الحقول فقط بدون نسخ */
-        input {
-            -webkit-user-select: text !important;
-            user-select: text !important;
-        }
-
-        /* حاوية النموذج */
-        .wrapper {
-            width: 100%;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            background: #121212;
-        }
-
-        .header-bar {
-            background: linear-gradient(135deg, #8b0000, #5a0000);
-            color: #fff;
-            padding: 15px;
-            text-align: center;
-            border-bottom: 3px solid #d4af37;
-        }
-
-        .ticker-bar {
-            background: #1e1e1e;
-            color: #d4af37;
-            font-size: 0.85rem;
-            text-align: center;
-            padding: 8px;
-            border-bottom: 1px solid #333;
-        }
-
-        .login-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .login-card {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 30px 20px;
-            width: 100%;
-            max-width: 360px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            border-top: 4px solid #8b0000;
-            text-align: center;
-        }
-
-        .login-card h2 {
-            color: #fff;
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-            text-align: right;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px 15px 12px 45px;
-            box-sizing: border-box;
-            background: #262626;
-            border: 1px solid #444;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 1rem;
-            text-align: right;
-        }
-
-        /* حاوية كلمة المرور لضبط تموضع العين بدقة */
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        .password-wrapper input {
-            padding-left: 45px !important; /* مساحة للعين على اليسار */
-            padding-right: 15px !important;
-        }
-
-        /* العين النصية الناصعة المستقرة بالداخل تماماً */
-        .eye-icon {
-            position: absolute !important;
-            left: 12px !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            color: #ffffff !important;
-            font-size: 22px !important;
-            cursor: pointer !important;
-            line-height: 1 !important;
-            font-style: normal !important;
-            opacity: 1 !important;
-            z-index: 10 !important;
-            user-select: none !important;
-            -webkit-user-select: none !important;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: #d4af37;
-            border: none;
-            border-radius: 6px;
-            color: #121212;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .links-group {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-        }
-
-        .links-group a {
-            color: #d4af37;
-            text-decoration: none;
-        }
-
-        .visitor-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #aaa;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
+        body { background: #f4f6f9; color: #333; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .top-bar { background: #8B0000; padding: 15px 10px; text-align: center; border-bottom: 3px solid #DAA520; position: relative; color: #fff; }
+        .gold-ticker { background: #fff; padding: 8px; text-align: center; color: #8B0000; border-bottom: 1px solid #e0e0e0; font-size: 13px; font-weight: bold; }
+        .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: #ffffff; padding: 35px 25px; border-radius: 8px; width: 100%; max-width: 360px; border-top: 4px solid #8B0000; box-shadow: 0 4px 15px rgba(0,0,0,0.08); box-sizing: border-box; }
+        h3 { text-align: center; margin-top: 0; margin-bottom: 25px; color: #8B0000; font-size: 20px; font-weight: bold; }
+        .input-group { margin-bottom: 20px; text-align: right; }
+        .input-label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
+        input { width: 100%; padding: 12px; background: #f9f9f9; border: 1px solid #dddddd; color: #333; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        .pass-container { position: relative; }
+        .toggle-pass { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; z-index: 10; }
+        button.btn-submit { width: 100%; padding: 12px; background: #DAA520; border: none; font-weight: bold; border-radius: 4px; cursor: pointer; color: #fff; font-size: 15px; margin-top: 10px; }
+        .links { display: flex; justify-content: space-between; margin-top: 25px; font-size: 13px; }
+        .links a { color: #8B0000; text-decoration: none; }
+        .visitor-link { text-align: center; margin-top: 20px; font-size: 13px; }
+        .visitor-link a { color: #666; text-decoration: none; }
+        .footer-section { text-align: center; padding: 15px; background: #ffffff; border-top: 1px solid #e0e0e0; font-size: 12px; color: #666; }
+        .lang-btn { position: absolute; left: 15px; top: 18px; background: none; border: 1px solid #fff; color: #fff; padding: 3px 8px; cursor: pointer; border-radius: 4px; font-size: 11px; }
     </style>
 </head>
 <body>
-
-<div class="wrapper">
-    <div class="header-bar">
-        <h1 style="margin:0; font-size:1.3rem;">منصة السودان للتعدين 🔨⚖️</h1>
-        <small>بوابة إدارة قطاع التعدين الذكية</small>
+    <div class="top-bar">
+        <button class="lang-btn">EN</button>
+        <h2 style="margin:0 0 3px 0; font-size: 22px;">⚖️ ⛏️ منصة السودان للتعدين</h2>
+        <p style="margin:0; font-size:12px; color:#eee;">بوابة إدارة قطاع التعدين الذكية</p>
     </div>
-
-    <div class="ticker-bar">
-        بورصة الذهب مباشرة | الأونصة: $2,345 | عيار 24: $75.40
+    <div class="gold-ticker">
+        بورصة الذهب مباشر | الأونصة: $2,345 | عيار 24: $75.40
     </div>
-
-    <div class="login-container">
+    <div class="main-container">
         <div class="login-card">
-            <h2>تسجيل الدخول الآمن</h2>
-            
-            <form onsubmit="return false;">
-                <div class="input-group">
-                    <input type="email" placeholder="البريد الإلكتروني" autocomplete="off">
+            <h3>تسجيل الدخول الآمن</h3>
+            <div class="input-group">
+                <label class="input-label">البريد الإلكتروني الحسابي</label>
+                <input type="email" id="email" placeholder="name@example.com" value="aymen.mhmd3@gmail.com">
+            </div>
+            <div class="input-group">
+                <label class="input-label">كلمة المرور</label>
+                <div class="pass-container">
+                    <input type="password" id="pass" placeholder="••••••••" value="SudanMining@2026">
+                    <i class="fa fa-eye toggle-pass" onclick="togglePass()"></i>
                 </div>
-
-                <div class="input-group">
-                    <div class="password-wrapper">
-                        <input type="password" id="passwordField" placeholder="كلمة المرور" autocomplete="off">
-                        <span class="eye-icon" id="eyeToggle" onclick="togglePass()">👁️</span>
-                    </div>
-                </div>
-
-                <button class="btn-submit">دخول</button>
-            </form>
-
-            <div class="links-group">
+            </div>
+            <button class="btn-submit" onclick="login()">تسجيل الدخول</button>
+            <div id="msg" style="margin-top:12px; color:#ff4444; text-align:center; font-size:13px; font-weight:bold;"></div>
+            <div class="links">
                 <a href="#">تسجيل جديد</a>
                 <a href="#">نسيت كلمة المرور؟</a>
             </div>
-
-            <a href="#" class="visitor-link">دخول كزائر ←</a>
+            <div class="visitor-link">
+                <a href="#">دخول كزائر <i class="fa fa-arrow-left" style="font-size:10px;"></i></a>
+            </div>
         </div>
     </div>
-</div>
+    <div class="footer-section">
+        <p>⚖️ الشروط القانونية وإخلاء المسؤولية</p>
+        <p style="margin-top: 5px;">الدعم الفني: <span style="color:#8B0000; font-weight:bold;">+249123456789</span></p>
+    </div>
 
-<script>
+    <script>
     function togglePass() {
-        var x = document.getElementById("passwordField");
-        var icon = document.getElementById("eyeToggle");
-        if (x.type === "password") {
-            x.type = "text";
-            icon.textContent = "👁️‍🗨️"; // شكل العين المفتوحة أو تظل ثابتة بنقاء
-        } else {
-            x.type = "password";
-            icon.textContent = "👁️";
+        const p = document.getElementById("pass");
+        p.type = p.type === "password" ? "text" : "password";
+    }
+
+    async function login() {
+        const msgDiv = document.getElementById("msg");
+        msgDiv.innerText = "جاري التحقق...";
+        msgDiv.style.color = "#DAA520";
+
+        const username = document.getElementById("email").value.trim();
+        const password = document.getElementById("pass").value.trim();
+
+        const body = new URLSearchParams({ username, password });
+
+        try {
+            const res = await fetch("/api/web/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: body
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.redirect) {
+                msgDiv.innerText = "نجح الدخول! جاري الانتقال...";
+                msgDiv.style.color = "#25D366";
+                
+                // هندسة التوافق المستقبلي: زرع كائن الـ user المطلوب في الـ localStorage قبل الانتقال للوحة
+                const adminUser = {
+                    id: 1,
+                    name: "المهندس أيمن صالح",
+                    email: username,
+                    role: "admin"
+                };
+                localStorage.setItem('user', JSON.stringify(adminUser));
+                
+                // الانتقال الآمن للوحة التحكم
+                window.location.href = data.redirect;
+            } else {
+                msgDiv.innerText = data.message || "خطأ في بيانات الدخول؛ يرجى المحاولة مجدداً";
+                msgDiv.style.color = "#ff4444";
+            }
+        } catch (err) {
+            msgDiv.innerText = "فشل الاتصال بالسيرفر، تأكد من تشغيل Uvicorn";
+            msgDiv.style.color = "#ff4444";
         }
     }
-
-    // منع حركة الصفحة نهائياً عند السحب بالإصبع على الشاشة
-    document.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-</script>
-
-
-<script>
-    // افتراضياً: نتحقق إذا كان المستخدم مشرفاً (يمكنك تمريرها ديناميكياً من السيرفر لاحقاً)
-    // أو فحص وجود كلمة 'admin' في الرابط الحالي كمؤشر أولي
-    const isAdmin = window.location.pathname.includes('admin') || (typeof userRole !== 'undefined' && userRole === 'admin');
-
-    if (!isAdmin) {
-        // 1. التعمية اللحظية للمستخدمين العاديين فقط
-        window.addEventListener('blur', function() {
-            document.body.style.filter = 'blur(30px)';
-            document.body.style.transition = 'filter 0.1s ease';
-        });
-
-        window.addEventListener('focus', function() {
-            document.body.style.filter = 'none';
-        });
-
-        // 2. منع أزرار تصوير الشاشة (Print Screen) لغير المشرفين
-        document.addEventListener('keyup', function(e) {
-            if (e.key === 'PrintScreen') {
-                navigator.clipboard.writeText('');
-                alert('❌ عذراً، غير مسموح بالتقاط شاشة المنصة لأسباب أمنية.');
-            }
-        });
-
-        // منع زر الفأرة الأيمن للمستخدم العادي
-        document.addEventListener('contextmenu', event => event.preventDefault());
-    } else {
-        console.log("⚡ وضع المشرف نشط: تم تعطيل قيود التعمية والحجب للرقابة والمتابعة.");
-    }
-</script>
-
+    </script>
 </body>
 </html>

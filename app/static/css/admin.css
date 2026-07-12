@@ -1,0 +1,32 @@
+:root {
+    --bg-dark: #0f172a;
+    --panel-dark: #1e293b;
+    --border-dark: #334155;
+    --text-muted: #94a3b8;
+    --text-light: #f8fafc;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+body { background-color: var(--bg-dark); color: #cbd5e1; display: flex; flex-direction: column; min-height: 100vh; }
+
+.admin-header { background: var(--panel-dark); padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-dark); position: sticky; top: 0; z-index: 1000; }
+.menu-toggle-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+.header-title { font-weight: bold; color: var(--text-light); }
+.user-profile-badge { background: #3b82f6; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+
+.admin-layout { display: flex; flex: 1; }
+.admin-sidebar { width: 280px; background: var(--panel-dark); border-left: 1px solid var(--border-dark); display: flex; flex-direction: column; overflow-y: auto; height: calc(100vh - 63px); position: sticky; top: 63px; transition: transform 0.3s ease; }
+.sidebar-item, .sidebar-dropdown-btn { padding: 12px 20px; border-bottom: 1px solid var(--border-dark); color: var(--text-muted); text-decoration: none; display: flex; justify-content: space-between; cursor: pointer; font-size: 15px; }
+.sidebar-item:hover, .sidebar-dropdown-btn:hover { background: #273549; color: var(--text-light); }
+
+.sidebar-sub-menu { background: #131c2e; display: none; }
+.sidebar-sub-menu a { padding: 10px 35px; display: block; color: #64748b; text-decoration: none; font-size: 14px; border-bottom: 1px solid #1e293b; }
+.sidebar-sub-menu a:hover { color: var(--text-light); background: #1e293b; }
+
+.admin-main-content { flex: 1; padding: 20px; overflow-y: auto; }
+.placeholder-card { background: var(--panel-dark); padding: 30px; border-radius: 8px; border: 1px solid var(--border-dark); text-align: center; }
+.placeholder-card h2 { color: var(--text-light); margin-bottom: 10px; }
+
+@media (max-width: 768px) {
+    .admin-sidebar { position: fixed; right: 0; transform: translateX(100%); z-index: 999; }
+    .admin-sidebar.open { transform: translateX(0); }
+}

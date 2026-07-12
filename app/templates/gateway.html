@@ -1,98 +1,66 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="mainHtml">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title id="pageTitle">منصة السودان للتعدين - تسجيل الدخول</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تعدين السودان - بوابة الدخول المركزية</title>
     <style>
-        html, body { height: 100%; overflow: hidden; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .gateway-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 { color: #1e293b; font-size: 24px; margin-bottom: 10px; }
+        p { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-primary { background-color: #2563eb; color: white; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-outline { background-color: transparent; border: 2px solid #cbd5e1; color: #475569; }
+        .btn-outline:hover { background-color: #f1f5f9; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 antialiased flex flex-col justify-between h-full select-none">
+<body>
 
-    <div class="bg-gradient-to-b from-red-700 to-red-800 text-white text-center pt-6 pb-6 px-4 rounded-b-[2.2rem] shadow-lg relative w-full max-w-md mx-auto flex-shrink-0">
-        <button onclick="toggleLanguage()" id="langBtn" class="absolute top-4 left-4 bg-white/10 hover:bg-white/20 px-3.5 py-1 rounded-full text-xs font-bold tracking-wider transition-all border border-white/10 shadow-sm">
-            EN
-        </button>
-        <div class="flex justify-center items-center space-x-reverse space-x-4 text-4xl mb-2 text-slate-100">
-            <span>⚖️</span>
-            <span>⛏️</span>
-        </div>
-        <h1 id="mainHeading" class="text-2xl font-black tracking-tight mb-1">منصة السودان للتعدين</h1>
-        <p id="subHeading" class="text-xs text-red-100/90 font-medium">بوابة إدارة قطاع التعدين الذكية</p>
-    </div>
+<div class="gateway-container">
+    <h1>منصة تعدين السودان</h1>
+    <p>مرحباً بك في البوابة المركزية الآمنة للمنصة. يرجى اختيار وجهتك الحالية لبدء العمل التشغيلي:</p>
+    
+    <a href="/explore" class="btn btn-primary">الدخول إلى لوحة التحكم واستكشاف السوق</a>
+    <a href="#" onclick="clearSession()" class="btn btn-outline">تصفير الجلسة الحالية (Clear Cache)</a>
+</div>
 
-    <div class="bg-slate-950 text-amber-400 py-2 px-4 text-[11px] font-bold shadow-sm flex items-center justify-between border-b border-amber-500/25 w-full max-w-md mx-auto flex-shrink-0">
-        <div class="flex items-center space-x-reverse space-x-2 overflow-hidden whitespace-nowrap w-full justify-center">
-            <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-            <span id="tickerText">بورصة الذهب مباشرة | الأونصة: $2,345 | عيار 24: $75.40</span>
-        </div>
-    </div>
+<script>
+    function clearSession() {
+        localStorage.clear();
+        alert('تم تصفير بيانات الجلسة المحلية بنجاح!');
+        window.location.reload();
+    }
+</script>
 
-    <main class="max-w-md mx-auto px-6 flex-grow w-full flex flex-col justify-center space-y-4 overflow-hidden">
-        
-        <form action="/login" method="POST" class="space-y-3.5">
-            <div class="space-y-1">
-                <label id="emailLabel" class="block text-xs font-bold text-slate-600 pr-1">البريد الإلكتروني الحسابي الآمن</label>
-                <input type="email" name="email" id="emailInput" value="" required class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-red-600 outline-none transition-all font-semibold text-slate-700 text-left placeholder-slate-300" dir="ltr">
-            </div>
-
-            <div class="space-y-1">
-                <label id="passLabel" class="block text-xs font-bold text-slate-600 pr-1">كلمة المرور</label>
-                <div class="relative flex items-center">
-                    <input type="password" name="password" id="passwordInput" value="" required class="w-full pl-12 pr-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-red-600 outline-none transition-all font-semibold text-slate-700 text-left placeholder-slate-300" dir="ltr">
-                    <button type="button" onclick="togglePasswordVisibility()" class="absolute left-3 p-1 flex items-center justify-center text-slate-400 hover:text-red-700 transition-colors z-10">
-                        <span id="eyeIcon" class="text-base select-none">👁️</span>
-                    </button>
-                </div>
-            </div>
-
-            <button type="submit" id="loginBtn" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 font-black py-3 px-4 rounded-xl text-center shadow-md hover:from-amber-600 hover:to-yellow-700 transition-all text-sm mt-1">
-                تسجيل الدخول الآمن
-            </button>
-        </form>
-
-        <div class="flex justify-between items-center text-xs font-bold text-red-700 px-2">
-            <a href="#" id="linkRegister" class="hover:underline">التسجيل لأول مرة</a>
-            <span class="text-slate-300">|</span>
-            <a href="#" id="linkGuest" class="hover:underline">دخول كزائر</a>
-        </div>
-
-        <div class="text-center pt-3 space-y-1.5 border-t border-slate-200/80">
-            <a href="#" id="legalText" class="text-[11px] font-bold text-slate-400 hover:underline flex justify-center items-center gap-1">
-                ⚖️ الشروط القانونية وإخلاء المسؤولية
-            </a>
-            <p id="supportText" class="text-[11px] font-semibold text-slate-400">
-                لا تستطيع الدخول؟ اتصل بالدعم: <span id="dynamicPhone" class="text-red-700 font-bold" dir="ltr">+249123456789</span>
-            </p>
-        </div>
-    </main>
-
-    <footer class="flex justify-center items-center space-x-reverse space-x-8 py-4 border-t border-slate-200/80 w-full max-w-md mx-auto bg-slate-50 flex-shrink-0">
-        <a href="https://wa.me/249123456789" target="_blank" class="text-emerald-600 text-2xl hover:scale-110 transition-transform">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-        <a href="https://facebook.com" target="_blank" class="text-blue-600 text-2xl hover:scale-110 transition-transform">
-            <i class="fab fa-facebook"></i>
-        </a>
-    </footer>
-
-    <script>
-        let currentLang = 'ar';
-        function togglePasswordVisibility() {
-            const passInput = document.getElementById('passwordInput');
-            const eye = document.getElementById('eyeIcon');
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eye.textContent = '🔒';
-            } else {
-                passInput.type = 'password';
-                eye.textContent = '👁️';
-            }
-        }
-        function toggleLanguage() { /* كود الترجمة الافتراضي الثابت */ }
-    </script>
 </body>
 </html>

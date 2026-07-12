@@ -135,43 +135,6 @@
         .social-bar { text-align: center; margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
         .social-bar i { font-size: 28px; margin: 0 15px; cursor: pointer; }
     </style>
-
-        <style>
-            body {
-                -webkit-user-select: none !important;
-                -moz-user-select: none !important;
-                -ms-user-select: none !important;
-                user-select: none !important;
-                touch-action: none !important;
-            }
-        </style>
-        
-
-        <style>
-            .pass-wrapper {
-                position: relative !important;
-                display: flex !important;
-                align-items: center !important;
-                width: 100% !important;
-            }
-            .pass-wrapper input {
-                width: 100% !important;
-                padding-left: 40px !important; /* ترك مساحة للعين بالداخل */
-                padding-right: 15px !important;
-            }
-            .toggle-pass {
-                position: absolute !important;
-                left: 12px !important; /* تثبيت العين بالداخل يساراً */
-                right: auto !important;
-                top: 50% !important;
-                transform: translateY(-50%) !important;
-                z-index: 5 !important;
-                cursor: pointer !important;
-                display: flex !important;
-                align-items: center !important;
-            }
-        </style>
-    
 </head>
 <body>
     <div class="top-bar">
@@ -303,41 +266,5 @@
             }
         }
     </script>
-
-<script>
-    // نظام كسر الكاش وتأمين الشاشة
-    const isAdmin = window.location.pathname.includes('admin') || (typeof userRole !== 'undefined' && userRole === 'admin');
-
-    if (!isAdmin) {
-        // 1. التعمية الضبابية اللحظية عند محاولة التقاط الشاشة أو مغادرة التركيز
-        window.addEventListener('blur', function() {
-            document.body.style.filter = 'blur(30px)';
-            document.body.style.transition = 'filter 0.1s ease';
-        });
-
-        window.addEventListener('focus', function() {
-            document.body.style.filter = 'none';
-        });
-
-        // 2. منع التقاط الشاشة عبر أزرار الكيبورد للكمبيوتر
-        document.addEventListener('keyup', function(e) {
-            if (e.key === 'PrintScreen') {
-                navigator.clipboard.writeText('');
-                alert('❌ عذراً، غير مسموح بالتقاط شاشة المنصة لأسباب أمنية.');
-            }
-        });
-
-        // 3. منع زر الفأرة الأيمن والنسخ والتحديد تماماً للمستخدم العادي
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        
-        // إغلاق سحب وإعادة تحميل الصفحة اللمسية العشوائية في الهواتف الذكية
-        document.body.style.touchAction = 'none';
-        document.body.style.userSelect = 'none';
-        document.body.style.webkitUserSelect = 'none';
-    } else {
-        console.log("⚡ وضع المشرف نشط: تم تعطيل قيود التعمية والحجب للرقابة والمتابعة.");
-    }
-</script>
-
 </body>
 </html>

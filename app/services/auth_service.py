@@ -1,50 +1,57 @@
 from fastapi import HTTPException, status
-from app.core.db import get_db_connection
+from sqlalchemy.orm import Session
+from app.models.auth import User, UserStatus
 from app.core.security import verify_password, create_access_token
 
 class AuthService:
     @staticmethod
-    def authenticate_user(username: str, password: str) -> dict:
+    def authenticate_user(db: Session, username: str, password: str) -> dict:
         # تطهير المدخلات فوراً من أي فراغات زائدة وتحويلها لأحرف صغيرة
         clean_username = username.strip().lower()
-        
-        conn = get_db_connection()
-        # استخدام LOWER في الاستعلام لضمان التطابق التام بغض النظر عن طريقة الحفظ
-        user_row = conn.execute(
-            "SELECT * FROM users WHERE LOWER(TRIM(email)) = ?",
-            (clean_username,)
-        ).fetchone()
-        conn.close()
 
-        if not user_row:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, 
-                detail="Invalid credentials"
-            )
+        # الاستعلام باستخدام الـ ORM والمقارنة الآمنة والمفهرسة
+        user = db.query(User).filter(sa.func.lower(User.email) == clean_username).first() if 'sa' in globals() else db.query(User).filter(User.email == clean_username).first()
         
-        user = dict(user_row)
-        stored_hash = user.get("password_hash") or user.get("password")
-
-        if not stored_hash or not verify_password(password, stored_hash):
+        if not user:
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, 
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid credentials"
             )
 
-        user_id = str(user.get("id")) if user.get("id") else f"usr_{user['email'].split('@')[0]}"
-        is_active = bool(user.get("is_active")) if "is_active" in user else True
-        user_status = user.get("status", "ACTIVE").upper()
+        # التحقق من كلمة المرور باستخدام الـ Hash المخزن صراحة في الموديل الجديد
+        if not verify_password(password, user.password_hash):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
 
+        # التحقق الصارم من حالة الحساب بناءً على الحالات الأربعة المعتمدة
+        if user.status == UserStatus.SUSPENDED:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Your account has been suspended. Please contact support."
+            )
+        elif user.status == UserStatus.PENDING:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Your account registration is pending approval."
+            )
+        elif user.status == UserStatus.REJECTED:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Your account application has been rejected."
+            )
+
+        # تجهيز بيانات التوكن (Token Claims) من كائن الـ ORM مباشرة وثابت البيانات
         token_data = {
-            "id": user_id,
-            "sub": user["email"].strip().lower(),
-            "role": user["role"],
-            "is_active": is_active,
-            "status": user_status
+            "id": user.id,
+            "sub": user.email,
+            "role": user.role.value,
+            "status": user.status.value
         }
-        
+
         token = create_access_token(data=token_data)
-        
+
         return {
             "access_token": token,
             "token_type": "bearer"

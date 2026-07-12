@@ -7,6 +7,28 @@ from app.routers import auth, buyer, seller  # تأكد من مطابقة الر
 
 app = FastAPI(title="Sudan Mining Hub API")
 
+# --- SUSTAINABLE ADMIN SYNC ---
+from sqlalchemy import text
+from app.database import engine
+from app.core.security import get_password_hash
+
+@app.on_event('startup')
+def sync_admin_account_permanently():
+    try:
+        clean_pass = 'SudanMining@2026'.strip()
+        new_hash = get_password_hash(clean_pass)
+        with engine.connect() as conn:
+            with conn.begin():
+                conn.execute(
+                    text("UPDATE users SET password_hash = :hash, role = 'ADMIN', status = 'ACTIVE' WHERE LOWER(TRIM(email)) = 'aymen.mhmd3@gmail.com'"),
+                    {'hash': new_hash}
+                )
+        print('✅ [SUSTAINABLE_BOOT] Admin synced and characters cleaned cleanly.')
+    except Exception as e:
+        print('⚠️ [SUSTAINABLE_BOOT_ERROR]', e)
+# ------------------------------
+
+
 # ضبط الـ CORS
 app.add_middleware(
     CORSMiddleware,
@@ -18,7 +40,6 @@ app.add_middleware(
 
 # حدث الإقلاع المركزي الموثوق لترقية حسابك وتثبيت كلمة المرور برمجياً
 @app.on_event("startup")
-def sync_admin_account():
     try:
         clean_pass = 'SudanMining@2026'.strip()
         new_hash = get_password_hash(clean_pass)

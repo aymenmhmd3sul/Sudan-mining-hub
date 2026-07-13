@@ -20,8 +20,8 @@ app.add_middleware(
 )
 
 # ربط المسارات بشكل مباشر ليطابق تماماً روابط الفحص
-app.include_router(auth_router, prefix="/auth", tags=["Auth"])
-app.include_router(users_router, prefix="/users", tags=["Users"])
+app.include_router(auth_router, prefix="", tags=["Auth"])
+app.include_router(users_router, prefix="", tags=["Users"])
 
 @app.get("/")
 def read_root():

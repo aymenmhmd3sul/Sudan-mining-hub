@@ -1,16 +1,13 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+import jwt  # توحيد المكتبة مع security.py لمنع تعارض الحزم
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, AsyncGenerator
 from app.infrastructure.database import AsyncSessionLocal
+from app.core.security import settings  # جلب المفاتيح المركزية الموحدة
 
-# إعدادات افتراضية للتشفير لعام 2026
-SECRET_KEY = "SUDAN_MINING_HUB_SUPER_SECRET_KEY_2026"
-ALGORITHM = "HS256"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
 
-# الدالة المفقودة: توليد وحقن جلسة قاعدة البيانات بشكل آمن وتلقائي الإغلاق
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     """توليد جلسة قاعدة بيانات غير متزامنة لكل طلب وإغلاقها تلقائياً بعد الانتهاء"""
     async with AsyncSessionLocal() as session:
@@ -27,7 +24,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        # فك التشفير باستخدام المفتاح الموحد والخوارزمية المركزية
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id: int = payload.get("sub")
         role: str = payload.get("role")
         username: str = payload.get("username")
@@ -35,7 +33,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
         if user_id is None or role is None:
             raise credentials_exception
         return {"id": user_id, "role": role, "username": username}
-    except JWTError:
+    except Exception:
         raise credentials_exception
 
 class RoleChecker:

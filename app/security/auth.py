@@ -7,11 +7,12 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models.user import User
+from app.core.security import settings  # استيراد الإعدادات المركزية الموحدة
 
-# إعدادات الرمز الرقمي الآمن (JWT)
-SECRET_KEY = "SUPER_SECRET_SUDAN_MINING_HUB_KEY_CHANGE_THIS_IN_PRODUCTION"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # صلاحية الرمز يوم واحد
+# الاعتماد على الإعدادات الموحدة للمنظومة لإنهاء تعارض الـ 401
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -59,16 +60,16 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
-        
+
     # قراءة بيانات المستخدم وقدراته واشتراكاته حية وفورياً من الـ DB
     user = db.query(User).filter(User.id == int(user_id)).first()
     if user is None:
         raise credentials_exception
-        
+
     if not user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="عذراً، هذا الحساب معلق أو غير نشط حالياً بقرار من الإدارة."
         )
-        
+
     return user

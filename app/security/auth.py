@@ -5,23 +5,15 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from app.database import SessionLocal
 from app.models.user import User
-from app.core.security import settings  # استيراد الإعدادات المركزية الموحدة
+from app.core.security import settings
+from app.core.db import get_db  # استيراد الجلسة الموحدة المركزية
 
-# الاعتماد على الإعدادات الموحدة للمنظومة لإنهاء تعارض الـ 401
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 class SecurityManager:
     @staticmethod
@@ -61,7 +53,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     except jwt.PyJWTError:
         raise credentials_exception
 
-    # قراءة بيانات المستخدم وقدراته واشتراكاته حية وفورياً من الـ DB
+    # قراءة بيانات المستخدم باستخدام الجلسة المركزية الحية تلافياً لخطأ 500
     user = db.query(User).filter(User.id == int(user_id)).first()
     if user is None:
         raise credentials_exception

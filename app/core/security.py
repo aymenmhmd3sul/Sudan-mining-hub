@@ -1,46 +1,32 @@
-import bcrypt
-from datetime import datetime, timedelta
-from typing import Any, Union
-import jwt
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from passlib.hash import pbkdf2_sha256
+from types import SimpleNamespace
+from datetime import datetime, timedelta, timezone
+from jose import jwt
+import os
 
-class Settings(BaseSettings):
-    SECRET_KEY: str = "SUPER_SECRET_MINING_HUB_KEY_2026_PRODUCTION"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # أسبوع كامل للمستكشفين والوكلاء
-
-    # هنا الحل الجذري: نطلب من Pydantic تجاهل أي متغيرات بيئة إضافية في ريندر وعدم قفل السيرفر بسببها
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        extra="ignore"
-    )
-
-settings = Settings()
+settings = SimpleNamespace(
+    SECRET_KEY=os.getenv("SECRET_KEY", "sudan-mining-hub-secret-key-2026"),
+    ALGORITHM="HS256"
+)
 
 def get_password_hash(password: str) -> str:
-    """توليد هاش آمن للمستقبل باستخدام الكود الأصيل لحزمة bcrypt"""
-    pwd_bytes = password.encode('utf-8')
-    salt = bcrypt.gensalt(rounds=12)
-    hashed = bcrypt.hashpw(pwd_bytes, salt)
-    return hashed.decode('utf-8')
+    return pbkdf2_sha256.using(rounds=1000).hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """التحقق الآمن والأبدي من كلمات المرور دون الاعتماد على مكتبات وسيطة تنهار في البيئات الحية"""
-    try:
-        plain_bytes = plain_password.encode('utf-8')
-        hashed_bytes = hashed_password.encode('utf-8')
-        return bcrypt.checkpw(plain_bytes, hashed_bytes)
-    except Exception:
-        return False
+    return pbkdf2_sha256.verify(plain_password, hashed_password)
 
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
-    """توليد توكنات الدخول واعتماد الحالات الحية للمنظومة"""
+def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
+
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+        expire = datetime.now(timezone.utc) + timedelta(minutes=60)
+
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return encoded_jwt
+
+    return jwt.encode(
+        to_encode,
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM
+    )

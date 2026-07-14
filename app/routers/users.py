@@ -13,7 +13,7 @@ def get_user_profile(current_user: User = Depends(get_current_user)):
     """
     return {
         "id": current_user.id,
-        "name": current_user.name,
+        "name": current_user.full_name,
         "email": current_user.email,
         "phone": current_user.phone,
         "role": current_user.role.value,

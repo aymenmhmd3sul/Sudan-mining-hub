@@ -34,6 +34,12 @@ class MiningAsset(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(UTC))
     updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 
+
+    version = Column(Integer, default=1, nullable=False)
+
+    __mapper_args__ = {
+        "version_id_col": version
+    }
     # العلاقات الكاملة والمطابقة %100 لكافة امتدادات النظام لضمان استقرار الـ Mapper
     category = relationship("Category", back_populates="assets")
     locations = relationship("AssetLocation", back_populates="asset", cascade="all, delete-orphan")

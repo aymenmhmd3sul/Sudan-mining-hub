@@ -82,7 +82,7 @@ def get_my_profile(current_user: User = Depends(get_current_user)):
     """استعراض ملف المستخدم الحي مباشرة من كائن الـ ORM المستقر"""
     return {
         "id": current_user.id,
-        "name": current_user.name,
+        "name": getattr(current_user, "name", getattr(current_user, "full_name", "Admin")),
         "email": current_user.email,
         "phone": current_user.phone,
         "role": current_user.role.value,

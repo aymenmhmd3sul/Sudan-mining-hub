@@ -1,62 +1,66 @@
 import json
 from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List, Optional
-from app.core.db import get_db_connection
-from app.core.dependencies import require_seller
-from app.schemas.assets import AssetCreate
+from sqlalchemy.orm import Session
+from typing import List
 
-router = APIRouter(tags=["Asset Marketplace Core"])
+from app.database import get_db
+# استخدام نظام التحقق والأمان المطور المعتمد في المنصة
+from app.security.auth import get_current_user as require_any_user 
+from app.models.marketplace import MiningAsset  # تعديل معماري صارم وصحيح
+from app.schemas.assets import AssetCreate, AssetResponse
 
-@router.post("/assets", status_code=status.HTTP_201_CREATED)
-def create_mining_asset(payload: AssetCreate, current_user: dict = Depends(require_seller)):
-    """نشر أصل تعديني جديد في قاعدة البيانات الموحدة."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    images_str = json.dumps(payload.images_urls)
-    specs_str = json.dumps(payload.specific_specs)
-    
-    cursor.execute('''
-        INSERT INTO mining_assets (
-            title, description, main_category, sub_category, price, currency, 
-            is_negotiable, owner_id, state_province, locality, coordinates, 
-            images_urls, specific_specs
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        payload.title, payload.description, payload.main_category, payload.sub_category,
-        payload.price, payload.currency, int(payload.is_negotiable), current_user["id"],
-        payload.state_province, payload.locality, payload.coordinates, images_str, specs_str
-    ))
-    
-    asset_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
-    
-    return {
-        "message": "🔒 تم تسجيل أصل التعدين بنجاح وهو الآن في مرحلة (Pending Review) للاعتماد الإداري",
-        "asset_id": asset_id
-    }
+router = APIRouter(prefix="/marketplace", tags=["Asset Marketplace Core"])
 
-@router.get("/assets")
-def list_mining_assets(main_category: Optional[str] = None):
-    """استعراض السوق بالكامل والتصفية الذكية."""
-    conn = get_db_connection()
-    query = "SELECT * FROM mining_assets"
-    
-    cursor = conn.execute(query)
-    rows = cursor.fetchall()
-    conn.close()
-    
-    results = []
-    for row in rows:
-        item = dict(row)
-        try:
-            item["images_urls"] = json.loads(item["images_urls"]) if item["images_urls"] else []
-            item["specific_specs"] = json.loads(item["specific_specs"]) if item["specific_specs"] else {}
-        except Exception:
-            item["images_urls"] = []
-            item["specific_specs"] = {}
-        item["is_negotiable"] = bool(item["is_negotiable"])
-        results.append(item)
+@router.post("/assets", response_model=AssetResponse, status_code=status.HTTP_201_CREATED)
+def create_mining_asset(
+    payload: AssetCreate, 
+    db: Session = Depends(get_db), 
+    current_user: dict = Depends(require_any_user)
+):
+    """
+    نشر أصل تعديني جديد في قاعدة البيانات الموحدة باستخدام SQLAlchemy ORM.
+    يدعم تسجيل البيانات وإسنادها للمستخدم الحالي مع تفعيل خاصية الـ Concurrency Control (Version: 1).
+    """
+    # التحقق من صلاحية المستخدم (البائع أو الأدمن فقط حسب هيكل الصلاحيات)
+    user_role = current_user.get("role")
+    if user_role not in ["seller", "merchant", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="عذراً، هذا الإجراء متاح فقط للحسابات المعتمدة كبائع أو تاجر في المنصة."
+        )
+
+    try:
+        # تحويل القوائم والقواميس إلى JSON Strings لتخزينها في قاعدة البيانات الموحدة
+        images_str = json.dumps(payload.images_urls) if payload.images_urls else "[]"
+        specs_str = json.dumps(payload.specific_specs) if payload.specific_specs else "{}"
+
+        # بناء الكائن باستخدام SQLAlchemy Model
+        new_asset = MiningAsset(
+            title=payload.title,
+            description=payload.description,
+            main_category=payload.main_category,
+            sub_category=payload.sub_category,
+            price=payload.price,
+            currency=payload.currency,
+            is_negotiable=payload.is_negotiable,
+            owner_id=current_user["id"],  # ربط الأصل بالمالك الحالي تلقائياً
+            state_province=payload.state_province,
+            locality=payload.locality,
+            coordinates=payload.coordinates,
+            images_urls=images_str,
+            specific_specs=specs_str,
+            version=1  # تعيين قيمة أولية لإصدار التحكم التزامني (Optimistic Concurrency Version)
+        )
+
+        db.add(new_asset)
+        db.commit()
+        db.refresh(new_asset)
         
-    return results
+        return new_asset
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"حدث خطأ أثناء حفظ الأصل التعديني: {str(e)}"
+        )

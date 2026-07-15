@@ -1,4 +1,21 @@
+# --- MONKEY PATCH FOR SQLMODEL ON PYTHON 3.13 & SQLALCHEMY 2.0+ ---
+import sqlalchemy.schema
+if not hasattr(sqlalchemy.schema, 'ThreadLocalMetaData'):
+    from sqlalchemy import MetaData
+    sqlalchemy.schema.ThreadLocalMetaData = MetaData
+
+import sqlalchemy.sql
+if not hasattr(sqlalchemy.sql, 'subquery'):
+    from sqlalchemy.sql.expression import Subquery
+    sqlalchemy.sql.subquery = Subquery
+
+# حل مشكلة التوافقية التامة لـ SQLAlchemy 2.0 مع موديلات SQLModel القديمة
+import sqlmodel
+sqlmodel.SQLModel.__allow_unmapped__ = True
+# -----------------------------------------------------------------
 from fastapi import FastAPI
+# ضمان تحميل الموديلات في الذاكرة لحل تعارض العلاقات
+from app.models.user import User
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
@@ -16,6 +33,9 @@ from app.routers.chat import router as chat_router
 from app.routers.payments import router as payments_router
 from app.routers.trade_desk import router as trade_desk_router
 from app.routers.opportunities import router as opportunities_router
+from app.routers.marketplace import router as marketplace_router
+from app.routers.views import router as views_router
+from app.routers.mining_sites import router as mining_sites_router
 
 app = FastAPI(
     title="Sudan Mining Hub API",
@@ -31,6 +51,7 @@ app.add_middleware(
 )
 
 # Core
+app.include_router(views_router)
 app.include_router(auth_router)
 app.include_router(users_router)
 
@@ -38,6 +59,8 @@ app.include_router(users_router)
 app.include_router(admin_router)
 app.include_router(admin_views_router)
 app.include_router(market_router)
+app.include_router(marketplace_router)
+app.include_router(mining_sites_router)
 app.include_router(negotiation_router)
 app.include_router(communication_router)
 app.include_router(chat_router)

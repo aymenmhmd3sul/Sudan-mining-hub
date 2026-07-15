@@ -13,7 +13,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         email = payload.get("sub")
         
-        user = db.query(User).options(joinedload(User.roles)).filter(
+        user = db.query(User).filter(
             User.email == email
         ).first()
         

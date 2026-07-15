@@ -85,8 +85,8 @@ def get_my_profile(current_user: User = Depends(get_current_user)):
         "name": getattr(current_user, "name", getattr(current_user, "full_name", "Admin")),
         "email": current_user.email,
         "phone": current_user.phone,
-        "role": current_user.role.value,
-        "status": current_user.status.value,
+        "role": getattr(current_user.role, "value", current_user.role),
+        "status": getattr(current_user.status, "value", current_user.status),
         "country": current_user.country,
         "language": current_user.language
     }

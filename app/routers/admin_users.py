@@ -1,75 +1,94 @@
+from sqlalchemy import text
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from datetime import datetime, timezone
 from typing import Optional
-from app.core.db import get_db_connection
+
+from sqlalchemy import text
+from app.core.db import SessionLocal
 from app.security.auth import get_current_user
 
-router = APIRouter(prefix="/api/admin/users", tags=["Admin Users Management"])
+router = APIRouter(
+    prefix="/api/admin/users",
+    tags=["Admin Users Management"]
+)
 
-def log_admin_action(admin_email: str, action: str, target_user: str, details: str):
-    """حفظ سجلات العمليات الإدارية."""
-    try:
-        conn = get_db_connection()
-        conn.execute("""
-            INSERT INTO security_breach_logs (user_email, attempted_action, details, timestamp)
-            VALUES (?, ?, ?, ?)
-        """, (admin_email, f"ADMIN_{action}", f"Target: {target_user} | {details}", datetime.now(timezone.utc).isoformat()))
-        conn.commit()
-        conn.close()
-    except Exception:
-        pass
 
-def verify_admin_role(current_user: dict = Depends(get_current_user)) -> dict:
-    """التحقق الحقيقي والصارم من صلاحية الآدمن بناءً على التوكن الموحد."""
-    if current_user.get("role") != "superadmin":
+def verify_admin_role(current_user=Depends(get_current_user)):
+    if str(current_user.role) not in ["ADMIN", "admin", "superadmin", "UserRole.ADMIN"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="غير مصرح لك بدخول لوحة التحكم الإدارية"
         )
     return current_user
 
+
 @router.get("")
 def list_users(
-    status_filter: Optional[str] = Query(None, alias="status", description="ACTIVE, BANNED, PENDING_VERIFICATION"),
-    current_admin: dict = Depends(verify_admin_role)
+    status_filter: Optional[str] = Query(None, alias="status"),
+    current_admin=Depends(verify_admin_role)
 ):
-    conn = get_db_connection()
-    # استبعاد trader_category مؤقتاً لعدم وجود العمود في الجدول الحالي
+    db = SessionLocal()
+
     query = "SELECT id, email, role, status, created_at FROM users WHERE 1=1"
-    params = []
-    
+    params = {}
+
     if status_filter:
-        query += " AND status = ?"
-        params.append(status_filter)
-        
-    users = conn.execute(query, params).fetchall()
-    conn.close()
-    return {"total": len(users), "users": [dict(u) for u in users]}
+        query += " AND status = :status"
+        params["status"] = status_filter
+
+    result = db.execute(text(query), params)
+    users = [dict(row._mapping) for row in result.fetchall()]
+
+    db.close()
+
+    return {
+        "total": len(users),
+        "users": users
+    }
+
 
 @router.post("/toggle-status")
 def toggle_user_status(
     user_email: str,
     new_status: str,
-    current_admin: dict = Depends(verify_admin_role)
+    current_admin=Depends(verify_admin_role)
 ):
     if new_status not in ["ACTIVE", "BANNED"]:
-        raise HTTPException(status_code=400, detail="حالة حساب غير قانونية")
-        
-    conn = get_db_connection()
-    user = conn.execute("SELECT * FROM users WHERE LOWER(TRIM(email)) = ?", (user_email.strip().lower(),)).fetchone()
-    
-    if not user:
-        conn.close()
-        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
-        
-    conn.execute("UPDATE users SET status = ? WHERE LOWER(TRIM(email)) = ?", (new_status, user_email.strip().lower()))
-    conn.commit()
-    conn.close()
-    
-    log_admin_action(
-        admin_email=current_admin["email"],
-        action="TOGGLE_STATUS",
-        target_user=user_email,
-        details=f"تم تغيير حالة الحساب إلى {new_status}"
+        raise HTTPException(
+            status_code=400,
+            detail="حالة حساب غير قانونية"
+        )
+
+    db = SessionLocal()
+
+    result = db.execute(
+        text("SELECT id FROM users WHERE LOWER(email)=LOWER(:email)"),
+        {"email": user_email}
     )
-    return {"message": f"تم تحديث حالة المستخدم {user_email} بنجاح إلى {new_status}"}
+
+    user = result.fetchone()
+
+    if not user:
+        db.close()
+        raise HTTPException(
+            status_code=404,
+            detail="المستخدم غير موجود"
+        )
+
+    db.execute(
+        text("""
+        UPDATE users
+        SET status = :status
+        WHERE LOWER(email)=LOWER(:email)
+        """),
+        {
+            "status": new_status,
+            "email": user_email
+        }
+    )
+
+    db.commit()
+    db.close()
+
+    return {
+        "message": f"تم تحديث حالة المستخدم إلى {new_status}"
+    }

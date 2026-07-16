@@ -1,3 +1,4 @@
+import app.models.patch
 # --- MONKEY PATCH FOR SQLMODEL ON PYTHON 3.13 & SQLALCHEMY 2.0+ ---
 import sqlalchemy.schema
 if not hasattr(sqlalchemy.schema, 'ThreadLocalMetaData'):
@@ -23,8 +24,10 @@ from app.core.db import engine
 from app.core.security import get_password_hash
 
 from app.routers.auth import router as auth_router
+from app.routers.web_auth import router as web_auth_router
 from app.routers.users import router as users_router
 from app.routers.admin import router as admin_router
+from app.routers.admin_users import router as admin_users_router
 from app.routers.admin_views import router as admin_views_router
 from app.routers.market import router as market_router
 from app.routers.negotiation import router as negotiation_router
@@ -53,10 +56,12 @@ app.add_middleware(
 # Core
 app.include_router(views_router)
 app.include_router(auth_router)
+app.include_router(web_auth_router)
 app.include_router(users_router)
 
 # Business Modules
 app.include_router(admin_router)
+app.include_router(admin_users_router)
 app.include_router(admin_views_router)
 app.include_router(market_router)
 app.include_router(marketplace_router)

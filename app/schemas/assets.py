@@ -35,7 +35,7 @@ class AssetResponse(BaseModel):
     specific_specs: Dict[str, Any]
     status: str # إعادة إدراج الحقل التشغيلي لفرز الأصول
     created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

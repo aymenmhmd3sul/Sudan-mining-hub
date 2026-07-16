@@ -28,5 +28,5 @@ class Membership(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    user = relationship('User', back_populates='memberships')
-    organization = relationship('Organization', back_populates='memberships')
+    user = relationship('User')
+    organization = relationship('Organization')

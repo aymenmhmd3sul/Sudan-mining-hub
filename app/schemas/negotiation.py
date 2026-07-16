@@ -63,7 +63,7 @@ class RoomResponse(BaseModel):
     buyer_id: int
     status: str
     created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime] = None
     
     # حقول التوسع المستقبلية دون كسر الـ API الحالي
     last_message_at: Optional[datetime] = Field(None, description="وقت آخر رسالة مرسلة")

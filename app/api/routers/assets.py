@@ -17,10 +17,12 @@ async def create_asset(
     # حل جذري للتوافق مع إصدارات Pydantic المختلفة
     data_dict = asset_data.dict() if hasattr(asset_data, "dict") else asset_data.model_dump()
     
-    # معالجة ذكية لتحويل المصفوفات والقواميس إلى نصوص متوافقة مع SQLite
-    for key, value in data_dict.items():
-        if isinstance(value, (list, dict)):
-            data_dict[key] = json.dumps(value)
+    # التوافقية الذكية للمستقبل: فحص نوع قاعدة البيانات النشطة ديناميكيا
+    is_sqlite = db.bind.dialect.name == "sqlite"
+    if is_sqlite:
+        for key, value in data_dict.items():
+            if isinstance(value, (list, dict)):
+                data_dict[key] = json.dumps(value)
 
     new_asset = MiningAsset(
         owner_id=current_user.id,

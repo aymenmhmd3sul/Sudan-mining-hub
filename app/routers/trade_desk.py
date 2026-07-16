@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.security.auth_handler import get_current_user, get_db
+from app.security.auth import get_current_user
+from app.core.db import get_db
 from app.security.policy import AuthorizationPolicy
 from app.models import User, GlobalTradeDeskRequest
 

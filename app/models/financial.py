@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Boolean, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from app.database import Base
 
 # 1. جدول وسائل الدفع الديناميكية (يتحكم فيها المشرف بالكامل)
 class PaymentMethod(Base):

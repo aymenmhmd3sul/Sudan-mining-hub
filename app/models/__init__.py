@@ -17,3 +17,8 @@ from app.models.analytics import MarketPriceTicker, AIRecommendation
 from app.models.trade_desk import GlobalTradeDeskRequest, GlobalTradeBid
 from app.models.operations import SubscriptionPlan, FinancialTransaction, SystemSetting
 from app.models.investor_core import InvestorProfile, LetterOfIntent, LOIAuditTrail
+
+# Finance & Audit Models
+from app.models.finance import Invoice, Escrow
+from app.models.financial import PaymentMethod, Wallet, PaymentTransaction
+from app.models.audit import AuditLog

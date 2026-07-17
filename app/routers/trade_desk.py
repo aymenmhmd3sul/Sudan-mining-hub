@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from app.security.auth import get_current_user
 from app.core.db import get_db
 from app.security.policy import AuthorizationPolicy
-from app.models import User, GlobalTradeDeskRequest
+from app.models.user import User
+from app.models.trade_desk import GlobalTradeDeskRequest
 
 router = APIRouter(prefix="/trade-desk", tags=["Global Trade Desk"])
 

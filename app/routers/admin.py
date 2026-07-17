@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.core.dependencies import verify_admin_token
-from app.models import User
+from app.models.user import User
 from app.schemas import DashboardMetricsResponse
 from sqlalchemy import text
 import os

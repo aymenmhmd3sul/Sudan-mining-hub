@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
-from app.models import User
+from app.models.user import User
 
 def get_db():
     db = SessionLocal()

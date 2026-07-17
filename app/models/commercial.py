@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, JSON
-from app.models.base import Base # سنفترض وجود ملف للقاعدة الأساسية
+from app.database import Base # سنفترض وجود ملف للقاعدة الأساسية
 
 # 1. جدول أنواع باقات الإعلانات (عادي، مميز، عاجل، مثبت، شركة)
 class AdPackage(Base):

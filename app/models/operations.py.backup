@@ -15,7 +15,6 @@ class FinancialTransaction(Base):
     __tablename__ = "financial_transactions"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    invoice_id = Column(Integer, ForeignKey("invoice.id"), nullable=True)
     amount = Column(Float, nullable=False)
     payment_method = Column(String(50), nullable=False)     # Bank_of_Khartoum, Cache, International_Bank
     reference_number = Column(String(100), unique=True)     # رقم إشعار التحويل المرفوع

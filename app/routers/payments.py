@@ -34,6 +34,7 @@ def submit_payment_proof(req: PaymentSubmit, current_user: User = Depends(get_cu
 
     tx = FinancialTransaction(
         user_id=current_user.id,
+        invoice_id=req.invoice_id,
         amount=req.amount,
         payment_method=req.payment_method,
         reference_number=req.reference_number,
@@ -44,7 +45,7 @@ def submit_payment_proof(req: PaymentSubmit, current_user: User = Depends(get_cu
     if req.invoice_id:
         invoice = db.query(InvoiceModel).filter(InvoiceModel.id == req.invoice_id).first()
         if invoice:
-            invoice.status = "PROCESSING"
+            invoice.status = "pending"
             
     db.commit()
     return {"message": "✅ تم رفع إشعار الدفع بنجاح، جاري مراجعته من قبل إدارة العمليات المالية."}
@@ -136,5 +137,27 @@ def review_payment(req: PaymentReview, current_user: User = Depends(get_current_
     
     action_upper = req.action.upper()
     tx.status = action_upper
+
+    if action_upper == "APPROVED":
+
+        if tx.invoice_id:
+            invoice = db.query(InvoiceModel).filter(
+                InvoiceModel.id == tx.invoice_id
+            ).first()
+
+            if invoice:
+                invoice.status = "PAID"
+
+                escrow = db.query(EscrowModel).filter(
+                    EscrowModel.invoice_id == invoice.id
+                ).first()
+
+                if escrow:
+                    escrow.status = "funded"
+
     db.commit()
-    return {"message": f"✅ تم تحديث حالة المعاملة بنجاح إلى: {tx.status}"}
+
+    return {
+        "message": f"✅ تم تحديث المعاملة والفاتورة والضمان إلى: {tx.status}"
+    }
+

@@ -24,7 +24,7 @@ def format_asset_response(asset: MiningAsset) -> dict:
 
 @router.post("/assets", response_model=AssetResponse, status_code=status.HTTP_201_CREATED)
 async def create_asset(asset_data: AssetCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    data_dict = asset_data.model_dump()
+    data_dict = asset_data.dict()
     if db.bind.dialect.name == "sqlite":
         if isinstance(data_dict.get("images_urls"), list): data_dict["images_urls"] = json.dumps(data_dict["images_urls"])
         if isinstance(data_dict.get("specific_specs"), dict): data_dict["specific_specs"] = json.dumps(data_dict["specific_specs"])
@@ -54,7 +54,7 @@ async def update_asset(asset_id: int, asset_data: AssetCreate, db: Session = Dep
     asset = db.query(MiningAsset).filter(MiningAsset.id == asset_id).first()
     if not asset: raise HTTPException(status_code=404, detail="الأصل غير موجود")
     if asset.owner_id != current_user.id: raise HTTPException(status_code=403, detail="غير مصرح لك بالتعديل")
-    data_dict = asset_data.model_dump()
+    data_dict = asset_data.dict()
     if db.bind.dialect.name == "sqlite":
         if isinstance(data_dict.get("images_urls"), list): data_dict["images_urls"] = json.dumps(data_dict["images_urls"])
         if isinstance(data_dict.get("specific_specs"), dict): data_dict["specific_specs"] = json.dumps(data_dict["specific_specs"])

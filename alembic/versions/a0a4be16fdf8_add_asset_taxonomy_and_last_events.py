@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # هذا هو المتغير الذي كان يبحث عنه Alembic
 revision = 'a0a4be16fdf8'
-down_revision = '9ed85369b27e'
+down_revision = '156bb60cf8c2'
 branch_labels = None
 depends_on = None
 

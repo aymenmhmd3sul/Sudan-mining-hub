@@ -22,3 +22,6 @@ from app.models.investor_core import InvestorProfile, LetterOfIntent, LOIAuditTr
 from app.models.finance import Invoice, Escrow
 from app.models.financial import PaymentMethod, Wallet, PaymentTransaction
 from app.models.audit import AuditLog
+
+# Commission Ledger
+from app.models.commission import CommissionLedger

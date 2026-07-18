@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-import jwt  # توحيد المكتبة مع security.py لمنع تعارض الحزم
+from jose import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, AsyncGenerator
 from app.infrastructure.database import AsyncSessionLocal

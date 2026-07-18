@@ -6,6 +6,8 @@ from app.models.user import User
 from app.models.finance import Invoice as InvoiceModel, Escrow as EscrowModel
 from app.models.operations import FinancialTransaction
 from app.services.commission_service import create_commission
+from app.services.commission_settlement_service import update_commission_status
+from app.models.commission import CommissionLedger
 from app.schemas.invoice import InvoiceCreate, Invoice as InvoiceSchema
 from app.schemas.escrow import EscrowCreate, Escrow as EscrowSchema
 from pydantic import BaseModel
@@ -168,4 +170,38 @@ def review_payment(req: PaymentReview, current_user: User = Depends(get_current_
     return {
         "message": f"✅ تم تحديث المعاملة والفاتورة والضمان إلى: {tx.status}"
     }
+
+
+
+@router.post("/admin/commission/{commission_id}/settle")
+def settle_commission(
+    commission_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """تسوية عمولة المنصة بعد استحقاقها"""
+
+    AuthorizationPolicy.can_manage_platform(current_user)
+
+    try:
+        commission = update_commission_status(
+            db=db,
+            commission_id=commission_id,
+            new_status="PAID",
+            changed_by=current_user.id,
+            reason="Admin settlement"
+        )
+
+        return {
+            "message": "✅ تم تسوية العمولة بنجاح",
+            "commission_id": commission.id,
+            "status": commission.status,
+            "amount": str(commission.amount)
+        }
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=str(e)
+        )
 

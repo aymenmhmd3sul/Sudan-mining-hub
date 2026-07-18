@@ -1,12 +1,16 @@
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import Integer, String, Numeric, DateTime, ForeignKey
+from sqlalchemy import Integer, String, Numeric, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from app.core.db import Base
 
 
 class CommissionLedger(Base):
     __tablename__ = "commission_ledger"
+
+    __table_args__ = (
+        UniqueConstraint("transaction_id", name="uq_commission_transaction"),
+    )
 
     id: Mapped[int] = mapped_column(
         Integer,

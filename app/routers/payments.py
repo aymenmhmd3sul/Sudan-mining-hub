@@ -160,16 +160,21 @@ def review_payment(req: PaymentReview, current_user: User = Depends(get_current_
                 from decimal import Decimal
                 commission_amount = invoice.total_amount * Decimal('0.02')
 
-                commission = CommissionLedger(
-                    invoice_id=invoice.id,
-                    transaction_id=tx.id,
-                    seller_id=invoice.seller_id,
-                    amount=commission_amount,
-                    commission_type="PERCENTAGE",
-                    status="PENDING"
-                )
+                existing_commission = db.query(CommissionLedger).filter(
+                    CommissionLedger.transaction_id == tx.id
+                ).first()
 
-                db.add(commission)
+                if not existing_commission:
+                    commission = CommissionLedger(
+                        invoice_id=invoice.id,
+                        transaction_id=tx.id,
+                        seller_id=invoice.seller_id,
+                        amount=commission_amount,
+                        commission_type="PERCENTAGE",
+                        status="PENDING"
+                    )
+
+                    db.add(commission)
 
     db.commit()
 

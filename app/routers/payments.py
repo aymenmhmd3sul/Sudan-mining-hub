@@ -5,6 +5,7 @@ from app.security.policy import AuthorizationPolicy
 from app.models.user import User
 from app.models.finance import Invoice as InvoiceModel, Escrow as EscrowModel
 from app.models.operations import FinancialTransaction
+from app.models.commission import CommissionLedger
 from app.schemas.invoice import InvoiceCreate, Invoice as InvoiceSchema
 from app.schemas.escrow import EscrowCreate, Escrow as EscrowSchema
 from pydantic import BaseModel
@@ -154,6 +155,21 @@ def review_payment(req: PaymentReview, current_user: User = Depends(get_current_
 
                 if escrow:
                     escrow.status = "funded"
+
+                # Create platform commission ledger entry
+                from decimal import Decimal
+                commission_amount = invoice.total_amount * Decimal('0.02')
+
+                commission = CommissionLedger(
+                    invoice_id=invoice.id,
+                    transaction_id=tx.id,
+                    seller_id=invoice.seller_id,
+                    amount=commission_amount,
+                    commission_type="PERCENTAGE",
+                    status="PENDING"
+                )
+
+                db.add(commission)
 
     db.commit()
 

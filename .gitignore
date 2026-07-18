@@ -38,3 +38,5 @@ api_only_audit.py
 verify_user.py
 test_core.py
 dev.db
+local.db*
+local.db*

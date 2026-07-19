@@ -22,17 +22,16 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
 
-    op.create_table(
-        'subscription_plans',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('name', sa.String(length=100), nullable=False),
-        sa.Column('price', sa.Float(), nullable=False),
-        sa.Column('duration_days', sa.Integer(), nullable=True),
-        sa.Column('listing_limit', sa.Integer(), nullable=True),
-        sa.Column('commission_rate', sa.Float(), nullable=True),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('name')
-    )
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS subscription_plans (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) NOT NULL UNIQUE,
+            price FLOAT NOT NULL,
+            duration_days INTEGER,
+            listing_limit INTEGER,
+            commission_rate FLOAT
+        )
+        """)
 
     op.create_table(
         'financial_transactions',

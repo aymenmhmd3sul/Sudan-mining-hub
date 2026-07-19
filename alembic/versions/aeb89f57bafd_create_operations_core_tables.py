@@ -31,30 +31,28 @@ def upgrade() -> None:
             listing_limit INTEGER,
             commission_rate FLOAT
         )
-        """)
+    """)
 
-    op.create_table(
-        'financial_transactions',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('user_id', sa.Integer(), nullable=True),
-        sa.Column('invoice_id', sa.Integer(), nullable=True),
-        sa.Column('amount', sa.Float(), nullable=False),
-        sa.Column('payment_method', sa.String(length=50), nullable=False),
-        sa.Column('reference_number', sa.String(length=100), nullable=True),
-        sa.Column('status', sa.String(length=50), nullable=True),
-        sa.Column('created_at', sa.DateTime(), nullable=True),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('reference_number')
-    )
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS financial_transactions (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER,
+            invoice_id INTEGER,
+            amount FLOAT NOT NULL,
+            payment_method VARCHAR(50) NOT NULL,
+            reference_number VARCHAR(100) UNIQUE,
+            status VARCHAR(50),
+            created_at TIMESTAMP
+        )
+    """)
 
-    op.create_table(
-        'system_settings',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('key', sa.String(length=100), nullable=False),
-        sa.Column('value', sa.Text(), nullable=False),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('key')
-    )
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS system_settings (
+            id SERIAL PRIMARY KEY,
+            key VARCHAR(100) NOT NULL UNIQUE,
+            value TEXT NOT NULL
+        )
+    """)
 
 
 def downgrade() -> None:

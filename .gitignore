@@ -1,42 +1,16 @@
-# Python cache
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.pytest_cache/
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-
-# Databases & local storage
 *.db
-*.sqlite3
-static/uploads/assets/*
-!static/uploads/assets/.gitkeep
-
-# Termux / OS temporary files
-.DS_Store
-.thumbs
-
+.env
 *.log
-*.txt
-*.jpg
-phone=*
-verify_admin_db.py
-fix_db_and_seed_admin.py
-test_admin_verification.py
-check_db_user.py
-grant_admin.py
-insert_admin.py
-seed_admin*.py
-audit_admin_integrity.py
-api_only_audit.py
-verify_user.py
-test_core.py
-dev.db
-local.db*
-local.db*
+
+# backups
+*_backup.*
+*_before_*
+backups/
+
+# tests temporary
+test_*.py
+
+# admin creation scripts temporary
+create_admin_fixed*.py

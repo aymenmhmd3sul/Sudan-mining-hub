@@ -1,42 +1,88 @@
 from sqlalchemy.orm import Session
-import json
+from sqlalchemy import func
+
+from app.models.user import User
+from app.models.finance import Invoice
+from app.models.financial import PaymentTransaction
+from app.models.marketplace import MiningAsset
+from app.models.market_core import MarketOrder
+from app.models.negotiation import Offer
+
 
 class AdminOperationsService:
 
     @staticmethod
     def get_live_dashboard_stats(db: Session):
-        """المرحلة الأولى: جلب إحصائيات حية حقيقية من جداول المنصة الموحدة"""
-        # هنا نقوم بعمل استعلامات بسيطة وسريعة من الجداول الحالية لتقديم أرقام حقيقية
         try:
-            # استعلامات افتراضية آمنة لحين فحص أسماء جداول الـ Models بدقة
+            total_users = db.query(func.count(User.id)).scalar() or 0
+
+            active_users = (
+                db.query(func.count(User.id))
+                .filter(User.is_active == True)
+                .scalar()
+                or 0
+            )
+
+            total_assets = db.query(func.count(MiningAsset.id)).scalar() or 0
+            total_orders = db.query(func.count(MarketOrder.id)).scalar() or 0
+            total_offers = db.query(func.count(Offer.id)).scalar() or 0
+            total_invoices = db.query(func.count(Invoice.id)).scalar() or 0
+
+            invoice_volume = (
+                db.query(func.sum(Invoice.total_amount))
+                .scalar()
+                or 0
+            )
+
+            pending_payments = (
+                db.query(func.count(PaymentTransaction.id))
+                .filter(PaymentTransaction.status == "PENDING")
+                .scalar()
+                or 0
+            )
+
             return {
-                "total_users": 150,
-                "active_ads": 42,
-                "pending_verifications": 5,
-                "completed_trades": 12,
+                "status": "success",
+                "users": {
+                    "total": total_users,
+                    "active": active_users
+                },
+                "market": {
+                    "assets": total_assets,
+                    "orders": total_orders,
+                    "offers": total_offers
+                },
+                "finance": {
+                    "invoices": total_invoices,
+                    "invoice_volume": float(invoice_volume),
+                    "pending_payments": pending_payments
+                },
                 "system_status": "Healthy"
             }
-        except Exception:
-            return {"total_users": 0, "active_ads": 0, "system_status": "Degraded"}
+
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": str(e),
+                "system_status": "Degraded"
+            }
+
 
     @staticmethod
     def update_financial_settings(db: Session, bankak: str, wallets: str, foreign_acc: str, fee: float, sub_price: float):
-        """الأولوية الأولى: حفظ وتحديث مركز الإعدادات المالية حياً"""
-        # محاكاة مؤقتة ناجحة للحفظ لتمرير اختبار دورة العمل بالكامل دون تجميد
         return True
+
 
     @staticmethod
     def update_system_content(db: Session, gold_price: str, announcement: str, banner_url: str):
-        """الأولوية الثانية: إدارة المحتوى والبنرات والتنبيهات ديناميكياً"""
         return True
+
 
     @staticmethod
     def toggle_user_capability(db: Session, user_id: int, capability: str, action: str):
-        """إدارة المستخدمين والقدرات (RBAC) حياً عبر قاعدة البيانات"""
-        # سيتم تحديث حقل المستخدم مباشرة في جدول المستخدمين
         return {"id": user_id, "status": "updated"}
+
 
     @staticmethod
     def get_all_reported_ads(db: Session):
-        """مراجعة البلاغات الجارية في السوق المركزي"""
         return []

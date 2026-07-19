@@ -1,0 +1,252 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+غرفة التفاوض
+
+<div class="placeholder-card">
+
+<h2>⚙ إجراءات الإدارة</h2>
+
+<button onclick="closeRoom()" 
+style="padding:10px 20px">
+🔒 إغلاق الغرفة
+</button>
+
+<button onclick="acceptOffer()" 
+style="padding:10px 20px">
+✅ قبول آخر عرض
+</button>
+
+<button onclick="rejectOffer()" 
+style="padding:10px 20px">
+❌ رفض آخر عرض
+</button>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<h1 style="font-size:28px;margin-bottom:20px">
+🤝 تفاصيل غرفة التفاوض
+</h1>
+
+
+<div class="cards">
+
+<div class="card">
+<h3>رقم الغرفة</h3>
+<h1 id="room_id">-</h1>
+</div>
+
+<div class="card">
+<h3>الأصل</h3>
+<h1 id="asset">-</h1>
+</div>
+
+<div class="card">
+<h3>الحالة</h3>
+<h1 id="status">-</h1>
+</div>
+
+</div>
+
+
+<div class="placeholder-card">
+
+<h2>👥 الأطراف</h2>
+
+<p id="parties"></p>
+
+</div>
+
+
+
+<div class="placeholder-card">
+
+<h2>💬 الرسائل</h2>
+
+<div id="messages">
+</div>
+
+</div>
+
+
+
+<div class="placeholder-card">
+
+<h2>💰 العروض</h2>
+
+<table width="100%">
+
+<thead>
+<tr>
+<th>القيمة</th>
+<th>العملة</th>
+<th>الحالة</th>
+</tr>
+</thead>
+
+<tbody id="offers">
+</tbody>
+
+</table>
+
+</div>
+
+
+
+<script>
+
+async function loadRoom(){
+
+let id = location.pathname.split("/").pop();
+
+let r = await fetch(
+"/admin/operations/negotiation-room/"+id
+);
+
+let d = await r.json();
+
+
+document.getElementById("room_id").innerText=d.room.id;
+
+document.getElementById("asset").innerText=d.room.asset.title;
+
+document.getElementById("status").innerText=d.room.status;
+
+
+document.getElementById("parties").innerHTML =
+`
+<div>
+<strong>المشتري:</strong> ${d.room.buyer.name}
+</div>
+
+<div style="margin-top:10px">
+<strong>البائع:</strong> ${d.room.seller.name}
+</div>
+`;
+
+
+document.getElementById("messages").innerHTML =
+d.messages.length ?
+d.messages.map(
+m=>`
+<div class="card">
+<b>${m.sender}</b>
+<p>${m.message}</p>
+</div>
+`
+).join("")
+:
+"لا توجد رسائل";
+
+
+document.getElementById("offers").innerHTML =
+d.offers.map(
+o=>`
+<tr data-id="${o.id}">
+<td>${o.amount}</td>
+<td>${o.currency}</td>
+<td>${o.status}</td>
+</tr>
+`
+).join("");
+
+}
+
+
+loadRoom();
+
+
+
+async function closeRoom(){
+
+let id = location.pathname.split("/").pop();
+
+await fetch(
+`/admin/operations/negotiation-room/${id}/close`,
+{
+method:"POST"
+}
+);
+
+location.reload();
+
+}
+
+
+async function acceptOffer(){
+
+let offer=document.querySelector("#offers tr");
+
+if(!offer){
+alert("لا يوجد عرض");
+return;
+}
+
+let id=offer.dataset.id;
+
+await fetch(
+`/admin/operations/offer/${id}/accept`,
+{
+method:"POST"
+}
+);
+
+location.reload();
+
+}
+
+
+async function rejectOffer(){
+
+let offer=document.querySelector("#offers tr");
+
+if(!offer){
+alert("لا يوجد عرض");
+return;
+}
+
+let id=offer.dataset.id;
+
+await fetch(
+`/admin/operations/offer/${id}/reject`,
+{
+method:"POST"
+}
+);
+
+location.reload();
+
+}
+
+
+</script>
+
+
+
+<div class="placeholder-card">
+
+<h2>⚙ إجراءات الإدارة</h2>
+
+<button onclick="closeRoom()" 
+style="padding:10px 20px">
+🔒 إغلاق الغرفة
+</button>
+
+<button onclick="acceptOffer()" 
+style="padding:10px 20px">
+✅ قبول آخر عرض
+</button>
+
+<button onclick="rejectOffer()" 
+style="padding:10px 20px">
+❌ رفض آخر عرض
+</button>
+
+</div>
+
+{% endblock %}

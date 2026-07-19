@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>مركز التفاوض</title>
+
+<link rel="stylesheet" href="/static/css/admin.css">
+
+<style>
+body{
+font-family:Cairo,sans-serif;
+background:#f5f7fb;
+padding:20px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:white;
+padding:18px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.card h3{
+margin:0;
+font-size:14px;
+color:#666;
+}
+
+.card h1{
+margin-top:10px;
+font-size:32px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:center;
+}
+
+th{
+background:#0f172a;
+color:white;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>لوحة إدارة التفاوض</h1>
+
+<div class="cards">
+
+<div class="card">
+<h3>إجمالي الغرف</h3>
+<h1 id="rooms">-</h1>
+</div>
+
+<div class="card">
+<h3>الغرف المفتوحة</h3>
+<h1 id="open">-</h1>
+</div>
+
+<div class="card">
+<h3>الغرف المقبولة</h3>
+<h1 id="accepted">-</h1>
+</div>
+
+<div class="card">
+<h3>العروض</h3>
+<h1 id="offers">-</h1>
+</div>
+
+<div class="card">
+<h3>الرسائل</h3>
+<h1 id="messages">-</h1>
+</div>
+
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>الرقم</th>
+<th>الأصل</th>
+<th>المشتري</th>
+<th>البائع</th>
+<th>الحالة</th>
+<th>الإجراء</th>
+</tr>
+</thead>
+
+<tbody id="roomsTable">
+</tbody>
+
+</table>
+
+<script>
+
+async function loadلوحة التحكم(){
+
+const r=await fetch("/admin/operations/negotiation-dashboard");
+
+const d=await r.json();
+
+document.getElementById("rooms").innerText=d.statistics.total_rooms;
+document.getElementById("open").innerText=d.statistics.open_rooms;
+document.getElementById("accepted").innerText=d.statistics.accepted_rooms;
+document.getElementById("offers").innerText=d.statistics.offers;
+document.getElementById("messages").innerText=d.statistics.messages;
+
+const tbody=document.getElementById("roomsTable");
+
+tbody.innerHTML="";
+
+d.latest_rooms.forEach(room=>{
+
+tbody.innerHTML+=`
+<tr>
+<td>${room.id}</td>
+<td>${room.asset_id}</td>
+<td>${room.buyer_id}</td>
+<td>${room.seller_id}</td>
+<td>${room.status}</td>
+<td>
+<a href="/admin/negotiation-room/${room.id}">
+فتح الغرفة
+</a>
+</td>
+</tr>
+`;
+
+});
+
+}
+
+loadلوحة التحكم();
+
+setInterval(loadلوحة التحكم,5000);
+
+</script>
+
+</body>
+</html>

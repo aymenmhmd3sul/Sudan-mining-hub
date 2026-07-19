@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Sudan Mining Hub - الإدارة{% endblock %}</title>
+    <title>{% block title %}Sudan التعدين Hub - الإدارة{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
@@ -18,21 +18,21 @@
     <div class="admin-layout">
         <!-- الشريط الجانبي الشجري (11 وحدة كاملة بفروعها) -->
         <nav class="admin-sidebar" id="adminSidebar">
-            <a href="/admin/dashboard" class="sidebar-item">📊 Dashboard</a>
+            <a href="/admin/dashboard" class="sidebar-item">📊 لوحة التحكم</a>
             
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-market')">🏪 Marketplace <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-market')">🏪 السوق <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-market">
                 <a href="/admin/marketplace">Opportunities</a>
                 <a href="/admin/marketplace">Buyer Requests</a>
                 <a href="/admin/marketplace">Seller Offers</a>
-                <a href="/admin/marketplace">Negotiations</a>
+                <a href="/admin/marketplace">التفاوض</a>
                 <a href="/admin/marketplace">Contracts</a>
                 <a href="/admin/marketplace">Deals</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-mining')">⛏ Mining <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-mining')">⛏ التعدين <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-mining">
-                <a href="/admin/mining">Mining Sites</a>
+                <a href="/admin/mining">التعدين Sites</a>
                 <a href="/admin/mining">Concessions</a>
                 <a href="/admin/mining">Minerals</a>
                 <a href="/admin/mining">Samples</a>
@@ -41,7 +41,7 @@
                 <a href="/admin/mining">Inventory</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-equipment')">🚜 Equipment & Services <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-equipment')">🚜 المعدات والخدمات <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-equipment">
                 <a href="/admin/equipment">Equipment</a>
                 <a href="/admin/equipment">Rentals</a>
@@ -52,7 +52,32 @@
                 <a href="/admin/equipment">Maintenance</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-finance')">💰 Finance <span>▾</span></div>
+            
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-advanced')">🚀 العمليات المتقدمة <span>▾</span></div>
+
+<div class="sidebar-sub-menu" id="menu-advanced">
+
+<a href="/admin/negotiation">🤝 Negotiation</a>
+
+<a href="/admin/trade_desk">📈 Trade Desk</a>
+
+<a href="/admin/offers">📑 Offers</a>
+
+<a href="/admin/payments">💳 Payments</a>
+
+<a href="/admin/opportunities">🎯 Opportunities</a>
+
+<a href="/admin/services">🛠 Services</a>
+
+<a href="/admin/identity">🆔 Identity</a>
+
+<a href="/admin/audit">🔍 Audit</a>
+
+<a href="/admin/analytics">📊 التحليلات</a>
+
+</div>
+
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-finance')">💰 المالية <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-finance">
                 <a href="/admin/finance">Invoices</a>
                 <a href="/admin/finance">Escrow</a>
@@ -63,19 +88,19 @@
                 <a href="/admin/finance">Disputes</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 Users <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 المستخدمون <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-users">
                 <a href="/admin/users">Buyers</a>
                 <a href="/admin/users">Sellers</a>
                 <a href="/admin/users">Traders</a>
-                <a href="/admin/users">Mining Companies</a>
+                <a href="/admin/users">التعدين Companies</a>
                 <a href="/admin/users">Service Companies</a>
                 <a href="/admin/users">Agents</a>
                 <a href="/admin/users">Admins</a>
                 <a href="/admin/users">Roles & Permissions</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-comm')">💬 Communications <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-comm')">💬 الاتصالات <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-comm">
                 <a href="/admin/communications">Messages</a>
                 <a href="/admin/communications">Chats</a>
@@ -84,7 +109,7 @@
                 <a href="/admin/communications">SMS</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-content')">📰 Content <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-content')">📰 المحتوى <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-content">
                 <a href="/admin/content">News</a>
                 <a href="/admin/content">Articles</a>
@@ -94,17 +119,17 @@
                 <a href="/admin/content">FAQ</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-reports')">📈 Reports <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-reports')">📈 التقارير <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-reports">
-                <a href="/admin/reports">Financial Reports</a>
-                <a href="/admin/reports">Mining Reports</a>
-                <a href="/admin/reports">Marketplace Reports</a>
-                <a href="/admin/reports">User Reports</a>
-                <a href="/admin/reports">Analytics</a>
+                <a href="/admin/reports">Financial التقارير</a>
+                <a href="/admin/reports">التعدين التقارير</a>
+                <a href="/admin/reports">السوق التقارير</a>
+                <a href="/admin/reports">User التقارير</a>
+                <a href="/admin/reports">التحليلات</a>
                 <a href="/admin/reports">Export</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-admin')">⚙ Administration <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-admin')">⚙ الإدارة <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-admin">
                 <a href="/admin/administration">General Settings</a>
                 <a href="/admin/administration">Countries</a>
@@ -118,7 +143,7 @@
                 <a href="/admin/administration">SMS Settings</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-security')">🔐 Security <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-security')">🔐 الأمن <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-security">
                 <a href="/admin/security">Login History</a>
                 <a href="/admin/security">Active Sessions</a>

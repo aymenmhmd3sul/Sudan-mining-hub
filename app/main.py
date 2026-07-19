@@ -1,108 +1,85 @@
-import app.models.patch
-# --- MONKEY PATCH FOR SQLMODEL ON PYTHON 3.13 & SQLALCHEMY 2.0+ ---
-import sqlalchemy.schema
-if not hasattr(sqlalchemy.schema, 'ThreadLocalMetaData'):
-    from sqlalchemy import MetaData
-    sqlalchemy.schema.ThreadLocalMetaData = MetaData
-
-import sqlalchemy.sql
-if not hasattr(sqlalchemy.sql, 'subquery'):
-    from sqlalchemy.sql.expression import Subquery
-    sqlalchemy.sql.subquery = Subquery
-
-# حل مشكلة التوافقية التامة لـ SQLAlchemy 2.0 مع موديلات SQLModel القديمة
-import sqlmodel
-sqlmodel.SQLModel.__allow_unmapped__ = True
-# -----------------------------------------------------------------
 from fastapi import FastAPI
-# ضمان تحميل الموديلات في الذاكرة لحل تعارض العلاقات
-from app.models.user import User
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import text
+from fastapi.staticfiles import StaticFiles
 
-from app.core.db import engine
-from app.core.security import get_password_hash
+from app.database import engine, Base
 
-from app.routers.auth import router as auth_router
-from app.routers.web_auth import router as web_auth_router
-from app.routers.users import router as users_router
-from app.routers.admin import router as admin_router
-from app.routers.admin_users import router as admin_users_router
-from app.routers.admin_views import router as admin_views_router
-from app.routers.market import router as market_router
-from app.routers.negotiation import router as negotiation_router
-from app.routers.communication import router as communication_router
-from app.routers.chat import router as chat_router
-from app.routers.payments import router as payments_router
-from app.routers.trade_desk import router as trade_desk_router
-from app.routers.opportunities import router as opportunities_router
-from app.routers.marketplace import router as marketplace_router
-from app.routers.views import router as views_router
-from app.routers.mining_sites import router as mining_sites_router
+from app.routers import (
+    finance,
+    market,
+    admin_market,
+    web,
+    auth,
+    users,
+    marketplace,
+    mining_sites,
+    negotiation,
+    negotiation_ws,
+    chat,
+    communication,
+    payments,
+    opportunities,
+    trade_desk,
+    services,
+    admin,
+    admin_views,
+    admin_users,
+    admin_control,
+    admin_center,
+    admin_modules,
+    web_auth,
+    views,
+    offers,
+)
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Sudan Mining Hub API",
-    version="2.0.0"
+    version="3.0.0"
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+app.mount(
+    "/static",
+    StaticFiles(directory="app/static"),
+    name="static"
 )
 
-# Core
-app.include_router(views_router)
-app.include_router(auth_router)
-app.include_router(web_auth_router)
-app.include_router(users_router)
+routers = [
+    finance.router,
+    market.router,
+    admin_market.router,
+    web.router,
+    auth.router,
+    users.router,
+    marketplace.router,
+    mining_sites.router,
+    negotiation.router,
+    negotiation_ws.router,
+    chat.router,
+    communication.router,
+    payments.router,
+    opportunities.router,
+    trade_desk.router,
+    services.router,
+    admin.router,
+    admin_views.router,
+    admin_users.router,
+    admin_control.router,
+    admin_center.router,
+    admin_modules.router,
+    web_auth.router,
+    views.router,
+    offers.router,
+]
 
-# Business Modules
-app.include_router(admin_router)
-app.include_router(admin_users_router)
-app.include_router(admin_views_router)
-app.include_router(market_router)
-app.include_router(marketplace_router)
-app.include_router(mining_sites_router)
-app.include_router(negotiation_router)
-app.include_router(communication_router)
-app.include_router(chat_router)
-app.include_router(payments_router)
-app.include_router(trade_desk_router)
-app.include_router(opportunities_router)
+for router in routers:
+    app.include_router(router)
+
 
 @app.get("/")
 def read_root():
     return {
-        "message": "Welcome to Sudan Mining Hub API",
+        "message": "Welcome to Sudan Mining Hub",
         "status": "running",
-        "version": "2.0.0"
+        "version": "3.0.0"
     }
-
-@app.on_event("startup")
-def sync_admin_account_clean():
-    try:
-        clean_pass = "SudanMining@2026".strip()
-        new_hash = get_password_hash(clean_pass)
-
-        with engine.connect() as conn:
-            with conn.begin():
-                conn.execute(
-                    text(
-                        """
-                        UPDATE users
-                        SET password_hash=:hash,
-                            role='ADMIN',
-                            status='ACTIVE'
-                        WHERE LOWER(TRIM(email))='aymen.mhmd3@gmail.com'
-                        """
-                    ),
-                    {"hash": new_hash},
-                )
-
-        print("✅ [BOOT_SUCCESS] Admin synchronized successfully.")
-
-    except Exception as e:
-        print("⚠️ [BOOT_ERROR]", e)

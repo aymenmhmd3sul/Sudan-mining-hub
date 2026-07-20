@@ -21,6 +21,13 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
 
+    # --- تنظيف تلقائي وشامل لجميع الفهارس ---
+    bind = op.get_bind()
+    if bind.dialect.name == 'postgresql':
+
+    # ------------------------------------
+
+
     # --- إصلاح شامل لتجنب تعارض الفهارس المكررة ---
     bind = op.get_bind()
     if bind.dialect.name == 'postgresql':
@@ -51,6 +58,13 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+
+    # --- تنظيف تلقائي وشامل لجميع الفهارس ---
+    bind = op.get_bind()
+    if bind.dialect.name == 'postgresql':
+
+    # ------------------------------------
+
 
     # --- إصلاح شامل لتجنب تعارض الفهارس المكررة ---
     bind = op.get_bind()

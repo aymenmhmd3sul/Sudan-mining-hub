@@ -1,9 +1,9 @@
-from passlib.hash import sha256_crypt
+from passlib.hash import pbkdf2_sha256
 
 # -------- PASSWORD HASHING --------
 
 def hash_password(password: str) -> str:
-    return sha256_crypt.hash(password)
+    return pbkdf2_sha256.hash(password)
 
 def verify_password(password: str, hashed: str) -> bool:
-    return sha256_crypt.verify(password, hashed)
+    return pbkdf2_sha256.verify(password, hashed)

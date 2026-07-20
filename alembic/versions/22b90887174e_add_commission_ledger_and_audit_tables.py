@@ -20,12 +20,11 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # --- Fixed Patch ---
-    bind = op.get_bind()
+    try:
+        op.execute('DROP INDEX IF EXISTS ix_global_trade_bids_id; DROP INDEX IF EXISTS ix_loi_audit_trails_id; DROP INDEX IF EXISTS ix_market_orders_id;')
+    except:
+        pass
     if bind.dialect.name == 'postgresql':
-        op.execute('DROP INDEX IF EXISTS ix_global_trade_bids_id;')
-        op.execute('DROP INDEX IF EXISTS ix_loi_audit_trails_id;')
-        op.execute('DROP INDEX IF EXISTS ix_market_orders_id;')
     # -------------------
 
 
@@ -55,12 +54,11 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # --- Fixed Patch ---
-    bind = op.get_bind()
+    try:
+        op.execute('DROP INDEX IF EXISTS ix_global_trade_bids_id; DROP INDEX IF EXISTS ix_loi_audit_trails_id; DROP INDEX IF EXISTS ix_market_orders_id;')
+    except:
+        pass
     if bind.dialect.name == 'postgresql':
-        op.execute('DROP INDEX IF EXISTS ix_global_trade_bids_id;')
-        op.execute('DROP INDEX IF EXISTS ix_loi_audit_trails_id;')
-        op.execute('DROP INDEX IF EXISTS ix_market_orders_id;')
     # -------------------
 
 

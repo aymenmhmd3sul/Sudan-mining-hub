@@ -21,6 +21,45 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
 
+    # --- إصلاح شامل لتجنب تعارض الفهارس المكررة ---
+    bind = op.get_bind()
+    if bind.dialect.name == 'postgresql':
+        op.execute("DROP INDEX IF EXISTS ix_global_trade_bids_id;")
+        op.execute("DROP INDEX IF EXISTS ix_loi_audit_trails_id;")
+    # ------------------------------------------
+
+
+    import sqlmodel
+"""add commission ledger and audit tables
+
+Revision ID: 22b90887174e
+Revises: f52737cbfd20
+Create Date: 2026-07-18 15:50:01.814925
+
+"""
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = '22b90887174e'
+down_revision: Union[str, Sequence[str], None] = 'aeb89f57bafd'
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
+
+
+def upgrade() -> None:
+
+    # --- إصلاح شامل لتجنب تعارض الفهارس المكررة ---
+    bind = op.get_bind()
+    if bind.dialect.name == 'postgresql':
+        op.execute("DROP INDEX IF EXISTS ix_global_trade_bids_id;")
+        op.execute("DROP INDEX IF EXISTS ix_loi_audit_trails_id;")
+    # ------------------------------------------
+
+
     # --- إصلاح تعارض الفهرس المكرر ---
     bind = op.get_bind()
     if bind.dialect.name == 'postgresql':

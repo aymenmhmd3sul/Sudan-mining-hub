@@ -21,6 +21,13 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
 
+    # --- إصلاح تعارض الفهرس المكرر ---
+    bind = op.get_bind()
+    if bind.dialect.name == 'postgresql':
+        op.execute("DROP INDEX IF EXISTS ix_global_trade_bids_id;")
+    # --------------------------------
+
+
     # --- بداية الإصلاح الجذري (Automated Patch) ---
     bind = op.get_bind()
     inspector = sa.inspect(bind)

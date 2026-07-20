@@ -9,9 +9,15 @@ router = APIRouter(
     tags=["Admin Market Control"]
 )
 
-# Mock Dependency (استبدلها لاحقاً بـ JWT Auth الخاصة بك)
-def get_current_admin():
-    return {"id": 1, "role": "market_admin"}
+from app.core.dependencies import verify_admin_token
+from app.models.user import User
+
+def get_current_admin(current_user: User = Depends(verify_admin_token)):
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "role": "admin"
+    }
 
 @router.patch("/gold-price")
 def update_gold_price(

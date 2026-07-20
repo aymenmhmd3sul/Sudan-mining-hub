@@ -84,8 +84,8 @@ for router in routers:
     app.include_router(router)
 
 
-@app.get("/")
-def read_root():
+@app.get("/health")
+def health_check():
     return {
         "message": "Welcome to Sudan Mining Hub",
         "status": "running",

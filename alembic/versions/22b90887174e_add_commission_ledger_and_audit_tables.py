@@ -20,20 +20,17 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-
-    # --- تنظيف تلقائي وشامل لجميع الفهارس ---
+    # --- Fixed Patch ---
     bind = op.get_bind()
     if bind.dialect.name == 'postgresql':
+        op.execute('DROP INDEX IF EXISTS ix_global_trade_bids_id;')
+        op.execute('DROP INDEX IF EXISTS ix_loi_audit_trails_id;')
+        op.execute('DROP INDEX IF EXISTS ix_market_orders_id;')
+    # -------------------
 
-    # ------------------------------------
 
 
-    # --- إصلاح شامل لتجنب تعارض الفهارس المكررة ---
-    bind = op.get_bind()
-    if bind.dialect.name == 'postgresql':
-        op.execute("DROP INDEX IF EXISTS ix_global_trade_bids_id;")
-        op.execute("DROP INDEX IF EXISTS ix_loi_audit_trails_id;")
-    # ------------------------------------------
+
 
 
     import sqlmodel
@@ -58,31 +55,21 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-
-    # --- تنظيف تلقائي وشامل لجميع الفهارس ---
+    # --- Fixed Patch ---
     bind = op.get_bind()
     if bind.dialect.name == 'postgresql':
-
-    # ------------------------------------
-
-
-    # --- إصلاح شامل لتجنب تعارض الفهارس المكررة ---
-    bind = op.get_bind()
-    if bind.dialect.name == 'postgresql':
-        op.execute("DROP INDEX IF EXISTS ix_global_trade_bids_id;")
-        op.execute("DROP INDEX IF EXISTS ix_loi_audit_trails_id;")
-    # ------------------------------------------
+        op.execute('DROP INDEX IF EXISTS ix_global_trade_bids_id;')
+        op.execute('DROP INDEX IF EXISTS ix_loi_audit_trails_id;')
+        op.execute('DROP INDEX IF EXISTS ix_market_orders_id;')
+    # -------------------
 
 
-    # --- إصلاح تعارض الفهرس المكرر ---
-    bind = op.get_bind()
-    if bind.dialect.name == 'postgresql':
-        op.execute("DROP INDEX IF EXISTS ix_global_trade_bids_id;")
-    # --------------------------------
 
 
-    # --- بداية الإصلاح الجذري (Automated Patch) ---
-    bind = op.get_bind()
+
+
+
+
     inspector = sa.inspect(bind)
     
     # التأكد من إضافة العمود بأمان إذا كان مفقوداً
@@ -93,13 +80,9 @@ def upgrade() -> None:
                 batch_op.add_column(sa.Column('invoice_id', sa.Integer(), nullable=True))
                 
     # تنظيف القيود لتفادي خطأ التكرار (مخصص لـ PostgreSQL فقط كي لا يكسر SQLite)
-    if bind.dialect.name == 'postgresql':
-        op.execute("ALTER TABLE financial_transactions DROP CONSTRAINT IF EXISTS fk_financial_transactions_invoice;")
-    # --- نهاية الإصلاح الجذري ---
 
     """Upgrade schema."""
     # Ensure legacy databases have invoice_id before adding FK
-    op.execute("""
         ALTER TABLE financial_transactions
         ADD COLUMN IF NOT EXISTS invoice_id INTEGER
     """)

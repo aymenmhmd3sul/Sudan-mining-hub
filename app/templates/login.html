@@ -82,7 +82,7 @@
         const body = new URLSearchParams({ username, password });
 
         try {
-            const res = await fetch("/api/web/login", {
+            const res = await fetch("/login", {
                 method: "POST",
                 headers: {"Content-Type": "application/x-www-form-urlencoded"},
                 body: body

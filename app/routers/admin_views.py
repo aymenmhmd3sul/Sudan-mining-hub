@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from app.models.user import User
-from app.core.security import verify_admin_token
+from app.core.dependencies import verify_admin_token
 
 router = APIRouter(prefix="/admin", tags=["Admin Views"])
 templates = Jinja2Templates(directory="app/templates")

@@ -91,7 +91,7 @@ async def login(request: Request, db: Session = Depends(get_db)):
     # 1. فحص الحساب الثابت للمشرف
     if (email == "aymen.mhmd3@gmail.com" or email == "admin@sudanmining.com") and password == "SudanMining@2026":
         access_token = "admin_secure_access_token"
-        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin/dashboard"})
+        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin"})
         response.set_cookie(
             key="access_token",
             value=f"Bearer {access_token}",
@@ -105,7 +105,7 @@ async def login(request: Request, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first() if 'User' in globals() or 'User' in locals() else None
     if user and verify_password(password, user.password_hash):
         access_token = create_access_token(data={"sub": user.email})
-        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin/dashboard"})
+        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin"})
         response.set_cookie(
             key="access_token",
             value=f"Bearer {access_token}",

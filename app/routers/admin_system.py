@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+from sqlalchemy import func
 from typing import Optional
 
 from app.database import get_db
@@ -20,23 +20,24 @@ def get_current_admin(current_user: User = Depends(verify_admin_token)):
         "role": "admin"
     }
 
-# --- Analytics & Reports ---
+# --- Analytics & Live System Summary ---
 @router.get("/analytics/summary")
 def get_system_analytics(
     db: Session = Depends(get_db),
     admin: dict = Depends(get_current_admin)
 ):
-    """إحصائيات وتحليلات الأداء العام للنظام"""
-    total_users = db.execute(text("SELECT COUNT(*) FROM users")).scalar() or 0
-    total_sites = db.execute(text("SELECT COUNT(*) FROM mining_sites")).scalar() if db.execute(text("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'mining_sites')")).scalar() else 0
+    """إحصائيات حقيقية من قاعدة البيانات لمركز القيادة"""
+    total_users = db.query(func.count(User.id)).scalar() or 0
+    active_users = db.query(func.count(User.id)).filter(User.is_active == True).scalar() or 0
     
     return {
         "status": "success",
         "data": {
-            "total_users": total_users,
-            "total_mining_sites": total_sites,
-            "system_health": "Operational",
-            "active_services": ["Database", "Auth", "Storage", "API Gateway"]
+            "metrics": {
+                "total_users": total_users,
+                "active_users": active_users,
+                "system_status": "Operational"
+            }
         }
     }
 
@@ -45,32 +46,13 @@ def get_system_reports(
     db: Session = Depends(get_db),
     admin: dict = Depends(get_current_admin)
 ):
-    """تقارير إدارية عامة ومؤشرات النشاط"""
+    """تقارير العمليات الحية"""
+    total_users = db.query(func.count(User.id)).scalar() or 0
     return {
         "status": "success",
         "data": {
-            "generated_at": "2026-07-21",
-            "report_type": "Executive Overview",
-            "metrics": {
-                "user_growth_rate": "+12.5%",
-                "platform_uptime": "99.9%"
-            }
-        }
-    }
-
-# --- Communications & Notifications ---
-@router.get("/communications/summary")
-def get_communications_summary(
-    db: Session = Depends(get_db),
-    admin: dict = Depends(get_current_admin)
-):
-    """ملخص حالة نظام الرسائل والإشعارات"""
-    return {
-        "status": "success",
-        "data": {
-            "unread_admin_alerts": 0,
-            "system_broadcasts": "Active",
-            "email_gateway": "Connected"
+            "total_registered_entities": total_users,
+            "data_source": "Live Production DB"
         }
     }
 
@@ -82,7 +64,7 @@ def list_audit_logs(
     db: Session = Depends(get_db),
     admin: dict = Depends(get_current_admin)
 ):
-    """سجلات التدقيق والمراجعة للعمليات الإدارية والمالية"""
+    """سجلات المراجعة والتدقيق الفعلية من قاعدة البيانات"""
     try:
         logs = db.query(CommissionAuditLog).offset(skip).limit(limit).all()
         return {
@@ -90,9 +72,10 @@ def list_audit_logs(
             "count": len(logs),
             "data": logs
         }
-    except Exception:
+    except Exception as e:
         return {
             "status": "success",
             "count": 0,
-            "data": []
+            "data": [],
+            "error": str(e)
         }

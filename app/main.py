@@ -1,3 +1,4 @@
+from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -101,3 +102,43 @@ def health_check():
         "status": "running",
         "version": "3.0.0"
     }
+
+
+# --- Root & Legacy Compatibility Redirects ---
+@app.get('/login', include_in_schema=False)
+def redirect_login():
+    return RedirectResponse(url='/auth/login')
+
+@app.get('/dashboard', include_in_schema=False)
+def redirect_dashboard():
+    return RedirectResponse(url='/admin/dashboard')
+
+@app.get('/admin', include_in_schema=False)
+def redirect_admin_root():
+    return RedirectResponse(url='/admin/dashboard')
+
+@app.get('/admin/operations/negotiation-room', include_in_schema=False)
+def redirect_admin_neg_room():
+    return RedirectResponse(url='/admin/negotiation')
+
+
+
+# --- Legacy Router Aliases ---
+@app.get('/admin-portal/finance/{path:path}', include_in_schema=False)
+def redirect_legacy_finance(path: str):
+    return RedirectResponse(url='/admin/finance')
+
+@app.get('/admin-portal/users/{path:path}', include_in_schema=False)
+def redirect_legacy_users(path: str):
+    return RedirectResponse(url='/admin/users')
+
+@app.get('/admin-portal/subscriptions/{path:path}', include_in_schema=False)
+def redirect_legacy_subs(path: str):
+    return RedirectResponse(url='/admin/users')
+
+
+
+@app.get('/admin/api/dashboard-data', include_in_schema=False)
+def redirect_admin_dash_data():
+    return RedirectResponse(url='/admin-portal/api/dashboard-data')
+

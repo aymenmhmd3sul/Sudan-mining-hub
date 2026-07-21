@@ -51,20 +51,20 @@ async def admin_security(request: Request):
 
 @router.get("/identity", response_class=HTMLResponse)
 async def admin_identity_view(request: Request):
-    return templates.TemplateResponse("admin/identity.html", {"request": request, "active_tab": "users"})
+    return templates.TemplateResponse("admin/identity/index.html", {"request": request, "active_tab": "users"})
 
 @router.get("/audit", response_class=HTMLResponse)
 async def admin_audit_view(request: Request):
-    return templates.TemplateResponse("admin/audit.html", {"request": request, "active_tab": "security"})
+    return templates.TemplateResponse("admin/audit/index.html", {"request": request, "active_tab": "security"})
 
 @router.get("/analytics", response_class=HTMLResponse)
 async def admin_analytics_view(request: Request):
-    return templates.TemplateResponse("admin/analytics.html", {"request": request, "active_tab": "reports"})
+    return templates.TemplateResponse("admin/analytics/index.html", {"request": request, "active_tab": "reports"})
 
 @router.get("/trade_desk", response_class=HTMLResponse)
 async def admin_trade_desk_view(request: Request):
-    return templates.TemplateResponse("admin/trade_desk.html", {"request": request, "active_tab": "marketplace"})
+    return templates.TemplateResponse("admin/trade_desk/index.html", {"request": request, "active_tab": "marketplace"})
 
 @router.get("/payments", response_class=HTMLResponse)
 async def admin_payments_view(request: Request):
-    return templates.TemplateResponse("admin/payments.html", {"request": request, "active_tab": "finance"})
+    return templates.TemplateResponse("admin/payments/index.html", {"request": request, "active_tab": "finance"})

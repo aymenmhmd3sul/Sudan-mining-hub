@@ -27,18 +27,8 @@ async function loginUser() {
             return;
         }
 
-        localStorage.setItem("access_token", data.access_token);
-
-        const profile = await fetch("/auth/me", {
-            headers: {
-                "Authorization": `Bearer ${data.access_token}`
-            }
-        });
-
-        const user = await profile.json();
-
-        if (user.role && user.role.toUpperCase() === "ADMIN") {
-            window.location.href = "/admin/dashboard";
+        if (data.redirect) {
+            window.location.href = data.redirect;
         } else {
             window.location.href = "/explore";
         }

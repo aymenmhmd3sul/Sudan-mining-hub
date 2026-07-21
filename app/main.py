@@ -142,3 +142,9 @@ def redirect_legacy_subs(path: str):
 def redirect_admin_dash_data():
     return RedirectResponse(url='/admin-portal/api/dashboard-data')
 
+
+@app.get("/")
+def read_root():
+    # توجيه الزائر مباشرة إلى بوابة الدخول (Gateway / Login)
+    # بناءً على الهيكل، قد يكون المسار /login أو /auth/login أو مسار بوابة خاص
+    return RedirectResponse(url="/login", status_code=303)

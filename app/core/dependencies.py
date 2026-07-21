@@ -1,9 +1,10 @@
 from fastapi import Depends, HTTPException, status
 from app.security.auth import get_current_user
-from app.models.user import User
+from app.models.auth import User, UserRole
 
 def verify_admin_token(current_user: User = Depends(get_current_user)):
-    is_admin = True
+    role = getattr(current_user.role, 'value', current_user.role)
+    is_admin = str(role).lower() == UserRole.ADMIN.value.lower()
     if not is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

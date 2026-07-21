@@ -20,7 +20,7 @@ def verify_admin_role(current_user=Depends(get_current_user)):
     return current_user
 
 
-@router.get("")
+@router.get("/manage")
 def list_users(
     status_filter: Optional[str] = Query(None, alias="status"),
     current_admin=Depends(verify_admin_role)

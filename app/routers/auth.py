@@ -8,7 +8,7 @@ from typing import Optional
 # الاستيرادات الدقيقة والمحققة من بنية المشروع الحالية
 from app.core.db import get_db
 from app.security.auth import get_current_user
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, create_access_token
 from app.models.auth import User, UserRole, UserStatus
 from app.services.auth_service import AuthService
 
@@ -90,7 +90,14 @@ async def login(request: Request, db: Session = Depends(get_db)):
 
     # 1. فحص الحساب الثابت للمشرف
     if (email == "aymen.mhmd3@gmail.com" or email == "admin@sudanmining.com") and password == "SudanMining@2026":
-        access_token = "admin_secure_access_token"
+        access_token = create_access_token(
+            data={
+                "id": 1,
+                "sub": email,
+                "role": "ADMIN",
+                "status": "ACTIVE"
+            }
+        )
         response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin"})
         response.set_cookie(
             key="access_token",

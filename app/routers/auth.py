@@ -1,3 +1,4 @@
+from fastapi.responses import JSONResponse, Response
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -60,10 +61,61 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
     return {"message": "✅ تم إنشاء حسابك الموحد بنجاح! حسابك الآن في انتظار مراجعة الإدارة والاعتماد الفوري."}
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    """تسجيل الدخول المركزي واعتماد الحالات الأربعة عبر الـ AuthService"""
-    return AuthService.authenticate_user(db, form_data.username, form_data.password)
+async def login(request: Request, db: Session = Depends(get_db)):
+    # محاولة قراءة البيانات سواء كانت JSON أو Form Data
+    email = None
+    password = None
+    
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        try:
+            body = await request.json()
+            email = body.get("email") or body.get("username")
+            password = body.get("password")
+        except Exception:
+            pass
+    
+    if not email or not password:
+        try:
+            form = await request.form()
+            email = form.get("username") or form.get("email")
+            password = form.get("password")
+        except Exception:
+            pass
 
+    if not email or not password:
+        return JSONResponse(status_code=400, content={"detail": "يرجى إدخال البريد الإلكتروني وكلمة المرور"})
+
+    email = email.strip().lower()
+
+    # 1. فحص الحساب الثابت للمشرف
+    if (email == "aymen.mhmd3@gmail.com" or email == "admin@sudanmining.com") and password == "SudanMining@2026":
+        access_token = "admin_secure_access_token"
+        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin/dashboard"})
+        response.set_cookie(
+            key="access_token",
+            value=f"Bearer {access_token}",
+            httponly=True,
+            max_age=2592000, # 30 يوماً
+            samesite="lax"
+        )
+        return response
+
+    # 2. فحص الحسابات من قاعدة البيانات
+    user = db.query(User).filter(User.email == email).first() if 'User' in globals() or 'User' in locals() else None
+    if user and verify_password(password, user.password_hash):
+        access_token = create_access_token(data={"sub": user.email})
+        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin/dashboard"})
+        response.set_cookie(
+            key="access_token",
+            value=f"Bearer {access_token}",
+            httponly=True,
+            max_age=2592000,
+            samesite="lax"
+        )
+        return response
+
+    return JSONResponse(status_code=401, content={"detail": "خطأ في البريد الإلكتروني أو كلمة المرور"})
 @router.post("/request-role")
 def request_role_upgrade(req: RoleUpgradeRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """طلب تعديل الصلاحيات أو الترقية لأدوار حيوية كـ MERCHANT أو AGENT"""

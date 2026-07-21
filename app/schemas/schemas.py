@@ -16,7 +16,7 @@ class UserResponse(UserBase):
     id: int
     created_at: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # 2. شيمات الفواتير الدولية (البديل الفعلي للفرص)
 class InvoiceBase(BaseModel):
@@ -33,7 +33,7 @@ class InvoiceResponse(InvoiceBase):
     client_id: int
     created_at: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # 3. شيمات لوحة التحكم الفعلية الموائمة للـ الـ Routers
 class DashboardMetricsResponse(BaseModel):

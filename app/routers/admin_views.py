@@ -8,12 +8,11 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("/dashboard", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
     try:
-        user_data = getattr(request.state, 'user', None)
-        return templates.TemplateResponse("admin/dashboard.html", {"request": request, "user": user_data, "active_tab": "dashboard"})
+        return templates.TemplateResponse("admin/dashboard.html", {"request": request, "active_tab": "dashboard"})
     except Exception as e:
         import traceback
-        print(f"❌ [Dashboard Error]: {e}")
-        return templates.TemplateResponse("admin/dashboard.html", {"request": request, "active_tab": "dashboard"})
+        err_msg = traceback.format_exc()
+        return HTMLResponse(content=f"<div style='color:red;padding:20px;'><h2>❌ Dashboard Render Error</h2><pre>{err_msg}</pre></div>", status_code=500)
 @router.get("/marketplace", response_class=HTMLResponse)
 async def admin_marketplace(request: Request):
     return templates.TemplateResponse("admin/marketplace/index.html", context={"request": request})

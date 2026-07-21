@@ -7,93 +7,87 @@
     showAddModal: false, 
     showViewModal: false, 
     showEditModal: false, 
-    newItemName: '',
-    newItemLocation: '',
-    newItemType: 'بئر إنتاجي',
-    selectedItem: { name: '', location: '', type: '', status: '', owner: '', licenseNo: '', depth: '', capacity: '', views: 0 },
+    newItemTitle: '',
+    newItemType: 'منجم ذهب',
+    selectedItem: { title: '', type: '', location: '', status: '', capacity: '', owner: '', phone: '', details: '' },
     items: [
-        { id: 1, name: 'مربع 14 - الامتياز التجاري', type: 'مربع تعدين', location: 'أبو حمد', status: 'نشط', owner: 'شركة التعدين العربية', licenseNo: 'SUD-2024-889', depth: '150 متر', capacity: '500 طن/يوم', views: 342 },
-        { id: 2, name: 'بئر الذهب العطبروي رقم 3', type: 'بئر إنتاجي', location: 'عطبرة', status: 'نشط', owner: 'الحاج إبراهيم وسُليمان', licenseNo: 'SUD-2025-102', depth: '85 متر', capacity: '120 طن/يوم', views: 890 },
-        { id: 3, name: 'محطة معالجة مخلفات التعدين', type: 'محطة معالجة', location: 'بورتسودان', status: 'تحت الصيانة', owner: 'مجموعة البحر الأحمر للخدمات', licenseNo: 'SUD-2023-404', depth: 'غير محدد', capacity: '1200 طن/يوم', views: 154 },
-        { id: 4, name: 'مربع امتياز قبقبة 7', type: 'مربع تعدين', location: 'أبو حمد', status: 'نشط', owner: 'مؤسسة النيل للتعدين', licenseNo: 'SUD-2026-005', depth: '210 متر', capacity: '800 طن/يوم', views: 512 }
+        { id: 1, title: 'منجم العبيدية - موقع رقم 4', type: 'منجم ذهب', location: 'ولاية نهر النيل', status: 'نشط', capacity: '120 طن/يوم', owner: 'شركة التعدين الحديثة', phone: '+249911111111', details: 'موقع تعدين عالي الإنتاجية يحتوي على معالجة سيانيد وحديثة.' },
+        { id: 2, title: 'بئر معالجة الكرته - أبو حمد', type: 'بئر تعدين', location: 'أبو حمد', status: 'قيد الصيانة', capacity: '45 طن/يوم', owner: 'مؤسسة الشفق Gold', phone: '+249922222222', details: 'بئر مخصص لمعالجة مخلّفات التعدين (الكرته) بطاقة متوسطة.' },
+        { id: 3, title: 'موقع استكشاف - وادي حلفا', type: 'موقع استكشاف', location: 'الولايات الشمالية', status: 'معلق', capacity: 'قيد التقييم', owner: 'شركة أفق السودان', phone: '+249933333333', details: 'منطقة استكشاف أولية واعدة بناءً على المسح الجيولوجي.' }
     ],
     get filteredItems() {
         return this.items.filter(i => {
             const matchesSearch = !this.searchQuery.trim() || 
-                i.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                i.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
                 i.location.toLowerCase().includes(this.searchQuery.toLowerCase());
             
             if (this.selectedFilter === 'all') return matchesSearch;
-            if (this.selectedFilter === 'wells') return matchesSearch && i.type === 'بئر إنتاجي';
-            if (this.selectedFilter === 'blocks') return matchesSearch && i.type === 'مربع تعدين';
-            if (this.selectedFilter === 'maintenance') return matchesSearch && i.status === 'تحت الصيانة';
+            if (this.selectedFilter === 'active') return matchesSearch && i.status === 'نشط';
+            if (this.selectedFilter === 'maintenance') return matchesSearch && i.status === 'قيد الصيانة';
+            if (this.selectedFilter === 'pending') return matchesSearch && i.status === 'معلق';
             return matchesSearch;
         });
     },
     addItem() {
-        if (!this.newItemName) { alert('الرجاء كتابة اسم المشروع أو البئر'); return; }
+        if (!this.newItemTitle) { alert('الرجاء كتابة اسم الموقع أو البئر'); return; }
         this.items.unshift({
             id: Date.now(),
-            name: this.newItemName,
-            location: this.newItemLocation || 'غير محدد',
+            title: this.newItemTitle,
             type: this.newItemType,
+            location: 'غير محدد',
             status: 'نشط',
-            owner: 'غير محدد',
-            licenseNo: 'قيد الإجراء',
-            depth: 'غير محدد',
-            capacity: 'قيد التقييم',
-            views: 1
+            capacity: 'غير محدد',
+            owner: 'مستثمر محلي',
+            phone: 'غير مدخل',
+            details: 'تمت إضافة الموقع مؤخراً'
         });
-        this.newItemName = '';
-        this.newItemLocation = '';
+        this.newItemTitle = '';
         this.showAddModal = false;
-        alert('تمت إضافة الموقع التعديني بنجاح!');
+        alert('تمت إضافة موقع التعدين بنجاح!');
     },
     saveEdit() {
-        alert('تم حفظ التعديلات بنجاح!');
+        alert('تم حفظ تعديلات موقع التعدين بنجاح!');
         this.showEditModal = false;
     }
 }">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gray-800 p-4 rounded-xl border border-gray-700">
         <div>
-            <h1 class="text-xl font-bold text-white">⛏️ إدارة التعدين والآبار ومربعات الامتياز</h1>
-            <p class="text-gray-400 text-xs mt-1">مركز التحكم والإشراف الفني والرخص</p>
+            <h1 class="text-xl font-bold text-white">⛏️ إدارة آبار ومناجم التعدين</h1>
+            <p class="text-gray-400 text-xs mt-1">متابعة مواقع التعدين، الطاقة الإنتاجية، وحالة التشغيل</p>
         </div>
         <button @click="showAddModal = true" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-lg text-xs transition cursor-pointer text-center">
-            + إضافة موقع تعديني
+            + إضافة موقع جديد
         </button>
     </div>
 
-    <!-- Quick Interactive Stats Cards -->
+    <!-- Quick Stats Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div @click="selectedFilter = 'all'" :class="selectedFilter === 'all' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
-            <div class="text-gray-400 text-xs font-bold">إجمالي المواقع 📊</div>
+            <div class="text-gray-400 text-xs font-bold">إجمالي المواقع 🏗️</div>
             <div class="text-xl font-bold text-amber-400 mt-1" x-text="items.length"></div>
         </div>
-        <div @click="selectedFilter = 'wells'" :class="selectedFilter === 'wells' ? 'border-green-500 ring-1 ring-green-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
-            <div class="text-gray-400 text-xs font-bold">الآبار النشطة 🛢️</div>
-            <div class="text-xl font-bold text-green-400 mt-1" x-text="items.filter(i => i.type === 'بئر إنتاجي').length"></div>
+        <div @click="selectedFilter = 'active'" :class="selectedFilter === 'active' ? 'border-green-500 ring-1 ring-green-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
+            <div class="text-gray-400 text-xs font-bold">المواقع النشطة ✅</div>
+            <div class="text-xl font-bold text-green-400 mt-1" x-text="items.filter(i => i.status === 'نشط').length"></div>
         </div>
-        <div @click="selectedFilter = 'blocks'" :class="selectedFilter === 'blocks' ? 'border-blue-500 ring-1 ring-blue-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
-            <div class="text-gray-400 text-xs font-bold">مربعات الامتياز 🗺️</div>
-            <div class="text-xl font-bold text-blue-400 mt-1" x-text="items.filter(i => i.type === 'مربع تعدين').length"></div>
+        <div @click="selectedFilter = 'maintenance'" :class="selectedFilter === 'maintenance' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
+            <div class="text-gray-400 text-xs font-bold">قيد الصيانة 🛠️</div>
+            <div class="text-xl font-bold text-amber-300 mt-1" x-text="items.filter(i => i.status === 'قيد الصيانة').length"></div>
         </div>
-        <div @click="selectedFilter = 'maintenance'" :class="selectedFilter === 'maintenance' ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
-            <div class="text-gray-400 text-xs font-bold">تحت الصيانة 🛠️</div>
-            <div class="text-xl font-bold text-red-400 mt-1" x-text="items.filter(i => i.status === 'تحت الصيانة').length"></div>
+        <div @click="selectedFilter = 'pending'" :class="selectedFilter === 'pending' ? 'border-purple-500 ring-1 ring-purple-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
+            <div class="text-gray-400 text-xs font-bold">استكشاف / معلق 🔍</div>
+            <div class="text-xl font-bold text-purple-400 mt-1" x-text="items.filter(i => i.status === 'معلق').length"></div>
         </div>
     </div>
 
     <!-- Data Table Container -->
     <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
         <div class="p-4 border-b border-gray-700 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
-            <div class="flex items-center gap-2">
-                <span class="font-bold text-white text-sm">📋 قائمة المواقع والآبار</span>
-            </div>
+            <span class="font-bold text-white text-sm">📋 قائمة الآبار والمناجم (انقر للتفاصيل)</span>
             
             <div class="flex items-center gap-2 w-full md:w-auto">
-                <input type="text" x-model="searchQuery" placeholder="بحث باسم البئر، المنطقة..." class="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                <input type="text" x-model="searchQuery" placeholder="بحث بالاسم أو الموقع..." class="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                 <button class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-lg text-xs whitespace-nowrap">
                     بحث 🔍
                 </button>
@@ -105,26 +99,26 @@
                 <thead class="bg-gray-900 text-gray-400 uppercase border-b border-gray-700">
                     <tr>
                         <th class="p-3">اسم الموقع / البئر</th>
-                        <th class="p-3 whitespace-nowrap">التصنيف</th>
-                        <th class="p-3 whitespace-nowrap">المنطقة</th>
-                        <th class="p-3 whitespace-nowrap">الحالة التشغيلية</th>
+                        <th class="p-3 whitespace-nowrap">الموقع الجغرافي</th>
+                        <th class="p-3 whitespace-nowrap">حالة التشغيل</th>
                         <th class="p-3 text-center whitespace-nowrap">الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-700">
                     <template x-for="item in filteredItems" :key="item.id">
-                        <tr class="hover:bg-gray-750 transition">
-                            <td class="p-3 font-medium text-white" x-text="item.name"></td>
-                            <td class="p-3 whitespace-nowrap">
-                                <span class="bg-blue-900/50 text-blue-300 text-[10px] px-2 py-1 rounded border border-blue-800/50" x-text="item.type"></span>
-                            </td>
-                            <td class="p-3 whitespace-nowrap" x-text="item.location"></td>
-                            <td class="p-3 whitespace-nowrap">
-                                <span :class="item.status === 'تحت الصيانة' ? 'bg-red-900/50 text-red-300 border-red-800/50' : 'bg-green-900/50 text-green-400 border-green-800/50'" class="text-[10px] px-2 py-1 rounded border" x-text="item.status"></span>
+                        <tr class="hover:bg-gray-700/60 transition cursor-pointer">
+                            <td @click="selectedItem = Object.assign({}, item); showViewModal = true" class="p-3 font-medium text-amber-300 hover:underline" x-text="item.title"></td>
+                            <td @click="selectedItem = Object.assign({}, item); showViewModal = true" class="p-3 whitespace-nowrap text-gray-300" x-text="item.location"></td>
+                            <td @click="selectedItem = Object.assign({}, item); showViewModal = true" class="p-3 whitespace-nowrap">
+                                <span :class="{
+                                    'bg-green-900/50 text-green-400 border-green-800/50': item.status === 'نشط',
+                                    'bg-amber-900/50 text-amber-300 border-amber-800/50': item.status === 'قيد الصيانة',
+                                    'bg-purple-900/50 text-purple-300 border-purple-800/50': item.status === 'معلق'
+                                }" class="text-[10px] px-2 py-1 rounded border" x-text="item.status"></span>
                             </td>
                             <td class="p-3 text-center whitespace-nowrap space-x-1 space-x-reverse">
-                                <button @click="selectedItem = Object.assign({}, item); showViewModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-[11px]">معاينة</button>
-                                <button @click="selectedItem = Object.assign({}, item); showEditModal = true" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded text-[11px]">تعديل</button>
+                                <button @click.stop="selectedItem = Object.assign({}, item); showViewModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-[11px]">معاينة</button>
+                                <button @click.stop="selectedItem = Object.assign({}, item); showEditModal = true" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded text-[11px]">تعديل</button>
                             </td>
                         </tr>
                     </template>
@@ -133,55 +127,47 @@
         </div>
     </div>
 
-    <!-- Modal: معاينة الموقع التفصيلية للأدمن -->
+    <!-- Modal: تفاصيل موقع التعدين -->
     <div x-show="showViewModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-lg text-white space-y-4">
             <div class="flex justify-between items-center border-b border-gray-700 pb-2">
-                <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">👁️ السجل الفني والترخيص الكامل</h3>
-                <span :class="selectedItem.status === 'تحت الصيانة' ? 'bg-red-900/50 text-red-300' : 'bg-green-900/50 text-green-400'" class="text-[10px] px-2 py-0.5 rounded border border-gray-600" x-text="selectedItem.status"></span>
+                <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">🔍 تفاصيل موقع التعدين</h3>
+                <span class="text-[10px] px-2 py-0.5 rounded border border-gray-600 bg-gray-900 text-gray-300" x-text="selectedItem.status"></span>
             </div>
             
             <div class="space-y-3">
                 <div class="bg-gray-900 p-3 rounded-lg border border-gray-700">
-                    <p class="text-[11px] text-gray-400">اسم الموقع / المشروع:</p>
-                    <p class="text-sm font-bold text-white mt-0.5" x-text="selectedItem.name"></p>
+                    <p class="text-[11px] text-gray-400">اسم الموقع / المنجم:</p>
+                    <p class="text-sm font-bold text-white mt-0.5" x-text="selectedItem.title"></p>
                 </div>
 
-                <!-- شبكة التفاصيل الفنية والادارية -->
                 <div class="grid grid-cols-2 gap-3 text-xs">
                     <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">المالك / الجهة المشغلة:</span>
-                        <span class="font-semibold text-amber-300" x-text="selectedItem.owner"></span>
-                    </div>
-                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">رقم الرخصة الرسمية:</span>
-                        <span class="font-mono text-green-400" x-text="selectedItem.licenseNo"></span>
-                    </div>
-                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">الموقع / المنطقة:</span>
-                        <span class="font-semibold text-white" x-text="selectedItem.location"></span>
-                    </div>
-                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">التصنيف:</span>
-                        <span class="font-semibold text-blue-300" x-text="selectedItem.type"></span>
-                    </div>
-                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">العمق التقديري:</span>
-                        <span class="font-semibold text-white" x-text="selectedItem.depth"></span>
+                        <span class="text-gray-400 block text-[10px]">المنطقة / الموقع:</span>
+                        <span class="font-semibold text-amber-300" x-text="selectedItem.location"></span>
                     </div>
                     <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
                         <span class="text-gray-400 block text-[10px]">الطاقة الإنتاجية:</span>
-                        <span class="font-semibold text-white" x-text="selectedItem.capacity"></span>
+                        <span class="font-mono text-green-400" x-text="selectedItem.capacity"></span>
+                    </div>
+                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
+                        <span class="text-gray-400 block text-[10px]">المالك / المشغّل:</span>
+                        <span class="font-semibold text-blue-300" x-text="selectedItem.owner"></span>
+                    </div>
+                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
+                        <span class="text-gray-400 block text-[10px]">هاتف الإدارة:</span>
+                        <span class="font-semibold text-white" x-text="selectedItem.phone"></span>
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center text-[11px] text-gray-400 bg-gray-900/50 p-2 rounded px-3">
-                    <span>عدد المشاهدات بالمنصة: <strong class="text-white" x-text="selectedItem.views"></strong></span>
-                    <span class="text-green-400 flex items-center gap-1">✔ ترخيص موثق من الإدارة</span>
+                <div class="bg-gray-900 p-3 rounded-lg border border-gray-700 text-xs">
+                    <p class="text-[10px] text-gray-400 mb-1">وصف العمليات والحالة الفنية:</p>
+                    <p class="text-gray-300 leading-relaxed" x-text="selectedItem.details"></p>
                 </div>
             </div>
 
-            <div class="flex justify-end pt-2 border-t border-gray-700">
+            <div class="flex justify-end gap-2 pt-2 border-t border-gray-700">
+                <button @click="showViewModal = false; showEditModal = true" class="bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded text-xs text-white font-bold">تعديل البيانات</button>
                 <button @click="showViewModal = false" class="bg-gray-700 hover:bg-gray-600 px-4 py-1.5 rounded text-xs text-white">إغلاق</button>
             </div>
         </div>
@@ -190,41 +176,41 @@
     <!-- Modal: إضافة موقع جديد -->
     <div x-show="showAddModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-md text-white space-y-4">
-            <h3 class="text-base font-bold border-b border-gray-700 pb-2">➕ إضافة بئر أو مربع تعديني جديد</h3>
+            <h3 class="text-base font-bold border-b border-gray-700 pb-2">➕ إضافة موقع تعدين جديد</h3>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">اسم الموقع أو البئر</label>
-                <input type="text" x-model="newItemName" placeholder="مثال: بئر الذهب رقم 5" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
+                <label class="block text-xs text-gray-400 mb-1">اسم الموقع / البئر</label>
+                <input type="text" x-model="newItemTitle" placeholder="مثال: منجم العبيدية 2" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
             </div>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">المنطقة / الولاية</label>
-                <input type="text" x-model="newItemLocation" placeholder="مثال: أبو حمد" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
-            </div>
-            <div>
-                <label class="block text-xs text-gray-400 mb-1">التصنيف</label>
+                <label class="block text-xs text-gray-400 mb-1">النوع</label>
                 <select x-model="newItemType" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
-                    <option value="بئر إنتاجي">بئر إنتاجي</option>
-                    <option value="مربع تعدين">مربع تعدين</option>
-                    <option value="محطة معالجة">محطة معالجة</option>
+                    <option value="منجم ذهب">منجم ذهب</option>
+                    <option value="بئر تعدين">بئر تعدين معالجة</option>
+                    <option value="موقع استكشاف">موقع استكشاف</option>
                 </select>
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button @click="showAddModal = false" class="bg-gray-700 px-3 py-1.5 rounded text-xs">إلغاء</button>
-                <button @click="addItem()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-3 py-1.5 rounded text-xs">حفظ وإضافة</button>
+                <button @click="addItem()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-3 py-1.5 rounded text-xs">حفظ</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: تعديل الموقع -->
+    <!-- Modal: تعديل موقع -->
     <div x-show="showEditModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-md text-white space-y-3">
-            <h3 class="text-base font-bold border-b border-gray-700 pb-2">✏️ تعديل بيانات الموقع</h3>
+            <h3 class="text-base font-bold border-b border-gray-700 pb-2">✏️ تعديل موقع التعدين</h3>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">اسم الموقع</label>
-                <input type="text" x-model="selectedItem.name" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
+                <label class="block text-xs text-gray-400 mb-1">الاسم</label>
+                <input type="text" x-model="selectedItem.title" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
             </div>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">المنطقة</label>
-                <input type="text" x-model="selectedItem.location" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
+                <label class="block text-xs text-gray-400 mb-1">الحالة</label>
+                <select x-model="selectedItem.status" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
+                    <option value="نشط">نشط</option>
+                    <option value="قيد الصيانة">قيد الصيانة</option>
+                    <option value="معلق">معلق</option>
+                </select>
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button @click="showEditModal = false" class="bg-gray-700 px-3 py-1.5 rounded text-xs">إلغاء</button>

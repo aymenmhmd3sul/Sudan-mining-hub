@@ -1,22 +1,12 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>trade_desk - منصة التعدين السودانية</title>
-<link rel="stylesheet" href="/static/css/admin.css">
-</head>
-
-<body>
-
-<h1>مركز trade_desk</h1>
-
-<div class="placeholder-card">
-<p>
-هذه الوحدة جاهزة معمارياً.
-سيتم ربطها بالبيانات الحية من قاعدة البيانات.
-</p>
+{% extends "admin/layout.html" %}
+{% block content %}
+<div class="space-y-6" x-data="{ searchQuery: '', activeSearch: '' }">
+    <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700">
+        <h1 class="text-xl font-bold text-white mb-2">📈 Trade Desk</h1>
+        <p class="text-xs text-gray-400">إدارة منصة التداول والصفقات التعدينية المباشرة</p>
+    </div>
+    <div class="bg-gray-900 p-8 rounded-xl border border-gray-800 text-center text-gray-400 text-xs">
+        جاري جلب واستعراض بيانات قسم (📈 Trade Desk) من قاعدة البيانات...
+    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

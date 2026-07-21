@@ -1,8 +1,123 @@
 {% extends "admin/layout.html" %}
-{% block title %}المعدات والخدمات - Sudan Mining Hub{% endblock %}
+
 {% block content %}
-<div class="placeholder-card">
-    <h2>🚜 المعدات والخدمات (Equipment & Services)</h2>
-    <p style="color: var(--text-muted); margin-top: 10px;">هذه الشاشة محجوزة معمارياً لإدارة المعدات، الإيجارات، مقدمي الخدمات، واللوجستيات.</p>
+<div class="space-y-6" x-data="{
+    searchQuery: '',
+    activeSearch: '',
+    showModal: false,
+    selectedItem: {},
+    items: [
+        { id: 1, name: 'حفارة هيدروليكية CAT 349', category: 'آليات ثقيلة', status: 'متاحة', location: 'ولاية نهر النيل - العبيدية', price: '$450/يوم', owner: 'شركة الموارد الحديثة' },
+        { id: 2, name: 'كسارة حجارة طاحونة 100 طن', category: 'معدات معالجة', status: 'قيد الصيانة', location: 'الولايات الشمالية - وادي حلفا', price: '$800/يوم', owner: 'مؤسسة التعدين الأهلي' },
+        { id: 3, name: 'مولد كهربائي قدرة 500 KVA', category: 'طاقة ومولدات', status: 'متاحة', location: 'ولاية البحر الأحمر - بورتسودان', price: '$200/يوم', owner: 'شركة النيل للخدمات' },
+        { id: 4, name: 'كاشف ذهب وحش وحش الوحوش GPX', category: 'أجهزة كشف وتنقيب', status: 'متاحة', location: 'عطبرة - سوق الذهب', price: '$150/يوم', owner: 'مركز كاشفات السودان' }
+    ],
+    performSearch() {
+        this.activeSearch = this.searchQuery.trim().toLowerCase();
+    },
+    clearSearch() {
+        this.searchQuery = '';
+        this.activeSearch = '';
+    },
+    get filteredItems() {
+        if (!this.activeSearch) return this.items;
+        return this.items.filter(i => 
+            i.name.toLowerCase().includes(this.activeSearch) ||
+            i.category.toLowerCase().includes(this.activeSearch) ||
+            i.location.toLowerCase().includes(this.activeSearch)
+        );
+    }
+}">
+
+    <!-- Header & Search Bar -->
+    <div class="flex flex-col space-y-4 bg-gray-800/50 p-4 rounded-xl border border-gray-700">
+        <div>
+            <h1 class="text-lg font-bold text-white flex items-center gap-2">
+                🚜 إدارة المعدات والآليات الثقيلة
+            </h1>
+            <p class="text-xs text-gray-400">متابعة وحصر الآليات، المعدات، وتجهيزات مواقع التعدين المتاحة</p>
+        </div>
+        
+        <!-- Search Controls -->
+        <div class="flex items-center gap-2 w-full">
+            <div class="relative flex-1">
+                <input type="text" 
+                       x-model="searchQuery" 
+                       @keyup.enter="performSearch()"
+                       placeholder="ابحث عن معدة، كاشف، أو موقع..." 
+                       class="w-full bg-gray-900 border border-gray-700 text-xs text-white rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500">
+                
+                <button x-show="searchQuery" 
+                        @click="clearSearch()" 
+                        class="absolute left-2 top-2.5 text-gray-400 hover:text-white text-xs">✕</button>
+            </div>
+            
+            <button @click="performSearch()" 
+                    class="bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs px-4 py-2.5 rounded-lg flex items-center gap-1 transition">
+                <span>🔍</span>
+                <span>بحث</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs text-right text-gray-300">
+                <thead class="bg-gray-900 text-gray-400 uppercase border-b border-gray-700">
+                    <tr>
+                        <th class="p-3">اسم المعدة / الآلية</th>
+                        <th class="p-3">الفئة</th>
+                        <th class="p-3">الموقع</th>
+                        <th class="p-3">تكلفة الإيجار</th>
+                        <th class="p-3">الحالة</th>
+                        <th class="p-3 text-center">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    <template x-for="item in filteredItems" :key="item.id">
+                        <tr class="hover:bg-gray-700/50 transition cursor-pointer" @click="selectedItem = item; showModal = true">
+                            <td class="p-3 font-semibold text-white" x-text="item.name"></td>
+                            <td class="p-3 text-amber-400" x-text="item.category"></td>
+                            <td class="p-3" x-text="item.location"></td>
+                            <td class="p-3 font-mono text-emerald-400" x-text="item.price"></td>
+                            <td class="p-3">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                      :class="item.status === 'متاحة' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'"
+                                      x-text="item.status"></span>
+                            </td>
+                            <td class="p-3 text-center">
+                                <button class="px-2 py-1 bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded text-[10px]">التفاصيل</button>
+                            </td>
+                        </tr>
+                    </template>
+                    
+                    <!-- No Results Row -->
+                    <tr x-show="filteredItems.length === 0">
+                        <td colspan="6" class="p-6 text-center text-gray-400 text-xs">
+                            ⚠️ لا توجد نتائج تطابق كلمة البحث: <strong class="text-amber-400" x-text="activeSearch"></strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div x-show="showModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" x-cloak @click.self="showModal = false">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl max-w-lg w-full p-6 space-y-4">
+            <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">🔍 تفاصيل المعدة</h3>
+            <div class="space-y-3 text-xs text-gray-300">
+                <p><strong>اسم الآلية:</strong> <span x-text="selectedItem.name" class="text-white font-bold"></span></p>
+                <p><strong>الفئة:</strong> <span x-text="selectedItem.category" class="text-amber-400"></span></p>
+                <p><strong>المالك / المورد:</strong> <span x-text="selectedItem.owner" class="text-gray-200"></span></p>
+                <p><strong>الموقع الحالي:</strong> <span x-text="selectedItem.location"></span></p>
+                <p><strong>السعر التقديري:</strong> <span x-text="selectedItem.price" class="text-emerald-400 font-bold"></span></p>
+            </div>
+            <div class="pt-4 flex justify-end">
+                <button @click="showModal = false" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-xs">إغلاق</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

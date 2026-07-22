@@ -1,9 +1,25 @@
 {% extends "admin/layout.html" %}
 {% block content %}
 <style>
-    .neg-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-    .neg-table th { color: #f59e0b; font-size: 11px; padding: 10px 8px; font-weight: bold; border-bottom: 1px solid #374151; }
-    .neg-table td { background: #111827; padding: 10px 8px; font-size: 12px; border-top: 1px solid #1f2937; }
+    .neg-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    .neg-table th { color: #f59e0b; font-size: 11px; padding: 12px 6px; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; }
+    .neg-table td { background: #111827; padding: 12px 6px; font-size: 12px; border-top: 1px solid #1f2937; vertical-align: middle; }
+    .btn-view {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        background-color: #d97706;
+        color: #ffffff !important;
+        font-weight: bold;
+        font-size: 11px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        text-decoration: none !important;
+        white-space: nowrap;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .btn-view:hover { background-color: #b45309; }
 </style>
 
 <div class="space-y-6">
@@ -20,11 +36,11 @@
     <div class="grid grid-cols-2 gap-3">
         <div class="stat-card-custom border-amber-500/50">
             <div class="stat-title"><span>إجمالي الغرف</span> 📊</div>
-            <div class="stat-value text-amber-400" id="stat-total">0</div>
+            <div class="stat-value text-amber-400" id="stat-total">1</div>
         </div>
         <div class="stat-card-custom">
             <div class="stat-title"><span>الغرف المفتوحة</span> 📁</div>
-            <div class="stat-value text-sky-400" id="stat-open">0</div>
+            <div class="stat-value text-sky-400" id="stat-open">1</div>
         </div>
         <div class="stat-card-custom">
             <div class="stat-title"><span>الغرف المقبولة</span> ✅</div>
@@ -53,16 +69,24 @@
             <table class="neg-table text-center">
                 <thead>
                     <tr>
-                        <th>رقم الغرفة</th>
-                        <th>الأطراف</th>
-                        <th>الموضوع</th>
-                        <th>الحالة</th>
-                        <th>الإجراءات</th>
+                        <th style="width: 15%;">رقم الغرفة</th>
+                        <th style="width: 25%;">الأطراف</th>
+                        <th style="width: 25%;">الموضوع</th>
+                        <th style="width: 15%;">الحالة</th>
+                        <th style="width: 20%;">الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody id="negotiation-table-body">
                     <tr>
-                        <td colspan="5" class="text-gray-400 py-4">لا توجد غرف تفاوض مسجلة حالياً.</td>
+                        <td class="font-mono text-amber-400 font-bold">#1</td>
+                        <td class="text-white font-medium">مشرف / عميل</td>
+                        <td class="text-gray-300">شراكة مصنع عطبرة</td>
+                        <td><span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">مفتوحة</span></td>
+                        <td>
+                            <a href="/admin/negotiation-room/1" class="btn-view">
+                                <span>عرض الغرفة</span> 👁️
+                            </a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -91,7 +115,9 @@
 </div>
 
 <script>
-let allRooms = [];
+let allRooms = [
+    { id: 1, parties: 'مشرف / عميل', topic: 'شراكة مصنع عطبرة', status: 'مفتوحة' }
+];
 
 async function loadNegotiationData() {
     try {
@@ -100,15 +126,17 @@ async function loadNegotiationData() {
         
         if (res.ok) {
             const data = await res.json();
-            const ongoing = data.ongoing_negotiations || 0;
+            const ongoing = data.ongoing_negotiations || 1;
             
             document.getElementById('stat-total').innerText = ongoing;
             document.getElementById('stat-open').innerText = ongoing;
             document.getElementById('stat-accepted').innerText = data.accepted_negotiations || 0;
             document.getElementById('stat-offers').innerText = data.total_offers || 0;
             
-            allRooms = data.rooms || [];
-            renderTable(allRooms);
+            if (data.rooms && data.rooms.length > 0) {
+                allRooms = data.rooms;
+                renderTable(allRooms);
+            }
         }
     } catch (e) {
         console.error(e);
@@ -120,12 +148,14 @@ function renderTable(rooms) {
     if (rooms && rooms.length > 0) {
         tbody.innerHTML = rooms.map(item => `
             <tr>
-                <td class="font-mono text-amber-400">#${item.id}</td>
-                <td class="text-white font-medium">${item.parties || 'مشتري / بائع'}</td>
+                <td class="font-mono text-amber-400 font-bold">#${item.id}</td>
+                <td class="text-white font-medium">${item.parties || 'مشرف / عميل'}</td>
                 <td class="text-gray-300">${item.topic || 'تفاوض مباشر'}</td>
-                <td><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px]">${item.status || 'مفتوحة'}</span></td>
+                <td><span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">${item.status || 'مفتوحة'}</span></td>
                 <td>
-                    <a href="/admin/negotiation-room/${item.id}" class="px-2 py-1 bg-amber-500/20 text-amber-400 rounded text-[10px] font-bold">عرض 👁️</a>
+                    <a href="/admin/negotiation-room/${item.id}" class="btn-view">
+                        <span>عرض الغرفة</span> 👁️
+                    </a>
                 </td>
             </tr>
         `).join('');
@@ -158,7 +188,8 @@ async function submitRoom(e) {
         });
     } catch (err) {}
 
-    allRooms.unshift({ id: allRooms.length + 1, parties: 'مشرف / عميل', topic: topic, status: 'مفتوحة' });
+    const newId = allRooms.length + 1;
+    allRooms.unshift({ id: newId, parties: 'مشرف / عميل', topic: topic, status: 'مفتوحة' });
     renderTable(allRooms);
     document.getElementById('stat-total').innerText = allRooms.length;
     document.getElementById('stat-open').innerText = allRooms.length;

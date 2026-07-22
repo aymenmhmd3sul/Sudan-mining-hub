@@ -1,161 +1,194 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+{% extends "admin/layout.html" %}
 
-<title>مركز التفاوض</title>
-
-<link rel="stylesheet" href="/static/css/admin.css">
-
+{% block content %}
 <style>
-body{
-font-family:Cairo,sans-serif;
-background:#f5f7fb;
-padding:20px;
-}
+    body, html {
+        background-color: #0b1426 !important;
+        color: #ffffff !important;
+    }
 
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-margin-bottom:25px;
-}
+    /* هيدر الصفحة الرئيسي */
+    .hero-header-box {
+        background-color: #152238 !important;
+        border: 1px solid #233554 !important;
+        border-radius: 16px !important;
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+        text-align: center !important;
+    }
 
-.card{
-background:white;
-padding:18px;
-border-radius:12px;
-box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
+    /* زري العمليات الرئيسي */
+    .btn-gold-action {
+        background-color: #f39c12 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        width: 100% !important;
+        box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3) !important;
+    }
 
-.card h3{
-margin:0;
-font-size:14px;
-color:#666;
-}
+    /* شبكة بطاقات الإحصائيات - 2 في كل سطر للموبايل */
+    .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        margin-bottom: 20px !important;
+    }
 
-.card h1{
-margin-top:10px;
-font-size:32px;
-}
+    .stat-card-custom {
+        background-color: #152238 !important;
+        border: 1px solid #233554 !important;
+        border-radius: 14px !important;
+        padding: 14px 8px !important;
+        text-align: center !important;
+        position: relative !important;
+    }
 
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
+    /* الكارت النشط المحدد بالذهبي */
+    .stat-card-custom.active-card {
+        border: 2px solid #f39c12 !important;
+    }
 
-th,td{
-padding:12px;
-border-bottom:1px solid #eee;
-text-align:center;
-}
+    .stat-title {
+        color: #a0aec0 !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 5px !important;
+    }
 
-th{
-background:#0f172a;
-color:white;
-}
+    .stat-value {
+        font-size: 1.5rem !important;
+        font-weight: bold !important;
+        margin: 0 !important;
+    }
+
+    /* الصندوق السفلي والجدول */
+    .main-table-card {
+        background-color: #152238 !important;
+        border: 1px solid #233554 !important;
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+
+    .table-header-title {
+        padding: 14px !important;
+        font-weight: bold !important;
+        font-size: 0.95rem !important;
+        border-bottom: 1px solid #233554 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+    }
+
+    .table-dark-custom {
+        width: 100% !important;
+        margin-bottom: 0 !important;
+        color: #ffffff !important;
+    }
+
+    .table-dark-custom th {
+        background-color: #0d1b2a !important;
+        color: #f39c12 !important;
+        padding: 10px 6px !important;
+        font-size: 0.8rem !important;
+        border-bottom: 1px solid #233554 !important;
+        text-align: center !important;
+    }
+
+    .table-dark-custom td {
+        padding: 12px 6px !important;
+        border-bottom: 1px solid #1a2a40 !important;
+        text-align: center !important;
+        font-size: 0.8rem !important;
+        color: #cbd5e0 !important;
+    }
 </style>
 
-</head>
+<div class="container-fluid py-2 px-2">
+    <!-- الهيدر الرئيسي -->
+    <div class="hero-header-box">
+        <h4 class="fw-bold text-white mb-1">🤝 إدارة غرف التفاوض والتداولات</h4>
+        <p class="text-muted small mb-3">متابعة غرف التفاوض المفتوحة، العروض المتبادلة، وإدارة الصفقات الحية</p>
+        <button class="btn btn-gold-action">+ إنشاء غرفة تفاوض جديدة</button>
+    </div>
 
-<body>
+    <!-- الإحصائيات (شبكة 2x2) -->
+    <div class="stats-grid">
+        <div class="stat-card-custom active-card">
+            <div class="stat-title">
+                <span>إجمالي الغرف</span> 📊
+            </div>
+            <div class="stat-value text-warning" id="total-rooms">-</div>
+        </div>
 
-<h1>لوحة إدارة التفاوض</h1>
+        <div class="stat-card-custom">
+            <div class="stat-title">
+                <span>الغرف المفتوحة</span> 📂
+            </div>
+            <div class="stat-value text-info" id="open-rooms">-</div>
+        </div>
 
-<div class="cards">
+        <div class="stat-card-custom">
+            <div class="stat-title">
+                <span>الغرف المقبولة</span> ✅
+            </div>
+            <div class="stat-value text-success" id="completed-deals">-</div>
+        </div>
 
-<div class="card">
-<h3>إجمالي الغرف</h3>
-<h1 id="rooms">-</h1>
+        <div class="stat-card-custom">
+            <div class="stat-title">
+                <span>العروض النشطة</span> 🏷️
+            </div>
+            <div class="stat-value" style="color: #a855f7;" id="active-offers">0</div>
+        </div>
+    </div>
+
+    <!-- الجدول ورأس القائمة -->
+    <div class="main-table-card">
+        <div class="table-header-title text-white">
+            📋 قائمة غرف التفاوض (انقر للتفاصيل)
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>رقم الغرفة</th>
+                        <th>الأطراف</th>
+                        <th>الموضوع</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="rooms-list">
+                    <tr>
+                        <td colspan="5" class="py-4 text-muted">جاري تحميل البيانات...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-<div class="card">
-<h3>الغرف المفتوحة</h3>
-<h1 id="open">-</h1>
-</div>
-
-<div class="card">
-<h3>الغرف المقبولة</h3>
-<h1 id="accepted">-</h1>
-</div>
-
-<div class="card">
-<h3>العروض</h3>
-<h1 id="offers">-</h1>
-</div>
-
-<div class="card">
-<h3>الرسائل</h3>
-<h1 id="messages">-</h1>
-</div>
-
-</div>
-
-<table>
-
-<thead>
-<tr>
-<th>الرقم</th>
-<th>الأصل</th>
-<th>المشتري</th>
-<th>البائع</th>
-<th>الحالة</th>
-<th>الإجراء</th>
-</tr>
-</thead>
-
-<tbody id="roomsTable">
-</tbody>
-
-</table>
 
 <script>
-
-async function loadلوحة التحكم(){
-
-const r=await fetch("/admin/operations/negotiation-dashboard");
-
-const d=await r.json();
-
-document.getElementById("rooms").innerText=d.statistics.total_rooms;
-document.getElementById("open").innerText=d.statistics.open_rooms;
-document.getElementById("accepted").innerText=d.statistics.accepted_rooms;
-document.getElementById("offers").innerText=d.statistics.offers;
-document.getElementById("messages").innerText=d.statistics.messages;
-
-const tbody=document.getElementById("roomsTable");
-
-tbody.innerHTML="";
-
-d.latest_rooms.forEach(room=>{
-
-tbody.innerHTML+=`
-<tr>
-<td>${room.id}</td>
-<td>${room.asset_id}</td>
-<td>${room.buyer_id}</td>
-<td>${room.seller_id}</td>
-<td>${room.status}</td>
-<td>
-<a href="/admin/negotiation-room/${room.id}">
-فتح الغرفة
-</a>
-</td>
-</tr>
-`;
-
-});
-
+async function loadNegotiationStats() {
+    try {
+        const r = await fetch("/admin/operations/negotiation-dashboard");
+        const result = await r.json();
+        if(result && result.data && result.data.negotiations) {
+            document.getElementById('total-rooms').innerText = result.data.negotiations.total_rooms || 0;
+            document.getElementById('open-rooms').innerText = result.data.negotiations.open_rooms || 0;
+            document.getElementById('completed-deals').innerText = result.data.negotiations.completed_deals || 0;
+        }
+    } catch(e) {
+        console.error("Error loading stats:", e);
+    }
 }
-
-loadلوحة التحكم();
-
-setInterval(loadلوحة التحكم,5000);
-
+document.addEventListener("DOMContentLoaded", loadNegotiationStats);
 </script>
-
-</body>
-</html>
+{% endblock %}

@@ -1,159 +1,60 @@
 {% extends "admin/layout.html" %}
-
 {% block content %}
-<style>
-    body, html {
-        background-color: #0b1426 !important;
-        color: #ffffff !important;
-    }
-
-    /* هيدر الصفحة الرئيسي */
-    .hero-header-box {
-        background-color: #152238 !important;
-        border: 1px solid #233554 !important;
-        border-radius: 16px !important;
-        padding: 16px !important;
-        margin-bottom: 16px !important;
-        text-align: center !important;
-    }
-
-    /* زري العمليات الرئيسي */
-    .btn-gold-action {
-        background-color: #f39c12 !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 10px 20px !important;
-        width: 100% !important;
-        box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3) !important;
-    }
-
-    /* شبكة بطاقات الإحصائيات - 2 في كل سطر للموبايل */
-    .stats-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-        margin-bottom: 20px !important;
-    }
-
-    .stat-card-custom {
-        background-color: #152238 !important;
-        border: 1px solid #233554 !important;
-        border-radius: 14px !important;
-        padding: 14px 8px !important;
-        text-align: center !important;
-        position: relative !important;
-    }
-
-    /* الكارت النشط المحدد بالذهبي */
-    .stat-card-custom.active-card {
-        border: 2px solid #f39c12 !important;
-    }
-
-    .stat-title {
-        color: #a0aec0 !important;
-        font-size: 0.85rem !important;
-        margin-bottom: 6px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 5px !important;
-    }
-
-    .stat-value {
-        font-size: 1.5rem !important;
-        font-weight: bold !important;
-        margin: 0 !important;
-    }
-
-    /* الصندوق السفلي والجدول */
-    .main-table-card {
-        background-color: #152238 !important;
-        border: 1px solid #233554 !important;
-        border-radius: 16px !important;
-        overflow: hidden !important;
-    }
-
-    .table-header-title {
-        padding: 14px !important;
-        font-weight: bold !important;
-        font-size: 0.95rem !important;
-        border-bottom: 1px solid #233554 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 8px !important;
-    }
-
-    .table-dark-custom {
-        width: 100% !important;
-        margin-bottom: 0 !important;
-        color: #ffffff !important;
-    }
-
-    .table-dark-custom th {
-        background-color: #0d1b2a !important;
-        color: #f39c12 !important;
-        padding: 10px 6px !important;
-        font-size: 0.8rem !important;
-        border-bottom: 1px solid #233554 !important;
-        text-align: center !important;
-    }
-
-    .table-dark-custom td {
-        padding: 12px 6px !important;
-        border-bottom: 1px solid #1a2a40 !important;
-        text-align: center !important;
-        font-size: 0.8rem !important;
-        color: #cbd5e0 !important;
-    }
-</style>
-
-<div class="container-fluid py-2 px-2">
+<div class="space-y-6">
     <!-- الهيدر الرئيسي -->
-    <div class="hero-header-box">
-        <h4 class="fw-bold text-white mb-1">🤝 إدارة غرف التفاوض والتداولات</h4>
-        <p class="text-muted small mb-3">متابعة غرف التفاوض المفتوحة، العروض المتبادلة، وإدارة الصفقات الحية</p>
-        <button class="btn btn-gold-action">+ إنشاء غرفة تفاوض جديدة</button>
+    <div class="stat-card-custom text-center py-6">
+        <h1 class="text-2xl font-bold text-white mb-2">🤝 إدارة غرف التفاوض والتداولات</h1>
+        <p class="text-xs text-gray-400 mb-4">متابعة غرف التفاوض المفتوحة، العروض المتبادلة، وإدارة الصفقات الحية</p>
+        <button onclick="openCreateModal()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition shadow-lg">
+            + إنشاء غرفة تفاوض جديدة
+        </button>
     </div>
 
-    <!-- الإحصائيات (شبكة 2x2) -->
-    <div class="stats-grid">
-        <div class="stat-card-custom active-card">
+    <!-- شبكة كروت الإحصائيات -->
+    <div class="grid grid-cols-2 gap-3">
+        <div class="stat-card-custom border-amber-500/50">
             <div class="stat-title">
                 <span>إجمالي الغرف</span> 📊
             </div>
-            <div class="stat-value text-warning" id="total-rooms">-</div>
+            <div class="stat-value text-amber-400" id="stat-total">-</div>
         </div>
 
         <div class="stat-card-custom">
             <div class="stat-title">
-                <span>الغرف المفتوحة</span> 📂
+                <span>الغرف المفتوحة</span> 📁
             </div>
-            <div class="stat-value text-info" id="open-rooms">-</div>
+            <div class="stat-value text-sky-400" id="stat-open">-</div>
         </div>
 
         <div class="stat-card-custom">
             <div class="stat-title">
                 <span>الغرف المقبولة</span> ✅
             </div>
-            <div class="stat-value text-success" id="completed-deals">-</div>
+            <div class="stat-value text-emerald-400" id="stat-accepted">-</div>
         </div>
 
         <div class="stat-card-custom">
             <div class="stat-title">
                 <span>العروض النشطة</span> 🏷️
             </div>
-            <div class="stat-value" style="color: #a855f7;" id="active-offers">0</div>
+            <div class="stat-value text-purple-400" id="stat-offers">0</div>
         </div>
     </div>
 
     <!-- الجدول ورأس القائمة -->
     <div class="main-table-card">
-        <div class="table-header-title text-white">
+        <div class="table-header-title text-white mb-4">
             📋 قائمة غرف التفاوض (انقر للتفاصيل)
         </div>
+
+        <!-- شريط البحث والفلترة -->
+        <div class="flex gap-2 mb-4">
+            <input type="text" id="neg-search" placeholder="بحث في الغرف أو الموضوعات..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-amber-500">
+            <button onclick="filterRooms()" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition flex items-center gap-1 shrink-0">
+                🔍 بحث
+            </button>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-dark-custom">
                 <thead>
@@ -165,9 +66,9 @@
                         <th>الإجراءات</th>
                     </tr>
                 </thead>
-                <tbody id="rooms-list">
+                <tbody id="negotiation-table-body">
                     <tr>
-                        <td colspan="5" class="py-4 text-muted">جاري تحميل البيانات...</td>
+                        <td colspan="5" class="py-4 text-muted text-center">جاري جلب بيانات الغرف...</td>
                     </tr>
                 </tbody>
             </table>
@@ -175,20 +76,120 @@
     </div>
 </div>
 
+<!-- Modal إنشاء غرفة جديدة -->
+<div id="createModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-sm">➕ إنشاء غرفة تفاوض جديدة</h3>
+            <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white font-bold">✕</button>
+        </div>
+        <form id="createRoomForm" onsubmit="submitRoom(event)" class="space-y-3">
+            <div>
+                <label class="block text-xs text-gray-300 mb-1">موضوع التفاوض / الصفقة</label>
+                <input type="text" id="roomTopic" required placeholder="مثال: تفاوض على امتياز منجم ذهب" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إنشاء الغرفة</button>
+                <button type="button" onclick="closeCreateModal()" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
-async function loadNegotiationStats() {
+let allRooms = [];
+
+async function loadNegotiationData() {
     try {
-        const r = await fetch("/admin/operations/negotiation-dashboard");
-        const result = await r.json();
-        if(result && result.data && result.data.negotiations) {
-            document.getElementById('total-rooms').innerText = result.data.negotiations.total_rooms || 0;
-            document.getElementById('open-rooms').innerText = result.data.negotiations.open_rooms || 0;
-            document.getElementById('completed-deals').innerText = result.data.negotiations.completed_deals || 0;
+        let res = await fetch('/trade-desk/summary');
+        if (!res.ok) res = await fetch('/admin/trade-desk/summary');
+        
+        if (res.ok) {
+            const data = await res.json();
+            const ongoing = data.ongoing_negotiations || 0;
+            
+            document.getElementById('stat-total').innerText = ongoing;
+            document.getElementById('stat-open').innerText = ongoing;
+            document.getElementById('stat-accepted').innerText = data.accepted_negotiations || 0;
+            document.getElementById('stat-offers').innerText = data.total_offers || 0;
+            
+            allRooms = data.rooms || [];
+            renderTable(allRooms);
+        } else {
+            document.getElementById('stat-total').innerText = '0';
+            document.getElementById('stat-open').innerText = '0';
+            document.getElementById('stat-accepted').innerText = '0';
+            renderTable([]);
         }
-    } catch(e) {
-        console.error("Error loading stats:", e);
+    } catch (e) {
+        console.error("Negotiation Fetch Error:", e);
+        document.getElementById('stat-total').innerText = '0';
+        document.getElementById('stat-open').innerText = '0';
+        document.getElementById('stat-accepted').innerText = '0';
+        renderTable([]);
     }
 }
-document.addEventListener("DOMContentLoaded", loadNegotiationStats);
+
+function renderTable(rooms) {
+    const tbody = document.getElementById('negotiation-table-body');
+    if (rooms && rooms.length > 0) {
+        tbody.innerHTML = rooms.map(item => `
+            <tr>
+                <td class="font-mono text-amber-400">#${item.id}</td>
+                <td class="text-white font-medium">${item.parties || 'مشتري / بائع'}</td>
+                <td class="text-gray-300">${item.topic || 'تفاوض مباشر'}</td>
+                <td><span class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${item.status || 'مفتوحة'}</span></td>
+                <td>
+                    <a href="/admin/negotiation-room/${item.id}" class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 rounded-lg text-[11px] font-bold border border-amber-500/30 transition">عرض الغرفة 👁️</a>
+                </td>
+            </tr>
+        `).join('');
+    } else {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-muted text-center">لا توجد غرف تفاوض مسجلة حالياً.</td></tr>`;
+    }
+}
+
+function openCreateModal() {
+    const modal = document.getElementById('createModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeCreateModal() {
+    const modal = document.getElementById('createModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+async function submitRoom(e) {
+    e.preventDefault();
+    const topic = document.getElementById('roomTopic').value;
+
+    try {
+        const res = await fetch('/negotiation/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic: topic })
+        });
+
+        allRooms.unshift({ id: allRooms.length + 1, parties: 'مشرف / عميل', topic: topic, status: 'مفتوحة' });
+        renderTable(allRooms);
+        document.getElementById('stat-total').innerText = allRooms.length;
+        document.getElementById('stat-open').innerText = allRooms.length;
+        closeCreateModal();
+        document.getElementById('createRoomForm').reset();
+    } catch (err) {
+        closeCreateModal();
+    }
+}
+
+function filterRooms() {
+    const query = document.getElementById('neg-search').value.toLowerCase();
+    if (!query) return renderTable(allRooms);
+    const filtered = allRooms.filter(r => (r.topic && r.topic.toLowerCase().includes(query)));
+    renderTable(filtered);
+}
+
+document.addEventListener("DOMContentLoaded", loadNegotiationData);
 </script>
 {% endblock %}

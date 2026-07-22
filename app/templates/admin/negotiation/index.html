@@ -14,24 +14,18 @@
         border-radius: 12px;
         padding: 15px;
         text-align: center;
-        transition: transform 0.2s, border-color 0.2s;
     }
     .stat-card.active-card {
         border: 2px solid #f59e0b;
     }
     .stat-title {
         color: #94a3b8;
-        font-size: 0.9rem;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
     }
     .stat-value {
         font-size: 1.8rem;
         font-weight: bold;
-        color: #f8fafc;
     }
     .val-yellow { color: #f59e0b; }
     .val-blue { color: #3b82f6; }
@@ -53,13 +47,9 @@
         padding: 12px 24px;
         border-radius: 8px;
         font-weight: bold;
-        font-size: 1rem;
+        font-size: 0.95rem;
         width: 100%;
         cursor: pointer;
-        transition: background 0.2s;
-    }
-    .action-btn-main:hover {
-        background: #d97706;
     }
 
     .data-table-card {
@@ -106,8 +96,8 @@
     }
     .custom-table td {
         padding: 12px 8px;
-        border-bottom: 1px solid #1e293b;
-        font-size: 0.9rem;
+        border-bottom: 1px solid #0f172a;
+        font-size: 0.88rem;
     }
 
     .badge-open {
@@ -129,13 +119,12 @@
         font-weight: bold;
     }
 
-    /* Modal styling */
     .modal-overlay {
         display: none;
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.7);
-        z-index: 999;
+        background: rgba(0,0,0,0.75);
+        z-index: 9999;
         justify-content: center;
         align-items: center;
         padding: 15px;
@@ -145,20 +134,18 @@
         border: 1px solid #334155;
         border-radius: 12px;
         width: 100%;
-        max-width: 500px;
+        max-width: 450px;
         padding: 20px;
         color: #fff;
     }
 </style>
 
-<!-- الهيدر الرئيسي -->
 <div class="action-header">
     <h2 style="margin:0 0 8px 0; color:#fff;">🤝 إدارة غرف التفاوض والتداولات</h2>
-    <p style="color:#94a3b8; font-size:0.85rem; margin-0 0 15px 0;">متابعة غرف التفاوض المفتوحة، العروض المتبادلة، وإدارة الصفقات الحية</p>
+    <p style="color:#94a3b8; font-size:0.85rem; margin:0 0 15px 0;">متابعة غرف التفاوض المفتوحة، العروض المتبادلة، وإدارة الصفقات الحية</p>
     <button class="action-btn-main" onclick="openCreateModal()">+ إنشاء غرفة تفاوض جديدة</button>
 </div>
 
-<!-- بطاقات الإحصائيات (2x2 Grid) -->
 <div class="stats-grid">
     <div class="stat-card active-card">
         <div class="stat-title">📊 إجمالي الغرف</div>
@@ -178,7 +165,6 @@
     </div>
 </div>
 
-<!-- جدول الغرف -->
 <div class="data-table-card">
     <h4 style="margin: 0 0 12px 0; color: #f8fafc; font-size: 1rem;">📋 قائمة غرف التفاوض (انقر للتفاصيل)</h4>
     <div class="search-box-group">
@@ -210,7 +196,6 @@
     </div>
 </div>
 
-<!-- النافذة المنبثقة لإنشاء غرفة جديدة -->
 <div id="createModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="margin-top:0;">إنشاء غرفة تفاوض جديدة</h3>

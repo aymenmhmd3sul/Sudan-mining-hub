@@ -1,52 +1,74 @@
 {% extends "admin/layout.html" %}
 {% block content %}
 <div class="space-y-6">
-    <!-- الهيدر -->
-    <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 flex justify-between items-center">
-        <div>
-            <h1 class="text-xl font-bold text-white mb-1">📈 Trade Desk</h1>
-            <p class="text-xs text-gray-400">إدارة منصة التداول والصفقات التعدينية المباشرة</p>
-        </div>
-        <button onclick="loadTradeDeskData()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">
-            🔄 تحديث البيانات
+    <!-- الهيدر الرئيسي -->
+    <div class="stat-card-custom text-center py-6">
+        <h1 class="text-2xl font-bold text-white mb-2">📈 Trade Desk</h1>
+        <p class="text-xs text-gray-400 mb-4">إدارة منصة التداول والصفقات التعدينية المباشرة</p>
+        <button onclick="loadTradeDeskData()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition shadow-lg">
+            + إضافة صفقة جديدة
         </button>
     </div>
 
-    <!-- كروت الإحصائيات -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-sm">
-            <div class="text-xs text-gray-400 mb-1">إجمالي التداولات 📊</div>
-            <div class="text-2xl font-bold text-white" id="total-trades">-</div>
+    <!-- شبكة كروت الإحصائيات (2 في كل صف مثل باقي الأقسام) -->
+    <div class="grid grid-cols-2 gap-3">
+        <div class="stat-card-custom border-amber-500/50">
+            <div class="stat-title">
+                <span>إجمالي التداولات</span> 📊
+            </div>
+            <div class="stat-value text-amber-400" id="total-trades">-</div>
         </div>
-        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-sm">
-            <div class="text-xs text-gray-400 mb-1">الصفقات النشطة 🏷️</div>
-            <div class="text-2xl font-bold text-purple-400" id="active-offers">-</div>
+
+        <div class="stat-card-custom">
+            <div class="stat-title">
+                <span>عروض البيع</span> 🏷️
+            </div>
+            <div class="stat-value text-emerald-400" id="sell-offers">-</div>
         </div>
-        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-sm">
-            <div class="text-xs text-gray-400 mb-1">حالة التداول المباشر ⚡</div>
-            <div class="text-2xl font-bold text-emerald-400" id="trade-status">نشط</div>
+
+        <div class="stat-card-custom">
+            <div class="stat-title">
+                <span>طلبات الشراء</span> 🛒
+            </div>
+            <div class="stat-value text-blue-400" id="buy-requests">-</div>
+        </div>
+
+        <div class="stat-card-custom">
+            <div class="stat-title">
+                <span>حالة التداول</span> ⚡
+            </div>
+            <div class="stat-value text-purple-400" id="trade-status">نشط</div>
         </div>
     </div>
 
-    <!-- جدول عرض التداولات -->
-    <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden shadow-sm">
-        <div class="p-4 border-b border-gray-700 text-white font-semibold text-sm flex justify-between items-center">
-            <span>📋 قائمة طلبات التداول المباشر</span>
+    <!-- الجدول ورأس القائمة -->
+    <div class="main-table-card">
+        <div class="table-header-title text-white mb-4">
+            📋 قائمة صفقات التداول (انقر للتفاصيل)
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-right text-xs text-gray-300">
-                <thead class="bg-gray-900 text-gray-400 uppercase text-[11px]">
+
+        <!-- شريط البحث والفلترة -->
+        <div class="flex gap-2 mb-4">
+            <input type="text" id="trade-search" placeholder="بحث في الصفقات أو الموردين..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-amber-500">
+            <button onclick="loadTradeDeskData()" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition flex items-center gap-1 shrink-0">
+                🔍 بحث
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-dark-custom">
+                <thead>
                     <tr>
-                        <th class="p-3">رقم الطلب</th>
-                        <th class="p-3">العنوان</th>
-                        <th class="p-3">الدولة المستهدفة</th>
-                        <th class="p-3">القيمة</th>
-                        <th class="p-3">الحالة</th>
+                        <th>رقم الصفقة</th>
+                        <th>العنوان / المورد</th>
+                        <th>النوع</th>
+                        <th>القيمة</th>
+                        <th>الحالة</th>
                     </tr>
                 </thead>
-                <tbody id="trade-table-body" class="divide-y divide-gray-700">
+                <tbody id="trade-table-body">
                     <tr>
-                        <td colspan="5" class="p-4 text-center text-gray-400">جاري تحميل البيانات...</td>
+                        <td colspan="5" class="py-4 text-muted text-center">جاري تحميل البيانات...</td>
                     </tr>
                 </tbody>
             </table>
@@ -61,29 +83,29 @@ async function loadTradeDeskData() {
         if (res.ok) {
             const data = await res.json();
             document.getElementById('total-trades').innerText = data.active_trade_offers || 0;
-            document.getElementById('active-offers').innerText = data.active_trade_offers || 0;
+            document.getElementById('sell-offers').innerText = data.sell_count || 0;
+            document.getElementById('buy-requests').innerText = data.buy_count || 0;
             
-            // تحديث الجدول إذا وجدت قائمة للتداولات
             const tbody = document.getElementById('trade-table-body');
             if (data.trades && data.trades.length > 0) {
                 tbody.innerHTML = data.trades.map(item => `
-                    <tr class="hover:bg-gray-750 transition">
-                        <td class="p-3 font-mono text-blue-400">#${item.id}</td>
-                        <td class="p-3 text-white font-medium">${item.title || '-'}</td>
-                        <td class="p-3">${item.target_country || '-'}</td>
-                        <td class="p-3 font-bold text-emerald-400">${item.value || 0}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">نشط</span></td>
+                    <tr>
+                        <td class="font-mono text-amber-400">#${item.id}</td>
+                        <td class="text-white font-medium">${item.title || '-'}</td>
+                        <td><span class="badge bg-amber-500/10 text-amber-400 border border-amber-500/20">${item.type || 'تداول'}</span></td>
+                        <td class="font-bold text-emerald-400">${item.value || 0}</td>
+                        <td><span class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">نشط</span></td>
                     </tr>
                 `).join('');
             } else {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400">لا توجد طلبات تداول حالية في قاعدة البيانات.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-muted text-center">لا توجد صفقات تداول حالية.</td></tr>`;
             }
         } else {
-             document.getElementById('trade-table-body').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-400">حدث خطأ أثناء جلب البيانات من الخادم.</td></tr>`;
+            document.getElementById('trade-table-body').innerHTML = `<tr><td colspan="5" class="py-4 text-danger text-center">تعذر جلب البيانات من الخادم.</td></tr>`;
         }
     } catch (e) {
         console.error("Trade Desk Error:", e);
-        document.getElementById('trade-table-body').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-400">تعذر الاتصال بالخادم.</td></tr>`;
+        document.getElementById('trade-table-body').innerHTML = `<tr><td colspan="5" class="py-4 text-danger text-center">خطأ في الاتصال بالشبكة.</td></tr>`;
     }
 }
 

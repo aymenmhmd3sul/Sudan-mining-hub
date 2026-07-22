@@ -4,8 +4,16 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 
-# استدعاء المسارات المعتمدة للمصادقة وللإدارة
+# استدعاء المسارات المعتمدة للمصادقة وللإدارة والتفاوض
 from app.routers import admin_views
+
+try:
+    from app.routers import admin_negotiation_page, admin_negotiation_actions, admin_negotiation_details
+except ImportError:
+    admin_negotiation_page = None
+    admin_negotiation_actions = None
+    admin_negotiation_details = None
+
 try:
     from app.routers import auth
 except ImportError:
@@ -37,9 +45,19 @@ async def serve_login_page(request: Request):
         return templates.TemplateResponse(request=request, name="login.html")
     return templates.TemplateResponse(request=request, name="admin/dashboard.html")
 
-# 3. تضمين رواتر المصادقة الأصلي (لتحقق السيرفر من كلمة المرور والبريد بشكل صحيح)
+# 3. تضمين رواتر المصادقة الأصلي
 if auth and hasattr(auth, 'router'):
     app.include_router(auth.router)
 
 # 4. تضمين مسارات الإدارة والداش بورد
 app.include_router(admin_views.router)
+
+# 5. تضمين مسارات غرف التفاوض والإجراءات
+if admin_negotiation_page and hasattr(admin_negotiation_page, 'router'):
+    app.include_router(admin_negotiation_page.router)
+
+if admin_negotiation_actions and hasattr(admin_negotiation_actions, 'router'):
+    app.include_router(admin_negotiation_actions.router)
+
+if admin_negotiation_details and hasattr(admin_negotiation_details, 'router'):
+    app.include_router(admin_negotiation_details.router)

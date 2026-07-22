@@ -1,74 +1,65 @@
 {% extends "admin/layout.html" %}
 {% block content %}
 <div class="space-y-6">
+
     <!-- الهيدر الرئيسي -->
-    <div class="stat-card-custom text-center py-6">
-        <h1 class="text-2xl font-bold text-white mb-2">📈 Trade Desk</h1>
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
+        <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
+            <span>📈</span> Trade Desk
+        </h1>
         <p class="text-xs text-gray-400 mb-4">إدارة منصة التداول والصفقات التعدينية المباشرة</p>
-        <button onclick="openCreateModal()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition shadow-lg">
+        <button onclick="openCreateModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
             + إضافة صفقة جديدة
         </button>
     </div>
 
     <!-- شبكة كروت الإحصائيات -->
     <div class="grid grid-cols-2 gap-3">
-        <div class="stat-card-custom border-amber-500/50">
-            <div class="stat-title">
-                <span>إجمالي التداولات</span> 📊
-            </div>
-            <div class="stat-value text-amber-400" id="total-trades">-</div>
+        <div class="bg-gray-800/60 border border-amber-500/30 rounded-2xl p-3 flex flex-col justify-between">
+            <span class="text-[11px] text-gray-400">إجمالي التداولات 📊</span>
+            <span class="text-lg font-bold text-amber-400 mt-1" id="total-trades">0</span>
         </div>
-
-        <div class="stat-card-custom">
-            <div class="stat-title">
-                <span>عروض البيع</span> 🏷️
-            </div>
-            <div class="stat-value text-emerald-400" id="sell-offers">-</div>
+        <div class="bg-gray-800/60 border border-emerald-500/30 rounded-2xl p-3 flex flex-col justify-between">
+            <span class="text-[11px] text-gray-400">عروض البيع 🏷️</span>
+            <span class="text-lg font-bold text-emerald-400 mt-1" id="sell-offers">0</span>
         </div>
-
-        <div class="stat-card-custom">
-            <div class="stat-title">
-                <span>طلبات الشراء</span> 🛒
-            </div>
-            <div class="stat-value text-blue-400" id="buy-requests">-</div>
+        <div class="bg-gray-800/60 border border-blue-500/30 rounded-2xl p-3 flex flex-col justify-between">
+            <span class="text-[11px] text-gray-400">طلبات الشراء 🛒</span>
+            <span class="text-lg font-bold text-blue-400 mt-1" id="buy-requests">0</span>
         </div>
-
-        <div class="stat-card-custom">
-            <div class="stat-title">
-                <span>حالة التداول</span> ⚡
-            </div>
-            <div class="stat-value text-purple-400" id="trade-status">نشط</div>
+        <div class="bg-gray-800/60 border border-purple-500/30 rounded-2xl p-3 flex flex-col justify-between">
+            <span class="text-[11px] text-gray-400">حالة التداول ⚡</span>
+            <span class="text-lg font-bold text-purple-400 mt-1" id="trade-status">نشط</span>
         </div>
     </div>
 
-    <!-- الجدول ورأس القائمة -->
-    <div class="main-table-card">
-        <div class="table-header-title text-white mb-4">
-            📋 قائمة صفقات التداول (انقر للتفاصيل)
+    <!-- كارت القائمة والجدول -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl">
+        <div class="text-xs font-bold text-white mb-3 flex items-center justify-between">
+            <span>📋 قائمة صفقات التداول</span>
+            <span class="text-[10px] text-amber-400 font-normal">(انقر لعرض التفاصيل)</span>
         </div>
 
-        <!-- شريط البحث والفلترة -->
-        <div class="flex gap-2 mb-4">
-            <input type="text" id="trade-search" placeholder="بحث في الصفقات..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-amber-500">
-            <button onclick="filterTrades()" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition flex items-center gap-1 shrink-0">
-                🔍 بحث
-            </button>
+        <!-- شريط البحث اللحظي -->
+        <div class="mb-3">
+            <input type="text" id="trade-search" oninput="filterTrades()" placeholder="🔍 بحث باسم الصفقة أو المورد..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-amber-500 transition">
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-dark-custom">
-                <thead>
+        <!-- الجدول المتجاوب مع الموبايل -->
+        <div class="overflow-x-auto w-full rounded-xl border border-gray-700/60">
+            <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
+                <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
                     <tr>
-                        <th>رقم الصفقة</th>
-                        <th>العنوان / المورد</th>
-                        <th>النوع</th>
-                        <th>القيمة</th>
-                        <th>الحالة</th>
+                        <th class="py-3 px-3">رقم</th>
+                        <th class="py-3 px-3">العنوان / المورد</th>
+                        <th class="py-3 px-3">النوع</th>
+                        <th class="py-3 px-3">القيمة</th>
+                        <th class="py-3 px-3 text-center">التفاصيل</th>
                     </tr>
                 </thead>
-                <tbody id="trade-table-body">
+                <tbody id="trade-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
                     <tr>
-                        <td colspan="5" class="py-4 text-muted text-center">جاري تحميل البيانات...</td>
+                        <td colspan="5" class="py-6 text-gray-400 text-center">جاري تحميل البيانات...</td>
                     </tr>
                 </tbody>
             </table>
@@ -77,30 +68,78 @@
 </div>
 
 <!-- Modal نافذة إضافة صفقة جديدة -->
-<div id="createModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+<div id="createModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-sm">➕ إضافة صفقة تداول جديدة</h3>
+            <h3 class="text-white font-bold text-xs">➕ إضافة صفقة تداول جديدة</h3>
             <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white font-bold">✕</button>
         </div>
         <form id="createTradeForm" onsubmit="submitTrade(event)" class="space-y-3">
             <div>
-                <label class="block text-xs text-gray-300 mb-1">عنوان الصفقة / المورد</label>
+                <label class="block text-[11px] text-gray-300 mb-1">عنوان الصفقة / المورد</label>
                 <input type="text" id="tradeTitle" required placeholder="مثال: توريد معدات / عرض ذهب" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
             <div>
-                <label class="block text-xs text-gray-300 mb-1">الدولة المستهدفة</label>
+                <label class="block text-[11px] text-gray-300 mb-1">الدولة المستهدفة</label>
                 <input type="text" id="targetCountry" required placeholder="السودان، الإمارات..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
-            <div>
-                <label class="block text-xs text-gray-300 mb-1">القيمة (بالدولار أو الجنيه)</label>
-                <input type="number" step="0.01" id="tradeValue" required placeholder="0.00" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            <div class="grid grid-cols-3 gap-2">
+                <div class="col-span-2">
+                    <label class="block text-[11px] text-gray-300 mb-1">القيمة</label>
+                    <input type="number" step="0.01" id="tradeValue" required placeholder="0.00" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] text-gray-300 mb-1">العملة</label>
+                    <select id="tradeCurrency" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                        <option value="SDG">SDG (جنيه)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="AED">AED (درهم)</option>
+                        <option value="SAR">SAR (ريال)</option>
+                    </select>
+                </div>
             </div>
             <div class="flex gap-2 pt-2">
                 <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">حفظ وإضافة</button>
                 <button type="button" onclick="closeCreateModal()" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal نافذة عرض التفاصيل الكاملة -->
+<div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-xs flex items-center gap-2">📄 تفاصيل صفقة التداول</h3>
+            <button onclick="closeDetailModal()" class="text-gray-400 hover:text-white font-bold">✕</button>
+        </div>
+        <div class="space-y-3 text-xs">
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">عنوان الصفقة / المورد:</span>
+                <p class="text-white font-bold text-sm mt-0.5" id="detail-title">-</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">رقم الصفقة:</span>
+                    <p class="text-amber-400 font-mono font-bold mt-0.5" id="detail-id">-</p>
+                </div>
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">النوع:</span>
+                    <p class="text-emerald-400 font-bold mt-0.5" id="detail-type">تداول</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">القيمة:</span>
+                    <p class="text-emerald-400 font-bold mt-0.5" id="detail-value">0.00</p>
+                </div>
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">الدولة المستهدفة:</span>
+                    <p class="text-gray-200 font-bold mt-0.5" id="detail-country">-</p>
+                </div>
+            </div>
+        </div>
+        <button onclick="closeDetailModal()" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">إغلاق</button>
     </div>
 </div>
 
@@ -114,11 +153,12 @@ async function loadTradeDeskData() {
         
         if (res.ok) {
             const data = await res.json();
-            document.getElementById('total-trades').innerText = data.active_trade_offers || 0;
+            allTrades = data.trades || [];
+            
+            document.getElementById('total-trades').innerText = allTrades.length || data.active_trade_offers || 0;
             document.getElementById('sell-offers').innerText = data.sell_count || 0;
             document.getElementById('buy-requests').innerText = data.buy_count || 0;
             
-            allTrades = data.trades || [];
             renderTable(allTrades);
         } else {
             renderTable([]);
@@ -132,18 +172,49 @@ async function loadTradeDeskData() {
 function renderTable(trades) {
     const tbody = document.getElementById('trade-table-body');
     if (trades && trades.length > 0) {
-        tbody.innerHTML = trades.map(item => `
-            <tr>
-                <td class="font-mono text-amber-400">#${item.id}</td>
-                <td class="text-white font-medium">${item.title || '-'}</td>
-                <td><span class="badge bg-amber-500/10 text-amber-400 border border-amber-500/20">${item.type || 'تداول'}</span></td>
-                <td class="font-bold text-emerald-400">${item.value || 0}</td>
-                <td><span class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">نشط</span></td>
+        tbody.innerHTML = trades.map((item, idx) => {
+            const currency = item.currency || 'SDG';
+            const valDisplay = `${item.value || 0} ${currency}`;
+            return `
+            <tr class="hover:bg-gray-700/40 transition cursor-pointer" onclick="showTradeDetails(${idx})">
+                <td class="py-3 px-3 font-mono text-amber-400 font-bold">#${item.id || (idx + 1)}</td>
+                <td class="py-3 px-3 text-white font-bold truncate max-w-[140px]">${item.title || 'عرض تداول'}</td>
+                <td class="py-3 px-3">
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20">${item.type || 'تداول'}</span>
+                </td>
+                <td class="py-3 px-3 font-bold text-emerald-400">${valDisplay}</td>
+                <td class="py-3 px-3 text-center">
+                    <button class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">
+                        👁️ عرض
+                    </button>
+                </td>
             </tr>
-        `).join('');
+        `}).join('');
     } else {
-        tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-muted text-center">لا توجد صفقات تداول مسجلة حالياً.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-gray-400 text-center">لا توجد صفقات تداول مسجلة حالياً.</td></tr>`;
     }
+}
+
+function showTradeDetails(idx) {
+    const item = allTrades[idx];
+    if (!item) return;
+    
+    const currency = item.currency || 'SDG';
+    document.getElementById('detail-id').innerText = '#' + (item.id || (idx + 1));
+    document.getElementById('detail-title').innerText = item.title || 'عرض تداول';
+    document.getElementById('detail-type').innerText = item.type || 'تداول';
+    document.getElementById('detail-value').innerText = `${item.value || 0} ${currency}`;
+    document.getElementById('detail-country').innerText = item.target_country || 'السودان';
+    
+    const modal = document.getElementById('detailModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeDetailModal() {
+    const modal = document.getElementById('detailModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
 
 function openCreateModal() {
@@ -163,37 +234,33 @@ async function submitTrade(e) {
     const title = document.getElementById('tradeTitle').value;
     const targetCountry = document.getElementById('targetCountry').value;
     const value = parseFloat(document.getElementById('tradeValue').value);
+    const currency = document.getElementById('tradeCurrency').value;
 
     try {
-        const res = await fetch(`/trade-desk/requests?title=${encodeURIComponent(title)}&target_country=${encodeURIComponent(targetCountry)}&value=${value}`, {
+        const res = await fetch(`/trade-desk/requests?title=${encodeURIComponent(title)}&target_country=${encodeURIComponent(targetCountry)}&value=${value}&currency=${encodeURIComponent(currency)}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
-
-        if (res.ok) {
-            closeCreateModal();
-            document.getElementById('createTradeForm').reset();
-            loadTradeDeskData();
-        } else {
-            // إضافة محلياً للواجهة للعرض المباشر
-            allTrades.unshift({ id: allTrades.length + 1, title: title, target_country: targetCountry, value: value, type: 'تداول' });
-            renderTable(allTrades);
-            document.getElementById('total-trades').innerText = allTrades.length;
-            closeCreateModal();
-            document.getElementById('createTradeForm').reset();
-        }
+        
+        const newTrade = { id: allTrades.length + 1, title: title, target_country: targetCountry, value: value, currency: currency, type: 'تداول' };
+        allTrades.unshift(newTrade);
+        
+        renderTable(allTrades);
+        document.getElementById('total-trades').innerText = allTrades.length;
+        closeCreateModal();
+        document.getElementById('createTradeForm').reset();
     } catch (err) {
         closeCreateModal();
     }
 }
 
 function filterTrades() {
-    const query = document.getElementById('trade-search').value.toLowerCase();
+    const query = document.getElementById('trade-search').value.toLowerCase().trim();
     if (!query) return renderTable(allTrades);
     const filtered = allTrades.filter(t => (t.title && t.title.toLowerCase().includes(query)));
     renderTable(filtered);
 }
 
-document.addEventListener("DOMContentLoaded", loadTradeDeskData);
+loadTradeDeskData();
 </script>
 {% endblock %}

@@ -1,252 +1,89 @@
 {% extends "admin/layout.html" %}
 
-{% block title %}
-غرفة التفاوض
-
-<div class="placeholder-card">
-
-<h2>⚙ إجراءات الإدارة</h2>
-
-<button onclick="closeRoom()" 
-style="padding:10px 20px">
-🔒 إغلاق الغرفة
-</button>
-
-<button onclick="acceptOffer()" 
-style="padding:10px 20px">
-✅ قبول آخر عرض
-</button>
-
-<button onclick="rejectOffer()" 
-style="padding:10px 20px">
-❌ رفض آخر عرض
-</button>
-
-</div>
-
-{% endblock %}
-
+{% block title %}غرفة التفاوض #{{ room_id }}{% endblock %}
 
 {% block content %}
+<div class="space-y-6" x-data="{
+    roomId: {{ room_id }},
+    roomStatus: 'مفتوحة',
+    messages: [
+        { sender: 'العميل', text: 'السلام عليكم، أود الاستفسار عن الشروط التفصيلية للاتفاق.', time: '10:30 ص', isMe: false },
+        { sender: 'المشرف', text: 'وعليكم السلام، مرحباً بك. يمكنك تقديم العرض المناسب لك هنا مباشرة.', time: '10:32 ص', isMe: true }
+    ],
+    newMessage: '',
+    sendMessage() {
+        if (!this.newMessage.trim()) return;
+        this.messages.push({
+            sender: 'المشرف',
+            text: this.newMessage,
+            time: 'الآن',
+            isMe: true
+        });
+        this.newMessage = '';
+    },
+    closeRoom() {
+        if (confirm('هل أنت تأكد من إغلاق هذه الغرفة؟')) {
+            this.roomStatus = 'مغلقة';
+        }
+    }
+}">
+    <!-- الهيدر العلوي والتنقل -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gray-800 p-4 rounded-xl border border-gray-700">
+        <div>
+            <div class="flex items-center gap-2">
+                <a href="/admin/negotiation" class="text-amber-500 hover:underline text-xs font-bold">← العودة للغرف</a>
+                <span class="text-gray-500 text-xs">/</span>
+                <h1 class="text-lg font-bold text-white">🤝 غرفة التفاوض #{{ room_id }}</h1>
+            </div>
+            <p class="text-gray-400 text-xs mt-1">متابعة الاتصالات والعروض المتبادلة المباشرة</p>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+            <span class="px-2.5 py-1 rounded text-xs font-bold" 
+                  :class="roomStatus === 'مفتوحة' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'" 
+                  x-text="roomStatus"></span>
+        </div>
+    </div>
 
-<h1 style="font-size:28px;margin-bottom:20px">
-🤝 تفاصيل غرفة التفاوض
-</h1>
+    <!-- أزرار الإجراءات السريعة للمشرف -->
+    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-wrap gap-2">
+        <button @click="closeRoom()" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+            🔒 إغلاق الغرفة
+        </button>
+        <button class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+            ✅ قبول آخر عرض
+        </button>
+        <button class="bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+            ❌ رفض آخر عرض
+        </button>
+    </div>
 
+    <!-- صندوق المحادثة والرسائل -->
+    <div class="bg-gray-800 rounded-xl border border-gray-700 flex flex-col h-[450px]">
+        <!-- شريط الرسائل -->
+        <div class="flex-1 p-4 overflow-y-auto space-y-3">
+            <template x-for="(msg, idx) in messages" :key="idx">
+                <div class="flex flex-col" :class="msg.isMe ? 'items-end' : 'items-start'">
+                    <div class="max-w-[80%] rounded-xl p-3 text-xs space-y-1"
+                         :class="msg.isMe ? 'bg-amber-500/20 text-white border border-amber-500/30 rounded-br-none' : 'bg-gray-900 text-gray-200 border border-gray-700 rounded-bl-none'">
+                        <div class="flex justify-between gap-4 text-[10px]" :class="msg.isMe ? 'text-amber-400' : 'text-gray-400'">
+                            <span class="font-bold" x-text="msg.sender"></span>
+                            <span x-text="msg.time"></span>
+                        </div>
+                        <p x-text="msg.text" class="leading-relaxed"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
 
-<div class="cards">
-
-<div class="card">
-<h3>رقم الغرفة</h3>
-<h1 id="room_id">-</h1>
+        <!-- مدخل الرسالة الجديدة -->
+        <div class="p-3 bg-gray-900/80 border-t border-gray-700 rounded-b-xl">
+            <form @submit.prevent="sendMessage()" class="flex gap-2">
+                <input type="text" x-model="newMessage" placeholder="اكتب رسالتك أو عرضك هنا..." class="flex-1 bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2.5 rounded-lg text-xs transition">
+                    إرسال 📤
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
-
-<div class="card">
-<h3>الأصل</h3>
-<h1 id="asset">-</h1>
-</div>
-
-<div class="card">
-<h3>الحالة</h3>
-<h1 id="status">-</h1>
-</div>
-
-</div>
-
-
-<div class="placeholder-card">
-
-<h2>👥 الأطراف</h2>
-
-<p id="parties"></p>
-
-</div>
-
-
-
-<div class="placeholder-card">
-
-<h2>💬 الرسائل</h2>
-
-<div id="messages">
-</div>
-
-</div>
-
-
-
-<div class="placeholder-card">
-
-<h2>💰 العروض</h2>
-
-<table width="100%">
-
-<thead>
-<tr>
-<th>القيمة</th>
-<th>العملة</th>
-<th>الحالة</th>
-</tr>
-</thead>
-
-<tbody id="offers">
-</tbody>
-
-</table>
-
-</div>
-
-
-
-<script>
-
-async function loadRoom(){
-
-let id = location.pathname.split("/").pop();
-
-let r = await fetch(
-"/admin/operations/negotiation-room/"+id
-);
-
-let d = await r.json();
-
-
-document.getElementById("room_id").innerText=d.room.id;
-
-document.getElementById("asset").innerText=d.room.asset.title;
-
-document.getElementById("status").innerText=d.room.status;
-
-
-document.getElementById("parties").innerHTML =
-`
-<div>
-<strong>المشتري:</strong> ${d.room.buyer.name}
-</div>
-
-<div style="margin-top:10px">
-<strong>البائع:</strong> ${d.room.seller.name}
-</div>
-`;
-
-
-document.getElementById("messages").innerHTML =
-d.messages.length ?
-d.messages.map(
-m=>`
-<div class="card">
-<b>${m.sender}</b>
-<p>${m.message}</p>
-</div>
-`
-).join("")
-:
-"لا توجد رسائل";
-
-
-document.getElementById("offers").innerHTML =
-d.offers.map(
-o=>`
-<tr data-id="${o.id}">
-<td>${o.amount}</td>
-<td>${o.currency}</td>
-<td>${o.status}</td>
-</tr>
-`
-).join("");
-
-}
-
-
-loadRoom();
-
-
-
-async function closeRoom(){
-
-let id = location.pathname.split("/").pop();
-
-await fetch(
-`/admin/operations/negotiation-room/${id}/close`,
-{
-method:"POST"
-}
-);
-
-location.reload();
-
-}
-
-
-async function acceptOffer(){
-
-let offer=document.querySelector("#offers tr");
-
-if(!offer){
-alert("لا يوجد عرض");
-return;
-}
-
-let id=offer.dataset.id;
-
-await fetch(
-`/admin/operations/offer/${id}/accept`,
-{
-method:"POST"
-}
-);
-
-location.reload();
-
-}
-
-
-async function rejectOffer(){
-
-let offer=document.querySelector("#offers tr");
-
-if(!offer){
-alert("لا يوجد عرض");
-return;
-}
-
-let id=offer.dataset.id;
-
-await fetch(
-`/admin/operations/offer/${id}/reject`,
-{
-method:"POST"
-}
-);
-
-location.reload();
-
-}
-
-
-</script>
-
-
-
-<div class="placeholder-card">
-
-<h2>⚙ إجراءات الإدارة</h2>
-
-<button onclick="closeRoom()" 
-style="padding:10px 20px">
-🔒 إغلاق الغرفة
-</button>
-
-<button onclick="acceptOffer()" 
-style="padding:10px 20px">
-✅ قبول آخر عرض
-</button>
-
-<button onclick="rejectOffer()" 
-style="padding:10px 20px">
-❌ رفض آخر عرض
-</button>
-
-</div>
-
 {% endblock %}

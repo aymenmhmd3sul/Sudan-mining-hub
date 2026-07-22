@@ -52,5 +52,4 @@ if admin_negotiation_page and hasattr(admin_negotiation_page, 'router'):
 if admin_negotiation_actions and hasattr(admin_negotiation_actions, 'router'):
     app.include_router(admin_negotiation_actions.router)
 
-if admin_negotiation_details and hasattr(admin_negotiation_details, 'router'):
-    app.include_router(admin_negotiation_details.router)
+# disabled conflicting details router

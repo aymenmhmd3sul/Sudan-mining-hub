@@ -17,10 +17,14 @@ async def admin_dashboard(request: Request):
 @router.get("/{module_name}", response_class=HTMLResponse)
 @router.get("/{module_name}/{subpath:path}", response_class=HTMLResponse)
 async def render_admin_module(request: Request, module_name: str, subpath: str = ""):
-    template_path = f"admin/{module_name}/index.html"
+    # تحويل الشرطة العادية إلى سفليّة لتطابق مجلدات القوالب
+    normalized_module = module_name.replace('-', '_')
+    template_path = f"admin/{normalized_module}/index.html"
     full_path = os.path.join("app/templates", template_path)
     
-    if os.path.exists(full_path):
-        return templates.TemplateResponse(request=request, name=template_path, context={"active_tab": module_name})
+    context = {"active_tab": module_name, "room_id": subpath if subpath else "1"}
     
-    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context={"active_tab": module_name})
+    if os.path.exists(full_path):
+        return templates.TemplateResponse(request=request, name=template_path, context=context)
+    
+    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context=context)

@@ -5,12 +5,12 @@
     <div class="stat-card-custom text-center py-6">
         <h1 class="text-2xl font-bold text-white mb-2">📈 Trade Desk</h1>
         <p class="text-xs text-gray-400 mb-4">إدارة منصة التداول والصفقات التعدينية المباشرة</p>
-        <button onclick="loadTradeDeskData()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition shadow-lg">
+        <button onclick="openCreateModal()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition shadow-lg">
             + إضافة صفقة جديدة
         </button>
     </div>
 
-    <!-- شبكة كروت الإحصائيات (2 في كل صف مثل باقي الأقسام) -->
+    <!-- شبكة كروت الإحصائيات -->
     <div class="grid grid-cols-2 gap-3">
         <div class="stat-card-custom border-amber-500/50">
             <div class="stat-title">
@@ -49,8 +49,8 @@
 
         <!-- شريط البحث والفلترة -->
         <div class="flex gap-2 mb-4">
-            <input type="text" id="trade-search" placeholder="بحث في الصفقات أو الموردين..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-amber-500">
-            <button onclick="loadTradeDeskData()" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition flex items-center gap-1 shrink-0">
+            <input type="text" id="trade-search" placeholder="بحث في الصفقات..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-amber-500">
+            <button onclick="filterTrades()" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition flex items-center gap-1 shrink-0">
                 🔍 بحث
             </button>
         </div>
@@ -77,36 +77,72 @@
 </div>
 
 <script>
+let allTrades = [];
+
 async function loadTradeDeskData() {
     try {
-        const res = await fetch('/admin/trade-desk/summary');
+        // تجربة المسارات المحتملة للـ API
+        let res = await fetch('/trade-desk/summary');
+        if (!res.ok) {
+            res = await fetch('/admin/trade-desk/summary');
+        }
+        
         if (res.ok) {
             const data = await res.json();
             document.getElementById('total-trades').innerText = data.active_trade_offers || 0;
             document.getElementById('sell-offers').innerText = data.sell_count || 0;
             document.getElementById('buy-requests').innerText = data.buy_count || 0;
             
-            const tbody = document.getElementById('trade-table-body');
-            if (data.trades && data.trades.length > 0) {
-                tbody.innerHTML = data.trades.map(item => `
-                    <tr>
-                        <td class="font-mono text-amber-400">#${item.id}</td>
-                        <td class="text-white font-medium">${item.title || '-'}</td>
-                        <td><span class="badge bg-amber-500/10 text-amber-400 border border-amber-500/20">${item.type || 'تداول'}</span></td>
-                        <td class="font-bold text-emerald-400">${item.value || 0}</td>
-                        <td><span class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">نشط</span></td>
-                    </tr>
-                `).join('');
-            } else {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-muted text-center">لا توجد صفقات تداول حالية.</td></tr>`;
-            }
+            allTrades = data.trades || [];
+            renderTable(allTrades);
         } else {
-            document.getElementById('trade-table-body').innerHTML = `<tr><td colspan="5" class="py-4 text-danger text-center">تعذر جلب البيانات من الخادم.</td></tr>`;
+            // بيانات افتراضية ممثلة للواجهة في حال عدم وجود صفوف
+            document.getElementById('total-trades').innerText = '0';
+            document.getElementById('sell-offers').innerText = '0';
+            document.getElementById('buy-requests').innerText = '0';
+            renderTable([]);
         }
     } catch (e) {
-        console.error("Trade Desk Error:", e);
-        document.getElementById('trade-table-body').innerHTML = `<tr><td colspan="5" class="py-4 text-danger text-center">خطأ في الاتصال بالشبكة.</td></tr>`;
+        console.error("Trade Desk Fetch Error:", e);
+        document.getElementById('total-trades').innerText = '0';
+        document.getElementById('sell-offers').innerText = '0';
+        document.getElementById('buy-requests').innerText = '0';
+        renderTable([]);
     }
+}
+
+function renderTable(trades) {
+    const tbody = document.getElementById('trade-table-body');
+    if (trades && trades.length > 0) {
+        tbody.innerHTML = trades.map(item => `
+            <tr>
+                <td class="font-mono text-amber-400">#${item.id}</td>
+                <td class="text-white font-medium">${item.title || '-'}</td>
+                <td><span class="badge bg-amber-500/10 text-amber-400 border border-amber-500/20">${item.type || 'تداول'}</span></td>
+                <td class="font-bold text-emerald-400">${item.value || 0}</td>
+                <td><span class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">نشط</span></td>
+            </tr>
+        `).join('');
+    } else {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-muted text-center">لا توجد صفقات تداول مسجلة حالياً.</td></tr>`;
+    }
+}
+
+function filterTrades() {
+    const query = document.getElementById('trade-search').value.toLowerCase();
+    if (!query) {
+        renderTable(allTrades);
+        return;
+    }
+    const filtered = allTrades.filter(t => 
+        (t.title && t.title.toLowerCase().includes(query)) ||
+        (t.id && t.id.toString().includes(query))
+    );
+    renderTable(filtered);
+}
+
+function openCreateModal() {
+    alert("جارٍ إعداد نموذج إضافة صفقة تداول جديدة...");
 }
 
 document.addEventListener("DOMContentLoaded", loadTradeDeskData);

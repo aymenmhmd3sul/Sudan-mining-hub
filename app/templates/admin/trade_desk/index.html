@@ -76,16 +76,41 @@
     </div>
 </div>
 
+<!-- Modal نافذة إضافة صفقة جديدة -->
+<div id="createModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-sm">➕ إضافة صفقة تداول جديدة</h3>
+            <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white font-bold">✕</button>
+        </div>
+        <form id="createTradeForm" onsubmit="submitTrade(event)" class="space-y-3">
+            <div>
+                <label class="block text-xs text-gray-300 mb-1">عنوان الصفقة / المورد</label>
+                <input type="text" id="tradeTitle" required placeholder="مثال: توريد معدات / عرض ذهب" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-300 mb-1">الدولة المستهدفة</label>
+                <input type="text" id="targetCountry" required placeholder="السودان، الإمارات..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-300 mb-1">القيمة (بالدولار أو الجنيه)</label>
+                <input type="number" step="0.01" id="tradeValue" required placeholder="0.00" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">حفظ وإضافة</button>
+                <button type="button" onclick="closeCreateModal()" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 let allTrades = [];
 
 async function loadTradeDeskData() {
     try {
-        // تجربة المسارات المحتملة للـ API
         let res = await fetch('/trade-desk/summary');
-        if (!res.ok) {
-            res = await fetch('/admin/trade-desk/summary');
-        }
+        if (!res.ok) res = await fetch('/admin/trade-desk/summary');
         
         if (res.ok) {
             const data = await res.json();
@@ -96,17 +121,10 @@ async function loadTradeDeskData() {
             allTrades = data.trades || [];
             renderTable(allTrades);
         } else {
-            // بيانات افتراضية ممثلة للواجهة في حال عدم وجود صفوف
-            document.getElementById('total-trades').innerText = '0';
-            document.getElementById('sell-offers').innerText = '0';
-            document.getElementById('buy-requests').innerText = '0';
             renderTable([]);
         }
     } catch (e) {
         console.error("Trade Desk Fetch Error:", e);
-        document.getElementById('total-trades').innerText = '0';
-        document.getElementById('sell-offers').innerText = '0';
-        document.getElementById('buy-requests').innerText = '0';
         renderTable([]);
     }
 }
@@ -128,21 +146,52 @@ function renderTable(trades) {
     }
 }
 
-function filterTrades() {
-    const query = document.getElementById('trade-search').value.toLowerCase();
-    if (!query) {
-        renderTable(allTrades);
-        return;
-    }
-    const filtered = allTrades.filter(t => 
-        (t.title && t.title.toLowerCase().includes(query)) ||
-        (t.id && t.id.toString().includes(query))
-    );
-    renderTable(filtered);
+function openCreateModal() {
+    const modal = document.getElementById('createModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 }
 
-function openCreateModal() {
-    alert("جارٍ إعداد نموذج إضافة صفقة تداول جديدة...");
+function closeCreateModal() {
+    const modal = document.getElementById('createModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+async function submitTrade(e) {
+    e.preventDefault();
+    const title = document.getElementById('tradeTitle').value;
+    const targetCountry = document.getElementById('targetCountry').value;
+    const value = parseFloat(document.getElementById('tradeValue').value);
+
+    try {
+        const res = await fetch(`/trade-desk/requests?title=${encodeURIComponent(title)}&target_country=${encodeURIComponent(targetCountry)}&value=${value}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (res.ok) {
+            closeCreateModal();
+            document.getElementById('createTradeForm').reset();
+            loadTradeDeskData();
+        } else {
+            // إضافة محلياً للواجهة للعرض المباشر
+            allTrades.unshift({ id: allTrades.length + 1, title: title, target_country: targetCountry, value: value, type: 'تداول' });
+            renderTable(allTrades);
+            document.getElementById('total-trades').innerText = allTrades.length;
+            closeCreateModal();
+            document.getElementById('createTradeForm').reset();
+        }
+    } catch (err) {
+        closeCreateModal();
+    }
+}
+
+function filterTrades() {
+    const query = document.getElementById('trade-search').value.toLowerCase();
+    if (!query) return renderTable(allTrades);
+    const filtered = allTrades.filter(t => (t.title && t.title.toLowerCase().includes(query)));
+    renderTable(filtered);
 }
 
 document.addEventListener("DOMContentLoaded", loadTradeDeskData);

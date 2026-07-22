@@ -1,21 +1,14 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
-from app.database import SessionLocal
-from app.services.admin_negotiation_service import AdminNegotiationService
+router = APIRouter(prefix="/admin", tags=["Admin Negotiation"])
+templates = Jinja2Templates(directory="app/templates")
 
-router = APIRouter(
-    prefix="/admin/operations",
-    tags=["Admin Negotiation"]
-)
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-@router.get("/negotiation-dashboard")
-def negotiation_dashboard(db: Session = Depends(get_db)):
-    return AdminNegotiationService.get_dashboard(db)
+@router.get("/negotiation", response_class=HTMLResponse)
+@router.get("/negotiation-dashboard", response_class=HTMLResponse)
+async def negotiation_dashboard(request: Request):
+    return templates.TemplateResponse(
+        "admin/negotiation.html", 
+        {"request": request, "active_tab": "negotiation"}
+    )

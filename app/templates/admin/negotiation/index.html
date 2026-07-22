@@ -1,129 +1,293 @@
 {% extends "admin/layout.html" %}
-
 {% block content %}
-<div class="space-y-6" x-data="negotiationDesk()">
+<div class="space-y-6">
 
-    <!-- الهيدر الرئيسي -->
-    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl">
-        <h1 class="text-2xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>🤝</span> إدارة غرف التفاوض والتداولات
+    <!-- الهيدر -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
+        <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
+            <span>💬 غرف التفاوض المباشر</span>
         </h1>
-        <p class="text-xs text-gray-400 mb-4">متابعة غرف التفاوض المفتوحة والعروض المتبادلة بين الموردين والمشترين</p>
-        <button @click="openModal = true" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-all shadow-lg hover:shadow-amber-500/20 active:scale-95">
-            + إنشاء غرفة جديدة
+        <p class="text-xs text-gray-400 mb-4">إدارة وتتبع جلسات التفاوض الجارية بين البائعين والمشترين</p>
+        <button type="button" onclick="openCreateModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
+            + إنشاء غرفة تفاوض جديدة
         </button>
     </div>
 
-    <!-- الإحصائيات -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div class="bg-gray-800/60 border border-amber-500/30 rounded-2xl p-4">
-            <span class="text-xs text-gray-400 block">إجمالي الغرف 📊</span>
-            <span class="text-xl font-bold text-amber-400 mt-1 block" x-text="rooms.length">0</span>
-        </div>
-        <div class="bg-gray-800/60 border border-blue-500/30 rounded-2xl p-4">
-            <span class="text-xs text-gray-400 block">غرف نشطة ⚡</span>
-            <span class="text-xl font-bold text-blue-400 mt-1 block" x-text="rooms.filter(r => r.status === 'مفتوحة').length">0</span>
-        </div>
-        <div class="bg-gray-800/60 border border-emerald-500/30 rounded-2xl p-4">
-            <span class="text-xs text-gray-400 block">غرف مكتملة ✅</span>
-            <span class="text-xl font-bold text-emerald-400 mt-1 block" x-text="rooms.filter(r => r.status === 'مغلقة' || r.status === 'مكتملة').length">0</span>
-        </div>
-    </div>
-
-    <!-- شبكة غرف المفاوضات -->
-    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 shadow-xl">
-        <div class="text-sm font-bold text-white mb-4 flex items-center justify-between">
-            <span class="flex items-center gap-2">💬 الغرف النشطة (انقر للدخول للغرفة)</span>
+    <!-- شبكة كروت الإحصائيات والفلاتر -->
+    <div class="grid grid-cols-2 gap-3">
+        <!-- إجمالي الغرف (الكل) -->
+        <div id="card-all" onclick="filterBy('all')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95 shadow-lg shadow-amber-500/10">
+            <span class="text-[11px] text-gray-400">إجمالي الغرف 📊</span>
+            <span class="text-lg font-bold text-amber-400 mt-1" id="stat-all-count">3</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <template x-for="room in rooms" :key="room.id">
-                <div @click="goToRoom(room.id)" class="bg-gray-900/80 border border-gray-700 hover:border-amber-500/50 rounded-2xl p-4 transition cursor-pointer hover:shadow-lg hover:scale-[1.01] group relative">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="text-[10px] font-mono text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20" x-text="'غرفة #' + room.id"></span>
-                            <h3 class="text-sm font-bold text-white mt-1 group-hover:text-amber-400 transition" x-text="room.title || 'غرفة تفاوض جديدة'"></h3>
-                        </div>
-                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold" 
-                              :class="room.status === 'مفتوحة' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-gray-700 text-gray-300'"
-                              x-text="room.status || 'مفتوحة'"></span>
-                    </div>
+        <!-- غرف نشطة -->
+        <div id="card-active" onclick="filterBy('active')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-emerald-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">غرف نشطة 🟢</span>
+            <span class="text-lg font-bold text-emerald-400 mt-1" id="stat-active-count">2</span>
+        </div>
 
-                    <div class="text-xs text-gray-400 space-y-1 mb-3">
-                        <p>👤 **الأطراف المتفاوضة:** <span class="text-gray-200" x-text="room.parties || 'العميل vs المورد'"></span></p>
-                        <p>💰 **القيمة المستهدفة:** <span class="text-emerald-400 font-bold" x-text="room.value ? '$' + room.value : 'غير محدودة'"></span></p>
-                    </div>
+        <!-- بانتظار الموافقة -->
+        <div id="card-pending" onclick="filterBy('pending')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-blue-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">قيد الانتظار ⏳</span>
+            <span class="text-lg font-bold text-blue-400 mt-1" id="stat-pending-count">1</span>
+        </div>
 
-                    <div class="pt-3 border-t border-gray-800 flex justify-between items-center text-xs">
-                        <span class="text-gray-500 text-[11px]" x-text="room.date || 'اليوم'"></span>
-                        <span class="text-amber-400 font-bold group-hover:translate-x-1 transition flex items-center gap-1">
-                            دخول الغرفة ➔
-                        </span>
-                    </div>
-                </div>
-            </template>
+        <!-- صفقات مغلقة/مكتملة -->
+        <div id="card-closed" onclick="filterBy('closed')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-purple-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">صفقات مغلقة ✅</span>
+            <span class="text-lg font-bold text-purple-400 mt-1" id="stat-closed-count">0</span>
         </div>
     </div>
 
-    <!-- Modal إنشاء غرفة جديدة -->
-    <div x-show="openModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50" x-cloak>
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-                <h3 class="text-white font-bold text-sm">➕ إنشاء غرفة تفاوض جديدة</h3>
-                <button @click="openModal = false" class="text-gray-400 hover:text-white font-bold">✕</button>
+    <!-- كارت القائمة والجدول -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
+        <div class="text-xs font-bold text-white flex items-center justify-between">
+            <span>📋 جلسات التفاوض الحالية (انقر التفاصيل)</span>
+        </div>
+
+        <!-- شريط البحث السريع -->
+        <div class="flex gap-2">
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="بحث باسم الغرفة أو الأطراف..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">🔍 بحث</button>
+        </div>
+
+        <!-- الجدول -->
+        <div class="overflow-x-auto w-full rounded-xl border border-gray-700/60">
+            <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
+                <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
+                    <tr>
+                        <th class="py-3 px-3">رقم</th>
+                        <th class="py-3 px-3">عنوان التفاوض</th>
+                        <th class="py-3 px-3">الحالة</th>
+                        <th class="py-3 px-3">آخر عرض</th>
+                        <th class="py-3 px-3 text-center">التفاصيل</th>
+                    </tr>
+                </thead>
+                <tbody id="rooms-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
+                    <tr class="room-row hover:bg-gray-700/40 transition" data-id="101" data-title="تفاوض شراء موقع حفر أم بداء" data-status="active" data-status-label="نشط" data-price="85,000 USD">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#101</td>
+                        <td class="py-3 px-3 text-white font-bold">تفاوض شراء موقع حفر أم بداء</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">نشط</span></td>
+                        <td class="py-3 px-3 font-bold text-emerald-400">85,000 USD</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                    <tr class="room-row hover:bg-gray-700/40 transition" data-id="102" data-title="تفاوض بيع خط معالجة الكارتة" data-status="active" data-status-label="نشط" data-price="210,000 SDG">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#102</td>
+                        <td class="py-3 px-3 text-white font-bold">تفاوض بيع خط معالجة الكارتة</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">نشط</span></td>
+                        <td class="py-3 px-3 font-bold text-emerald-400">210,000 SDG</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                    <tr class="room-row hover:bg-gray-700/40 transition" data-id="103" data-title="طلب شراكة تشغيلية بـ العبيدية" data-status="pending" data-status-label="قيد الانتظار" data-price="30,000 USD">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#103</td>
+                        <td class="py-3 px-3 text-white font-bold">طلب شراكة تشغيلية بـ العبيدية</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">قيد الانتظار</span></td>
+                        <td class="py-3 px-3 font-bold text-emerald-400">30,000 USD</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal إنشاء غرفة -->
+<div id="modal-create" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-xs">➕ إنشاء غرفة تفاوض جديدة</h3>
+            <button type="button" onclick="closeModal('modal-create')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+        <form onsubmit="addNewRoom(event)" class="space-y-3">
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">عنوان غرفة التفاوض</label>
+                <input type="text" id="new-title" required placeholder="عنوان الجلسة..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
-            <form @submit.prevent="createRoom()" class="space-y-3">
-                <div>
-                    <label class="block text-xs text-gray-300 mb-1">عنوان موضوع التفاوض</label>
-                    <input type="text" x-model="newRoom.title" required placeholder="مثال: تفاوض صفقة توريد ذهب خام" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-3 focus:border-amber-500 focus:outline-none">
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">حالة الغرفة</label>
+                <select id="new-status" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                    <option value="active">نشط</option>
+                    <option value="pending">قيد الانتظار</option>
+                    <option value="closed">مغلقة</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+                <div class="col-span-2">
+                    <label class="block text-[11px] text-gray-300 mb-1">المبلغ المبدئي</label>
+                    <input type="number" id="new-price" required placeholder="0" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">الأطراف (المشتري / البائع)</label>
-                    <input type="text" x-model="newRoom.parties" required placeholder="مثال: شركة التعدين x التاجر" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-3 focus:border-amber-500 focus:outline-none">
+                    <label class="block text-[11px] text-gray-300 mb-1">العملة</label>
+                    <select id="new-curr" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                        <option value="USD">USD</option>
+                        <option value="SDG">SDG</option>
+                    </select>
                 </div>
-                <div>
-                    <label class="block text-xs text-gray-300 mb-1">القيمة التقديرية ($)</label>
-                    <input type="number" x-model="newRoom.value" placeholder="0.00" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-3 focus:border-amber-500 focus:outline-none">
-                </div>
-                <div class="flex gap-2 pt-2">
-                    <button type="submit" class="w-full py-3 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إنشاء الغرفة</button>
-                    <button type="button" @click="openModal = false" class="w-full py-3 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إنشاء</button>
+                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+            </div>
+        </form>
     </div>
+</div>
 
+<!-- Modal التفاصيل -->
+<div id="modal-detail" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-xs">💬 تفاصيل غرفة التفاوض</h3>
+            <button type="button" onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+        <div class="space-y-3 text-xs">
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">العنوان:</span>
+                <p class="text-white font-bold text-sm mt-0.5" id="view-title">-</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">رقم الغرفة:</span>
+                    <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-id">-</p>
+                </div>
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">الحالة:</span>
+                    <p class="text-emerald-400 font-bold mt-0.5" id="view-status">-</p>
+                </div>
+            </div>
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">آخر عرض مقدم:</span>
+                <p class="text-emerald-400 font-bold mt-0.5" id="view-price">-</p>
+            </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">إغلاق</button>
+    </div>
 </div>
 
 <script>
-function negotiationDesk() {
-    return {
-        openModal: false,
-        rooms: [
-            { id: 1, title: 'صفقة شراء توريد معدات معالجة', parties: 'مجموعة التعدين vs المورد العالمي', value: '45,000', status: 'مفتوحة', date: 'اليوم 10:30 ص' },
-            { id: 2, title: 'تفاوض عقد تجميع ذهب خام', parties: 'شركة أمان vs بائع محلي', value: '120,000', status: 'مفتوحة', date: 'أمس' }
-        ],
-        newRoom: { title: '', parties: '', value: '' },
-        goToRoom(id) {
-            window.location.href = `/admin/negotiation-room/${id}`;
-        },
-        createRoom() {
-            if(!this.newRoom.title) return;
-            const newId = this.rooms.length + 1;
-            this.rooms.unshift({
-                id: newId,
-                title: this.newRoom.title,
-                parties: this.newRoom.parties || 'طرف أول vs طرف ثان',
-                value: this.newRoom.value || '0',
-                status: 'مفتوحة',
-                date: 'الآن'
-            });
-            this.openModal = false;
-            this.newRoom = { title: '', parties: '', value: '' };
-            // توجيه تلقائي للغرفة الجديدة
-            this.goToRoom(newId);
-        }
+let currentFilter = 'all';
+
+function filterBy(type) {
+    currentFilter = type;
+    const cards = document.querySelectorAll('.stat-card');
+    cards.forEach(c => c.classList.remove('border-amber-500', 'border-emerald-500', 'border-blue-500', 'border-purple-500', 'shadow-lg'));
+
+    const activeCard = document.getElementById(`card-${type}`);
+    if (activeCard) {
+        let borderColor = 'border-amber-500';
+        if (type === 'active') borderColor = 'border-emerald-500';
+        if (type === 'pending') borderColor = 'border-blue-500';
+        if (type === 'closed') borderColor = 'border-purple-500';
+        activeCard.classList.add(borderColor, 'shadow-lg');
     }
+
+    const rows = document.querySelectorAll('.room-row');
+    rows.forEach(r => {
+        const rStatus = r.getAttribute('data-status');
+        if (type === 'all' || rStatus === type) {
+            r.style.display = '';
+        } else {
+            r.style.display = 'none';
+        }
+    });
 }
+
+function getStatusBadge(status, label) {
+    if (status === 'pending') return `<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">${label}</span>`;
+    if (status === 'closed') return `<span class="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30">${label}</span>`;
+    return `<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">${label}</span>`;
+}
+
+function updateCounts() {
+    const rows = document.querySelectorAll('.room-row');
+    let all = rows.length;
+    let active = 0, pending = 0, closed = 0;
+
+    rows.forEach(r => {
+        const s = r.getAttribute('data-status');
+        if (s === 'active') active++;
+        if (s === 'pending') pending++;
+        if (s === 'closed') closed++;
+    });
+
+    document.getElementById('stat-all-count').innerText = all;
+    document.getElementById('stat-active-count').innerText = active;
+    document.getElementById('stat-pending-count').innerText = pending;
+    document.getElementById('stat-closed-count').innerText = closed;
+}
+
+function searchTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('.room-row');
+    rows.forEach(r => {
+        const title = r.getAttribute('data-title').toLowerCase();
+        const matchesStatus = (currentFilter === 'all' || r.getAttribute('data-status') === currentFilter);
+        if (title.includes(input) && matchesStatus) {
+            r.style.display = '';
+        } else {
+            r.style.display = 'none';
+        }
+    });
+}
+
+function openCreateModal() {
+    document.getElementById('modal-create').style.setProperty('display', 'flex', 'important');
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.setProperty('display', 'none', 'important');
+}
+
+function showRowDetails(btn) {
+    const row = btn.closest('.room-row');
+    document.getElementById('view-title').innerText = row.getAttribute('data-title');
+    document.getElementById('view-id').innerText = '#' + row.getAttribute('data-id');
+    document.getElementById('view-status').innerText = row.getAttribute('data-status-label');
+    document.getElementById('view-price').innerText = row.getAttribute('data-price');
+    document.getElementById('modal-detail').style.setProperty('display', 'flex', 'important');
+}
+
+function addNewRoom(e) {
+    e.preventDefault();
+    const title = document.getElementById('new-title').value;
+    const status = document.getElementById('new-status').value;
+    const price = document.getElementById('new-price').value + ' ' + document.getElementById('new-curr').value;
+    const newId = 100 + document.querySelectorAll('.room-row').length + 1;
+
+    let statusLabel = 'نشط';
+    if (status === 'pending') statusLabel = 'قيد الانتظار';
+    if (status === 'closed') statusLabel = 'مغلقة';
+
+    const tbody = document.getElementById('rooms-table-body');
+    const tr = document.createElement('tr');
+    tr.className = 'room-row hover:bg-gray-700/40 transition';
+    tr.setAttribute('data-id', newId);
+    tr.setAttribute('data-title', title);
+    tr.setAttribute('data-status', status);
+    tr.setAttribute('data-status-label', statusLabel);
+    tr.setAttribute('data-price', price);
+
+    tr.innerHTML = `
+        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#${newId}</td>
+        <td class="py-3 px-3 text-white font-bold">${title}</td>
+        <td class="py-3 px-3">${getStatusBadge(status, statusLabel)}</td>
+        <td class="py-3 px-3 font-bold text-emerald-400">${price}</td>
+        <td class="py-3 px-3 text-center">
+            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+        </td>
+    `;
+    tbody.prepend(tr);
+    updateCounts();
+    filterBy(status);
+    closeModal('modal-create');
+}
+
+document.addEventListener('DOMContentLoaded', updateCounts);
 </script>
 {% endblock %}

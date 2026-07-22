@@ -1,12 +1,300 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-<div class="space-y-6" x-data="{ searchQuery: '', activeSearch: '' }">
-    <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700">
-        <h1 class="text-xl font-bold text-white mb-2">🆔 Identity</h1>
-        <p class="text-xs text-gray-400">إدارة وإثباتات الهوية والاعتماد للمستثمرين والمتعاملين</p>
+<div class="space-y-6">
+
+    <!-- الهيدر -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
+        <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
+            <span>🆔 إدارة توثيق الهوية والشركات</span>
+        </h1>
+        <p class="text-xs text-gray-400 mb-4">مراجعة والتحقق من المستندات الرسمية، الهويات، والسجلات التجارية</p>
+        <button type="button" onclick="openCreateModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
+            + تقديم طلب توثيق جديد
+        </button>
     </div>
-    <div class="bg-gray-900 p-8 rounded-xl border border-gray-800 text-center text-gray-400 text-xs">
-        جاري جلب واستعراض بيانات قسم (🆔 Identity) من قاعدة البيانات...
+
+    <!-- شبكة كروت الإحصائيات والفلاتر -->
+    <div class="grid grid-cols-2 gap-3">
+        <!-- إجمالي الطلبات (الكل) -->
+        <div id="card-all" onclick="filterBy('all')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95 shadow-lg shadow-amber-500/10">
+            <span class="text-[11px] text-gray-400">إجمالي الطلبات 📊</span>
+            <span class="text-lg font-bold text-amber-400 mt-1" id="stat-all-count">3</span>
+        </div>
+
+        <!-- طلبات قيد المراجعة -->
+        <div id="card-pending" onclick="filterBy('pending')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-blue-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">قيد المراجعة ⏳</span>
+            <span class="text-lg font-bold text-blue-400 mt-1" id="stat-pending-count">1</span>
+        </div>
+
+        <!-- طلبات موثقة / موثوقة -->
+        <div id="card-verified" onclick="filterBy('verified')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-emerald-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">هويات موثقة ✅</span>
+            <span class="text-lg font-bold text-emerald-400 mt-1" id="stat-verified-count">2</span>
+        </div>
+
+        <!-- طلبات مرفوضة -->
+        <div id="card-rejected" onclick="filterBy('rejected')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-rose-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">طلبات مرفوضة ❌</span>
+            <span class="text-lg font-bold text-rose-400 mt-1" id="stat-rejected-count">0</span>
+        </div>
+    </div>
+
+    <!-- كارت القائمة والجدول -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
+        <div class="text-xs font-bold text-white flex items-center justify-between">
+            <span>📋 سجل طلبات التوثيق</span>
+        </div>
+
+        <!-- شريط البحث -->
+        <div class="flex gap-2">
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="بحث باسم المستخدم أو نوع الوثيقة..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">🔍 بحث</button>
+        </div>
+
+        <!-- الجدول -->
+        <div class="overflow-x-auto w-full rounded-xl border border-gray-700/60">
+            <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
+                <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
+                    <tr>
+                        <th class="py-3 px-3">رقم الطلب</th>
+                        <th class="py-3 px-3">الاسم / الشركة</th>
+                        <th class="py-3 px-3">نوع التوثيق</th>
+                        <th class="py-3 px-3">الحالة</th>
+                        <th class="py-3 px-3 text-center">التفاصيل</th>
+                    </tr>
+                </thead>
+                <tbody id="identity-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
+                    <tr class="identity-row hover:bg-gray-700/40 transition" data-id="401" data-name="شركة التعدين المتقدمة" data-type="سجل تجاري" data-status="verified" data-status-label="موثق" data-doc-num="CR-99201">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#401</td>
+                        <td class="py-3 px-3 text-white font-bold">شركة التعدين المتقدمة</td>
+                        <td class="py-3 px-3 text-gray-300">سجل تجاري</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">موثق</span></td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                    <tr class="identity-row hover:bg-gray-700/40 transition" data-id="402" data-name="أحمد عبد الله السوداني" data-type="جواز سفر / هوية" data-status="verified" data-status-label="موثق" data-doc-num="P0083910">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#402</td>
+                        <td class="py-3 px-3 text-white font-bold">أحمد عبد الله السوداني</td>
+                        <td class="py-3 px-3 text-gray-300">جواز سفر / هوية</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">موثق</span></td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                    <tr class="identity-row hover:bg-gray-700/40 transition" data-id="403" data-name="مؤسسة الذهب الإفريقي" data-type="رخصة عمل" data-status="pending" data-status-label="قيد المراجعة" data-doc-num="LIC-44102">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#403</td>
+                        <td class="py-3 px-3 text-white font-bold">مؤسسة الذهب الإفريقي</td>
+                        <td class="py-3 px-3 text-gray-300">رخصة عمل</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">قيد المراجعة</span></td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<!-- Modal إضافة طلب توثيق -->
+<div id="modal-create" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-xs">➕ تقديم طلب توثيق جديد</h3>
+            <button type="button" onclick="closeModal('modal-create')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+        <form onsubmit="addNewIdentity(event)" class="space-y-3">
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">اسم الفرد أو الشركة</label>
+                <input type="text" id="new-name" required placeholder="مثال: شركة النيل للتعدين" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">نوع الوثيقة</label>
+                <select id="new-type" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                    <option value="سجل تجاري">سجل تجاري</option>
+                    <option value="جواز سفر / هوية">جواز سفر / هوية</option>
+                    <option value="رخصة عمل">رخصة عمل</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">رقم الوثيقة / المستند</label>
+                <input type="text" id="new-doc-num" required placeholder="مثال: CR-102948" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">حالة الطلب</label>
+                <select id="new-status" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                    <option value="pending">قيد المراجعة</option>
+                    <option value="verified">موثق</option>
+                    <option value="rejected">مرفوض</option>
+                </select>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إضافة الطلب</button>
+                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal التفاصيل -->
+<div id="modal-detail" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-xs">🆔 تفاصيل وثيقة الهوية</h3>
+            <button type="button" onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+        <div class="space-y-3 text-xs">
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">الاسم / الجهة:</span>
+                <p class="text-white font-bold text-sm mt-0.5" id="view-name">-</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">رقم الطلب:</span>
+                    <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-id">-</p>
+                </div>
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">الحالة:</span>
+                    <p class="text-emerald-400 font-bold mt-0.5" id="view-status">-</p>
+                </div>
+            </div>
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">نوع الوثيقة:</span>
+                <p class="text-gray-200 font-bold mt-0.5" id="view-type">-</p>
+            </div>
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">رقم المستند الرسمي:</span>
+                <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-doc-num">-</p>
+            </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">إغلاق</button>
+    </div>
+</div>
+
+<script>
+let currentFilter = 'all';
+
+function filterBy(type) {
+    currentFilter = type;
+    const cards = document.querySelectorAll('.stat-card');
+    cards.forEach(c => c.classList.remove('border-amber-500', 'border-emerald-500', 'border-blue-500', 'border-rose-500', 'shadow-lg'));
+
+    const activeCard = document.getElementById(`card-${type}`);
+    if (activeCard) {
+        let borderColor = 'border-amber-500';
+        if (type === 'verified') borderColor = 'border-emerald-500';
+        if (type === 'pending') borderColor = 'border-blue-500';
+        if (type === 'rejected') borderColor = 'border-rose-500';
+        activeCard.classList.add(borderColor, 'shadow-lg');
+    }
+
+    const rows = document.querySelectorAll('.identity-row');
+    rows.forEach(r => {
+        const rStatus = r.getAttribute('data-status');
+        if (type === 'all' || rStatus === type) {
+            r.style.display = '';
+        } else {
+            r.style.display = 'none';
+        }
+    });
+}
+
+function getStatusBadge(status, label) {
+    if (status === 'pending') return `<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">${label}</span>`;
+    if (status === 'rejected') return `<span class="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/30">${label}</span>`;
+    return `<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">${label}</span>`;
+}
+
+function updateCounts() {
+    const rows = document.querySelectorAll('.identity-row');
+    let all = rows.length;
+    let verified = 0, pending = 0, rejected = 0;
+
+    rows.forEach(r => {
+        const s = r.getAttribute('data-status');
+        if (s === 'verified') verified++;
+        if (s === 'pending') pending++;
+        if (s === 'rejected') rejected++;
+    });
+
+    document.getElementById('stat-all-count').innerText = all;
+    document.getElementById('stat-verified-count').innerText = verified;
+    document.getElementById('stat-pending-count').innerText = pending;
+    document.getElementById('stat-rejected-count').innerText = rejected;
+}
+
+function searchTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('.identity-row');
+    rows.forEach(r => {
+        const name = r.getAttribute('data-name').toLowerCase();
+        const type = r.getAttribute('data-type').toLowerCase();
+        const matchesStatus = (currentFilter === 'all' || r.getAttribute('data-status') === currentFilter);
+        if ((name.includes(input) || type.includes(input)) && matchesStatus) {
+            r.style.display = '';
+        } else {
+            r.style.display = 'none';
+        }
+    });
+}
+
+function openCreateModal() {
+    document.getElementById('modal-create').style.setProperty('display', 'flex', 'important');
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.setProperty('display', 'none', 'important');
+}
+
+function showRowDetails(btn) {
+    const row = btn.closest('.identity-row');
+    document.getElementById('view-name').innerText = row.getAttribute('data-name');
+    document.getElementById('view-id').innerText = '#' + row.getAttribute('data-id');
+    document.getElementById('view-status').innerText = row.getAttribute('data-status-label');
+    document.getElementById('view-type').innerText = row.getAttribute('data-type');
+    document.getElementById('view-doc-num').innerText = row.getAttribute('data-doc-num');
+    document.getElementById('modal-detail').style.setProperty('display', 'flex', 'important');
+}
+
+function addNewIdentity(e) {
+    e.preventDefault();
+    const name = document.getElementById('new-name').value;
+    const type = document.getElementById('new-type').value;
+    const docNum = document.getElementById('new-doc-num').value;
+    const status = document.getElementById('new-status').value;
+    const newId = 400 + document.querySelectorAll('.identity-row').length + 1;
+
+    let statusLabel = 'موثق';
+    if (status === 'pending') statusLabel = 'قيد المراجعة';
+    if (status === 'rejected') statusLabel = 'مرفوض';
+
+    const tbody = document.getElementById('identity-table-body');
+    const tr = document.createElement('tr');
+    tr.className = 'identity-row hover:bg-gray-700/40 transition';
+    tr.setAttribute('data-id', newId);
+    tr.setAttribute('data-name', name);
+    tr.setAttribute('data-type', type);
+    tr.setAttribute('data-status', status);
+    tr.setAttribute('data-status-label', statusLabel);
+    tr.setAttribute('data-doc-num', docNum);
+
+    tr.innerHTML = `
+        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#${newId}</td>
+        <td class="py-3 px-3 text-white font-bold">${name}</td>
+        <td class="py-3 px-3 text-gray-300">${type}</td>
+        <td class="py-3 px-3">${getStatusBadge(status, statusLabel)}</td>
+        <td class="py-3 px-3 text-center">
+            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+        </td>
+    `;
+    tbody.prepend(tr);
+    updateCounts();
+    filterBy(status);
+    closeModal('modal-create');
+}
+
+document.addEventListener('DOMContentLoaded', updateCounts);
+</script>
 {% endblock %}

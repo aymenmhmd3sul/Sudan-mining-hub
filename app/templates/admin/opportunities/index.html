@@ -1,12 +1,305 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-<div class="space-y-6" x-data="{ searchQuery: '', activeSearch: '' }">
-    <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700">
-        <h1 class="text-xl font-bold text-white mb-2">🎯 Opportunities</h1>
-        <p class="text-xs text-gray-400">إدارة واستعراض الفرص الاستثمارية المتاحة</p>
+<div class="space-y-6">
+
+    <!-- الهيدر -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
+        <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
+            <span>🎯 إدارة الفرص الاستثمارية</span>
+        </h1>
+        <p class="text-xs text-gray-400 mb-4">عرض وإدارة فرص الاستثمار في مربعات التعدين، الآبار، والامتيازات المتاحة</p>
+        <button type="button" onclick="openCreateModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
+            + إضافة فرصة استثمارية جديدة
+        </button>
     </div>
-    <div class="bg-gray-900 p-8 rounded-xl border border-gray-800 text-center text-gray-400 text-xs">
-        جاري جلب واستعراض بيانات قسم (🎯 Opportunities) من قاعدة البيانات...
+
+    <!-- شبكة كروت الإحصائيات والفلاتر -->
+    <div class="grid grid-cols-2 gap-3">
+        <!-- إجمالي الفرص (الكل) -->
+        <div id="card-all" onclick="filterBy('all')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95 shadow-lg shadow-amber-500/10">
+            <span class="text-[11px] text-gray-400">إجمالي الفرص 📊</span>
+            <span class="text-lg font-bold text-amber-400 mt-1" id="stat-all-count">3</span>
+        </div>
+
+        <!-- فرص نشطة / متاحة -->
+        <div id="card-active" onclick="filterBy('active')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-emerald-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">فرص متاحة 🔥</span>
+            <span class="text-lg font-bold text-emerald-400 mt-1" id="stat-active-count">2</span>
+        </div>
+
+        <!-- قيد التفاوض -->
+        <div id="card-negotiating" onclick="filterBy('negotiating')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-blue-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">قيد الدراسة ⏳</span>
+            <span class="text-lg font-bold text-blue-400 mt-1" id="stat-negotiating-count">1</span>
+        </div>
+
+        <!-- مغلقة / مكتملة -->
+        <div id="card-closed" onclick="filterBy('closed')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-purple-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
+            <span class="text-[11px] text-gray-400">فرص مغلقة 🔒</span>
+            <span class="text-lg font-bold text-purple-400 mt-1" id="stat-closed-count">0</span>
+        </div>
+    </div>
+
+    <!-- كارت القائمة والجدول -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
+        <div class="text-xs font-bold text-white flex items-center justify-between">
+            <span>📋 قائمة الفرص الاستثمارية (انقر لعرض التفاصيل)</span>
+        </div>
+
+        <!-- شريط البحث -->
+        <div class="flex gap-2">
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="بحث باسم الفرصة أو الموقع..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">🔍 بحث</button>
+        </div>
+
+        <!-- الجدول -->
+        <div class="overflow-x-auto w-full rounded-xl border border-gray-700/60">
+            <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
+                <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
+                    <tr>
+                        <th class="py-3 px-3">رقم</th>
+                        <th class="py-3 px-3">عنوان الفرصة</th>
+                        <th class="py-3 px-3">الحالة</th>
+                        <th class="py-3 px-3">رأس المال المطلوب</th>
+                        <th class="py-3 px-3 text-center">التفاصيل</th>
+                    </tr>
+                </thead>
+                <tbody id="opps-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
+                    <tr class="opp-row hover:bg-gray-700/40 transition" data-id="101" data-title="شراكة استغلال مربع تعدين - نهر النيل" data-status="active" data-status-label="متاحة" data-price="150,000 USD" data-location="ولاية نهر النيل - العبيدية">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#101</td>
+                        <td class="py-3 px-3 text-white font-bold">شراكة استغلال مربع تعدين - نهر النيل</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">متاحة</span></td>
+                        <td class="py-3 px-3 font-bold text-amber-400">150,000 USD</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                    <tr class="opp-row hover:bg-gray-700/40 transition" data-id="102" data-title="تمويل خط معالجة مخلفات الذهب (كرته)" data-status="active" data-status-label="متاحة" data-price="80,000 USD" data-location="ولاية البحر الأحمر - أبوهشيم">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#102</td>
+                        <td class="py-3 px-3 text-white font-bold">تمويل خط معالجة مخلفات الذهب (كرته)</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">متاحة</span></td>
+                        <td class="py-3 px-3 font-bold text-amber-400">80,000 USD</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                    <tr class="opp-row hover:bg-gray-700/40 transition" data-id="103" data-title="بيع رخصة امتياز تعدين جاهزة" data-status="negotiating" data-status-label="قيد الدراسة" data-price="300,000 USD" data-location="الولايات الشمالية - وادي حلفا">
+                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#103</td>
+                        <td class="py-3 px-3 text-white font-bold">بيع رخصة امتياز تعدين جاهزة</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">قيد الدراسة</span></td>
+                        <td class="py-3 px-3 font-bold text-amber-400">300,000 USD</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<!-- Modal إضافة فرصة جديدة -->
+<div id="modal-create" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-xs">➕ إضافة فرصة استثمارية جديدة</h3>
+            <button type="button" onclick="closeModal('modal-create')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+        <form onsubmit="addNewOpp(event)" class="space-y-3">
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">عنوان الفرصة</label>
+                <input type="text" id="new-title" required placeholder="مثال: شراكة في بئر ذهب قائم" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">الموقع / المنطقة</label>
+                <input type="text" id="new-location" required placeholder="مثال: الولاية الشمالية - أبو حمد" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-[11px] text-gray-300 mb-1">حالة الفرصة</label>
+                <select id="new-status" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                    <option value="active">متاحة</option>
+                    <option value="negotiating">قيد الدراسة</option>
+                    <option value="closed">مغلقة</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+                <div class="col-span-2">
+                    <label class="block text-[11px] text-gray-300 mb-1">رأس المال المطلوب</label>
+                    <input type="number" id="new-price" required placeholder="0" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] text-gray-300 mb-1">العملة</label>
+                    <select id="new-curr" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                        <option value="USD">USD</option>
+                        <option value="SDG">SDG</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إضافة الفرصة</button>
+                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal التفاصيل -->
+<div id="modal-detail" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-white font-bold text-xs">🎯 تفاصيل الفرصة الاستثمارية</h3>
+            <button type="button" onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+        <div class="space-y-3 text-xs">
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">عنوان الفرصة:</span>
+                <p class="text-white font-bold text-sm mt-0.5" id="view-title">-</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">رقم الفرصة:</span>
+                    <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-id">-</p>
+                </div>
+                <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                    <span class="text-gray-400 block text-[10px]">الحالة:</span>
+                    <p class="text-emerald-400 font-bold mt-0.5" id="view-status">-</p>
+                </div>
+            </div>
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">الموقع الجغرافي:</span>
+                <p class="text-gray-200 font-bold mt-0.5" id="view-location">-</p>
+            </div>
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400 block text-[10px]">رأس المال التقديري:</span>
+                <p class="text-amber-400 font-bold mt-0.5" id="view-price">-</p>
+            </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">إغلاق</button>
+    </div>
+</div>
+
+<script>
+let currentFilter = 'all';
+
+function filterBy(type) {
+    currentFilter = type;
+    const cards = document.querySelectorAll('.stat-card');
+    cards.forEach(c => c.classList.remove('border-amber-500', 'border-emerald-500', 'border-blue-500', 'border-purple-500', 'shadow-lg'));
+
+    const activeCard = document.getElementById(`card-${type}`);
+    if (activeCard) {
+        let borderColor = 'border-amber-500';
+        if (type === 'active') borderColor = 'border-emerald-500';
+        if (type === 'negotiating') borderColor = 'border-blue-500';
+        if (type === 'closed') borderColor = 'border-purple-500';
+        activeCard.classList.add(borderColor, 'shadow-lg');
+    }
+
+    const rows = document.querySelectorAll('.opp-row');
+    rows.forEach(r => {
+        const rStatus = r.getAttribute('data-status');
+        if (type === 'all' || rStatus === type) {
+            r.style.display = '';
+        } else {
+            r.style.display = 'none';
+        }
+    });
+}
+
+function getStatusBadge(status, label) {
+    if (status === 'negotiating') return `<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">${label}</span>`;
+    if (status === 'closed') return `<span class="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30">${label}</span>`;
+    return `<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">${label}</span>`;
+}
+
+function updateCounts() {
+    const rows = document.querySelectorAll('.opp-row');
+    let all = rows.length;
+    let active = 0, negotiating = 0, closed = 0;
+
+    rows.forEach(r => {
+        const s = r.getAttribute('data-status');
+        if (s === 'active') active++;
+        if (s === 'negotiating') negotiating++;
+        if (s === 'closed') closed++;
+    });
+
+    document.getElementById('stat-all-count').innerText = all;
+    document.getElementById('stat-active-count').innerText = active;
+    document.getElementById('stat-negotiating-count').innerText = negotiating;
+    document.getElementById('stat-closed-count').innerText = closed;
+}
+
+function searchTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('.opp-row');
+    rows.forEach(r => {
+        const title = r.getAttribute('data-title').toLowerCase();
+        const loc = r.getAttribute('data-location').toLowerCase();
+        const matchesStatus = (currentFilter === 'all' || r.getAttribute('data-status') === currentFilter);
+        if ((title.includes(input) || loc.includes(input)) && matchesStatus) {
+            r.style.display = '';
+        } else {
+            r.style.display = 'none';
+        }
+    });
+}
+
+function openCreateModal() {
+    document.getElementById('modal-create').style.setProperty('display', 'flex', 'important');
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.setProperty('display', 'none', 'important');
+}
+
+function showRowDetails(btn) {
+    const row = btn.closest('.opp-row');
+    document.getElementById('view-title').innerText = row.getAttribute('data-title');
+    document.getElementById('view-id').innerText = '#' + row.getAttribute('data-id');
+    document.getElementById('view-status').innerText = row.getAttribute('data-status-label');
+    document.getElementById('view-location').innerText = row.getAttribute('data-location');
+    document.getElementById('view-price').innerText = row.getAttribute('data-price');
+    document.getElementById('modal-detail').style.setProperty('display', 'flex', 'important');
+}
+
+function addNewOpp(e) {
+    e.preventDefault();
+    const title = document.getElementById('new-title').value;
+    const location = document.getElementById('new-location').value;
+    const status = document.getElementById('new-status').value;
+    const price = document.getElementById('new-price').value + ' ' + document.getElementById('new-curr').value;
+    const newId = 100 + document.querySelectorAll('.opp-row').length + 1;
+
+    let statusLabel = 'متاحة';
+    if (status === 'negotiating') statusLabel = 'قيد الدراسة';
+    if (status === 'closed') statusLabel = 'مغلقة';
+
+    const tbody = document.getElementById('opps-table-body');
+    const tr = document.createElement('tr');
+    tr.className = 'opp-row hover:bg-gray-700/40 transition';
+    tr.setAttribute('data-id', newId);
+    tr.setAttribute('data-title', title);
+    tr.setAttribute('data-status', status);
+    tr.setAttribute('data-status-label', statusLabel);
+    tr.setAttribute('data-price', price);
+    tr.setAttribute('data-location', location);
+
+    tr.innerHTML = `
+        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#${newId}</td>
+        <td class="py-3 px-3 text-white font-bold">${title}</td>
+        <td class="py-3 px-3">${getStatusBadge(status, statusLabel)}</td>
+        <td class="py-3 px-3 font-bold text-amber-400">${price}</td>
+        <td class="py-3 px-3 text-center">
+            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+        </td>
+    `;
+    tbody.prepend(tr);
+    updateCounts();
+    filterBy(status);
+    closeModal('modal-create');
+}
+
+document.addEventListener('DOMContentLoaded', updateCounts);
+</script>
 {% endblock %}

@@ -1,3 +1,4 @@
+from app.routers import legal
 from app.routes.admin.escrow import router as escrow_router
 import os
 from fastapi import FastAPI, Request
@@ -46,6 +47,7 @@ if auth and hasattr(auth, 'router'):
     app.include_router(auth.router)
 
 app.include_router(admin_views.router)
+app.include_router(legal.router)
 
 if admin_negotiation_page and hasattr(admin_negotiation_page, 'router'):
     app.include_router(admin_negotiation_page.router)

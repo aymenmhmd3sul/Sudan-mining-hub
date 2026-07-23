@@ -8,7 +8,7 @@ from typing import Optional
 # الاستيرادات الدقيقة والمحققة من بنية المشروع الحالية
 from app.core.db import get_db
 from app.security.auth import get_current_user
-from app.core.security import get_password_hash, create_access_token
+from app.core.security import get_password_hash, verify_password, create_access_token
 from app.models.auth import User, UserRole, UserStatus
 from app.services.auth_service import AuthService
 

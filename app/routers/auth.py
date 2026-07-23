@@ -90,6 +90,7 @@ async def login(request: Request, db: Session = Depends(get_db)):
 
     # 1. فحص الحساب الثابت للمشرف
     if (email == "aymen.mhmd3@gmail.com" or email == "admin@sudanmining.com") and password == "SudanMining@2026":
+        print("ADMIN LOGIN MATCHED")
         access_token = create_access_token(
             data={
                 "id": 1,

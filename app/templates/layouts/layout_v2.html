@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,32 +13,36 @@
 
 </head>
 
+
 <body>
 
 <div class="smh-shell">
 
-<header class="smh-header">
-    <button onclick="toggleSMHSidebar()">☰</button>
-    <div>⛏ Sudan Mining Hub</div>
-    <div>Admin</div>
-</header>
+
+{% include "partials/header.html" %}
 
 
 <div class="smh-body">
 
-<aside class="smh-sidebar">
-    Sidebar v2
-</aside>
+
+{% include "partials/sidebar.html" %}
 
 
 <main class="smh-content">
+
+{% include "partials/breadcrumbs.html" %}
 
 {% block content %}
 {% endblock %}
 
 </main>
 
+
 </div>
+
+
+{% include "partials/footer.html" %}
+
 
 </div>
 
@@ -45,4 +50,5 @@
 <script src="/static/js/layout.js"></script>
 
 </body>
+
 </html>

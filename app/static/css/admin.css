@@ -30,3 +30,47 @@ body { background-color: var(--bg-dark); color: #cbd5e1; display: flex; flex-dir
     .admin-sidebar { position: fixed; right: 0; transform: translateX(100%); z-index: 999; }
     .admin-sidebar.open { transform: translateX(0); }
 }
+
+/* SMH Enterprise Identity Upgrade */
+
+body {
+    font-family:'Cairo','Tajawal',sans-serif;
+}
+
+.header-brand {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#f8fafc;
+}
+
+.brand-icon {
+    font-size:28px;
+    color:#D4A017;
+}
+
+.header-brand small {
+    display:block;
+    color:#94a3b8;
+    font-size:12px;
+}
+
+.user-profile {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#cbd5e1;
+}
+
+.user-profile-badge {
+    background:#D4A017;
+    color:#111827;
+}
+
+.sidebar-dropdown-btn {
+    color:#e5e7eb;
+}
+
+.sidebar-sub-menu a {
+    color:#b6c2d1;
+}

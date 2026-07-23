@@ -1,0 +1,223 @@
+*{
+box-sizing:border-box;
+}
+
+html,body{
+margin:0;
+padding:0;
+width:100%;
+min-height:100%;
+overflow-x:hidden;
+}
+
+body{
+background:#050d18;
+color:white;
+font-family:Arial,Tahoma,sans-serif;
+}
+
+.page{
+width:100%;
+min-height:100vh;
+padding:3vw;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:clamp(18px,5vw,25px);
+font-weight:bold;
+color:#d4af37;
+}
+
+.tools button{
+background:transparent;
+border:1px solid #d4af37;
+color:white;
+border-radius:8px;
+padding:6px 10px;
+}
+
+
+.gold-card{
+display:flex;
+gap:8px;
+}
+
+.gold-card div{
+flex:1;
+background:#101c2d;
+border-radius:12px;
+padding:8px;
+text-align:center;
+font-size:clamp(11px,3vw,15px);
+}
+
+.gold-card h3{
+margin:5px 0;
+color:#d4af37;
+font-size:clamp(14px,4vw,20px);
+}
+
+
+.login-box{
+background:rgba(255,255,255,.08);
+border:1px solid #d4af37;
+border-radius:18px;
+padding:15px;
+}
+
+.login-box h1{
+font-size:clamp(20px,5vw,28px);
+text-align:center;
+margin:5px;
+}
+
+
+input{
+width:100%;
+height:45px;
+margin:5px 0;
+padding:10px;
+
+background:#020812;
+color:white;
+
+border:1px solid #555;
+border-radius:10px;
+
+font-size:16px;
+}
+
+
+.password-box{
+display:flex;
+gap:5px;
+}
+
+.password-box input{
+flex:1;
+}
+
+.password-box button{
+width:45px;
+border-radius:10px;
+background:#101c2d;
+color:white;
+border:1px solid #555;
+}
+
+
+.login{
+width:100%;
+height:45px;
+
+background:#d4af37;
+border:0;
+border-radius:10px;
+
+font-weight:bold;
+margin-top:8px;
+}
+
+
+.forgot{
+display:block;
+text-align:center;
+margin-top:8px;
+color:#d4af37;
+font-size:14px;
+}
+
+
+.visitor{
+height:45px;
+background:#101c2d;
+color:white;
+border:1px solid #555;
+border-radius:10px;
+font-size:15px;
+}
+
+
+.updates,
+.bank,
+.contact{
+
+background:#101c2d;
+border-radius:12px;
+padding:10px;
+text-align:center;
+
+}
+
+
+.updates h3,
+.bank h3,
+.contact h3{
+
+margin:3px;
+font-size:16px;
+
+}
+
+
+.updates p,
+.bank p{
+
+margin:5px;
+font-size:13px;
+
+}
+
+
+.contact div{
+
+font-size:14px;
+
+}
+
+
+footer{
+
+text-align:center;
+font-size:11px;
+padding:10px;
+opacity:.7;
+
+}
+
+
+@media(max-height:650px){
+
+.page{
+gap:5px;
+}
+
+.updates p,
+.bank p{
+display:none;
+}
+
+footer{
+display:none;
+}
+
+}
+
+
+@media(min-width:700px){
+
+.page{
+max-width:450px;
+margin:auto;
+}
+
+}

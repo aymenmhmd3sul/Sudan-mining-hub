@@ -98,7 +98,24 @@ async def login(request: Request, db: Session = Depends(get_db)):
                 "status": "ACTIVE"
             }
         )
-        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin"})
+        role = getattr(user.role, "value", user.role).upper()
+
+        if role == "ADMIN":
+            redirect = "/admin/dashboard"
+        elif role in ["MERCHANT", "SELLER"]:
+            redirect = "/merchant/dashboard"
+        elif role == "BUYER":
+            redirect = "/buyer/dashboard"
+        else:
+            redirect = "/explore"
+
+        response = JSONResponse(
+            content={
+                "status": "success",
+                "message": "تم الدخول بنجاح",
+                "redirect": redirect
+            }
+        )
         response.set_cookie(
             key="access_token",
             value=f"Bearer {access_token}",
@@ -111,8 +128,13 @@ async def login(request: Request, db: Session = Depends(get_db)):
     # 2. فحص الحسابات من قاعدة البيانات
     user = db.query(User).filter(User.email == email).first() if 'User' in globals() or 'User' in locals() else None
     if user and verify_password(password, user.password_hash):
-        access_token = create_access_token(data={"sub": user.email})
-        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin"})
+        access_token = create_access_token(
+        data={
+            "sub": user.email,
+            "role": getattr(user.role, "value", user.role)
+        }
+    )
+        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin/dashboard"})
         response.set_cookie(
             key="access_token",
             value=f"Bearer {access_token}",

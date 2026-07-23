@@ -1,0 +1,49 @@
+
+/* SMH Enterprise Layout */
+
+.smh-shell {
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    background:var(--smh-bg-main);
+}
+
+.smh-header {
+    height:64px;
+    background:var(--smh-bg-header);
+    border-bottom:1px solid var(--smh-border-color);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 1rem;
+}
+
+.smh-body {
+    display:flex;
+    flex:1;
+}
+
+.smh-sidebar {
+    width:260px;
+    background:var(--smh-bg-sidebar);
+    border-left:1px solid var(--smh-border-color);
+    transition:0.3s;
+}
+
+.smh-content {
+    flex:1;
+    padding:1.5rem;
+}
+
+@media(max-width:768px){
+    .smh-sidebar {
+        position:fixed;
+        right:-260px;
+        top:64px;
+        bottom:0;
+    }
+
+    .smh-sidebar.active {
+        right:0;
+    }
+}

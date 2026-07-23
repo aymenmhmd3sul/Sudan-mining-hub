@@ -1,3 +1,5 @@
 
 @import "design_system.css";
 @import "base.css";
+
+@import "components/navigation.css";

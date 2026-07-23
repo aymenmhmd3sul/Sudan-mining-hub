@@ -1,0 +1,58 @@
+/* SMH Navigation Components */
+
+.smh-header {
+    height:64px;
+    background:var(--smh-bg-header);
+    border-bottom:1px solid var(--smh-border-color);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 1rem;
+}
+
+.smh-brand {
+    color:var(--smh-primary);
+    font-weight:700;
+    font-size:1.2rem;
+}
+
+.smh-user {
+    color:var(--smh-text-muted);
+}
+
+
+.smh-sidebar {
+    width:260px;
+    background:var(--smh-bg-sidebar);
+    border-left:1px solid var(--smh-border-color);
+    padding:1rem;
+}
+
+.smh-sidebar nav {
+    display:flex;
+    flex-direction:column;
+    gap:0.5rem;
+}
+
+
+.smh-sidebar a {
+    color:var(--smh-text-muted);
+    text-decoration:none;
+    padding:0.7rem;
+    border-radius:var(--smh-radius-md);
+    transition:var(--smh-transition);
+}
+
+
+.smh-sidebar a:hover {
+    background:var(--smh-primary-light);
+    color:var(--smh-primary);
+}
+
+
+.smh-footer {
+    padding:1rem;
+    text-align:center;
+    color:var(--smh-text-muted);
+    border-top:1px solid var(--smh-border-color);
+}

@@ -1,3 +1,4 @@
+from app.routes.admin.escrow import router as escrow_router
 import os
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
@@ -53,3 +54,5 @@ if admin_negotiation_actions and hasattr(admin_negotiation_actions, 'router'):
     app.include_router(admin_negotiation_actions.router)
 
 # disabled conflicting details router
+
+app.include_router(escrow_router)

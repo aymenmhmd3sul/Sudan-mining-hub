@@ -1,153 +1,31 @@
 {% extends "admin/layout.html" %}
-{% block content %}
-<div class="space-y-6">
 
-    <!-- الهيدر -->
-    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
-        <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>📄 إدارة الفواتير والمدفوعات (Invoices)</span>
-        </h1>
-        <p class="text-xs text-gray-400 mb-4">إصدار ومتابعة الفواتير الخاصة بالصفقات، رسوم التوثيق، وخدمات التعدين</p>
-        <button type="button" onclick="openCreateInvoiceModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
-            + إنشاء فاتورة جديدة
+{% block title %}إدارة الفواتير | Sudan Mining Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-4 text-right">
+    <div class="bg-gray-800/80 border border-gray-700/60 rounded-2xl p-4 shadow-xl flex justify-between items-center">
+        <div>
+            <h1 class="text-base font-bold text-white">إدارة الفواتير 🧾</h1>
+            <p class="text-[11px] text-gray-400">متابعة الفواتير المصدورة، المدفوعة، والمستحقة</p>
+        </div>
+        <button class="px-4 py-2 bg-amber-500 text-black font-bold rounded-xl text-xs shadow-md">
+            + إنشاء فاتورة
         </button>
     </div>
 
-    <!-- شبكة الإحصائيات المالية -->
-    <div class="grid grid-cols-2 gap-3">
-        <div class="bg-gray-800/60 border-2 border-amber-500/50 rounded-2xl p-3 flex flex-col justify-between shadow-lg shadow-amber-500/10">
-            <span class="text-[11px] text-gray-400">إجمالي الفواتير 💵</span>
-            <span class="text-lg font-bold text-amber-400 mt-1" id="stat-total-invoices">4 فاتورة</span>
-        </div>
-        <div class="bg-gray-800/60 border-2 border-transparent rounded-2xl p-3 flex flex-col justify-between">
-            <span class="text-[11px] text-gray-400">المحصلة المدفوعة ✅</span>
-            <span class="text-lg font-bold text-emerald-400 mt-1" id="stat-paid-amount">$24,500</span>
-        </div>
-    </div>
-
-    <!-- جدول الفواتير -->
-    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
-        <div class="text-xs font-bold text-white flex items-center justify-between">
-            <span>📋 قائمة الفواتير النشطة</span>
-            <input type="text" id="searchInvoice" onkeyup="searchInvoices()" placeholder="بحث برقم الفاتورة أو العميل..." class="bg-gray-900 border border-gray-700 text-white text-[11px] rounded-xl px-3 py-1.5 focus:border-amber-500 focus:outline-none w-40">
-        </div>
-
-        <div class="overflow-x-auto w-full rounded-xl border border-gray-700/60">
-            <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
-                <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
-                    <tr>
-                        <th class="py-3 px-3">رقم الفاتورة</th>
-                        <th class="py-3 px-3">العميل / المستفيد</th>
-                        <th class="py-3 px-3">المبلغ</th>
-                        <th class="py-3 px-3">الحالة</th>
-                        <th class="py-3 px-3 text-center">الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="invoice-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
-                    <tr class="invoice-row hover:bg-gray-700/40 transition" data-id="INV-901" data-client="شركة الذهب الحديثة" data-amount="$12,000" data-status="paid">
-                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#INV-901</td>
-                        <td class="py-3 px-3 text-white font-bold">شركة الذهب الحديثة</td>
-                        <td class="py-3 px-3 text-emerald-400 font-bold font-mono">$12,000</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">مدفوعة</span></td>
-                        <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="viewInvoice(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
-                        </td>
-                    </tr>
-                    <tr class="invoice-row hover:bg-gray-700/40 transition" data-id="INV-902" data-client="مؤسسة النيل للتعدين" data-amount="$8,500" data-status="pending">
-                        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#INV-902</td>
-                        <td class="py-3 px-3 text-white font-bold">مؤسسة النيل للتعدين</td>
-                        <td class="py-3 px-3 text-amber-400 font-bold font-mono">$8,500</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30">معلقة</span></td>
-                        <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="viewInvoice(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <!-- قائمة الفواتير فقط -->
+    <div class="bg-gray-800/80 border border-gray-700/60 rounded-2xl p-4 space-y-3">
+        <div class="bg-gray-900/80 border border-gray-700 p-3 rounded-xl flex justify-between items-center text-xs">
+            <div>
+                <span class="font-mono text-amber-400 font-bold block">#INV-2026-089</span>
+                <span class="text-gray-300 font-medium">شركة التعدين المتقدمة</span>
+            </div>
+            <div class="text-left">
+                <span class="font-mono text-white font-bold block">$45,000</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px]">مدفوعة ✓</span>
+            </div>
         </div>
     </div>
 </div>
-
-<!-- Modal إنشاء فاتورة -->
-<div id="modal-invoice" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
-    <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
-        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-xs">➕ إصدار فاتورة جديدة</h3>
-            <button type="button" onclick="closeModal('modal-invoice')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
-        </div>
-        <form onsubmit="saveInvoice(event)" class="space-y-3">
-            <div>
-                <label class="block text-[11px] text-gray-300 mb-1">اسم العميل / الشريكة</label>
-                <input type="text" id="inv-client" required placeholder="مثال: شركة التعدين الأهلي" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-            </div>
-            <div>
-                <label class="block text-[11px] text-gray-300 mb-1">المبلغ ($)</label>
-                <input type="text" id="inv-amount" required placeholder="مثال: $5,000" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-            </div>
-            <div>
-                <label class="block text-[11px] text-gray-300 mb-1">حالة الفاتورة</label>
-                <select id="inv-status" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-                    <option value="paid">مدفوعة</option>
-                    <option value="pending">معلقة</option>
-                </select>
-            </div>
-            <div class="flex gap-2 pt-2">
-                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إصدار وحفظ</button>
-                <button type="button" onclick="closeModal('modal-invoice')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-function openCreateInvoiceModal() {
-    document.getElementById('modal-invoice').style.setProperty('display', 'flex', 'important');
-}
-function closeModal(id) {
-    document.getElementById(id).style.setProperty('display', 'none', 'important');
-}
-function saveInvoice(e) {
-    e.preventDefault();
-    const client = document.getElementById('inv-client').value;
-    const amount = document.getElementById('inv-amount').value;
-    const status = document.getElementById('inv-status').value;
-    const invId = 'INV-' + Math.floor(900 + Math.random() * 100);
-
-    const statusBadge = status === 'paid' 
-        ? '<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">مدفوعة</span>'
-        : '<span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30">معلقة</span>';
-
-    const tbody = document.getElementById('invoice-table-body');
-    const tr = document.createElement('tr');
-    tr.className = 'invoice-row hover:bg-gray-700/40 transition';
-    tr.setAttribute('data-id', invId);
-    tr.setAttribute('data-client', client);
-    tr.setAttribute('data-amount', amount);
-    tr.setAttribute('data-status', status);
-
-    tr.innerHTML = `
-        <td class="py-3 px-3 font-mono text-amber-400 font-bold">#${invId}</td>
-        <td class="py-3 px-3 text-white font-bold">${client}</td>
-        <td class="py-3 px-3 text-amber-400 font-bold font-mono">${amount}</td>
-        <td class="py-3 px-3">${statusBadge}</td>
-        <td class="py-3 px-3 text-center">
-            <button type="button" onclick="viewInvoice(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
-        </td>
-    `;
-    tbody.prepend(tr);
-    closeModal('modal-invoice');
-    document.getElementById('stat-total-invoices').innerText = document.querySelectorAll('.invoice-row').length + ' فاتورة';
-}
-function viewInvoice(btn) {
-    const row = btn.closest('.invoice-row');
-    alert(`تفاصيل الفاتورة: ${row.getAttribute('data-id')}\nالعميل: ${row.getAttribute('data-client')}\nالمبلغ: ${row.getAttribute('data-amount')}`);
-}
-function searchInvoices() {
-    const query = document.getElementById('searchInvoice').value.toLowerCase();
-    document.querySelectorAll('.invoice-row').forEach(row => {
-        const text = (row.getAttribute('data-id') + ' ' + row.getAttribute('data-client')).toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-    });
-}
-</script>
 {% endblock %}

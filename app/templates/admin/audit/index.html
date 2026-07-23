@@ -69,7 +69,7 @@
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#501</td>
                         <td class="py-3 px-3 text-white font-bold">المدير العام</td>
                         <td class="py-3 px-3 text-gray-300">تحديث حالة فرصة استثمارية #201</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">إجراء بيانات</span></td>
+                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">إجراء بيانات</span></td>
                         <td class="py-3 px-3 text-center">
                             <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
                         </td>
@@ -78,7 +78,7 @@
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#502</td>
                         <td class="py-3 px-3 text-white font-bold">أحمد عبد الله</td>
                         <td class="py-3 px-3 text-gray-300">رفع وثائق التوثيق الرسمي</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">إجراء بيانات</span></td>
+                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">إجراء بيانات</span></td>
                         <td class="py-3 px-3 text-center">
                             <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
                         </td>
@@ -87,7 +87,7 @@
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#503</td>
                         <td class="py-3 px-3 text-white font-bold">نظام الأمان</td>
                         <td class="py-3 px-3 text-gray-300">تسجيل دخول ناجح للوحة التحكم</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">نظام وأمان</span></td>
+                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">نظام وأمان</span></td>
                         <td class="py-3 px-3 text-center">
                             <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
                         </td>
@@ -198,9 +198,9 @@ function filterBy(type) {
 }
 
 function getTypeBadge(type, label) {
-    if (type === 'system') return `<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">${label}</span>`;
-    if (type === 'warning') return `<span class="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/30">${label}</span>`;
-    return `<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">${label}</span>`;
+    if (type === 'system') return `<span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">${label}</span>`;
+    if (type === 'warning') return `<span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/30">${label}</span>`;
+    return `<span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">${label}</span>`;
 }
 
 function updateCounts() {

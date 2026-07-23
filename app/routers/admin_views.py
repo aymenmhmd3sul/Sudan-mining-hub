@@ -14,6 +14,14 @@ async def admin_dashboard(request: Request):
     return templates.TemplateResponse(request=request, name="admin/dashboard.html", context={"active_tab": "dashboard"})
 
 # معالج كافة أقسام القائمة الجانبية المنسدلة
+@router.get("/dashboard-v2", response_class=HTMLResponse)
+async def admin_dashboard_v2(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/dashboard_v2.html",
+        context={"active_tab": "dashboard"}
+    )
+
 @router.get("/{module_name}", response_class=HTMLResponse)
 @router.get("/{module_name}/{subpath:path}", response_class=HTMLResponse)
 async def render_admin_module(request: Request, module_name: str, subpath: str = ""):

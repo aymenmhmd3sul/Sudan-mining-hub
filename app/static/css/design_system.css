@@ -1,0 +1,30 @@
+
+:root {
+  --smh-bg-main:#0B0F19;
+  --smh-bg-card:#151C2C;
+  --smh-bg-sidebar:#0F1623;
+  --smh-bg-header:#151C2C;
+  --smh-border-color:#232E42;
+
+  --smh-primary:#D97706;
+  --smh-primary-hover:#B45309;
+  --smh-secondary:#3B82F6;
+
+  --smh-success:#10B981;
+  --smh-warning:#F59E0B;
+  --smh-danger:#EF4444;
+
+  --smh-text-main:#F9FAFB;
+  --smh-text-muted:#9CA3AF;
+
+  --smh-font-family:'Cairo',system-ui,sans-serif;
+
+  --smh-radius-sm:6px;
+  --smh-radius-md:10px;
+  --smh-radius-lg:16px;
+
+  --smh-space-1:.25rem;
+  --smh-space-2:.5rem;
+  --smh-space-4:1rem;
+  --smh-space-6:1.5rem;
+}

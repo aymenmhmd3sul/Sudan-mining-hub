@@ -1,0 +1,16 @@
+
+*,*::before,*::after{
+ box-sizing:border-box;
+}
+
+body{
+ font-family:var(--smh-font-family);
+ background:var(--smh-bg-main);
+ color:var(--smh-text-main);
+ margin:0;
+ direction:rtl;
+}
+
+h1,h2,h3,h4{
+ margin:0;
+}

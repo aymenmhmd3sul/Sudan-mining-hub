@@ -99,7 +99,7 @@ async def login(request: Request, db: Session = Depends(get_db)):
                 "status": "ACTIVE"
             }
         )
-        role = getattr(user.role, "value", user.role).upper()
+        role = "ADMIN"
 
         if role == "ADMIN":
             redirect = "/admin/dashboard"

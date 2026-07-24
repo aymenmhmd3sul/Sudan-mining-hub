@@ -62,3 +62,73 @@ def dashboard(request: Request):
 @app.get("/admin")
 def admin_panel(request: Request):
     return templates.TemplateResponse("admin.html", {"request": request})
+
+# ==========================================
+# مسارات الأقسام الفرعية لـ v1 (إعادة توجيه الصفحات)
+# ==========================================
+
+@app.get("/admin/market")
+async def admin_market(request: Request):
+    return templates.TemplateResponse("admin/marketplace/index.html", {"request": request})
+
+@app.get("/admin/mining")
+async def admin_mining(request: Request):
+    return templates.TemplateResponse("admin/mining/index.html", {"request": request})
+
+@app.get("/admin/equipment")
+async def admin_equipment(request: Request):
+    return templates.TemplateResponse("admin/equipment/index.html", {"request": request})
+
+@app.get("/admin/trade-desk")
+async def admin_trade_desk(request: Request):
+    return templates.TemplateResponse("admin/trade_desk/index.html", {"request": request})
+
+
+# ==========================================
+# مسارات الواجهات المخصصة لبقية موديولات v1
+# ==========================================
+
+@app.get("/admin/finance")
+async def admin_finance(request: Request):
+    return templates.TemplateResponse("admin/finance/index.html", {"request": request})
+
+@app.get("/admin/users")
+async def admin_users(request: Request):
+    return templates.TemplateResponse("admin/users/index.html", {"request": request})
+
+@app.get("/admin/communications")
+async def admin_communications(request: Request):
+    return templates.TemplateResponse("admin/communications/index.html", {"request": request})
+
+@app.get("/admin/content")
+async def admin_content(request: Request):
+    return templates.TemplateResponse("admin/content/index.html", {"request": request})
+
+@app.get("/admin/reports")
+async def admin_reports(request: Request):
+    return templates.TemplateResponse("admin/reports/index.html", {"request": request})
+
+@app.get("/admin/administration")
+async def admin_administration(request: Request):
+    return templates.TemplateResponse("admin/administration/index.html", {"request": request})
+
+@app.get("/admin/security")
+async def admin_security(request: Request):
+    return templates.TemplateResponse("admin/security/index.html", {"request": request})
+
+@app.get("/admin/offers")
+async def admin_offers(request: Request):
+    return templates.TemplateResponse("admin/offers/index.html", {"request": request})
+
+@app.get("/admin/payments")
+async def admin_payments(request: Request):
+    return templates.TemplateResponse("admin/payments/index.html", {"request": request})
+
+@app.get("/admin/opportunities")
+async def admin_opportunities(request: Request):
+    return templates.TemplateResponse("admin/opportunities/index.html", {"request": request})
+
+@app.get("/admin/services")
+async def admin_services(request: Request):
+    return templates.TemplateResponse("admin/services/index.html", {"request": request})
+

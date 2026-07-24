@@ -1,0 +1,287 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+إدارة المالية والعمليات | Sudan Mining Hub
+{% endblock %}
+
+{% block content %}
+<style>
+/* تحسينات حركة الإطار التفاعلية */
+.fin-card {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+}
+.fin-card.active-card {
+    border-color: #f59e0b !important; /* لون الإطار البرتقالي المحدد */
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+    background-color: rgba(31, 41, 55, 0.95) !important;
+}
+
+/* تنسيقات خاصة بالطباعة لتحويل النافذة إلى إيصال فاتورة رسمي عند الضغط على طباعة */
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #detailsModal, #detailsModal * {
+        visibility: visible !important;
+    }
+    #detailsModal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+    }
+    #modalCardContent {
+        border: 2px solid #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    #modalCardContent * {
+        color: #000 !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+</style>
+
+<div class="space-y-4 text-right">
+
+    <!-- الهيدر مع زر إنشاء فاتورة -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="text-center sm:text-right">
+            <h1 class="text-lg font-extrabold text-white flex items-center justify-center sm:justify-start gap-2">
+                <span>المركز المالي والحسابات 💰</span>
+            </h1>
+            <p class="text-[11px] text-gray-400 mt-1">إدارة الفواتير، المبالغ المحجوزة Escrow، والتحويلات المالية</p>
+        </div>
+        <button type="button" onclick="showDetailsModal('جديد', 'عميل جديد', '$0', 'فاتورة جديدة', 'قيد الإجراء ⏳', '{{ now }}')" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5">
+            <span>+ إنشاء فاتورة جديدة</span>
+        </button>
+    </div>
+
+    <!-- كروت الإحصائيات - الإطار يتحرك للمستطيل المختار -->
+    <div class="grid grid-cols-2 gap-2.5" id="statsGrid">
+        
+        <div id="card-all" onclick="selectCard(this, 'all')" class="fin-card active-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
+            <span class="text-[10px] text-gray-300 font-semibold block">إجمالي التحصيلات 🧾</span>
+            <span class="text-base font-black text-amber-400 mt-1 block font-mono">$142,500</span>
+            <span class="text-[9px] text-emerald-400 font-semibold">45 عملية مكتملة</span>
+        </div>
+
+        <div id="card-escrow" onclick="selectCard(this, 'escrow')" class="fin-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
+            <span class="text-[10px] text-gray-300 font-semibold block">حساب الضمان Escrow 🛡️</span>
+            <span class="text-base font-black text-emerald-400 mt-1 block font-mono">$88,200</span>
+            <span class="text-[9px] text-amber-400 font-semibold">12 صفقة معلقة</span>
+        </div>
+
+        <div id="card-commission" onclick="selectCard(this, 'commission')" class="fin-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
+            <span class="text-[10px] text-gray-300 font-semibold block">عمولات المنصة 💎</span>
+            <span class="text-base font-black text-purple-400 mt-1 block font-mono">$18,450</span>
+            <span class="text-[9px] text-purple-300 font-semibold">المحصلة</span>
+        </div>
+
+        <div id="card-settlement" onclick="selectCard(this, 'settlement')" class="fin-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
+            <span class="text-[10px] text-gray-300 font-semibold block">التسويات المستحقة ⚖️</span>
+            <span class="text-base font-black text-blue-400 mt-1 block font-mono">$32,100</span>
+            <span class="text-[9px] text-blue-300 font-semibold">جاهزة للتحويل</span>
+        </div>
+
+    </div>
+
+    <!-- سجل المعاملات والفواتير -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-3.5 shadow-xl space-y-3">
+        
+        <div class="flex flex-col gap-2">
+            <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+                📋 سجل المعاملات والفواتير
+            </h3>
+            <input type="text" id="finSearch" onkeyup="searchFinanceTable()" placeholder="بحث باسم العميل أو رقم الفاتورة..." class="w-full bg-gray-900/80 border border-gray-700 text-xs rounded-xl px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition">
+        </div>
+
+        <div id="financeCardsContainer" class="space-y-3">
+            
+            <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="all" data-search="شركة التعدين المتقدمة #inv-2026-089">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                    <span class="font-mono text-amber-400 font-bold text-xs">#INV-2026-089</span>
+                    <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold">فاتورة شراء</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-300 font-medium">شركة التعدين المتقدمة</span>
+                    <span class="font-mono font-bold text-white text-base">$45,000</span>
+                </div>
+                <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
+                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">مدفوعة ✓</span>
+                    <button type="button" onclick="showDetailsModal('#INV-2026-089', 'شركة التعدين المتقدمة', '$45,000', 'فاتورة شراء', 'مدفوعة ✓', '2026-05-10')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
+                    </button>
+                </div>
+            </div>
+
+            <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="escrow" data-search="مورد المعدات الهيدروليكية #esc-2026-012">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                    <span class="font-mono text-emerald-400 font-bold text-xs">#ESC-2026-012</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold">ضمان Escrow</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-300 font-medium">مورد المعدات الهيدروليكية</span>
+                    <span class="font-mono font-bold text-white text-base">$28,500</span>
+                </div>
+                <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
+                    <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold">محجوز معلق ⏳</span>
+                    <button type="button" onclick="showDetailsModal('#ESC-2026-012', 'مورد المعدات الهيدروليكية', '$28,500', 'ضمان Escrow', 'محجوز معلق ⏳', '2026-05-12')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
+                    </button>
+                </div>
+            </div>
+
+            <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="commission" data-search="صفقة آليات نهر النيل #com-2026-104">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                    <span class="font-mono text-purple-400 font-bold text-xs">#COM-2026-104</span>
+                    <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] font-semibold">عمولة منصة</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-300 font-medium">صفقة آليات نهر النيل</span>
+                    <span class="font-mono font-bold text-white text-base">$3,200</span>
+                </div>
+                <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
+                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">مقتطعة ✓</span>
+                    <button type="button" onclick="showDetailsModal('#COM-2026-104', 'صفقة آليات نهر النيل', '$3,200', 'عمولة منصة', 'مقتطعة ✓', '2026-05-14')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
+                    </button>
+                </div>
+            </div>
+
+            <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="settlement" data-search="أعمال حفر كسارة الشمالية #set-2026-005">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                    <span class="font-mono text-blue-400 font-bold text-xs">#SET-2026-005</span>
+                    <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-semibold">تسوية مالية</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-300 font-medium">أعمال حفر كسارة الشمالية</span>
+                    <span class="font-mono font-bold text-white text-base">$15,400</span>
+                </div>
+                <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
+                    <span class="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-bold">قيد التحويل 🔄</span>
+                    <button type="button" onclick="showDetailsModal('#SET-2026-005', 'أعمال حفر كسارة الشمالية', '$15,400', 'تسوية مالية', 'قيد التحويل 🔄', '2026-05-15')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- النافذة المنبثقة للطباعة والتفاصيل (Modal) -->
+<div id="detailsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalCardContent" class="bg-gray-800 border border-gray-700 rounded-2xl p-5 w-full max-w-sm space-y-4 text-right shadow-2xl relative">
+        
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                📄 تفاصيل العملية المالية
+            </h3>
+            <button onclick="closeDetailsModal()" class="text-gray-400 hover:text-white text-lg font-bold no-print">✕</button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+            <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400">رقم العملية:</span>
+                <span id="modalId" class="font-mono font-bold text-amber-400">-</span>
+            </div>
+            <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400">الطرف الثاني:</span>
+                <span id="modalClient" class="font-semibold text-white">-</span>
+            </div>
+            <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400">النوع:</span>
+                <span id="modalType" class="text-gray-200">-</span>
+            </div>
+            <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400">المبلغ:</span>
+                <span id="modalAmount" class="font-mono font-bold text-emerald-400 text-sm">-</span>
+            </div>
+            <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400">التاريخ:</span>
+                <span id="modalDate" class="text-gray-300 font-mono">-</span>
+            </div>
+            <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
+                <span class="text-gray-400">الحالة الحالية:</span>
+                <span id="modalStatus" class="font-bold text-white">-</span>
+            </div>
+        </div>
+
+        <!-- أزرار الإجراءات (تُخفى أثناء الطباعة تلقائياً) -->
+        <div class="pt-2 flex gap-2 no-print">
+            <button onclick="printInvoice()" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition flex items-center justify-center gap-1 shadow-lg">
+                🖨️ طباعة الفاتورة
+            </button>
+            <button onclick="closeDetailsModal()" class="px-4 py-2.5 bg-gray-700 hover:bg-gray-600 active:scale-95 text-white font-semibold rounded-xl text-xs transition">
+                إغلاق
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// وظيفة نقل الإطار البرتقالي المحدد للبطاقة المضغوطة
+function selectCard(element, type) {
+    document.querySelectorAll('.fin-card').forEach(card => {
+        card.classList.remove('active-card');
+    });
+    element.classList.add('active-card');
+    filterTable(type);
+}
+
+// عرض التفاصيل في النافذة
+function showDetailsModal(id, client, amount, type, status, date) {
+    document.getElementById('modalId').innerText = id;
+    document.getElementById('modalClient').innerText = client;
+    document.getElementById('modalAmount').innerText = amount;
+    document.getElementById('modalType').innerText = type;
+    document.getElementById('modalStatus').innerText = status;
+    document.getElementById('modalDate').innerText = date;
+
+    document.getElementById('detailsModal').classList.remove('hidden');
+}
+
+function closeDetailsModal() {
+    document.getElementById('detailsModal').classList.add('hidden');
+}
+
+// تنفيذ الطباعة المباشرة لجميع الهواتف والمتصفحات
+function printInvoice() {
+    window.print();
+}
+
+function searchFinanceTable() {
+    let input = document.getElementById("finSearch").value.toLowerCase();
+    let cards = document.querySelectorAll(".fin-card-item");
+    cards.forEach(card => {
+        let text = card.getAttribute("data-search").toLowerCase();
+        card.style.display = text.includes(input) ? "" : "none";
+    });
+}
+
+function filterTable(type) {
+    let cards = document.querySelectorAll(".fin-card-item");
+    cards.forEach(card => {
+        if (type === 'all' || card.getAttribute('data-type') === type) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+</script>
+{% endblock %}

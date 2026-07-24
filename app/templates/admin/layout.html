@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sudan التعدين Hub - الإدارة{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body>
+
+    <!-- الهيدر العلوي المتجاوب للهاتف -->
+    <header class="admin-header">
+        <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
+        <div class="header-brand">
+            <span class="brand-icon">⛏</span>
+            <div>
+                <strong>منصة التعدين السودانية</strong>
+                <small>مركز التحكم الإداري</small>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <span>مدير النظام</span>
+            <div class="user-profile-badge">A</div>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <!-- الشريط الجانبي الشجري (11 وحدة كاملة بفروعها) -->
+        <nav class="admin-sidebar" id="adminSidebar">
+            <a href="/admin/dashboard" class="sidebar-item">📊 لوحة التحكم</a>
+            
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-market')">🏪 السوق <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-market">
+                <a href="/admin/marketplace">Opportunities</a>
+                <a href="/admin/marketplace">Buyer Requests</a>
+                <a href="/admin/marketplace">Seller Offers</a>
+                <a href="/admin/marketplace">التفاوض</a>
+                <a href="/admin/marketplace">Contracts</a>
+                <a href="/admin/marketplace">Deals</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-mining')">⛏ التعدين <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-mining">
+                <a href="/admin/mining">التعدين Sites</a>
+                <a href="/admin/mining">Concessions</a>
+                <a href="/admin/mining">Minerals</a>
+                <a href="/admin/mining">Samples</a>
+                <a href="/admin/mining">Lab Results</a>
+                <a href="/admin/mining">Production</a>
+                <a href="/admin/mining">Inventory</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-equipment')">🚜 المعدات والخدمات <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-equipment">
+                <a href="/admin/equipment">Equipment</a>
+                <a href="/admin/equipment">Rentals</a>
+                <a href="/admin/equipment">Service Providers</a>
+                <a href="/admin/equipment">Logistics</a>
+                <a href="/admin/equipment">Transport</a>
+                <a href="/admin/equipment">Warehouses</a>
+                <a href="/admin/equipment">Maintenance</a>
+            </div>
+
+            
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-advanced')">🚀 العمليات المتقدمة <span>▾</span></div>
+
+<div class="sidebar-sub-menu" id="menu-advanced">
+
+<a href="/admin/negotiation">🤝 Negotiation</a>
+
+<a href="/admin/trade_desk">📈 Trade Desk</a>
+
+<a href="/admin/offers">📑 Offers</a>
+
+<a href="/admin/payments">💳 Payments</a>
+
+<a href="/admin/opportunities">🎯 Opportunities</a>
+
+<a href="/admin/services">🛠 Services</a>
+
+<a href="/admin/identity">🆔 Identity</a>
+
+<a href="/admin/audit">🔍 Audit</a>
+
+<a href="/admin/analytics">📊 التحليلات</a>
+
+</div>
+
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-finance')">💰 المالية <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-finance">
+                <a href="/admin/finance">Invoices</a>
+                <a href="/admin/finance/escrow">Escrow</a>
+                <a href="/admin/finance">Payment Transactions</a>
+                <a href="/admin/finance">Commissions</a>
+                <a href="/admin/finance">Settlements</a>
+                <a href="/admin/finance">Refunds</a>
+                <a href="/admin/finance">Disputes</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 المستخدمون <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-users">
+                <a href="/admin/users">Buyers</a>
+                <a href="/admin/users">Sellers</a>
+                <a href="/admin/users">Traders</a>
+                <a href="/admin/users">التعدين Companies</a>
+                <a href="/admin/users">Service Companies</a>
+                <a href="/admin/users">Agents</a>
+                <a href="/admin/users">Admins</a>
+                <a href="/admin/users">Roles & Permissions</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-comm')">💬 الاتصالات <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-comm">
+                <a href="/admin/communications">Messages</a>
+                <a href="/admin/communications">Chats</a>
+                <a href="/admin/communications">Notifications</a>
+                <a href="/admin/communications">Email</a>
+                <a href="/admin/communications">SMS</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-content')">📰 المحتوى <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-content">
+                <a href="/admin/content">News</a>
+                <a href="/admin/content">Articles</a>
+                <a href="/admin/content">Advertisements</a>
+                <a href="/admin/content">Subscriptions</a>
+                <a href="/admin/content">Static Pages</a>
+                <a href="/admin/content">FAQ</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-reports')">📈 التقارير <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-reports">
+                <a href="/admin/reports">Financial التقارير</a>
+                <a href="/admin/reports">التعدين التقارير</a>
+                <a href="/admin/reports">السوق التقارير</a>
+                <a href="/admin/reports">User التقارير</a>
+                <a href="/admin/reports">التحليلات</a>
+                <a href="/admin/reports">Export</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-admin')">⚙ الإدارة <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-admin">
+                <a href="/admin/administration">General Settings</a>
+                <a href="/admin/administration">Countries</a>
+                <a href="/admin/administration">Currencies</a>
+                <a href="/admin/administration">Taxes</a>
+                <a href="/admin/administration">Payment Providers</a>
+                <a href="/admin/administration">API Keys</a>
+                <a href="/admin/administration">Audit Log</a>
+                <a href="/admin/administration">Backup</a>
+                <a href="/admin/administration">Email Settings</a>
+                <a href="/admin/administration">SMS Settings</a>
+            </div>
+
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-security')">🔐 الأمن <span>▾</span></div>
+            <div class="sidebar-sub-menu" id="menu-security">
+                <a href="/admin/security">Login History</a>
+                <a href="/admin/security">Active Sessions</a>
+                <a href="/admin/security">Permissions</a>
+                <a href="/admin/security">Activity Log</a>
+                <a href="/admin/security">Block List</a>
+                <a href="/admin/security">System Monitoring</a>
+            </div>
+        </nav>
+
+        <!-- منطقة عرض المحتوى المتغيرة -->
+        <main class="admin-main-content">
+            <div class="content-wrapper">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

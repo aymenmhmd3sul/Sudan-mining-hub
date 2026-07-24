@@ -1,0 +1,12 @@
+body { margin: 0; font-family: sans-serif; background: #050b16; color: white; overflow-x: hidden; }
+.hero { display: flex; align-items: center; justify-content: space-around; padding: 20px; min-height: 90vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1596495577886-d920f1fb7530'); background-size: cover; flex-wrap: wrap; }
+.hero-text { max-width: 400px; text-align: center; }
+.login-card { background: rgba(10, 25, 47, 0.9); backdrop-filter: blur(15px); padding: 25px; border-radius: 20px; border: 1px solid #D4AF37; width: 300px; }
+input { width: 100%; padding: 12px; margin: 8px 0; background: #0A192F; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+button { width: 100%; padding: 12px; background: #D4AF37; border: none; font-weight: bold; border-radius: 5px; margin-top: 10px; color: black; }
+h1 { color: #D4AF37; font-size: 1.8rem; }
+/* التعديل الجوهري للهواتف */
+@media (max-width: 768px) {
+    .hero { flex-direction: column; padding: 10px; }
+    .hero-text { display: none; } /* إخفاء النص مؤقتاً لتركيز المساحة للبطاقة */
+}

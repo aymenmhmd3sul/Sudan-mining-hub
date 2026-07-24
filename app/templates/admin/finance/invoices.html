@@ -1,0 +1,31 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}إدارة الفواتير | Sudan Mining Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-4 text-right">
+    <div class="bg-gray-800/80 border border-gray-700/60 rounded-2xl p-4 shadow-xl flex justify-between items-center">
+        <div>
+            <h1 class="text-base font-bold text-white">إدارة الفواتير 🧾</h1>
+            <p class="text-[11px] text-gray-400">متابعة الفواتير المصدورة، المدفوعة، والمستحقة</p>
+        </div>
+        <button class="px-4 py-2 bg-amber-500 text-black font-bold rounded-xl text-xs shadow-md">
+            + إنشاء فاتورة
+        </button>
+    </div>
+
+    <!-- قائمة الفواتير فقط -->
+    <div class="bg-gray-800/80 border border-gray-700/60 rounded-2xl p-4 space-y-3">
+        <div class="bg-gray-900/80 border border-gray-700 p-3 rounded-xl flex justify-between items-center text-xs">
+            <div>
+                <span class="font-mono text-amber-400 font-bold block">#INV-2026-089</span>
+                <span class="text-gray-300 font-medium">شركة التعدين المتقدمة</span>
+            </div>
+            <div class="text-left">
+                <span class="font-mono text-white font-bold block">$45,000</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px]">مدفوعة ✓</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحليلات الإدارة | Sudan Mining Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    body { 
+        font-family: 'Cairo', sans-serif; 
+        background-color: #f8fafc; 
+        padding: 12px; 
+        color: #1e293b;
+        overflow-x: hidden;
+    }
+    .header { 
+        background: #0f172a; 
+        color: #fff; 
+        padding: 15px; 
+        border-radius: 12px; 
+        margin-bottom: 15px; 
+        display: flex; 
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+    }
+    .timestamp-container { 
+        font-size: 11px; 
+        color: #94a3b8; 
+        text-align: right; 
+    }
+    .grid { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 12px; 
+        margin-bottom: 15px; 
+    }
+    .card { 
+        background: #fff; 
+        padding: 15px; 
+        border-radius: 12px; 
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+        border-right: 5px solid #3b82f6; 
+    }
+    .card.success { border-right-color: #10b981; }
+    .card.warning { border-right-color: #f59e0b; }
+    .card.purple { border-right-color: #8b5cf6; }
+    .card h3 { margin: 0 0 5px 0; font-size: 12px; color: #64748b; } 
+    .card .value { font-size: 24px; font-weight: 700; color: #0f172a; }
+    .card .sub-text { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .analytics-section { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 15px; 
+        margin-bottom: 15px; 
+    }
+    .chart-container { 
+        background: #fff; 
+        padding: 15px; 
+        border-radius: 12px; 
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+        height: 280px; 
+    }
+    .system-status { 
+        background: #fff; 
+        padding: 12px; 
+        border-radius: 12px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+        font-size: 12px;
+    }
+    .badge { background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 30px; font-size: 11px; font-weight: 600; }
+
+    @media (min-width: 768px) {
+        body { padding: 20px; }
+        .header { flex-direction: row; justify-content: space-between; align-items: center; }
+        .timestamp-container { text-align: left; }
+        .grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        .analytics-section { grid-template-columns: 1fr 2fr; }
+    }
+
+    .admin-actions-section {
+        margin-bottom: 25px;
+    }
+    .actions-group-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #475569;
+        margin: 15px 0 8px 0;
+        border-right: 3px solid #3b82f6;
+        padding-right: 8px;
+    }
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* زرين في كل صف للهاتف */
+        gap: 10px;
+    }
+    .btn-action {
+        background: #ffffff;
+        color: #1e293b;
+        border: 1px solid #e2e8f0;
+        padding: 12px 10px;
+        border-radius: 10px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        transition: all 0.2s;
+    }
+    .btn-action:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+    .btn-action.primary {
+        background: #3b82f6;
+        color: #ffffff;
+        border: none;
+    }
+    .btn-action.primary:hover { background: #2563eb; }
+    .btn-action.danger {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+    .btn-action.danger:hover { background: #ffeeee; }
+
+    @media (min-width: 768px) {
+        .actions-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+</style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1 style="margin:0; font-size: 22px; font-weight: 700;">منصة تعدين السودان — مركز التحليلات والقرار</h1>
+            <small id="admin-email">جاري التحقق من الهوية الفدرالية...</small>
+        </div>
+        <div class="timestamp-container">
+            <div>حالة التحديث: <span id="sync-status" style="color: #10b981; font-weight:600;">ذكي ومستمر</span></div>
+            <div id="api-timestamp">آخر تحديث للبيانات: -</div>
+        </div>
+    </div>
+
+    
+    <div class="admin-actions-section">
+        
+        <div class="actions-group-title">💰 إدارة النظام المالي والعمولات</div>
+        <div class="actions-grid">
+            <button class="btn-action" onclick="window.location.href='/admin-portal/finance/bank-accounts'">🏦 الحسابات البنكية</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/finance/commissions'">📈 نسب العمولات</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/subscriptions/traders'">💎 اشتراكات التجار</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/finance/reports'">📊 التقارير المالية</button>
+        </div>
+
+        <div class="actions-group-title">👥 الحسابات والتحقق من الهوية</div>
+        <div class="actions-grid">
+            <button class="btn-action" onclick="window.location.href='/admin-portal/users/clients'">🤝 إدارة العملاء</button>
+            <button class="btn-action" onclick="window.location.href='/admin-portal/users/verifications'">🪪 طلبات التوثيق</button>
+            <button class="btn-action primary" onclick="fetchAnalyticsData()">🔄 تحديث البيانات حياً</button>
+            <button class="btn-action danger" onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='/login';">🚪 خروج أمن</button>
+        </div>
+
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>المستثمرون</h3>
+            <div class="value" id="total-investors">-</div>
+            <div class="sub-text" id="verified-investors">الموثقون: -</div>
+        </div>
+        <div class="card purple">
+            <h3>إجمالي المعروض في السوق</h3>
+            <div class="value" id="total-assets">-</div>
+            <div class="sub-text">أصول تعدينية منوعة</div>
+        </div>
+        <div class="card success">
+            <h3>العروض النشطة الحية</h3>
+            <div class="value" id="active-listings">-</div>
+            <div class="sub-text">تستقبل طلبات الشراء الآن</div>
+        </div>
+        <div class="card warning">
+            <h3>قيد المراجعة والتحقق</h3>
+            <div class="value" id="pending-verification">-</div>
+            <div class="sub-text" id="pending-orders">طلبات معلقة: -</div>
+        </div>
+        <div class="card purple">
+            <h3>غرف المفاوضات النشطة</h3>
+            <div class="value" id="open-rooms">-</div>
+            <div class="sub-text" id="completed-deals">المكتملة بنجاح: -</div>
+        </div>
+    </div>
+
+    <div class="analytics-section">
+        <div class="chart-container">
+            <h3 style="margin-top:0; color:#475569;">توزيع حالات أصول السوق</h3>
+            <canvas id="marketShareChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3 style="margin-top:0; color:#475569;">مؤشر حركية المفاوضات والصفقات</h3>
+            <canvas id="dealsTrendChart"></canvas>
+        </div>
+    </div>
+
+    <div class="system-status">
+        <span>النواة التحليلية والاتصال بالـ API:</span>
+        <span class="badge" id="system-health">جاري الفحص...</span>
+    </div>
+
+    <script>
+        const TOKEN = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+        let marketChart = null;
+        let dealsChart = null;
+        let updateInterval = null;
+
+        function initCharts(active, pending, totalRooms, openRooms, completed) {
+            const ctxMarket = document.getElementById('marketShareChart').getContext('2d');
+            marketChart = new Chart(ctxMarket, {
+                type: 'doughnut',
+                data: {
+                    labels: ['أصول نشطة', 'قيد التحقق'],
+                    datasets: [{
+                        data: [active, pending],
+                        backgroundColor: ['#10b981', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            const ctxDeals = document.getElementById('dealsTrendChart').getContext('2d');
+            dealsChart = new Chart(ctxDeals, {
+                type: 'bar',
+                data: {
+                    labels: ['إجمالي الغرف', 'المفاوضات المفتوحة', 'الصفقات الناجحة'],
+                    datasets: [{
+                        label: 'عدد العمليات الحية',
+                        data: [totalRooms, openRooms, completed],
+                        backgroundColor: ['#8b5cf6', '#3b82f6', '#10b981'],
+                        borderRadius: 6
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+
+        function updateCharts(active, pending, totalRooms, openRooms, completed) {
+            if(marketChart && dealsChart) {
+                marketChart.data.datasets[0].data = [active, pending];
+                marketChart.update();
+
+                dealsChart.data.datasets[0].data = [totalRooms, openRooms, completed];
+                dealsChart.update();
+            } else {
+                initCharts(active, pending, totalRooms, openRooms, completed);
+            }
+        }
+
+        async function fetchAnalyticsData() {
+            try {
+                const response = await fetch('/admin-portal/api/dashboard-data', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' }
+                });
+                if (!response.ok) throw new Error('Unauthenticated');
+
+                const result = await response.json();
+                if (result.status === "success") {
+                    // تحديث الطوابع الزمنية والمعلومات
+                    const genTime = new Date(result.generated_at);
+                    document.getElementById('api-timestamp').innerText = `آخر تحديث للبيانات: ${genTime.toLocaleTimeString('ar-SD')}`;
+                    document.getElementById('admin-email').innerText = `المسؤول الحالي: ${result.admin_info.email}`;
+
+                    // تحديث العدادات المتقدمة
+                    document.getElementById('total-investors').innerText = result.data.users.total;
+                    document.getElementById('verified-investors').innerText = `الموثقون: ${result.data.users.verified}`;
+                    document.getElementById('total-assets').innerText = result.data.market.total_assets;
+                    document.getElementById('active-listings').innerText = result.data.market.active_listings;
+                    document.getElementById('pending-verification').innerText = result.data.market.pending_verification;
+                    document.getElementById('pending-orders').innerText = `طلبات معلقة: ${result.data.market.pending_orders}`;
+                    document.getElementById('open-rooms').innerText = result.data.negotiations.open_rooms;
+                    document.getElementById('completed-deals').innerText = `المكتملة بنجاح: ${result.data.negotiations.completed_deals}`;
+
+                    // التحديث الديناميكي للرسوم البيانية الحية
+                    updateCharts(
+                        result.data.market.active_listings,
+                        result.data.market.pending_verification,
+                        result.data.negotiations.total_rooms,
+                        result.data.negotiations.open_rooms,
+                        result.data.negotiations.completed_deals
+                    );
+
+                    document.getElementById('system-health').innerText = "مستقر ومحدث حياً";
+                }
+            } catch (error) {
+                console.error("حدث خطأ في جلب التحليلات:", error);
+                document.getElementById('sync-status').innerText = "متوقف مؤقتاً";
+                document.getElementById('sync-status').style.color = "#ef4444";
+            }
+        }
+
+        // إدارة آلية التحديث الذكي والـ VisibilityState
+        function startSmartSync() {
+            fetchAnalyticsData(); // استدعاء فوري عند التحميل
+            updateInterval = setInterval(fetchAnalyticsData, 60000); // تحديث دوري كل 60 ثانية
+        }
+
+        function stopSmartSync() {
+            clearInterval(updateInterval);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                document.getElementById('sync-status').innerText = "ذكي ومستمر";
+                document.getElementById('sync-status').style.color = "#10b981";
+                startSmartSync();
+            } else {
+                document.getElementById('sync-status').innerText = "خامل (حفاظاً على موارد الخادم)";
+                document.getElementById('sync-status').style.color = "#64748b";
+                stopSmartSync();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', startSmartSync);
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+الإحصائيات والتحليلات الحية | Sudan Mining Hub
+{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="space-y-5 text-right">
+
+    <!-- الهيدر مع زر التحديث المتفاعل -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
+        <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
+            <span>الإحصائيات والتحليلات الحية 📊</span>
+        </h1>
+        <p class="text-xs text-gray-400 mb-4">اضغط على أي قسم بالأسفل لعرض التوزيع البياني الخاص به</p>
+        
+        <button type="button" id="refresh-btn" onclick="updateLiveCharts()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2 mx-auto">
+            <span id="refresh-icon" class="inline-block transition-transform duration-500">🔄</span>
+            <span id="refresh-text">تحديث البيانات الحية</span>
+        </button>
+    </div>
+
+    <!-- كروت الإحصائيات التفاعلية (تبويبات حية) -->
+    <div class="grid grid-cols-2 gap-3">
+        <!-- 1. كارت الزيارات -->
+        <div id="card-visits" onclick="switchTab('visits')" class="stat-card bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg active:scale-95 transition cursor-pointer select-none">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-gray-300 font-semibold">إجمالي الزيارات 🌐</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            </div>
+            <span id="stat-visits" class="text-2xl font-black text-amber-400 mt-2 font-mono">24,850</span>
+            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">↑ 12% عن الشهر الماضي</span>
+        </div>
+
+        <!-- 2. كارت المناجم والآبار -->
+        <div id="card-mines" onclick="switchTab('mines')" class="stat-card bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer select-none opacity-80 hover:opacity-100">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-gray-300 font-semibold">المناجم والآبار ⛏️</span>
+            </div>
+            <span id="stat-mines" class="text-2xl font-black text-emerald-400 mt-2 font-mono">142</span>
+            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">↑ 5 مواقع جديدة</span>
+        </div>
+
+        <!-- 3. كارت الصفقات -->
+        <div id="card-deals" onclick="switchTab('deals')" class="stat-card bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer select-none opacity-80 hover:opacity-100">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-gray-300 font-semibold">الصفقات النشطة 🤝</span>
+            </div>
+            <span id="stat-deals" class="text-2xl font-black text-white mt-2 font-mono">18</span>
+            <span class="text-[10px] text-amber-400 mt-1 font-semibold">قيد التفاوض المستمر</span>
+        </div>
+
+        <!-- 4. كارت التوثيق -->
+        <div id="card-auth" onclick="switchTab('auth')" class="stat-card bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer select-none opacity-80 hover:opacity-100">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-gray-300 font-semibold">معدل التوثيق 🆔</span>
+            </div>
+            <span id="stat-auth" class="text-2xl font-black text-purple-400 mt-2 font-mono">89.4%</span>
+            <span class="text-[10px] text-purple-300 mt-1 font-semibold">موثق رسمياً</span>
+        </div>
+    </div>
+
+    <!-- الرسم البياني المتغير تلقائياً حسب الكارت المحدد -->
+    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+            <h3 id="chart-title" class="text-xs font-bold text-white flex items-center gap-1.5">
+                📈 تحليل إجمالي الزيارات الأسبوعي
+            </h3>
+            <span id="chart-badge" class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">
+                نشط الآن
+            </span>
+        </div>
+        <div class="relative w-full h-60">
+            <canvas id="dynamicAnalyticsChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- السكربت التفاعلي للربط والتبديل -->
+<script>
+let analyticsChart;
+let currentTab = 'visits';
+
+// بيانات كل كارت
+const chartDatasets = {
+    visits: {
+        title: '🌐 تحليل إجمالي الزيارات الأسبوعي',
+        labels: ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+        data: [3200, 4100, 3800, 4900, 5200, 6100, 3550],
+        color: '#f59e0b',
+        bgColor: 'rgba(245, 158, 11, 0.85)'
+    },
+    mines: {
+        title: '⛏️ توزيع المناجم والآبار المسجلة حسب المنطقة',
+        labels: ['نهر النيل', 'الشمالية', 'البحر الأحمر', 'جنوب كردفان', 'القضارف', 'كسلا'],
+        data: [45, 38, 29, 14, 10, 6],
+        color: '#10b981',
+        bgColor: 'rgba(16, 185, 129, 0.85)'
+    },
+    deals: {
+        title: '🤝 حركة الصفقات والتفاوض هذا الأسبوع',
+        labels: ['عروض جديدة', 'مفاوضات جارية', 'اتفاقيات أولية', 'صياغة عقود', 'صفقات مكتملة'],
+        data: [12, 18, 8, 5, 4],
+        color: '#3b82f6',
+        bgColor: 'rgba(59, 130, 246, 0.85)'
+    },
+    auth: {
+        title: '🆔 نسبة توثيق الحسابات والشركات %',
+        labels: ['شركات تعدين', 'مستثمرين', 'موردين', 'مكاتب هندسية', 'أفراد'],
+        data: [95, 88, 92, 85, 78],
+        color: '#a855f7',
+        bgColor: 'rgba(168, 85, 247, 0.85)'
+    }
+};
+
+document.addEventListener("DOMContentLoaded", function() {
+    initChart();
+});
+
+function initChart() {
+    const ctx = document.getElementById('dynamicAnalyticsChart').getContext('2d');
+    const tab = chartDatasets[currentTab];
+
+    analyticsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: tab.labels,
+            datasets: [{
+                label: tab.title,
+                data: tab.data,
+                backgroundColor: tab.bgColor,
+                borderColor: tab.color,
+                borderWidth: 1.5,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 600 },
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#9ca3af', font: { size: 10 } }, grid: { display: false } },
+                y: { ticks: { color: '#9ca3af', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+        }
+    });
+}
+
+function switchTab(tabKey) {
+    if (currentTab === tabKey) return;
+    currentTab = tabKey;
+
+    // 1. تحديث شكل الكروت (تفعيل الكارت المختار وتخفيض البقية)
+    document.querySelectorAll('.stat-card').forEach(card => {
+        card.classList.remove('border-2', 'border-amber-500', 'border-emerald-500', 'border-blue-500', 'border-purple-500', 'opacity-100');
+        card.classList.add('border', 'border-gray-700/60', 'opacity-80');
+    });
+
+    const activeCard = document.getElementById(`card-${tabKey}`);
+    activeCard.classList.remove('border', 'border-gray-700/60', 'opacity-80');
+    activeCard.classList.add('border-2', 'border-amber-500', 'opacity-100');
+
+    // 2. تحديث بيانات الرسم البياني
+    const tabData = chartDatasets[tabKey];
+    document.getElementById('chart-title').innerText = tabData.title;
+
+    analyticsChart.data.labels = tabData.labels;
+    analyticsChart.data.datasets[0].data = tabData.data;
+    analyticsChart.data.datasets[0].backgroundColor = tabData.bgColor;
+    analyticsChart.data.datasets[0].borderColor = tabData.color;
+    analyticsChart.update();
+}
+
+function updateLiveCharts() {
+    const icon = document.getElementById('refresh-icon');
+    const text = document.getElementById('refresh-text');
+    
+    icon.classList.add('animate-spin');
+    text.innerText = 'جاري التحديث...';
+
+    setTimeout(() => {
+        // تحديث قيم الكارت الحالي ببيانات حية
+        const currentData = chartDatasets[currentTab].data;
+        const updatedData = currentData.map(val => val + Math.floor(Math.random() * 10) - 4);
+        
+        analyticsChart.data.datasets[0].data = updatedData;
+        analyticsChart.update();
+
+        icon.classList.remove('animate-spin');
+        text.innerText = 'تم التحديث! ✓';
+
+        setTimeout(() => { text.innerText = 'تحديث البيانات الحية'; }, 2000);
+    }, 600);
+}
+</script>
+{% endblock %}

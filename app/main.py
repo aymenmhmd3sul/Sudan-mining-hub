@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from app.routers import admin_views, auth, opportunities, chat, payments, admin, web, web_auth
+from app.routers import admin_views, auth, opportunities, chat, payments, admin, web, web_auth, admin_mining, mining_sites
 
 app = FastAPI(title="Sudan Mining Hub")
 
@@ -20,6 +20,8 @@ app.include_router(opportunities.router, prefix="/api/opportunities", tags=["ا�
 app.include_router(chat.router, prefix="/api/chat", tags=["المحادثات"])
 app.include_router(payments.router, prefix="/api/payments", tags=["المدفوعات"])
 app.include_router(admin.router, prefix="/api/admin", tags=["الإدارة"])
+app.include_router(admin_mining.router)
+app.include_router(mining_sites.router)
 
 @app.get("/")
 async def root():

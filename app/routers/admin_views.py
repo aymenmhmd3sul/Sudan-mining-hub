@@ -36,7 +36,17 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
 
     # تحويل الشرطة العادية إلى سفليّة لتطابق مجلدات القوالب
     normalized_module = module_name.replace('-', '_')
-    template_path = f"admin/{normalized_module}/index.html"
+    normalized_subpath = subpath.replace('-', '_') if subpath else ''
+
+    if normalized_subpath:
+        sub_template_path = f"admin/{normalized_module}/{normalized_subpath}/index.html"
+        if os.path.exists(os.path.join("app/templates", sub_template_path)):
+            template_path = sub_template_path
+        else:
+            template_path = f"admin/{normalized_module}/index.html"
+    else:
+        template_path = f"admin/{normalized_module}/index.html"
+
     full_path = os.path.join("app/templates", template_path)
     
     context = {"active_tab": module_name, "room_id": subpath if subpath else "1"}

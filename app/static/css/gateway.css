@@ -1,0 +1,173 @@
+*{
+    box-sizing:border-box;
+    user-select:none;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+.page{
+    width:100%;
+    height:100vh;
+    min-height:600px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:10px;
+}
+
+.top{
+    height:45px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.gold-card{
+    display:flex;
+    justify-content:space-around;
+    gap:10px;
+    padding:10px;
+    border-radius:15px;
+}
+
+.login-box{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:12px;
+    max-height:280px;
+}
+
+.login-box input{
+    width:100%;
+    height:45px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    padding:10px;
+    font-size:16px;
+}
+
+.password-box{
+    display:flex;
+}
+
+.password-box input{
+    flex:1;
+}
+
+.password-box button{
+    width:45px;
+}
+
+.login{
+    height:48px;
+    border-radius:15px;
+    border:none;
+    font-size:18px;
+}
+
+.visitor{
+    height:45px;
+    border-radius:15px;
+    font-size:16px;
+}
+
+.updates,
+.bank,
+.contact{
+    padding:8px;
+    border-radius:12px;
+    text-align:center;
+    font-size:14px;
+}
+
+footer{
+    height:35px;
+    text-align:center;
+    font-size:12px;
+}
+
+@media(max-height:700px){
+
+    .gold-card{
+        padding:5px;
+    }
+
+    .login-box{
+        gap:8px;
+    }
+
+    .updates,
+    .bank,
+    .contact{
+        padding:5px;
+    }
+}
+
+/* Final mobile polish */
+
+body{
+    background:linear-gradient(135deg,#050505,#1b1b1b,#3a2a00);
+    color:white;
+}
+
+.gold-card div,
+.login-box,
+.updates,
+.bank,
+.contact{
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,215,0,.25);
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+    backdrop-filter:blur(10px);
+}
+
+.logo{
+    color:#d4af37;
+}
+
+.top{
+    background:#111;
+    border-radius:15px;
+    padding:12px;
+}
+
+.gold-card h3{
+    color:#ffd700;
+}
+
+.login{
+    background:#d4af37;
+    color:#000;
+}
+
+.visitor{
+    background:#222;
+    color:white;
+}
+
+footer{
+    display:block;
+    flex-shrink:0;
+    margin-top:auto;
+}
+
+
+.login-box h1{
+    text-align:center;
+    width:100%;
+    margin:0 auto 10px auto;
+}
+

@@ -72,13 +72,22 @@
 
         <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden shadow-lg">
 
-            <div class="h-32 bg-gray-900 flex items-center justify-center border-b border-gray-700">
-                <div class="text-center">
-                    <div class="text-5xl">🚜</div>
-                    <p class="text-gray-400 text-xs mt-2">
-                        صورة المعدة
-                    </p>
-                </div>
+            <div class="h-32 bg-gray-900 flex items-center justify-center border-b border-gray-700 overflow-hidden">
+
+                <template x-if="item.image">
+                    <img :src="item.image"
+                         class="h-full w-full object-cover">
+                </template>
+
+                <template x-if="!item.image">
+                    <div class="text-center">
+                        <div class="text-5xl">🚜</div>
+                        <p class="text-gray-400 text-xs mt-2">
+                            صورة المعدة
+                        </p>
+                    </div>
+                </template>
+
             </div>
 
             <div class="p-4 space-y-3">

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
 
@@ -37,6 +38,8 @@ class Escrow(Base):
         ForeignKey("invoice.id"),
         unique=True
     )
+
+    invoice = relationship("Invoice")
 
     amount = Column(Float, nullable=False)
 

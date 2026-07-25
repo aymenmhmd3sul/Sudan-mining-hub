@@ -1,0 +1,55 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+
+<div class="space-y-6" x-data="{
+deals:[
+{
+id:1,
+title:'صفقة بيع كسارة تعدين',
+buyer:'شركة التعدين المتحدة',
+seller:'مؤسسة المعدات السودانية',
+value:'120,000 $',
+status:'مكتملة'
+},
+{
+id:2,
+title:'صفقة تأجير آليات حفر',
+buyer:'موقع تعدين البحر الأحمر',
+seller:'شركة الآليات الحديثة',
+value:'25,000 $',
+status:'قيد التنفيذ'
+}
+]
+}">
+
+<h2 class="text-xl font-bold text-white border-b border-gray-700 pb-3">
+🤝 الصفقات التجارية
+</h2>
+
+<div class="grid gap-4">
+
+<template x-for="item in deals" :key="item.id">
+
+<div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-white">
+
+<h3 class="font-bold text-amber-400" x-text="item.title"></h3>
+
+<div class="text-sm text-gray-300 mt-2">
+<p>المشتري: <span x-text="item.buyer"></span></p>
+<p>البائع: <span x-text="item.seller"></span></p>
+<p>القيمة: <span x-text="item.value"></span></p>
+</div>
+
+<span class="inline-block mt-3 bg-purple-600 px-3 py-1 rounded text-xs"
+x-text="item.status"></span>
+
+</div>
+
+</template>
+
+</div>
+
+</div>
+
+{% endblock %}

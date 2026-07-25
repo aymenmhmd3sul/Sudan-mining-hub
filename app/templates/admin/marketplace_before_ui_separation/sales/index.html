@@ -1,0 +1,55 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+
+<div class="space-y-6" x-data="{
+    sales: [
+        {
+            id: 1,
+            title: 'بيع كسارة ذهب صناعية',
+            seller: 'شركة التعدين المتحدة',
+            quantity: '1 وحدة',
+            price: '120,000 $',
+            status: 'متاح'
+        },
+        {
+            id: 2,
+            title: 'بيع مولد كهربائي للتعدين',
+            seller: 'مؤسسة نهر النيل',
+            quantity: '2 وحدة',
+            price: '30,000 $',
+            status: 'قيد التفاوض'
+        }
+    ]
+}">
+
+<h2 class="text-xl font-bold text-white border-b border-gray-700 pb-3">
+🏷️ عروض البيع
+</h2>
+
+<div class="grid gap-4">
+
+<template x-for="item in sales" :key="item.id">
+
+<div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-white">
+
+<h3 class="font-bold text-amber-400" x-text="item.title"></h3>
+
+<div class="text-sm text-gray-300 mt-2">
+<p>البائع: <span x-text="item.seller"></span></p>
+<p>الكمية: <span x-text="item.quantity"></span></p>
+<p>السعر: <span x-text="item.price"></span></p>
+</div>
+
+<span class="inline-block mt-3 bg-green-600 px-3 py-1 rounded text-xs"
+x-text="item.status"></span>
+
+</div>
+
+</template>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -103,21 +103,97 @@
         </div>
     </div>
 
-    <!-- Details Modal -->
-    <div x-show="showModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" x-cloak @click.self="showModal = false">
-        <div class="bg-gray-900 border border-gray-700 rounded-2xl max-w-lg w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">🔍 تفاصيل المعدة</h3>
-            <div class="space-y-3 text-xs text-gray-300">
-                <p><strong>اسم الآلية:</strong> <span x-text="selectedItem.name" class="text-white font-bold"></span></p>
-                <p><strong>الفئة:</strong> <span x-text="selectedItem.category" class="text-amber-400"></span></p>
-                <p><strong>المالك / المورد:</strong> <span x-text="selectedItem.owner" class="text-gray-200"></span></p>
-                <p><strong>الموقع الحالي:</strong> <span x-text="selectedItem.location"></span></p>
-                <p><strong>السعر التقديري:</strong> <span x-text="selectedItem.price" class="text-emerald-400 font-bold"></span></p>
+    <!-- Enterprise Preview Modal -->
+    <div x-show="showModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" x-cloak @click.self="showModal = false">
+
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl">
+
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-amber-400">
+                    👁 معاينة المعدة
+                </h3>
+
+                <button @click="showModal=false"
+                class="text-gray-400 hover:text-white">
+                ✕
+                </button>
             </div>
-            <div class="pt-4 flex justify-end">
-                <button @click="showModal = false" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-xs">إغلاق</button>
+
+
+            <!-- Media Preview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div class="bg-gray-800 rounded-xl h-40 flex items-center justify-center border border-gray-700">
+                    📷
+                    <span class="text-gray-400 text-xs mr-2">
+                    صورة المعدة
+                    </span>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl h-40 flex items-center justify-center border border-gray-700">
+                    🎥
+                    <span class="text-gray-400 text-xs mr-2">
+                    فيديو المعدات
+                    </span>
+                </div>
+
             </div>
+
+
+            <!-- Information -->
+            <div class="grid grid-cols-2 gap-3 text-xs text-gray-300">
+
+                <p>
+                <strong>الاسم:</strong>
+                <span x-text="selectedItem.name" class="text-white"></span>
+                </p>
+
+                <p>
+                <strong>الفئة:</strong>
+                <span x-text="selectedItem.category" class="text-amber-400"></span>
+                </p>
+
+                <p>
+                <strong>المالك:</strong>
+                <span x-text="selectedItem.owner"></span>
+                </p>
+
+                <p>
+                <strong>الموقع:</strong>
+                <span x-text="selectedItem.location"></span>
+                </p>
+
+                <p>
+                <strong>السعر:</strong>
+                <span x-text="selectedItem.price" class="text-emerald-400"></span>
+                </p>
+
+                <p>
+                <strong>الحالة:</strong>
+                <span x-text="selectedItem.status"></span>
+                </p>
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="flex gap-2 justify-end pt-4">
+
+                <button onclick="window.print()"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-xs text-white">
+                🖨 طباعة
+                </button>
+
+                <button
+                class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-lg text-xs font-bold">
+                ✏ تعديل
+                </button>
+
+            </div>
+
         </div>
+
     </div>
+
 </div>
 {% endblock %}

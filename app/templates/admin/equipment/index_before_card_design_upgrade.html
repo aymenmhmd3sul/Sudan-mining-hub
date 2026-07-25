@@ -1,0 +1,317 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="space-y-6" x-data="{
+    searchQuery: '',
+    activeSearch: '',
+    showModal: false,
+    selectedItem: {},
+    items: [
+        { id: 1, name: 'حفارة هيدروليكية CAT 349', category: 'آليات ثقيلة', status: 'متاحة', location: 'ولاية نهر النيل - العبيدية', price: '$450/يوم', owner: 'شركة الموارد الحديثة', asset_id: 'EQ-0001', manufacture: '2021', hours: '3200 ساعة', maintenance: '2026-06-10', fuel: 'ديزل', documents: 'مكتملة' },
+        { id: 2, name: 'كسارة حجارة طاحونة 100 طن', category: 'معدات معالجة', status: 'قيد الصيانة', location: 'الولايات الشمالية - وادي حلفا', price: '$800/يوم', owner: 'مؤسسة التعدين الأهلي', asset_id: 'EQ-0002', manufacture: '2019', hours: '7800 ساعة', maintenance: '2026-05-20', fuel: 'ديزل', documents: 'قيد المراجعة' },
+        { id: 3, name: 'مولد كهربائي قدرة 500 KVA', category: 'طاقة ومولدات', status: 'متاحة', location: 'ولاية البحر الأحمر - بورتسودان', price: '$200/يوم', owner: 'شركة النيل للخدمات', asset_id: 'EQ-0003', manufacture: '2022', hours: '1500 ساعة', maintenance: '2026-06-25', fuel: 'ديزل', documents: 'مكتملة' },
+        { id: 4, name: 'كاشف ذهب GPX', category: 'أجهزة كشف وتنقيب', status: 'متاحة', location: 'عطبرة - سوق الذهب', price: '$150/يوم', owner: 'مركز كاشفات السودان', asset_id: 'EQ-0004', manufacture: '2024', hours: '200 ساعة', maintenance: '2026-07-01', fuel: 'بطارية', documents: 'مكتملة' }
+    ],
+    performSearch() {
+        this.activeSearch = this.searchQuery.trim().toLowerCase();
+    },
+    clearSearch() {
+        this.searchQuery = '';
+        this.activeSearch = '';
+    },
+    get filteredItems() {
+        if (!this.activeSearch) return this.items;
+        return this.items.filter(i => 
+            i.name.toLowerCase().includes(this.activeSearch) ||
+            i.category.toLowerCase().includes(this.activeSearch) ||
+            i.location.toLowerCase().includes(this.activeSearch)
+        );
+    }
+}">
+
+    <!-- Header & Search Bar -->
+    <div class="flex flex-col space-y-4 bg-gray-800/50 p-4 rounded-xl border border-gray-700">
+        <div>
+            <h1 class="text-lg font-bold text-white flex items-center gap-2">
+                🚜 إدارة المعدات والآليات الثقيلة
+            </h1>
+            <p class="text-xs text-gray-400">متابعة وحصر الآليات، المعدات، وتجهيزات مواقع التعدين المتاحة</p>
+        </div>
+        
+        <!-- Search Controls -->
+        <div class="flex items-center gap-2 w-full">
+            <div class="relative flex-1">
+                <input type="text" 
+                       x-model="searchQuery" 
+                       @keyup.enter="performSearch()"
+                       placeholder="ابحث عن معدة، كاشف، أو موقع..." 
+                       class="w-full bg-gray-900 border border-gray-700 text-xs text-white rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500">
+                
+                <button x-show="searchQuery" 
+                        @click="clearSearch()" 
+                        class="absolute left-2 top-2.5 text-gray-400 hover:text-white text-xs">✕</button>
+            </div>
+            
+            <button @click="performSearch()" 
+                    class="bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs px-4 py-2.5 rounded-lg flex items-center gap-1 transition">
+                <span>🔍</span>
+                <span>بحث</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            
+<!-- Equipment Cards Layout -->
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <template x-for="item in filteredItems" :key="item.id">
+
+        <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-3 shadow-lg">
+
+            <div class="flex justify-between items-center">
+                <h3 class="text-white font-bold text-sm" x-text="item.name"></h3>
+
+                <span class="text-xs px-2 py-1 rounded bg-amber-500 text-black"
+                      x-text="item.status"></span>
+            </div>
+
+
+            <div class="text-xs text-gray-300 space-y-1">
+
+                <p>
+                    <strong>الفئة:</strong>
+                    <span x-text="item.category"></span>
+                </p>
+
+                <p>
+                    <strong>الموقع:</strong>
+                    <span x-text="item.location"></span>
+                </p>
+
+                <p>
+                    <strong>المالك:</strong>
+                    <span x-text="item.owner"></span>
+                </p>
+
+                <p>
+                    <strong>السعر:</strong>
+                    <span class="text-emerald-400" x-text="item.price"></span>
+                </p>
+
+            </div>
+
+
+            <button
+            @click="selectedItem=item; showModal=true"
+            class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-lg text-xs font-bold">
+
+                👁 معاينة المعدة
+
+            </button>
+
+        </div>
+
+    </template>
+
+</div>
+
+        </div>
+    </div>
+
+    <!-- Enterprise Preview Modal -->
+    <div x-show="showModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" x-cloak @click.self="showModal = false">
+
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl">
+
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-amber-400">
+                    👁 معاينة المعدة
+                </h3>
+
+                <button @click="showModal=false"
+                class="text-gray-400 hover:text-white">
+                ✕
+                </button>
+            </div>
+
+
+            
+<!-- Media Preview -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+    <!-- Main Image Card -->
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+
+        <div class="h-52 flex items-center justify-center">
+
+            <template x-if="selectedItem.image">
+                <img :src="selectedItem.image"
+                     class="h-full w-full object-cover">
+            </template>
+
+            <template x-if="!selectedItem.image">
+                <div class="text-center">
+                    <div class="text-5xl">🚜</div>
+                    <p class="text-gray-400 text-xs mt-3">
+                        لا توجد صورة للمعدة
+                    </p>
+                </div>
+            </template>
+
+        </div>
+
+        <div class="p-3 border-t border-gray-700 flex justify-between items-center">
+            <span class="text-xs text-gray-400">
+                الصورة الرئيسية
+            </span>
+
+            <button class="px-3 py-1 bg-gray-700 rounded-lg text-xs text-white">
+                📷 تغيير
+            </button>
+        </div>
+
+    </div>
+
+
+    <!-- Video Card -->
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+
+        <div class="h-52 flex items-center justify-center">
+
+            <template x-if="selectedItem.video">
+                <video controls class="h-full w-full rounded-xl">
+                    <source :src="selectedItem.video">
+                </video>
+            </template>
+
+            <template x-if="!selectedItem.video">
+                <div class="text-center">
+                    <div class="text-5xl">🎥</div>
+                    <p class="text-gray-400 text-xs mt-3">
+                        لا يوجد فيديو
+                    </p>
+                </div>
+            </template>
+
+        </div>
+
+        <div class="p-3 border-t border-gray-700 flex justify-between items-center">
+            <span class="text-xs text-gray-400">
+                فيديو التشغيل
+            </span>
+
+            <button class="px-3 py-1 bg-gray-700 rounded-lg text-xs text-white">
+                🎬 إضافة
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Information -->
+<!-- Asset Profile -->
+<div class="mt-4 bg-gray-800/70 border border-gray-700 rounded-xl p-4">
+
+    <h4 class="text-sm font-bold text-amber-400 mb-3">
+        🏷️ ملف الأصل والمواصفات
+    </h4>
+
+    <div class="grid grid-cols-2 gap-3 text-xs text-gray-300">
+
+        <p>
+            <strong>رقم الأصل:</strong>
+            <span x-text="selectedItem.asset_id" class="text-white"></span>
+        </p>
+
+        <p>
+            <strong>سنة الصنع:</strong>
+            <span x-text="selectedItem.manufacture" class="text-white"></span>
+        </p>
+
+        <p>
+            <strong>ساعات التشغيل:</strong>
+            <span x-text="selectedItem.hours" class="text-emerald-400"></span>
+        </p>
+
+        <p>
+            <strong>آخر صيانة:</strong>
+            <span x-text="selectedItem.maintenance" class="text-white"></span>
+        </p>
+
+        <p>
+            <strong>نوع الوقود:</strong>
+            <span x-text="selectedItem.fuel" class="text-amber-300"></span>
+        </p>
+
+        <p>
+            <strong>المستندات:</strong>
+            <span x-text="selectedItem.documents" class="text-green-400"></span>
+        </p>
+
+    </div>
+
+</div>
+
+
+            <div class="grid grid-cols-2 gap-3 text-xs text-gray-300">
+
+                <p>
+                <strong>الاسم:</strong>
+                <span x-text="selectedItem.name" class="text-white"></span>
+                </p>
+
+                <p>
+                <strong>الفئة:</strong>
+                <span x-text="selectedItem.category" class="text-amber-400"></span>
+                </p>
+
+                <p>
+                <strong>المالك:</strong>
+                <span x-text="selectedItem.owner"></span>
+                </p>
+
+                <p>
+                <strong>الموقع:</strong>
+                <span x-text="selectedItem.location"></span>
+                </p>
+
+                <p>
+                <strong>السعر:</strong>
+                <span x-text="selectedItem.price" class="text-emerald-400"></span>
+                </p>
+
+                <p>
+                <strong>الحالة:</strong>
+                <span x-text="selectedItem.status"></span>
+                </p>
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="flex gap-2 justify-end pt-4">
+
+                <button onclick="window.print()"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-xs text-white">
+                🖨 طباعة
+                </button>
+
+                <button
+                class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-lg text-xs font-bold">
+                ✏ تعديل
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

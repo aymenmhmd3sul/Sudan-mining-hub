@@ -63,43 +63,62 @@
     <!-- Table -->
     <div class="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-xs text-right text-gray-300">
-                <thead class="bg-gray-900 text-gray-400 uppercase border-b border-gray-700">
-                    <tr>
-                        <th class="p-3">اسم المعدة / الآلية</th>
-                        <th class="p-3">الفئة</th>
-                        <th class="p-3">الموقع</th>
-                        <th class="p-3">تكلفة الإيجار</th>
-                        <th class="p-3">الحالة</th>
-                        <th class="p-3 text-center">الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-700">
-                    <template x-for="item in filteredItems" :key="item.id">
-                        <tr class="hover:bg-gray-700/50 transition cursor-pointer" @click="selectedItem = item; showModal = true">
-                            <td class="p-3 font-semibold text-white" x-text="item.name"></td>
-                            <td class="p-3 text-amber-400" x-text="item.category"></td>
-                            <td class="p-3" x-text="item.location"></td>
-                            <td class="p-3 font-mono text-emerald-400" x-text="item.price"></td>
-                            <td class="p-3">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold"
-                                      :class="item.status === 'متاحة' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'"
-                                      x-text="item.status"></span>
-                            </td>
-                            <td class="p-3 text-center">
-                                <button class="px-2 py-1 bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded text-[10px]">التفاصيل</button>
-                            </td>
-                        </tr>
-                    </template>
-                    
-                    <!-- No Results Row -->
-                    <tr x-show="filteredItems.length === 0">
-                        <td colspan="6" class="p-6 text-center text-gray-400 text-xs">
-                            ⚠️ لا توجد نتائج تطابق كلمة البحث: <strong class="text-amber-400" x-text="activeSearch"></strong>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            
+<!-- Equipment Cards Layout -->
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <template x-for="item in filteredItems" :key="item.id">
+
+        <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-3 shadow-lg">
+
+            <div class="flex justify-between items-center">
+                <h3 class="text-white font-bold text-sm" x-text="item.name"></h3>
+
+                <span class="text-xs px-2 py-1 rounded bg-amber-500 text-black"
+                      x-text="item.status"></span>
+            </div>
+
+
+            <div class="text-xs text-gray-300 space-y-1">
+
+                <p>
+                    <strong>الفئة:</strong>
+                    <span x-text="item.category"></span>
+                </p>
+
+                <p>
+                    <strong>الموقع:</strong>
+                    <span x-text="item.location"></span>
+                </p>
+
+                <p>
+                    <strong>المالك:</strong>
+                    <span x-text="item.owner"></span>
+                </p>
+
+                <p>
+                    <strong>السعر:</strong>
+                    <span class="text-emerald-400" x-text="item.price"></span>
+                </p>
+
+            </div>
+
+
+            <button
+            @click="selectedItem=item; showModal=true"
+            class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-lg text-xs font-bold">
+
+                👁 معاينة المعدة
+
+            </button>
+
+        </div>
+
+    </template>
+
+</div>
+
         </div>
     </div>
 

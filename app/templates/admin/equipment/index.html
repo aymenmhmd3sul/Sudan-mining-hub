@@ -120,52 +120,79 @@
             </div>
 
 
-            <!-- Media Preview -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+<!-- Media Preview -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                <div class="bg-gray-800 rounded-xl h-48 flex flex-col items-center justify-center border border-gray-700">
-                    <template x-if="selectedItem.image">
-                        <img :src="selectedItem.image"
-                             class="h-full w-full object-cover rounded-xl">
-                    </template>
+    <!-- Main Image Card -->
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
 
-                    <template x-if="!selectedItem.image">
-                        <div class="text-center">
-                            📷
-                            <p class="text-gray-400 text-xs mt-2">
-                            صورة المعدة
-                            </p>
-                            <button class="mt-2 px-3 py-1 bg-gray-700 rounded text-xs text-white">
-                            تحميل صورة
-                            </button>
-                        </div>
-                    </template>
+        <div class="h-52 flex items-center justify-center">
+
+            <template x-if="selectedItem.image">
+                <img :src="selectedItem.image"
+                     class="h-full w-full object-cover">
+            </template>
+
+            <template x-if="!selectedItem.image">
+                <div class="text-center">
+                    <div class="text-5xl">🚜</div>
+                    <p class="text-gray-400 text-xs mt-3">
+                        لا توجد صورة للمعدة
+                    </p>
                 </div>
+            </template>
+
+        </div>
+
+        <div class="p-3 border-t border-gray-700 flex justify-between items-center">
+            <span class="text-xs text-gray-400">
+                الصورة الرئيسية
+            </span>
+
+            <button class="px-3 py-1 bg-gray-700 rounded-lg text-xs text-white">
+                📷 تغيير
+            </button>
+        </div>
+
+    </div>
 
 
-                <div class="bg-gray-800 rounded-xl h-48 flex flex-col items-center justify-center border border-gray-700">
+    <!-- Video Card -->
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
 
-                    <template x-if="selectedItem.video">
-                        <video controls class="h-full w-full rounded-xl">
-                            <source :src="selectedItem.video">
-                        </video>
-                    </template>
+        <div class="h-52 flex items-center justify-center">
 
-                    <template x-if="!selectedItem.video">
-                        <div class="text-center">
-                            🎥
-                            <p class="text-gray-400 text-xs mt-2">
-                            فيديو المعدات
-                            </p>
-                            <button class="mt-2 px-3 py-1 bg-gray-700 rounded text-xs text-white">
-                            تحميل فيديو
-                            </button>
-                        </div>
-                    </template>
+            <template x-if="selectedItem.video">
+                <video controls class="h-full w-full rounded-xl">
+                    <source :src="selectedItem.video">
+                </video>
+            </template>
 
+            <template x-if="!selectedItem.video">
+                <div class="text-center">
+                    <div class="text-5xl">🎥</div>
+                    <p class="text-gray-400 text-xs mt-3">
+                        لا يوجد فيديو
+                    </p>
                 </div>
+            </template>
 
-            </div>
+        </div>
+
+        <div class="p-3 border-t border-gray-700 flex justify-between items-center">
+            <span class="text-xs text-gray-400">
+                فيديو التشغيل
+            </span>
+
+            <button class="px-3 py-1 bg-gray-700 rounded-lg text-xs text-white">
+                🎬 إضافة
+            </button>
+        </div>
+
+    </div>
+
+</div>
 
 
 <!-- Information -->

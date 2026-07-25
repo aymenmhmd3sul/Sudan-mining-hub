@@ -74,3 +74,8 @@ body {
 .sidebar-sub-menu a {
     color:#b6c2d1;
 }
+
+.sidebar-sub-menu.open {
+    display: block;
+}
+

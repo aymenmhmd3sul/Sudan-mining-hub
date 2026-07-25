@@ -26,8 +26,13 @@ class InvoiceBase(BaseModel):
     notes: Optional[str] = None
     due_date: Optional[datetime] = None
 
-class InvoiceCreate(InvoiceBase):
-    pass
+class InvoiceCreate(BaseModel):
+    opportunity_id: int
+    seller_id: int
+    subtotal: Decimal = Field(..., decimal_places=2)
+    total_amount: Decimal = Field(..., decimal_places=2)
+    reference: Optional[str] = None
+    notes: Optional[str] = None
 
 class Invoice(InvoiceBase):
     id: int

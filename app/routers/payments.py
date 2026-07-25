@@ -10,7 +10,7 @@ from app.schemas.invoice import InvoiceCreate, Invoice as InvoiceSchema
 from app.schemas.escrow import EscrowCreate, Escrow as EscrowSchema
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/payments", tags=["Financial & Escrow Engine"])
+router = APIRouter(tags=["Financial & Escrow Engine"])
 
 class PaymentSubmit(BaseModel):
     amount: float

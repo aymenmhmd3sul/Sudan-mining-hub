@@ -123,24 +123,52 @@
             <!-- Media Preview -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <div class="bg-gray-800 rounded-xl h-40 flex items-center justify-center border border-gray-700">
-                    📷
-                    <span class="text-gray-400 text-xs mr-2">
-                    صورة المعدة
-                    </span>
+                <div class="bg-gray-800 rounded-xl h-48 flex flex-col items-center justify-center border border-gray-700">
+                    <template x-if="selectedItem.image">
+                        <img :src="selectedItem.image"
+                             class="h-full w-full object-cover rounded-xl">
+                    </template>
+
+                    <template x-if="!selectedItem.image">
+                        <div class="text-center">
+                            📷
+                            <p class="text-gray-400 text-xs mt-2">
+                            صورة المعدة
+                            </p>
+                            <button class="mt-2 px-3 py-1 bg-gray-700 rounded text-xs text-white">
+                            تحميل صورة
+                            </button>
+                        </div>
+                    </template>
                 </div>
 
-                <div class="bg-gray-800 rounded-xl h-40 flex items-center justify-center border border-gray-700">
-                    🎥
-                    <span class="text-gray-400 text-xs mr-2">
-                    فيديو المعدات
-                    </span>
+
+                <div class="bg-gray-800 rounded-xl h-48 flex flex-col items-center justify-center border border-gray-700">
+
+                    <template x-if="selectedItem.video">
+                        <video controls class="h-full w-full rounded-xl">
+                            <source :src="selectedItem.video">
+                        </video>
+                    </template>
+
+                    <template x-if="!selectedItem.video">
+                        <div class="text-center">
+                            🎥
+                            <p class="text-gray-400 text-xs mt-2">
+                            فيديو المعدات
+                            </p>
+                            <button class="mt-2 px-3 py-1 bg-gray-700 rounded text-xs text-white">
+                            تحميل فيديو
+                            </button>
+                        </div>
+                    </template>
+
                 </div>
 
             </div>
 
 
-            <!-- Information -->
+<!-- Information -->
             <div class="grid grid-cols-2 gap-3 text-xs text-gray-300">
 
                 <p>

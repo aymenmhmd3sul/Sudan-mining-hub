@@ -10,3 +10,4 @@ app/models/__init__before_finance_restore.py
 
 # Backup files
 *_before_*
+sudan_mining_backup.sql

@@ -57,3 +57,10 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
     return templates.TemplateResponse(request=request, name="admin/dashboard.html", context=context)
 
 
+@router.get("/dashboard-v2", response_class=HTMLResponse)
+async def admin_dashboard_v2(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/dashboard_v2.html",
+        context={"active_tab": "dashboard"}
+    )

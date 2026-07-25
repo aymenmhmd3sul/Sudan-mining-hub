@@ -2,3 +2,11 @@ __pycache__/
 local.db
 backups/
 app/models/__init__before_finance_restore.py
+
+# Local database files
+*.db
+*.db-shm
+*.db-wal
+
+# Backup files
+*_before_*

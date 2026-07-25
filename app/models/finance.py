@@ -1,38 +1,47 @@
-from typing import Optional
-from sqlmodel import Field, SQLModel, Relationship, Column, Numeric
-from decimal import Decimal
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from datetime import datetime
-from app.schemas.invoice import InvoiceStatus
-from app.schemas.escrow import EscrowStatus
+from app.database import Base
 
-class Invoice(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    opportunity_id: int
-    buyer_id: int
-    seller_id: int
-    invoice_number: str = Field(unique=True, index=True)
-    status: InvoiceStatus = Field(default=InvoiceStatus.DRAFT)
-    
-    subtotal: Decimal = Field(default=Decimal("0.00"), sa_column=Column(Numeric(12, 2)))
-    total_amount: Decimal = Field(default=Decimal("0.00"), sa_column=Column(Numeric(12, 2)))
-    
-    currency: str = "USD"
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    
-    # فرض علاقة 1:1 برمجياً
-    escrow: Optional["Escrow"] = Relationship(
-        back_populates="invoice",
-        sa_relationship_kwargs={"uselist": False}
+
+class Invoice(Base):
+    __tablename__ = "invoice"
+
+    id = Column(Integer, primary_key=True, index=True)
+    opportunity_id = Column(Integer, nullable=False)
+    buyer_id = Column(Integer, nullable=False)
+    seller_id = Column(Integer, nullable=False)
+
+    invoice_number = Column(String(100), unique=True, index=True)
+    reference = Column(String(100), nullable=True)
+
+    status = Column(String(50), default="draft")
+
+    subtotal = Column(Float, default=0.0)
+    commission = Column(Float, default=0.0)
+    tax = Column(Float, default=0.0)
+    total_amount = Column(Float, default=0.0)
+
+    currency = Column(String(10), default="USD")
+    notes = Column(String, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Escrow(Base):
+    __tablename__ = "escrow"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    invoice_id = Column(
+        Integer,
+        ForeignKey("invoice.id"),
+        unique=True
     )
 
-class Escrow(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    invoice_id: int = Field(foreign_key="invoice.id", unique=True)
-    
-    amount: Decimal = Field(sa_column=Column(Numeric(12, 2)))
-    currency: str = "USD"
-    status: EscrowStatus = Field(default=EscrowStatus.PENDING)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    
-    # Relationship
-    invoice: Invoice = Relationship(back_populates="escrow")
+    amount = Column(Float, nullable=False)
+
+    currency = Column(String(10), default="USD")
+
+    status = Column(String(50), default="pending")
+
+    created_at = Column(DateTime, default=datetime.utcnow)

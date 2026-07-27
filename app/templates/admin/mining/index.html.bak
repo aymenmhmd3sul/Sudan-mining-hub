@@ -51,12 +51,12 @@
     }
 }">
     <!-- Header -->
-    <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gray-800 p-4 rounded-xl border border-gray-700">
         <div>
             <h1 class="text-xl font-bold text-white">⛏️ إدارة آبار ومناجم التعدين</h1>
             <p class="text-gray-400 text-xs mt-1">متابعة مواقع التعدين، الطاقة الإنتاجية، وحالة التشغيل</p>
         </div>
-        <button @click="showAddModal = true" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer text-center">
+        <button @click="showAddModal = true" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-lg text-xs transition cursor-pointer text-center">
             + إضافة موقع جديد
         </button>
     </div>
@@ -87,8 +87,8 @@
             <span class="font-bold text-white text-sm">📋 قائمة الآبار والمناجم (انقر للتفاصيل)</span>
             
             <div class="flex items-center gap-2 w-full md:w-auto">
-                <input type="text" x-model="searchQuery" placeholder="بحث بالاسم أو الموقع..." class="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                <button class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-xl text-xs whitespace-nowrap">
+                <input type="text" x-model="searchQuery" placeholder="بحث بالاسم أو الموقع..." class="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                <button class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-lg text-xs whitespace-nowrap">
                     بحث 🔍
                 </button>
             </div>
@@ -136,31 +136,31 @@
             </div>
             
             <div class="space-y-3">
-                <div class="bg-gray-900 p-3 rounded-xl border border-gray-700">
+                <div class="bg-gray-900 p-3 rounded-lg border border-gray-700">
                     <p class="text-[11px] text-gray-400">اسم الموقع / المنجم:</p>
                     <p class="text-sm font-bold text-white mt-0.5" x-text="selectedItem.title"></p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 text-xs">
-                    <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
+                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
                         <span class="text-gray-400 block text-[10px]">المنطقة / الموقع:</span>
                         <span class="font-semibold text-amber-300" x-text="selectedItem.location"></span>
                     </div>
-                    <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
+                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
                         <span class="text-gray-400 block text-[10px]">الطاقة الإنتاجية:</span>
                         <span class="font-mono text-green-400" x-text="selectedItem.capacity"></span>
                     </div>
-                    <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
+                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
                         <span class="text-gray-400 block text-[10px]">المالك / المشغّل:</span>
                         <span class="font-semibold text-blue-300" x-text="selectedItem.owner"></span>
                     </div>
-                    <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
+                    <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
                         <span class="text-gray-400 block text-[10px]">هاتف الإدارة:</span>
                         <span class="font-semibold text-white" x-text="selectedItem.phone"></span>
                     </div>
                 </div>
 
-                <div class="bg-gray-900 p-3 rounded-xl border border-gray-700 text-xs">
+                <div class="bg-gray-900 p-3 rounded-lg border border-gray-700 text-xs">
                     <p class="text-[10px] text-gray-400 mb-1">وصف العمليات والحالة الفنية:</p>
                     <p class="text-gray-300 leading-relaxed" x-text="selectedItem.details"></p>
                 </div>

@@ -126,5 +126,10 @@
   "minerals_description": "متابعة أنواع المعادن المكتشفة، التصنيف، والقيمة التقديرية",
   "mineral_types": "أنواع المعادن",
   "registered_minerals": "المعادن المسجلة",
-  "under_analysis": "قيد التحليل"
+  "under_analysis": "قيد التحليل",
+  "mining_samples": "إدارة العينات التعدينية",
+  "samples_description": "متابعة عينات التعدين، مواقع الجمع، وحالة الفحص والتحليل",
+  "total_samples": "إجمالي العينات",
+  "samples_under_testing": "عينات قيد الفحص",
+  "completed_samples": "عينات مكتملة"
 }

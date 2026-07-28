@@ -126,5 +126,10 @@
   "minerals_description": "Track discovered minerals, classification and estimated value",
   "mineral_types": "Mineral Types",
   "registered_minerals": "Registered Minerals",
-  "under_analysis": "Under Analysis"
+  "under_analysis": "Under Analysis",
+  "mining_samples": "Mining Samples Management",
+  "samples_description": "Track mining samples, collection sites, inspection and analysis status",
+  "total_samples": "Total Samples",
+  "samples_under_testing": "Samples Under Testing",
+  "completed_samples": "Completed Samples"
 }

@@ -63,5 +63,7 @@
   "deals_description": "إدارة الصفقات المنجزة والجارية داخل المنصة",
   "total_deals": "إجمالي الصفقات",
   "completed_deals": "صفقات مكتملة",
-  "deals_in_progress": "قيد التنفيذ"
+  "deals_in_progress": "قيد التنفيذ",
+  "admin_command_center": "مركز القيادة الإداري",
+  "available_modules": "الوحدات المتاحة"
 }

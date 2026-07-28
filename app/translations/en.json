@@ -63,5 +63,7 @@
   "deals_description": "Manage completed and ongoing deals across the platform",
   "total_deals": "Total Deals",
   "completed_deals": "Completed Deals",
-  "deals_in_progress": "In Progress"
+  "deals_in_progress": "In Progress",
+  "admin_command_center": "Admin Command Center",
+  "available_modules": "Available Modules"
 }

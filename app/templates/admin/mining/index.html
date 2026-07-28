@@ -46,14 +46,14 @@
         alert('تمت إضافة موقع التعدين بنجاح!');
     },
     saveEdit() {
-        alert('تم حفظ تعديلات موقع التعدين بنجاح!');
+        alert("{{ t('update_site_success', lang) }}");
         this.showEditModal = false;
     }
 }">
     <!-- Header -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
         <div>
-            <h1 class="text-xl font-bold text-white">⛏️ إدارة آبار ومناجم التعدين</h1>
+            <h1 class="text-xl font-bold text-white">⛏️ {{ t('mining_management', lang) }}</h1>
             <p class="text-gray-400 text-xs mt-1">متابعة مواقع التعدين، الطاقة الإنتاجية، وحالة التشغيل</p>
         </div>
         <button @click="showAddModal = true" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer text-center">
@@ -84,10 +84,10 @@
     <!-- Data Table Container -->
     <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
         <div class="p-4 border-b border-gray-700 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
-            <span class="font-bold text-white text-sm">📋 قائمة الآبار والمناجم (انقر للتفاصيل)</span>
+            <span class="font-bold text-white text-sm">📋 {{ t('mining_sites_list', lang) }}</span>
             
             <div class="flex items-center gap-2 w-full md:w-auto">
-                <input type="text" x-model="searchQuery" placeholder="بحث بالاسم أو الموقع..." class="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                <input type="text" x-model="searchQuery" placeholder="{{ t('search_site', lang) }}" class="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                 <button class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-xl text-xs whitespace-nowrap">
                     بحث 🔍
                 </button>
@@ -98,7 +98,7 @@
             <table class="w-full text-xs text-right text-gray-300 min-w-[550px]">
                 <thead class="bg-gray-900 text-gray-400 uppercase border-b border-gray-700">
                     <tr>
-                        <th class="p-3">اسم الموقع / البئر</th>
+                        <th class="p-3">{{ t('site_name', lang) }}</th>
                         <th class="p-3 whitespace-nowrap">الموقع الجغرافي</th>
                         <th class="p-3 whitespace-nowrap">حالة التشغيل</th>
                         <th class="p-3 text-center whitespace-nowrap">الإجراءات</th>
@@ -117,8 +117,8 @@
                                 }" class="text-[10px] px-2 py-1 rounded border" x-text="item.status"></span>
                             </td>
                             <td class="p-3 text-center whitespace-nowrap space-x-1 space-x-reverse">
-                                <button @click.stop="selectedItem = Object.assign({}, item); showViewModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-[11px]">معاينة</button>
-                                <button @click.stop="selectedItem = Object.assign({}, item); showEditModal = true" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded text-[11px]">تعديل</button>
+                                <button @click.stop="selectedItem = Object.assign({}, item); showViewModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-[11px]">{{ t('preview', lang) }}</button>
+                                <button @click.stop="selectedItem = Object.assign({}, item); showEditModal = true" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded text-[11px]">{{ t('edit', lang) }}</button>
                             </td>
                         </tr>
                     </template>
@@ -131,7 +131,7 @@
     <div x-show="showViewModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-lg text-white space-y-4">
             <div class="flex justify-between items-center border-b border-gray-700 pb-2">
-                <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">🔍 تفاصيل موقع التعدين</h3>
+                <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">🔍 {{ t('mining_details', lang) }}</h3>
                 <span class="text-[10px] px-2 py-0.5 rounded border border-gray-600 bg-gray-900 text-gray-300" x-text="selectedItem.status"></span>
             </div>
             
@@ -143,31 +143,31 @@
 
                 <div class="grid grid-cols-2 gap-3 text-xs">
                     <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">المنطقة / الموقع:</span>
+                        <span class="text-gray-400 block text-[10px]">{{ t('location', lang) }}</span>
                         <span class="font-semibold text-amber-300" x-text="selectedItem.location"></span>
                     </div>
                     <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">الطاقة الإنتاجية:</span>
+                        <span class="text-gray-400 block text-[10px]">{{ t('production_capacity', lang) }}</span>
                         <span class="font-mono text-green-400" x-text="selectedItem.capacity"></span>
                     </div>
                     <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">المالك / المشغّل:</span>
+                        <span class="text-gray-400 block text-[10px]">{{ t('owner_operator', lang) }}</span>
                         <span class="font-semibold text-blue-300" x-text="selectedItem.owner"></span>
                     </div>
                     <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">هاتف الإدارة:</span>
+                        <span class="text-gray-400 block text-[10px]">{{ t('management_phone', lang) }}</span>
                         <span class="font-semibold text-white" x-text="selectedItem.phone"></span>
                     </div>
                 </div>
 
                 <div class="bg-gray-900 p-3 rounded-xl border border-gray-700 text-xs">
-                    <p class="text-[10px] text-gray-400 mb-1">وصف العمليات والحالة الفنية:</p>
+                    <p class="text-[10px] text-gray-400 mb-1">وصف العمليات و{{ t('status', lang) }} الفنية:</p>
                     <p class="text-gray-300 leading-relaxed" x-text="selectedItem.details"></p>
                 </div>
             </div>
 
             <div class="flex justify-end gap-2 pt-2 border-t border-gray-700">
-                <button @click="showViewModal = false; showEditModal = true" class="bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded text-xs text-white font-bold">تعديل البيانات</button>
+                <button @click="showViewModal = false; showEditModal = true" class="bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded text-xs text-white font-bold">{{ t('edit', lang) }} البيانات</button>
                 <button @click="showViewModal = false" class="bg-gray-700 hover:bg-gray-600 px-4 py-1.5 rounded text-xs text-white">إغلاق</button>
             </div>
         </div>
@@ -176,13 +176,13 @@
     <!-- Modal: إضافة موقع جديد -->
     <div x-show="showAddModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-md text-white space-y-4">
-            <h3 class="text-base font-bold border-b border-gray-700 pb-2">➕ إضافة موقع تعدين جديد</h3>
+            <h3 class="text-base font-bold border-b border-gray-700 pb-2">➕ {{ t('add_new_site', lang) }}</h3>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">اسم الموقع / البئر</label>
+                <label class="block text-xs text-gray-400 mb-1">{{ t('site_name', lang) }}</label>
                 <input type="text" x-model="newItemTitle" placeholder="مثال: منجم العبيدية 2" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
             </div>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">النوع</label>
+                <label class="block text-xs text-gray-400 mb-1">{{ t('type', lang) }}</label>
                 <select x-model="newItemType" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
                     <option value="منجم ذهب">منجم ذهب</option>
                     <option value="بئر تعدين">بئر تعدين معالجة</option>
@@ -190,22 +190,22 @@
                 </select>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button @click="showAddModal = false" class="bg-gray-700 px-3 py-1.5 rounded text-xs">إلغاء</button>
-                <button @click="addItem()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-3 py-1.5 rounded text-xs">حفظ</button>
+                <button @click="showAddModal = false" class="bg-gray-700 px-3 py-1.5 rounded text-xs">{{ t('cancel', lang) }}</button>
+                <button @click="addItem()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-3 py-1.5 rounded text-xs">{{ t('save', lang) }}</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: تعديل موقع -->
+    <!-- Modal: {{ t('edit', lang) }} موقع -->
     <div x-show="showEditModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-md text-white space-y-3">
-            <h3 class="text-base font-bold border-b border-gray-700 pb-2">✏️ تعديل موقع التعدين</h3>
+            <h3 class="text-base font-bold border-b border-gray-700 pb-2">✏️ {{ t('edit', lang) }} موقع التعدين</h3>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">الاسم</label>
+                <label class="block text-xs text-gray-400 mb-1">{{ t('name', lang) }}</label>
                 <input type="text" x-model="selectedItem.title" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
             </div>
             <div>
-                <label class="block text-xs text-gray-400 mb-1">الحالة</label>
+                <label class="block text-xs text-gray-400 mb-1">{{ t('status', lang) }}</label>
                 <select x-model="selectedItem.status" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
                     <option value="نشط">نشط</option>
                     <option value="قيد الصيانة">قيد الصيانة</option>
@@ -213,8 +213,8 @@
                 </select>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button @click="showEditModal = false" class="bg-gray-700 px-3 py-1.5 rounded text-xs">إلغاء</button>
-                <button @click="saveEdit()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-3 py-1.5 rounded text-xs">حفظ التعديلات</button>
+                <button @click="showEditModal = false" class="bg-gray-700 px-3 py-1.5 rounded text-xs">{{ t('cancel', lang) }}</button>
+                <button @click="saveEdit()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-3 py-1.5 rounded text-xs">{{ t('save_edit_changes', lang) }}</button>
             </div>
         </div>
     </div>

@@ -116,5 +116,10 @@
   "exploration_site": "موقع استكشاف",
   "site_example": "مثال: منجم العبيدية 2",
   "site_added_success": "تمت إضافة موقع التعدين بنجاح!",
-  "mining_description": "متابعة مواقع التعدين، الطاقة الإنتاجية، وحالة التشغيل"
+  "mining_description": "متابعة مواقع التعدين، الطاقة الإنتاجية، وحالة التشغيل",
+  "mining_concessions": "إدارة الامتيازات التعدينية",
+  "concessions_description": "متابعة تراخيص وامتيازات التعدين والشركات المرتبطة بها",
+  "total_concessions": "إجمالي الامتيازات",
+  "active_concessions": "الامتيازات النشطة",
+  "under_review": "قيد المراجعة"
 }

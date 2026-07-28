@@ -116,5 +116,10 @@
   "exploration_site": "Exploration Site",
   "site_example": "Example: Al-Abidiya Mine 2",
   "site_added_success": "Mining site added successfully!",
-  "mining_description": "Monitoring mining sites, production capacity, and operational status"
+  "mining_description": "Monitoring mining sites, production capacity, and operational status",
+  "mining_concessions": "Mining Concessions Management",
+  "concessions_description": "Track mining licenses, concessions and associated companies",
+  "total_concessions": "Total Concessions",
+  "active_concessions": "Active Concessions",
+  "under_review": "Under Review"
 }

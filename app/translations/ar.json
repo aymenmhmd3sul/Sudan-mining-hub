@@ -38,5 +38,10 @@
   "deals": "الصفقات",
   "offers": "العروض",
   "buyers": "المشترون",
-  "sellers": "البائعون"
+  "sellers": "البائعون",
+  "opportunities_title": "سوق الفرص والتداولات",
+  "total_opportunities": "إجمالي الفرص",
+  "active_opportunities": "الفرص النشطة",
+  "under_negotiation": "قيد التفاوض",
+  "opportunities_description": "إدارة فرص الاستثمار والمشاريع التعدينية المتاحة"
 }

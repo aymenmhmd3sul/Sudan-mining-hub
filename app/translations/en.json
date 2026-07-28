@@ -38,5 +38,10 @@
   "deals": "Deals",
   "offers": "Offers",
   "buyers": "Buyers",
-  "sellers": "Sellers"
+  "sellers": "Sellers",
+  "opportunities_title": "Opportunities Marketplace",
+  "total_opportunities": "Total Opportunities",
+  "active_opportunities": "Active Opportunities",
+  "under_negotiation": "Under Negotiation",
+  "opportunities_description": "Manage available mining investment opportunities and projects"
 }

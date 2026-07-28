@@ -35,5 +35,8 @@
   "buyer_requests": "طلبات المشترين",
   "seller_offers": "عروض البائعين",
   "contracts": "العقود",
-  "deals": "الصفقات"
+  "deals": "الصفقات",
+  "offers": "العروض",
+  "buyers": "المشترون",
+  "sellers": "البائعون"
 }

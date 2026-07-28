@@ -74,7 +74,7 @@
 
 <a href="/admin/trade_desk">📈 Trade Desk</a>
 
-<a href="/admin/offers">📑 Offers</a>
+<a href="/admin/offers">📑 {{ t('offers', lang) }}</a>
 
 <a href="/admin/payments">💳 Payments</a>
 
@@ -103,8 +103,8 @@
 
             <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 {{ t('users', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-users">
-                <a href="/admin/users">Buyers</a>
-                <a href="/admin/users">Sellers</a>
+                <a href="/admin/users">{{ t('buyers', lang) }}</a>
+                <a href="/admin/users">{{ t('sellers', lang) }}</a>
                 <a href="/admin/users">Traders</a>
                 <a href="/admin/users">التعدين Companies</a>
                 <a href="/admin/users">Service Companies</a>

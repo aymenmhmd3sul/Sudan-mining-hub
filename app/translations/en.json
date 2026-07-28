@@ -35,5 +35,8 @@
   "buyer_requests": "Buyer Requests",
   "seller_offers": "Seller Offers",
   "contracts": "Contracts",
-  "deals": "Deals"
+  "deals": "Deals",
+  "offers": "Offers",
+  "buyers": "Buyers",
+  "sellers": "Sellers"
 }

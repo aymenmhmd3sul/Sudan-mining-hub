@@ -136,5 +136,10 @@
   "lab_results_description": "Track laboratory analysis results, mineral percentages and ore quality",
   "total_lab_results": "Total Analyses",
   "completed_lab_results": "Completed Analyses",
-  "lab_results_under_review": "Under Review"
+  "lab_results_under_review": "Under Review",
+  "mining_production": "Mining Production Management",
+  "production_description": "Track daily production, extracted quantities and operation status",
+  "total_production": "Total Production",
+  "daily_production": "Daily Production",
+  "producing_sites": "Producing Sites"
 }

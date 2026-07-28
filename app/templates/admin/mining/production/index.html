@@ -5,27 +5,27 @@
 <div class="space-y-6">
 
 <h1 class="text-xl font-bold text-white">
-🏭 إدارة الإنتاج التعديني
+{{ t('mining_production', lang) }}
 </h1>
 
 <p class="text-gray-400">
-متابعة الإنتاج اليومي، الكميات المستخرجة، وحالة التشغيل
+{{ t('production_description', lang) }}
 </p>
 
 <div class="grid md:grid-cols-3 gap-4">
 
 <div class="placeholder-card">
-<h2>إجمالي الإنتاج</h2>
+<h2>{{ t('total_production', lang) }}</h2>
 <p class="text-3xl text-amber-400">0</p>
 </div>
 
 <div class="placeholder-card">
-<h2>الإنتاج اليومي</h2>
+<h2>{{ t('daily_production', lang) }}</h2>
 <p class="text-3xl text-green-400">0</p>
 </div>
 
 <div class="placeholder-card">
-<h2>المواقع المنتجة</h2>
+<h2>{{ t('producing_sites', lang) }}</h2>
 <p class="text-3xl text-blue-400">0</p>
 </div>
 

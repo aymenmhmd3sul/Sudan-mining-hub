@@ -136,5 +136,10 @@
   "lab_results_description": "متابعة نتائج التحاليل المخبرية للعينات ونسب المعادن وجودة الخام",
   "total_lab_results": "إجمالي التحاليل",
   "completed_lab_results": "تحاليل مكتملة",
-  "lab_results_under_review": "قيد المراجعة"
+  "lab_results_under_review": "قيد المراجعة",
+  "mining_production": "إدارة الإنتاج التعديني",
+  "production_description": "متابعة الإنتاج اليومي، الكميات المستخرجة، وحالة التشغيل",
+  "total_production": "إجمالي الإنتاج",
+  "daily_production": "الإنتاج اليومي",
+  "producing_sites": "المواقع المنتجة"
 }

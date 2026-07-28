@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ direction }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,13 +17,13 @@
         <div class="header-brand">
             <span class="brand-icon">⛏</span>
             <div>
-                <strong>منصة التعدين السودانية</strong>
-                <small>مركز التحكم الإداري</small>
+                <strong>{{ t('platform_name', lang) }}</strong>
+                <small>{{ t('admin', lang) }}</small>
             </div>
         </div>
 
         <div class="user-profile">
-            <span>مدير النظام</span>
+            <span>{{ t('admin', lang) }}</span>
             <div class="user-profile-badge">A</div>
         </div>
     </header>
@@ -31,30 +31,30 @@
     <div class="admin-layout">
         <!-- الشريط الجانبي الشجري (11 وحدة كاملة بفروعها) -->
         <nav class="admin-sidebar" id="adminSidebar">
-            <a href="/admin/dashboard" class="sidebar-item">📊 لوحة التحكم</a>
+            <a href="/admin/dashboard" class="sidebar-item">📊 {{ t('dashboard', lang) }}</a>
             
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-market')">🏪 السوق <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-market')">🏪 {{ t('marketplace', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-market">
-                <a href="/admin/marketplace/opportunities">Opportunities</a>
-                <a href="/admin/marketplace/buys">Buyer Requests</a>
-                <a href="/admin/marketplace/sales">Seller Offers</a>
-                <a href="/admin/marketplace/negotiations">التفاوض</a>
-                <a href="/admin/marketplace/contracts">Contracts</a>
-                <a href="/admin/marketplace/deals">Deals</a>
+                <a href="/admin/marketplace/opportunities">{{ t('opportunities', lang) }}</a>
+                <a href="/admin/marketplace/buys">{{ t('buyer_requests', lang) }}</a>
+                <a href="/admin/marketplace/sales">{{ t('seller_offers', lang) }}</a>
+                <a href="/admin/marketplace/negotiations">{{ t('negotiation', lang) }}</a>
+                <a href="/admin/marketplace/contracts">{{ t('contracts', lang) }}</a>
+                <a href="/admin/marketplace/deals">{{ t('deals', lang) }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-mining')">⛏ التعدين <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-mining')">⛏ {{ t('mining', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-mining">
-                <a href="/admin/mining/sites">مواقع التعدين</a>
-                <a href="/admin/mining/concessions">الامتيازات</a>
-                <a href="/admin/mining/minerals">المعادن</a>
-                <a href="/admin/mining/samples">العينات</a>
-                <a href="/admin/mining/lab_results">النتائج المعملية</a>
-                <a href="/admin/mining/production">الإنتاج</a>
-                <a href="/admin/mining/inventory">المخزون</a>
+                <a href="/admin/mining/sites">{{ t('mining_sites', lang) }}</a>
+                <a href="/admin/mining/concessions">{{ t('concessions', lang) }}</a>
+                <a href="/admin/mining/minerals">{{ t('minerals', lang) }}</a>
+                <a href="/admin/mining/samples">{{ t('samples', lang) }}</a>
+                <a href="/admin/mining/lab_results">{{ t('lab_results', lang) }}</a>
+                <a href="/admin/mining/production">{{ t('production', lang) }}</a>
+                <a href="/admin/mining/inventory">{{ t('inventory', lang) }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-equipment')">🚜 المعدات والخدمات <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-equipment')">🚜 {{ t('equipment_services', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-equipment">
                 <a href="/admin/equipment">Equipment</a>
                 <a href="/admin/equipment">Rentals</a>
@@ -66,7 +66,7 @@
             </div>
 
             
-<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-advanced')">🚀 العمليات المتقدمة <span>▾</span></div>
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-advanced')">🚀 {{ t('advanced_operations', lang) }} <span>▾</span></div>
 
 <div class="sidebar-sub-menu" id="menu-advanced">
 
@@ -78,7 +78,7 @@
 
 <a href="/admin/payments">💳 Payments</a>
 
-<a href="/admin/opportunities">🎯 Opportunities</a>
+<a href="/admin/opportunities">🎯 {{ t('opportunities', lang) }}</a>
 
 <a href="/admin/services">🛠 Services</a>
 
@@ -86,11 +86,11 @@
 
 <a href="/admin/audit">🔍 Audit</a>
 
-<a href="/admin/analytics">📊 التحليلات</a>
+<a href="/admin/analytics">📊 {{ t('analytics', lang) }}</a>
 
 </div>
 
-<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-finance')">💰 المالية <span>▾</span></div>
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-finance')">💰 {{ t('finance', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-finance">
                 <a href="/admin/finance">Invoices</a>
                 <a href="/admin/finance/escrow">Escrow</a>
@@ -101,7 +101,7 @@
                 <a href="/admin/finance">Disputes</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 المستخدمون <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 {{ t('users', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-users">
                 <a href="/admin/users">Buyers</a>
                 <a href="/admin/users">Sellers</a>
@@ -113,7 +113,7 @@
                 <a href="/admin/users">Roles & Permissions</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-comm')">💬 الاتصالات <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-comm')">💬 {{ t('communications', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-comm">
                 <a href="/admin/communications">Messages</a>
                 <a href="/admin/communications">Chats</a>
@@ -122,7 +122,7 @@
                 <a href="/admin/communications">SMS</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-content')">📰 المحتوى <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-content')">📰 {{ t('content', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-content">
                 <a href="/admin/content">News</a>
                 <a href="/admin/content">Articles</a>
@@ -132,17 +132,17 @@
                 <a href="/admin/content">FAQ</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-reports')">📈 التقارير <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-reports')">📈 {{ t('reports', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-reports">
-                <a href="/admin/reports">Financial التقارير</a>
-                <a href="/admin/reports">التعدين التقارير</a>
-                <a href="/admin/reports">السوق التقارير</a>
-                <a href="/admin/reports">User التقارير</a>
-                <a href="/admin/reports">التحليلات</a>
+                <a href="/admin/reports">Financial {{ t('reports', lang) }}</a>
+                <a href="/admin/reports">التعدين {{ t('reports', lang) }}</a>
+                <a href="/admin/reports">السوق {{ t('reports', lang) }}</a>
+                <a href="/admin/reports">User {{ t('reports', lang) }}</a>
+                <a href="/admin/reports">{{ t('analytics', lang) }}</a>
                 <a href="/admin/reports">Export</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-admin')">⚙ الإدارة <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-admin')">⚙ {{ t('administration', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-admin">
                 <a href="/admin/administration">General Settings</a>
                 <a href="/admin/administration">Countries</a>
@@ -156,7 +156,7 @@
                 <a href="/admin/administration">SMS Settings</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-security')">🔐 الأمن <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-security')">🔐 {{ t('security', lang) }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-security">
                 <a href="/admin/security">Login History</a>
                 <a href="/admin/security">Active Sessions</a>

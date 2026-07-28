@@ -1,10 +1,9 @@
 import os
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from app.services.templates import templates
 
 router = APIRouter(prefix="/admin", tags=["Admin Views"])
-templates = Jinja2Templates(directory="app/templates")
 
 # الداش بورد الرئيسي للمشرف
 @router.get("", response_class=HTMLResponse)
@@ -15,6 +14,8 @@ async def admin_dashboard(request: Request):
         "admin/dashboard.html",
         {
             "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
             "active_tab": "dashboard"
         }
     )
@@ -26,6 +27,8 @@ async def admin_dashboard_v2(request: Request):
         "admin/dashboard_v2.html",
         {
             "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
             "active_tab": "dashboard"
         }
     )
@@ -40,6 +43,8 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
             "admin/finance/escrow.html",
             {
                 "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
                 "active_tab": "escrow"
             }
         )
@@ -66,6 +71,8 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
         template_path,
         {
             "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
             **context
         }
     )
@@ -74,6 +81,8 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
         "admin/dashboard.html",
         {
             "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
             **context
         }
     )

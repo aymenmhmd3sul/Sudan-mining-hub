@@ -23,7 +23,9 @@ async def market_page(request: Request):
 async def opportunity_details_page(request: Request, opp_id: int):
     return templates.TemplateResponse(
         "opportunity_details.html",
-        {"request": request, "opp_id": opp_id}
+        {"request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "opp_id": opp_id}
     )
 
 

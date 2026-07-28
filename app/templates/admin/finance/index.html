@@ -58,12 +58,12 @@
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3">
         <div class="text-center sm:text-right">
             <h1 class="text-lg font-extrabold text-white flex items-center justify-center sm:justify-start gap-2">
-                <span>المركز المالي والحسابات 💰</span>
+                <span>{{ t('financial_center', lang) }}</span>
             </h1>
             <p class="text-[11px] text-gray-400 mt-1">إدارة الفواتير، المبالغ المحجوزة Escrow، والتحويلات المالية</p>
         </div>
         <button type="button" onclick="showDetailsModal('جديد', 'عميل جديد', '$0', 'فاتورة جديدة', 'قيد الإجراء ⏳', '{{ now }}')" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5">
-            <span>+ إنشاء فاتورة جديدة</span>
+            <span>{{ t('create_new_invoice', lang) }}</span>
         </button>
     </div>
 
@@ -71,27 +71,27 @@
     <div class="grid grid-cols-2 gap-2.5" id="statsGrid">
         
         <div id="card-all" onclick="selectCard(this, 'all')" class="fin-card active-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
-            <span class="text-[10px] text-gray-300 font-semibold block">إجمالي التحصيلات 🧾</span>
+            <span class="text-[10px] text-gray-300 font-semibold block">{{ t('total_collections', lang) }}</span>
             <span class="text-base font-black text-amber-400 mt-1 block font-mono">$142,500</span>
             <span class="text-[9px] text-emerald-400 font-semibold">45 عملية مكتملة</span>
         </div>
 
         <div id="card-escrow" onclick="selectCard(this, 'escrow')" class="fin-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
-            <span class="text-[10px] text-gray-300 font-semibold block">حساب الضمان Escrow 🛡️</span>
+            <span class="text-[10px] text-gray-300 font-semibold block">{{ t('escrow_account', lang) }}</span>
             <span class="text-base font-black text-emerald-400 mt-1 block font-mono">$88,200</span>
             <span class="text-[9px] text-amber-400 font-semibold">12 صفقة معلقة</span>
         </div>
 
         <div id="card-commission" onclick="selectCard(this, 'commission')" class="fin-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
-            <span class="text-[10px] text-gray-300 font-semibold block">عمولات المنصة 💎</span>
+            <span class="text-[10px] text-gray-300 font-semibold block">{{ t('platform_commissions', lang) }}</span>
             <span class="text-base font-black text-purple-400 mt-1 block font-mono">$18,450</span>
             <span class="text-[9px] text-purple-300 font-semibold">المحصلة</span>
         </div>
 
         <div id="card-settlement" onclick="selectCard(this, 'settlement')" class="fin-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
-            <span class="text-[10px] text-gray-300 font-semibold block">التسويات المستحقة ⚖️</span>
+            <span class="text-[10px] text-gray-300 font-semibold block">{{ t('due_settlements', lang) }}</span>
             <span class="text-base font-black text-blue-400 mt-1 block font-mono">$32,100</span>
-            <span class="text-[9px] text-blue-300 font-semibold">جاهزة للتحويل</span>
+            <span class="text-[9px] text-blue-300 font-semibold">{{ t('ready_transfer', lang) }}</span>
         </div>
 
     </div>
@@ -103,7 +103,7 @@
             <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
                 📋 سجل المعاملات والفواتير
             </h3>
-            <input type="text" id="finSearch" onkeyup="searchFinanceTable()" placeholder="بحث باسم العميل أو رقم الفاتورة..." class="w-full bg-gray-900/80 border border-gray-700 text-xs rounded-xl px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition">
+            <input type="text" id="finSearch" onkeyup="searchFinanceTable()" placeholder="{{ t('search_invoice', lang) }}" class="w-full bg-gray-900/80 border border-gray-700 text-xs rounded-xl px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition">
         </div>
 
         <div id="financeCardsContainer" class="space-y-3">

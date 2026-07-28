@@ -55,6 +55,10 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
 
     if normalized_subpath:
         sub_template_path = f"admin/{normalized_module}/{normalized_subpath}/index.html"
+
+        # Use main mining management page for mining/sites
+        if normalized_module == "mining" and normalized_subpath == "sites":
+            sub_template_path = "admin/mining/index.html"
         if os.path.exists(os.path.join("app/templates", sub_template_path)):
             template_path = sub_template_path
         else:

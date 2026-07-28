@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>تفاصيل الفرصة</title>
+
+<style>
+body{
+font-family:Tahoma;
+background:#020617;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+}
+
+.card{
+background:#1e293b;
+border-radius:18px;
+padding:25px;
+border:1px solid #334155;
+}
+
+h1,h2{
+color:#fbbf24;
+}
+
+.info{
+line-height:2.2;
+color:#cbd5e1;
+}
+
+.btn{
+display:block;
+margin-top:25px;
+background:#fbbf24;
+color:#111827;
+padding:14px;
+text-align:center;
+border-radius:12px;
+text-decoration:none;
+font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>⛏️ تفاصيل الفرصة</h1>
+
+<div id="details">
+جاري تحميل البيانات...
+</div>
+
+<a class="btn" href="/">
+🤝 تقديم عرض
+</a>
+
+</div>
+
+</div>
+
+
+<script>
+
+async function loadOpportunity(){
+
+let id = location.pathname.split("/").pop();
+
+let box=document.getElementById("details");
+
+try{
+
+let res = await fetch(`/api/opportunities/${id}`);
+
+let data = await res.json();
+
+let o=data.opportunity;
+
+
+box.innerHTML=`
+
+<h2>
+${o.type}
+</h2>
+
+<div class="info">
+
+📋 ${o.specs || ""}<br>
+
+📍 ${o.location || ""}<br>
+
+🏙️ ${o.city || ""}<br>
+
+💰 ${o.budget || 0} ج.س<br>
+
+📌 ${o.status}
+
+</div>
+
+`;
+
+}catch(e){
+
+box.innerHTML="حدث خطأ في تحميل الفرصة";
+
+}
+
+}
+
+loadOpportunity();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>منصة السودان للتعدين</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Tahoma,Arial,sans-serif;
+    background:#020617;
+    color:#f8fafc;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.hero{
+    min-height:420px;
+    border-radius:28px;
+    padding:40px 25px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:
+    linear-gradient(
+    rgba(2,6,23,.75),
+    rgba(2,6,23,.9)),
+    linear-gradient(135deg,#92400e,#0f172a);
+    animation:fade 1s ease;
+}
+
+.hero h1{
+    font-size:2.5rem;
+    color:#fbbf24;
+    margin-bottom:20px;
+}
+
+.hero p{
+    color:#cbd5e1;
+    font-size:1.15rem;
+    line-height:2;
+}
+
+.buttons{
+    margin-top:30px;
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:14px 25px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:bold;
+    display:inline-block;
+}
+
+.primary{
+    background:#fbbf24;
+    color:#111827;
+}
+
+.secondary{
+    background:#1e293b;
+    color:white;
+    border:1px solid #475569;
+}
+
+.section{
+    margin-top:30px;
+    background:#0f172a;
+    padding:25px;
+    border-radius:22px;
+    border:1px solid #1e293b;
+}
+
+.section h2{
+    color:#fbbf24;
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:15px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:18px;
+    text-align:center;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.icon{
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+}
+
+.stat{
+    background:#111827;
+    padding:20px;
+    border-radius:18px;
+    text-align:center;
+}
+
+.stat strong{
+    display:block;
+    font-size:30px;
+    color:#fbbf24;
+}
+
+.footer{
+    text-align:center;
+    padding:30px;
+    color:#94a3b8;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:none}
+}
+
+@media(max-width:600px){
+.hero h1{
+font-size:1.8rem;
+}
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero">
+
+<h1>⛏️ منصة السودان للتعدين</h1>
+
+<p>
+البوابة الرقمية الأولى لربط فرص التعدين،
+الأصول الصناعية، المعدات، والخدمات في السودان.
+</p>
+
+<div class="buttons">
+
+<a class="btn primary" href="/">
+🔐 الدخول أو إنشاء حساب
+</a>
+
+<a class="btn secondary" href="/market">
+🔎 استكشف الفرص
+</a>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2>📊 المنصة بالأرقام</h2>
+
+<div class="stats">
+
+<div class="stat">
+<strong>+100</strong>
+فرصة استثمارية
+</div>
+
+<div class="stat">
+<strong>+50</strong>
+أصل تعديني
+</div>
+
+<div class="stat">
+<strong>+200</strong>
+خدمة ومعدة
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section" id="assets">
+
+<h2>🏗️ الأصول المتاحة</h2>
+
+<div class="grid">
+
+<div class="card">
+<div class="icon">⛏️</div>
+مناجم
+</div>
+
+<div class="card">
+<div class="icon">🛢️</div>
+آبار
+</div>
+
+<div class="card">
+<div class="icon">🚜</div>
+معدات خفيفة
+</div>
+
+<div class="card">
+<div class="icon">🏗️</div>
+معدات ثقيلة
+</div>
+
+<div class="card">
+<div class="icon">⚙️</div>
+خطوط إنتاج
+</div>
+
+<div class="card">
+<div class="icon">🤝</div>
+خدمات التعدين
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2>📢 فرص وإعلانات</h2>
+
+<p>
+تصفح الفرص المتاحة، تفاوض مع الشركاء،
+وأدر الصفقات عبر منصة واحدة.
+</p>
+
+</section>
+
+
+<section class="section">
+
+<h2>💰 المعادن والأسواق</h2>
+
+<p>
+متابعة أسعار الذهب والمعادن والأسواق المحلية والعالمية.
+</p>
+
+</section>
+
+
+<div class="footer">
+© 2026 منصة السودان للتعدين
+</div>
+
+
+</div>
+
+</body>
+</html>

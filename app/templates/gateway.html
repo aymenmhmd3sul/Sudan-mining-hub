@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sudan Mining Hub</title>
+<title>منصة السودان للتعدين</title>
 
-<link rel="stylesheet" href="{{ url_for('static', path='css/gateway.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/gateway_final.css') }}">
 
 </head>
 
@@ -14,136 +14,89 @@
 
 <div class="page">
 
-<header class="top">
+<header class="header">
 
-<div class="logo">
-⛏ Sudan Mining Hub
+<div class="brand">
+⛏ ⚖️
+<strong>منصة السودان للتعدين</strong>
+<span>بوابة إدارة قطاع التعدين الذكية</span>
 </div>
 
-<div class="tools">
-<button id="langBtn">English</button>
-<button id="themeBtn">🌙</button>
-</div>
+<button class="language">
+EN
+</button>
 
 </header>
 
 
-<section class="gold-card">
+<section class="gold-ticker">
 
-<div>
-🌍 الذهب العالمي
-<h3 id="globalGold">$3420 / oz</h3>
-</div>
-
-<div>
-🇸🇩 الذهب المحلي
-<h3 id="localGold">75,000 SDG / gram</h3>
-</div>
+بورصة الذهب مباشرة
+&nbsp; | &nbsp;
+الأونصة: $3420
+&nbsp; | &nbsp;
+عيار 24: سعر عالمي
 
 </section>
 
 
-<section class="login-box">
 
-<h1>
-بوابة الدخول
-</h1>
+<section class="login-card">
 
+<h1>بوابة الدخول</h1>
 
-<input 
-id="email"
-type="email"
-placeholder="البريد الإلكتروني"
-autocomplete="off">
+<input placeholder="البريد الإلكتروني">
 
+<div class="password">
 
-<div class="password-box">
+<input placeholder="كلمة المرور" type="password">
 
-<input
-id="password"
-type="password"
-placeholder="كلمة المرور"
-autocomplete="new-password">
-
-<button id="showPass">
-👁
-</button>
+<button>👁</button>
 
 </div>
 
 
-<button class="login">
-تسجيل الدخول
+<button class="login-btn">
+🔐 تسجيل الدخول الآمن
 </button>
 
 
-<a class="forgot">
-نسيت كلمة المرور؟
-</a>
+<div class="links">
+
+<a>التسجيل لأول مرة</a>
+
+<a href="/visitor">دخول كزائر</a>
+
+</div>
 
 
 </section>
 
 
 
-<button class="visitor">
+<section class="promotion">
 
-👤 الدخول كزائر
-
-</button>
-
-
-
-<section class="updates">
-
-<h3>
-🔔 آخر التحديثات
-</h3>
+<h3>🌍 فرص التعدين والتجارة العالمية</h3>
 
 <p>
-إعلانات التعدين والفرص الجديدة
+تسوية الفواتير الخارجية،
+وكلاء دوليون،
+وعروض تجارية مرتبطة بالأصول التعدينية
 </p>
 
 </section>
 
-
-
-<section class="bank">
-
-<h3>
-🏦 Banking Center
-</h3>
-
-<p>
-الخدمات البنكية والدفع الإلكتروني
-</p>
-
-</section>
-
-
-
-<section class="contact">
-
-<h3>
-التواصل
-</h3>
-
-<div>
-💬 WhatsApp
-✈ Telegram
-✉ Email
-</div>
-
-</section>
 
 
 <footer>
 
-Sudan Mining Hub v1.0
+<div>
+الشروط والسياسات | قوانين المنصة | حالات النزاع
+</div>
 
-<br>
-
-Privacy | Terms | API
+<div>
+💬 WhatsApp &nbsp; ✈ Telegram &nbsp; ✉ Email
+</div>
 
 </footer>
 
@@ -151,7 +104,7 @@ Privacy | Terms | API
 </div>
 
 
-<script src="{{ url_for('static', path='js/gateway.js') }}"></script>
+<script src="{{ url_for('static', path='js/gateway_final.js') }}"></script>
 
 </body>
 </html>

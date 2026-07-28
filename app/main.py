@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from app.routers import admin_views, auth, opportunities, chat, payments, admin, web, web_auth, admin_mining, mining_sites
+from app.routers import admin_views, auth, opportunities, chat, payments, admin, web, web_auth, admin_mining, mining_sites, views
 
 app = FastAPI(title="Sudan Mining Hub")
 
@@ -11,6 +11,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 # استدعاء الموجه الشامل للواجهات (بدون مضاعفة prefix)
 app.include_router(admin_views.router)
+app.include_router(views.router)
 app.include_router(web.router)
 app.include_router(web_auth.router)
 
@@ -26,4 +27,4 @@ app.include_router(mining_sites.router)
 @app.get("/")
 async def root():
     from fastapi.responses import RedirectResponse
-    return RedirectResponse(url="/admin/dashboard")
+    return RedirectResponse(url="/gateway")

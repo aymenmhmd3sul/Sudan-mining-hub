@@ -1,0 +1,445 @@
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:
+linear-gradient(145deg,#050505,#241800,#000);
+color:white;
+min-height:100vh;
+}
+
+.app{
+width:100%;
+max-width:430px;
+margin:auto;
+padding:15px;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+
+/* Header */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,255,255,.08);
+padding:12px;
+border-radius:20px;
+border:1px solid rgba(212,175,55,.3);
+}
+
+.logo{
+color:#d4af37;
+font-size:20px;
+font-weight:bold;
+}
+
+.actions button{
+background:#222;
+color:white;
+border:none;
+border-radius:12px;
+padding:8px;
+margin-right:5px;
+}
+
+
+/* Hero */
+
+.hero{
+text-align:center;
+padding:10px;
+}
+
+.hero h1{
+color:#ffd700;
+font-size:24px;
+}
+
+
+/* Login */
+
+.login-card,
+.promotion,
+.footer-links{
+
+background:
+#fffdf5;
+
+color:#222;
+
+border-radius:25px;
+
+padding:20px;
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.35);
+
+border:1px solid #d4af37;
+
+}
+
+
+.login-card h2{
+text-align:center;
+}
+
+
+.login-card input{
+
+width:100%;
+height:45px;
+
+margin:8px 0;
+
+border-radius:15px;
+
+border:1px solid #ccc;
+
+padding:10px;
+
+font-size:16px;
+
+}
+
+
+.password{
+display:flex;
+}
+
+
+.password input{
+flex:1;
+}
+
+
+.password button{
+
+width:45px;
+
+border:none;
+
+border-radius:12px;
+
+}
+
+
+/* Buttons */
+
+.primary,
+.visitor{
+
+height:48px;
+
+border:none;
+
+border-radius:18px;
+
+font-size:17px;
+
+cursor:pointer;
+
+}
+
+
+.primary{
+
+width:100%;
+
+background:#d4af37;
+
+color:black;
+
+}
+
+
+.visitor{
+
+background:#222;
+
+color:white;
+
+}
+
+
+/* links */
+
+.links{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-top:10px;
+
+font-size:14px;
+
+}
+
+
+/* promotion */
+
+.promotion{
+
+text-align:center;
+
+}
+
+
+.promotion h3{
+
+color:#8a6400;
+
+}
+
+
+/* footer */
+
+.footer-links{
+
+font-size:13px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:8px;
+
+}
+
+
+footer{
+
+text-align:center;
+
+font-size:12px;
+
+opacity:.7;
+
+padding:10px;
+
+}
+
+
+
+.primary,
+.visitor{
+    height:42px;
+}
+
+.links{
+    margin-top:6px;
+}
+
+.promotion,
+.footer-links{
+    padding:12px;
+    border-radius:18px;
+}
+
+.visitor{
+    margin-top:0;
+}
+
+footer{
+    padding:5px;
+}
+
+
+/* Final compact phone screen */
+
+html,body{
+    overflow:hidden;
+}
+
+.app{
+    height:100vh;
+    min-height:0;
+    padding:8px;
+    gap:5px;
+    justify-content:space-between;
+}
+
+
+.header{
+    flex:0 0 auto;
+}
+
+
+.hero{
+    flex:0 0 auto;
+    padding:2px;
+}
+
+
+.hero h1{
+    font-size:18px;
+    margin:3px;
+}
+
+
+.hero p{
+    display:none;
+}
+
+
+.login-card{
+    flex:0 0 auto;
+    padding:12px;
+}
+
+
+.login-card h2{
+    margin:5px;
+    font-size:18px;
+}
+
+
+.links{
+    font-size:12px;
+}
+
+
+.promotion{
+    flex:0 0 auto;
+    padding:8px;
+    font-size:13px;
+}
+
+
+.footer-links{
+    flex:0 0 auto;
+    padding:5px;
+}
+
+
+footer{
+    flex:0 0 auto;
+}
+
+
+
+
+/* Premium color balance */
+
+.login-card,
+.promotion,
+.footer-links{
+
+    background:rgba(255,248,230,0.96);
+    color:#3a2a16;
+}
+
+
+.login-card input{
+
+    background:#fffaf0;
+    color:#222;
+    border:1px solid #c9a85b;
+
+}
+
+
+.login-card h2{
+
+    color:#8a6400;
+
+}
+
+
+.primary{
+
+    background:linear-gradient(135deg,#d4af37,#b8860b);
+    color:#111;
+
+}
+
+
+.actions button{
+
+    background:#1c1c1c;
+    color:#ffd700;
+
+}
+
+
+.hero h1{
+
+    color:#e6c35c;
+
+}
+
+
+.footer-links,
+footer{
+
+    color:#d8c28a;
+
+}
+
+
+
+/* Premium color balance */
+
+.login-card,
+.promotion,
+.footer-links{
+
+    background:rgba(255,248,230,0.96);
+    color:#3a2a16;
+}
+
+
+.login-card input{
+
+    background:#fffaf0;
+    color:#222;
+    border:1px solid #c9a85b;
+
+}
+
+
+.login-card h2{
+
+    color:#8a6400;
+
+}
+
+
+.primary{
+
+    background:linear-gradient(135deg,#d4af37,#b8860b);
+    color:#111;
+
+}
+
+
+.actions button{
+
+    background:#1c1c1c;
+    color:#ffd700;
+
+}
+
+
+.hero h1{
+
+    color:#e6c35c;
+
+}
+
+
+.footer-links,
+footer{
+
+    color:#d8c28a;
+
+}
+

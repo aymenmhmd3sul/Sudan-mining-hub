@@ -1,76 +1,100 @@
-from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel
-import json
-import os
-from datetime import datetime, timedelta
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel, EmailStr
+from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.models.user import User
+from app.core.security import verify_password, get_password_hash, create_access_token
 
 router = APIRouter()
-USERS_FILE = "data/users.json"
 
-# التأكد من وجود مجلد data
-os.makedirs(os.path.dirname(USERS_FILE), exist_ok=True)
-
-# التأكد من وجود ملف المستخدمين
-if not os.path.exists(USERS_FILE):
-    with open(USERS_FILE, "w") as f:
-        json.dump([], f)
 
 class UserRegister(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     phone: str
-    role: str  # buyer, seller, admin
+    role: str
     password: str
+
 
 class UserLogin(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
-def get_users():
-    with open(USERS_FILE, "r") as f:
-        return json.load(f)
-
-def save_users(users):
-    with open(USERS_FILE, "w") as f:
-        json.dump(users, f, indent=2)
 
 @router.post("/register")
-def register(user: UserRegister):
-    users = get_users()
-    
-    # التحقق من أن البريد غير مستخدم
-    for u in users:
-        if u["email"] == user.email:
-            raise HTTPException(status_code=400, detail="البريد الإلكتروني مسجل مسبقاً")
-    
-    new_user = {
-        "id": len(users) + 1,
-        "name": user.name,
-        "email": user.email,
-        "phone": user.phone,
-        "role": user.role,
-        "password": user.password,  # في المستقبل: تشفير
-        "is_active": False if user.role == "seller" else True,
-        "subscription_end": None,
-        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+def register(user: UserRegister, db: Session = Depends(get_db)):
+
+    existing = db.query(User).filter(
+        User.email == user.email
+    ).first()
+
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail="البريد الإلكتروني مسجل مسبقاً"
+        )
+
+    new_user = User(
+        name=user.name,
+        email=user.email,
+        phone=user.phone,
+        password_hash=get_password_hash(user.password),
+        role=user.role,
+        status="ACTIVE"
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return {
+        "status": "success",
+        "user_id": new_user.id
     }
-    users.append(new_user)
-    save_users(users)
-    return {"status": "success", "message": "تم التسجيل بنجاح", "user_id": new_user["id"]}
+
 
 @router.post("/login")
-def login(user: UserLogin):
-    users = get_users()
-    for u in users:
-        if u["email"] == user.email and u["password"] == user.password:
-            return {
-                "status": "success",
-                "user": {
-                    "id": u["id"],
-                    "name": u["name"],
-                    "email": u["email"],
-                    "role": u["role"],
-                    "is_active": u.get("is_active", False)
-                }
-            }
-    raise HTTPException(status_code=401, detail="البريد أو كلمة المرور غير صحيحة")
+def login(
+    user: UserLogin,
+    db: Session = Depends(get_db)
+):
+
+    db_user = db.query(User).filter(
+        User.email == user.email
+    ).first()
+
+    if not db_user:
+        raise HTTPException(
+            status_code=401,
+            detail="البريد أو كلمة المرور غير صحيحة"
+        )
+
+    if not verify_password(
+        user.password,
+        db_user.password_hash
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="البريد أو كلمة المرور غير صحيحة"
+        )
+
+    token = create_access_token(
+        {
+            "sub": db_user.email,
+            "role": str(db_user.role)
+        }
+    )
+
+    return {
+        "status": "success",
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "id": db_user.id,
+            "name": db_user.name,
+            "email": db_user.email,
+            "role": db_user.role,
+            "is_admin": db_user.is_admin
+        }
+    }

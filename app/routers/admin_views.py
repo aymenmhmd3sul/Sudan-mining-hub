@@ -11,15 +11,23 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("/", response_class=HTMLResponse)
 @router.get("/dashboard", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
-    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context={"active_tab": "dashboard"})
+    return templates.TemplateResponse(
+        "admin/dashboard.html",
+        {
+            "request": request,
+            "active_tab": "dashboard"
+        }
+    )
 
 # معالج كافة أقسام القائمة الجانبية المنسدلة
 @router.get("/dashboard-v2", response_class=HTMLResponse)
 async def admin_dashboard_v2(request: Request):
     return templates.TemplateResponse(
-        request=request,
-        name="admin/dashboard_v2.html",
-        context={"active_tab": "dashboard"}
+        "admin/dashboard_v2.html",
+        {
+            "request": request,
+            "active_tab": "dashboard"
+        }
     )
 
 @router.get("/{module_name}", response_class=HTMLResponse)
@@ -29,9 +37,11 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
     # استثناء وحدة Escrow حتى لا يلتقطها الـ wildcard العام
     if module_name == "finance" and subpath == "escrow":
         return templates.TemplateResponse(
-            request=request,
-            name="admin/finance/escrow.html",
-            context={"active_tab": "escrow"}
+            "admin/finance/escrow.html",
+            {
+                "request": request,
+                "active_tab": "escrow"
+            }
         )
 
     # تحويل الشرطة العادية إلى سفليّة لتطابق مجلدات القوالب
@@ -52,8 +62,20 @@ async def render_admin_module(request: Request, module_name: str, subpath: str =
     context = {"active_tab": module_name, "room_id": subpath if subpath else "1"}
     
     if os.path.exists(full_path):
-        return templates.TemplateResponse(request=request, name=template_path, context=context)
+        return templates.TemplateResponse(
+        template_path,
+        {
+            "request": request,
+            **context
+        }
+    )
     
-    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context=context)
+    return templates.TemplateResponse(
+        "admin/dashboard.html",
+        {
+            "request": request,
+            **context
+        }
+    )
 
 

@@ -1,0 +1,29 @@
+[33m7f5a852[m fix: remove uvicorn[standard] to avoid watchfiles build error
+[33md664860[m feat: complete new platform structure with auth, opportunities, chat, payments, admin
+[33m6092343[m fix: add requests dependency
+[33m2cc8d43[m fix: add requests dependency
+[33m9b05a3f[m add jinja2 dependency
+[33ma080313[m fix jinja2 missing
+[33m9b22c3f[m fix: add postgres driver
+[33m9bc9426[m fix: restore core dependencies
+[33mbe3980e[m fix: add fastapi dependency
+[33mb104456[m fix: add uvicorn
+[33m0aec401[m fix: clean termux local paths from requirements
+[33m3323eb0[m fix: clean requirements for Render Linux
+[33m9c78b1e[m fix: add jinja2 dependency
+[33mdf234df[m add requirements for render runtime
+[33m88be6f1[m fix db driver
+[33mb923aaa[m[33m ([m[1;33mtag: [m[1;33mstable-v1[m[33m, [m[1;33mtag: [m[1;33mpre-v1.1[m[33m)[m Add Streamlit dependency
+[33m7bc667e[m fix stable dependencies
+[33m47e4cc8[m update sqlmodel and sqlalchemy compatibility
+[33m13fce15[m stable production setup python 3.11 fixed dependencies
+[33m4d8cfb4[m production ready backend fastapi clean setup
+[33mc845232[m fix: add streamlit-autorefresh dependency
+[33m3d345c2[m Update requirements.txt
+[33mb7c0e6f[m Update requirements.txt
+[33mb83f14a[m Update requirements.txt
+[33mb6e9402[m Update requirements.txt
+[33m1b92bb4[m Update requirements.txt
+[33mef9d82b[m Update requirements.txt
+[33m10cfe5a[m Update requirements.txt
+[33m0969acf[m Add files via upload

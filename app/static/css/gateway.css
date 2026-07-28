@@ -171,3 +171,77 @@ footer{
     margin:0 auto 10px auto;
 }
 
+
+/* Theme selector */
+.theme-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.theme-options {
+    display: none;
+    position: absolute;
+    top: 45px;
+    right: auto;
+    left: 0;
+    width: 170px;
+    max-width: calc(100vw - 20px);
+    padding: 8px;
+    border-radius: 14px;
+    background: rgba(20,20,20,.95);
+    border: 1px solid rgba(255,215,0,.35);
+    box-shadow: 0 8px 25px rgba(0,0,0,.45);
+    z-index: 100;
+}
+
+.theme-options button {
+    width: 100%;
+    margin: 4px 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: #222;
+    color: white;
+    font-size: 14px;
+}
+
+.theme-options button:hover {
+    background: #d4af37;
+    color: black;
+}
+
+.theme-options.active {
+    display: block;
+}
+
+/* Notebook theme */
+body.theme-notebook {
+    background: #f4ecd8;
+    color: #3b2f1e;
+}
+
+body.theme-notebook .gold-card,
+body.theme-notebook .login-box,
+body.theme-notebook .updates,
+body.theme-notebook .bank,
+body.theme-notebook .contact {
+    background: #fffdf5;
+    border-color: #c9a85b;
+}
+
+/* Mobile app theme */
+body.theme-mobile {
+    background: #eef2f7;
+    color: #111;
+}
+
+body.theme-mobile .gold-card,
+body.theme-mobile .login-box,
+body.theme-mobile .updates,
+body.theme-mobile .bank,
+body.theme-mobile .contact {
+    background: white;
+    border-radius: 25px;
+}
+

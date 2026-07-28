@@ -25,8 +25,8 @@ with engine.begin() as conn:
             password_hash=:password,
             role='ADMIN',
             status='ACTIVE',
-            is_active=1,
-            is_admin=1,
+            is_active=TRUE,
+            is_admin=TRUE,
             updated_at=:now
             WHERE email=:email
             """),

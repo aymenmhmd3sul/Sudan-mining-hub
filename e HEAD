@@ -1,0 +1,14 @@
+  auth-refactor-backup   [m 8660f50 final stable version
+  auth-refactor-safe     [m 7906eee Feat: Complete fully secured backend core with admin control and financial monitoring
+  checkpoint-june23      [m d27e042 Full platform with buyer, seller, admin dashboards
+  frontend-preview-design[m 7a92d0c Build: Stabilize Auth layer, move security configurations to core services and extend JWT secret key
+  golden-base            [m 35e14d2 feat: add private chat rooms for each negotiation (buyer-seller per opportunity)
+  main                   [m 319a825 [[34morigin/main[m] add core legal pages for production launch
+  rescue-current         [m 12ce803 save: current stable version with two-layer UI, login flow, offers, chat, and ads
+  rescue-june26          [m 3b9efd0 backup before platform restore
+  restore-platform       [m d27e042 Full platform with buyer, seller, admin dashboards
+* [32mstable-platform        [m 9a5e09e chore: ignore database dump backup file
+  stable-recovery        [m 35e14d2 feat: add private chat rooms for each negotiation (buyer-seller per opportunity)
+  ui-bank-v1             [m 2eb4a30 UI login bank-style + admin update
+  ui-v3-global-gateway   [m cb69ed6 fix: make subscription plans migration idempotent
+  v2-development         [m a6c6054 upgrade admin v1 identity and branding

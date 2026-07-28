@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنشاء حساب - منصة السودان للتعدين</title>
+<style>
+body{
+font-family:Tahoma;
+background:#020617;
+color:white;
+padding:20px;
+}
+.box{
+max-width:500px;
+margin:auto;
+background:#1e293b;
+padding:25px;
+border-radius:18px;
+}
+h1{
+color:#fbbf24;
+}
+input,button{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+}
+button{
+background:#fbbf24;
+font-weight:bold;
+}
+a{
+color:#fbbf24;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>🔐 إنشاء حساب</h1>
+
+<p>
+سجل الآن للتفاوض وإدارة الصفقات في منصة السودان للتعدين.
+</p>
+
+<form id="registerForm">
+<input id="name" placeholder="الاسم" required>
+<input id="phone" placeholder="رقم الهاتف" required>
+<input id="email" placeholder="البريد الإلكتروني" required>
+<input id="password" placeholder="كلمة المرور" type="password" required>
+
+<button type="submit">
+إنشاء الحساب
+</button>
+</form>
+
+<script>
+document.getElementById("registerForm").onsubmit = async function(e){
+    e.preventDefault();
+
+    let res = await fetch("/api/auth/register", {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            role:"buyer"
+        })
+    });
+
+    let data = await res.json();
+
+    if(data.status === "success"){
+        window.location.href="{{ next_page or "/" }}";
+    }else{
+        alert(JSON.stringify(data));
+    }
+};
+</script>
+
+
+
+</div>
+
+
+<div style="margin-top:20px;text-align:center;">
+    <a href="{{ next_page or '/visitor' }}"
+       style="display:block;background:#fbbf24;color:#111827;
+       padding:12px;border-radius:10px;text-decoration:none;
+       font-weight:bold;margin-bottom:10px;">
+       🔙 العودة للصفحة السابقة
+    </a>
+
+    <a href="/market"
+       style="display:block;background:#1e293b;color:white;
+       padding:12px;border-radius:10px;text-decoration:none;
+       border:1px solid #334155;">
+       🔍 العودة لاستكشاف الفرص
+    </a>
+
+<a href="/"
+style="display:block;background:#0f172a;color:white;
+padding:12px;border-radius:10px;text-decoration:none;
+border:1px solid #334155;margin-top:10px;">
+🏠 العودة للواجهة الرئيسية
+</a>
+
+</div>
+</body>
+</html>

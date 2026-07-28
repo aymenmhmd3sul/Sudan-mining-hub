@@ -103,5 +103,18 @@
   "name": "Name",
   "status": "Status",
   "update_site_success": "Mining site updated successfully!",
-  "save_edit_changes": "Save Changes"
+  "save_edit_changes": "Save Changes",
+  "total_sites": "Total Sites",
+  "active_sites": "Active Sites",
+  "maintenance_sites": "Under Maintenance",
+  "pending_exploration": "Exploration / Pending",
+  "geographic_location": "Location",
+  "operating_status": "Operating Status",
+  "actions": "Actions",
+  "gold_mine": "Gold Mine",
+  "mining_well": "Mining Well",
+  "exploration_site": "Exploration Site",
+  "site_example": "Example: Al-Abidiya Mine 2",
+  "site_added_success": "Mining site added successfully!",
+  "mining_description": "Monitoring mining sites, production capacity, and operational status"
 }

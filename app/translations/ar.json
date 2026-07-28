@@ -103,5 +103,18 @@
   "name": "الاسم",
   "status": "الحالة",
   "update_site_success": "تم تحديث موقع التعدين بنجاح!",
-  "save_edit_changes": "حفظ التعديلات"
+  "save_edit_changes": "حفظ التعديلات",
+  "total_sites": "إجمالي المواقع",
+  "active_sites": "المواقع النشطة",
+  "maintenance_sites": "قيد الصيانة",
+  "pending_exploration": "استكشاف / معلق",
+  "geographic_location": "الموقع الجغرافي",
+  "operating_status": "حالة التشغيل",
+  "actions": "الإجراءات",
+  "gold_mine": "منجم ذهب",
+  "mining_well": "بئر تعدين",
+  "exploration_site": "موقع استكشاف",
+  "site_example": "مثال: منجم العبيدية 2",
+  "site_added_success": "تمت إضافة موقع التعدين بنجاح!",
+  "mining_description": "متابعة مواقع التعدين، الطاقة الإنتاجية، وحالة التشغيل"
 }

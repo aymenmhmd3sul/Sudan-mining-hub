@@ -121,5 +121,10 @@
   "concessions_description": "متابعة تراخيص وامتيازات التعدين والشركات المرتبطة بها",
   "total_concessions": "إجمالي الامتيازات",
   "active_concessions": "الامتيازات النشطة",
-  "under_review": "قيد المراجعة"
+  "under_review": "قيد المراجعة",
+  "mining_minerals": "إدارة المعادن",
+  "minerals_description": "متابعة أنواع المعادن المكتشفة، التصنيف، والقيمة التقديرية",
+  "mineral_types": "أنواع المعادن",
+  "registered_minerals": "المعادن المسجلة",
+  "under_analysis": "قيد التحليل"
 }

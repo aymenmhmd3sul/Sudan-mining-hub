@@ -121,5 +121,10 @@
   "concessions_description": "Track mining licenses, concessions and associated companies",
   "total_concessions": "Total Concessions",
   "active_concessions": "Active Concessions",
-  "under_review": "Under Review"
+  "under_review": "Under Review",
+  "mining_minerals": "Minerals Management",
+  "minerals_description": "Track discovered minerals, classification and estimated value",
+  "mineral_types": "Mineral Types",
+  "registered_minerals": "Registered Minerals",
+  "under_analysis": "Under Analysis"
 }

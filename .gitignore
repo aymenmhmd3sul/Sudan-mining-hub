@@ -12,3 +12,4 @@ app/models/__init__before_finance_restore.py
 *_before_*
 sudan_mining_backup.sql
 *.before_i18n.html
+*.before_i18n_full.html

@@ -131,5 +131,10 @@
   "samples_description": "Track mining samples, collection sites, inspection and analysis status",
   "total_samples": "Total Samples",
   "samples_under_testing": "Samples Under Testing",
-  "completed_samples": "Completed Samples"
+  "completed_samples": "Completed Samples",
+  "lab_results_title": "Laboratory Results",
+  "lab_results_description": "Track laboratory analysis results, mineral percentages and ore quality",
+  "total_lab_results": "Total Analyses",
+  "completed_lab_results": "Completed Analyses",
+  "lab_results_under_review": "Under Review"
 }

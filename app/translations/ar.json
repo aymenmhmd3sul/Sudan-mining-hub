@@ -131,5 +131,10 @@
   "samples_description": "متابعة عينات التعدين، مواقع الجمع، وحالة الفحص والتحليل",
   "total_samples": "إجمالي العينات",
   "samples_under_testing": "عينات قيد الفحص",
-  "completed_samples": "عينات مكتملة"
+  "completed_samples": "عينات مكتملة",
+  "lab_results_title": "نتائج المختبر",
+  "lab_results_description": "متابعة نتائج التحاليل المخبرية للعينات ونسب المعادن وجودة الخام",
+  "total_lab_results": "إجمالي التحاليل",
+  "completed_lab_results": "تحاليل مكتملة",
+  "lab_results_under_review": "قيد المراجعة"
 }

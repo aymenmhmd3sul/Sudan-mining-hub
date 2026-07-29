@@ -141,5 +141,10 @@
   "production_description": "متابعة الإنتاج اليومي، الكميات المستخرجة، وحالة التشغيل",
   "total_production": "إجمالي الإنتاج",
   "daily_production": "الإنتاج اليومي",
-  "producing_sites": "المواقع المنتجة"
+  "producing_sites": "المواقع المنتجة",
+  "mining_inventory": "المخزون التعديني",
+  "inventory_description": "إدارة مخزون الخام، المعادن المستخرجة، والكميات المتاحة للتداول",
+  "total_inventory": "إجمالي المخزون",
+  "available_inventory": "المخزون المتاح",
+  "reserved_inventory": "محجوز للتداول"
 }

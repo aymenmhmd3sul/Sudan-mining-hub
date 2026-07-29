@@ -141,5 +141,10 @@
   "production_description": "Track daily production, extracted quantities and operation status",
   "total_production": "Total Production",
   "daily_production": "Daily Production",
-  "producing_sites": "Producing Sites"
+  "producing_sites": "Producing Sites",
+  "mining_inventory": "Mining Inventory",
+  "inventory_description": "Manage ore stock, extracted minerals and quantities available for trading",
+  "total_inventory": "Total Inventory",
+  "available_inventory": "Available Inventory",
+  "reserved_inventory": "Reserved for Trading"
 }

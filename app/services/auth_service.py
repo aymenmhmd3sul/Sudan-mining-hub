@@ -57,5 +57,10 @@ class AuthService:
         token = create_access_token(data=token_data)
         return {
             "access_token": token,
-            "token_type": "bearer"
+            "token_type": "bearer",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "role": user.role.value if hasattr(user.role, 'value') else user.role
+            }
         }

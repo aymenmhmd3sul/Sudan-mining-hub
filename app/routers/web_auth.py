@@ -19,8 +19,28 @@ def web_login(
         form_data.password
     )
 
+    user = result.get("user")
+
+    if user:
+        role = user.role if hasattr(user, "role") else user.get("role")
+    else:
+        role = None
+
+    role = str(role).upper() if role else ""
+
+    if role == "ADMIN":
+        redirect = "/admin/dashboard"
+    elif role == "MERCHANT":
+        redirect = "/merchant"
+    elif role == "AGENT":
+        redirect = "/agent"
+    elif role == "BUYER":
+        redirect = "/dashboard"
+    else:
+        redirect = "/visitor"
+
     return {
-        "redirect": "/admin/dashboard",
+        "redirect": redirect,
         "access_token": result["access_token"],
         "token_type": result["token_type"],
         "message": "تم تسجيل الدخول بنجاح"

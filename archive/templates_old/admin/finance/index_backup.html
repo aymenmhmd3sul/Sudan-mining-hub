@@ -60,9 +60,9 @@
             <h1 class="text-lg font-extrabold text-white flex items-center justify-center sm:justify-start gap-2">
                 <span>{{ t('financial_center', lang) }}</span>
             </h1>
-            <p class="text-[11px] text-gray-400 mt-1">{{ t('finance_description', lang) }}</p>
+            <p class="text-[11px] text-gray-400 mt-1">إدارة الفواتير، المبالغ المحجوزة Escrow، والتحويلات المالية</p>
         </div>
-        <button type="button" onclick="showDetailsModal('جديد', 'عميل جديد', '$0', '{{ t('new_invoice', lang) }}', 'قيد الإجراء ⏳', '{{ now }}')" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5">
+        <button type="button" onclick="showDetailsModal('جديد', 'عميل جديد', '$0', 'فاتورة جديدة', 'قيد الإجراء ⏳', '{{ now }}')" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5">
             <span>{{ t('create_new_invoice', lang) }}</span>
         </button>
     </div>
@@ -73,7 +73,7 @@
         <div id="card-all" onclick="selectCard(this, 'all')" class="fin-card active-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
             <span class="text-[10px] text-gray-300 font-semibold block">{{ t('total_collections', lang) }}</span>
             <span class="text-base font-black text-amber-400 mt-1 block font-mono">$142,500</span>
-            <span class="text-[9px] text-emerald-400 font-semibold">45 {{ t('completed_transactions', lang) }}</span>
+            <span class="text-[9px] text-emerald-400 font-semibold">45 عملية مكتملة</span>
         </div>
 
         <div id="card-escrow" onclick="selectCard(this, 'escrow')" class="fin-card bg-gray-800/60 hover:bg-gray-800/90 border-gray-700/60 rounded-2xl p-3.5 shadow-lg cursor-pointer active:scale-95">
@@ -111,16 +111,16 @@
             <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="all" data-search="شركة التعدين المتقدمة #inv-2026-089">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-2">
                     <span class="font-mono text-amber-400 font-bold text-xs">#INV-2026-089</span>
-                    <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold">{{ t('purchase_invoice', lang) }}</span>
+                    <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold">فاتورة شراء</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-gray-300 font-medium">شركة التعدين المتقدمة</span>
                     <span class="font-mono font-bold text-white text-base">$45,000</span>
                 </div>
                 <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
-                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">{{ t('paid', lang) }} ✓</span>
-                    <button type="button" onclick="showDetailsModal('#INV-2026-089', 'شركة التعدين المتقدمة', '$45,000', '{{ t('purchase_invoice', lang) }}', '{{ t('paid', lang) }} ✓', '2026-05-10')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
-                        {{ t('details', lang) }} 🔍
+                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">مدفوعة ✓</span>
+                    <button type="button" onclick="showDetailsModal('#INV-2026-089', 'شركة التعدين المتقدمة', '$45,000', 'فاتورة شراء', 'مدفوعة ✓', '2026-05-10')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
                     </button>
                 </div>
             </div>
@@ -128,16 +128,16 @@
             <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="escrow" data-search="مورد المعدات الهيدروليكية #esc-2026-012">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-2">
                     <span class="font-mono text-emerald-400 font-bold text-xs">#ESC-2026-012</span>
-                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold">{{ t('escrow_guarantee', lang) }}</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold">ضمان Escrow</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-gray-300 font-medium">مورد المعدات الهيدروليكية</span>
                     <span class="font-mono font-bold text-white text-base">$28,500</span>
                 </div>
                 <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
-                    <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold">{{ t('escrow_pending', lang) }} ⏳</span>
-                    <button type="button" onclick="showDetailsModal('#ESC-2026-012', 'مورد المعدات الهيدروليكية', '$28,500', '{{ t('escrow_guarantee', lang) }}', '{{ t('escrow_pending', lang) }} ⏳', '2026-05-12')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
-                        {{ t('details', lang) }} 🔍
+                    <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold">محجوز معلق ⏳</span>
+                    <button type="button" onclick="showDetailsModal('#ESC-2026-012', 'مورد المعدات الهيدروليكية', '$28,500', 'ضمان Escrow', 'محجوز معلق ⏳', '2026-05-12')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
                     </button>
                 </div>
             </div>
@@ -145,16 +145,16 @@
             <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="commission" data-search="صفقة آليات نهر النيل #com-2026-104">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-2">
                     <span class="font-mono text-purple-400 font-bold text-xs">#COM-2026-104</span>
-                    <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] font-semibold">{{ t('platform_commission', lang) }}</span>
+                    <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] font-semibold">عمولة منصة</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-gray-300 font-medium">صفقة آليات نهر النيل</span>
                     <span class="font-mono font-bold text-white text-base">$3,200</span>
                 </div>
                 <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
-                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">{{ t('deducted', lang) }} ✓</span>
-                    <button type="button" onclick="showDetailsModal('#COM-2026-104', 'صفقة آليات نهر النيل', '$3,200', '{{ t('platform_commission', lang) }}', '{{ t('deducted', lang) }} ✓', '2026-05-14')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
-                        {{ t('details', lang) }} 🔍
+                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">مقتطعة ✓</span>
+                    <button type="button" onclick="showDetailsModal('#COM-2026-104', 'صفقة آليات نهر النيل', '$3,200', 'عمولة منصة', 'مقتطعة ✓', '2026-05-14')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
                     </button>
                 </div>
             </div>
@@ -162,16 +162,16 @@
             <div class="fin-card-item bg-gray-900/80 hover:bg-gray-900 border border-gray-700/80 rounded-xl p-3.5 space-y-2.5 transition-all shadow-md" data-type="settlement" data-search="أعمال حفر كسارة الشمالية #set-2026-005">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-2">
                     <span class="font-mono text-blue-400 font-bold text-xs">#SET-2026-005</span>
-                    <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-semibold">{{ t('financial_settlement', lang) }}</span>
+                    <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-semibold">تسوية مالية</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-gray-300 font-medium">أعمال حفر كسارة الشمالية</span>
                     <span class="font-mono font-bold text-white text-base">$15,400</span>
                 </div>
                 <div class="flex justify-between items-center pt-1 border-t border-gray-800/60">
-                    <span class="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-bold">{{ t('transfer_pending', lang) }} 🔄</span>
-                    <button type="button" onclick="showDetailsModal('#SET-2026-005', 'أعمال حفر كسارة الشمالية', '$15,400', '{{ t('financial_settlement', lang) }}', '{{ t('transfer_pending', lang) }} 🔄', '2026-05-15')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
-                        {{ t('details', lang) }} 🔍
+                    <span class="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-bold">قيد التحويل 🔄</span>
+                    <button type="button" onclick="showDetailsModal('#SET-2026-005', 'أعمال حفر كسارة الشمالية', '$15,400', 'تسوية مالية', 'قيد التحويل 🔄', '2026-05-15')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black rounded-lg text-xs font-bold transition shadow-md">
+                        التفاصيل 🔍
                     </button>
                 </div>
             </div>
@@ -188,18 +188,18 @@
         
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
             <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
-                📄 {{ t('financial_operation_details', lang) }}
+                📄 تفاصيل العملية المالية
             </h3>
             <button onclick="closeDetailsModal()" class="text-gray-400 hover:text-white text-lg font-bold no-print">✕</button>
         </div>
 
         <div class="space-y-3 text-xs">
             <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400">{{ t('operation_number', lang) }}:</span>
+                <span class="text-gray-400">رقم العملية:</span>
                 <span id="modalId" class="font-mono font-bold text-amber-400">-</span>
             </div>
             <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400">{{ t('second_party', lang) }}:</span>
+                <span class="text-gray-400">الطرف الثاني:</span>
                 <span id="modalClient" class="font-semibold text-white">-</span>
             </div>
             <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
@@ -207,15 +207,15 @@
                 <span id="modalType" class="text-gray-200">-</span>
             </div>
             <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400">{{ t('amount', lang) }}:</span>
+                <span class="text-gray-400">المبلغ:</span>
                 <span id="modalAmount" class="font-mono font-bold text-emerald-400 text-sm">-</span>
             </div>
             <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400">{{ t('date', lang) }}:</span>
+                <span class="text-gray-400">التاريخ:</span>
                 <span id="modalDate" class="text-gray-300 font-mono">-</span>
             </div>
             <div class="flex justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400">{{ t('current_status', lang) }}:</span>
+                <span class="text-gray-400">الحالة الحالية:</span>
                 <span id="modalStatus" class="font-bold text-white">-</span>
             </div>
         </div>
@@ -223,10 +223,10 @@
         <!-- أزرار الإجراءات (تُخفى أثناء الطباعة تلقائياً) -->
         <div class="pt-2 flex gap-2 no-print">
             <button onclick="printInvoice()" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition flex items-center justify-center gap-1 shadow-lg">
-                🖨️ {{ t('print_invoice', lang) }}
+                🖨️ طباعة الفاتورة
             </button>
             <button onclick="closeDetailsModal()" class="px-4 py-2.5 bg-gray-700 hover:bg-gray-600 active:scale-95 text-white font-semibold rounded-xl text-xs transition">
-                {{ t('close', lang) }}
+                إغلاق
             </button>
         </div>
 

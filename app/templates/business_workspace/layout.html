@@ -1,0 +1,46 @@
+{% extends "layouts/layout_v2.html" %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/business_workspace/workspace.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="business-workspace">
+
+<header class="workspace-header">
+    <div class="workspace-title">
+        <h1>{{ page_title|default("Business Workspace") }}</h1>
+        <small>{{ page_subtitle|default("") }}</small>
+    </div>
+
+    <div class="workspace-tools">
+        <button>🌐 العربية | English</button>
+        <button>🔔</button>
+        <button>💬 Smart Translator</button>
+        <button>👤</button>
+    </div>
+</header>
+
+<nav class="workspace-nav">
+
+<a href="/merchant">Dashboard</a>
+<a href="/merchant/deals">Trade Desk</a>
+<a href="/merchant/negotiation">Negotiation</a>
+<a href="/merchant/finance">Finance</a>
+<a href="/merchant/guarantee">Guarantee</a>
+<a href="/merchant/documents">Documents</a>
+
+</nav>
+
+<section class="workspace-body">
+
+{% block workspace_content %}
+{% endblock %}
+
+</section>
+
+</div>
+
+{% endblock %}

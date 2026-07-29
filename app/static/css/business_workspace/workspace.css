@@ -1,0 +1,39 @@
+.business-workspace {
+    padding: 20px;
+}
+
+.workspace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.workspace-tools button {
+    margin-left: 8px;
+}
+
+.workspace-nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.workspace-nav a {
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.workspace-body {
+    margin-top: 20px;
+}
+
+.workspace-card,
+.card {
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}

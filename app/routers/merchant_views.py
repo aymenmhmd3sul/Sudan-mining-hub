@@ -72,3 +72,16 @@ async def merchant_documents(request: Request):
         "merchant/documents/index.html",
         {"request": request, "lang": "ar"}
     )
+
+
+@router.get("/workspace", response_class=HTMLResponse)
+async def merchant_workspace(request: Request):
+    return templates.TemplateResponse(
+        "business_workspace/test/index.html",
+        {
+            "request": request,
+            "lang": "ar",
+            "page_title": "Merchant Business Workspace",
+            "page_subtitle": "Unified Business Platform"
+        }
+    )

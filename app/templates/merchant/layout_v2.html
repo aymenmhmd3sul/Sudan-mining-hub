@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}مركز أعمال التاجر | Sudan Mining Hub{% endblock %}</title>
+    
+    <!-- Design System UI v2 -->
+    <link rel="stylesheet" href="/static/css/business_workspace/merchant_design_system.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="smh-app-shell">
+        <!-- Executive Top Header -->
+        <header class="smh-header">
+            <div class="smh-user-brand">
+                <div class="smh-avatar">
+                    {{ (merchant.name if merchant and merchant.name else 'ت')[0] }}
+                </div>
+                <div class="smh-user-meta">
+                    <div class="smh-user-name">{{ merchant.name if merchant and merchant.name else 'التاجر المعتمد' }}</div>
+                    <span class="smh-trust-badge">🛡️ موثق - المستوى 4</span>
+                </div>
+            </div>
+            <div style="position: relative;">
+                <a href="/merchant/notifications" style="color: var(--smh-text-muted); text-decoration: none; font-size: 20px;">
+                    🔔
+                </a>
+            </div>
+        </header>
+
+        <!-- Dynamic Main Content Block -->
+        <main class="smh-main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Unified Bottom Navigation -->
+        <nav class="smh-bottom-nav">
+            <a href="/merchant/workspace/dashboard" class="smh-nav-item {% if active_page == 'dashboard' or not active_page %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                <span>الرئيسية</span>
+            </a>
+            <a href="/merchant/deals" class="smh-nav-item {% if active_page == 'deals' %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                <span>الصفقات</span>
+            </a>
+            <a href="/merchant/negotiation" class="smh-nav-item {% if active_page == 'negotiation' %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                <span>التفاوض</span>
+            </a>
+            <a href="/merchant/guarantee" class="smh-nav-item {% if active_page == 'guarantee' %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                <span>الضمان</span>
+            </a>
+            <a href="/merchant/finance" class="smh-nav-item {% if active_page == 'finance' %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                <span>المالية</span>
+            </a>
+            <a href="/merchant/profile" class="smh-nav-item {% if active_page == 'profile' %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span>حسابي</span>
+            </a>
+        </nav>
+    </div>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

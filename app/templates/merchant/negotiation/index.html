@@ -1,20 +1,75 @@
-{% extends "layouts/layout_v2.html" %}
+{% extends "merchant/layout_v2.html" %}
 
-{% block title %}
-Merchant - negotiation
-{% endblock %}
+{% set active_page = 'negotiation' %}
+
+{% block title %}غرف التفاوض | Sudan Mining Hub{% endblock %}
 
 {% block content %}
-
-<div class="merchant-module">
-
-<h1>negotiation</h1>
-
-<p>
-هذه وحدة مستقلة في لوحة التاجر.
-سيتم ربطها لاحقاً بالأنظمة التشغيلية.
-</p>
-
+<!-- ترويسة غرف التفاوض -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span class="smh-badge smh-badge-gold">المحاديّة والعروض المباشرة</span>
+            <h2 style="font-size: 16px; font-weight: 800; margin-top: 4px; color: var(--smh-text-primary);">
+                💬 غرف التفاوض والمحادثات
+            </h2>
+        </div>
+        <span class="smh-badge smh-badge-cyan">3 غرف نشطة</span>
+    </div>
 </div>
 
+<!-- قائمة غرف التفاوض المفتوحة -->
+<div style="display: flex; flex-direction: column; gap: 10px;">
+
+    <!-- غرفة 1: تفاوض نشط -->
+    <div class="smh-card" style="margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(245, 158, 11, 0.2); color: var(--smh-gold); display: flex; align-items: center; justify-content: center; font-weight: 800; border: 1px solid var(--smh-gold);">
+                    ن
+                </div>
+                <div>
+                    <h3 style="font-size: 13px; font-weight: 700; margin: 0;">شركة نهر النيل للتعدين</h3>
+                    <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">بخصوص: توريد خام ذهب - 500 جرام</div>
+                </div>
+            </div>
+            <span class="smh-badge smh-badge-gold">عرض جديد</span>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); margin-top: 10px; font-size: 12px; color: var(--smh-text-secondary);">
+            💬 <span style="font-style: italic;">"تم الموافقة على تعديل جدول التسليم، بانتظار تأكيد الدفعة المقدمة عبر Escrow."</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <span style="font-size: 10px; color: var(--smh-text-muted);">آخر تحديث: منذ 12 دقيقة</span>
+            <a href="/merchant/negotiation/room/101" class="smh-btn-gold" style="width: auto; padding: 6px 14px; font-size: 11px;">
+                دخول الغرفة ←
+            </a>
+        </div>
+    </div>
+
+    <!-- غرفة 2: تفاوض معدات -->
+    <div class="smh-card" style="margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(6, 182, 212, 0.2); color: var(--smh-cyan); display: flex; align-items: center; justify-content: center; font-weight: 800; border: 1px solid var(--smh-cyan);">
+                    ق
+                </div>
+                <div>
+                    <h3 style="font-size: 13px; font-weight: 700; margin: 0;">أعمال القضارف للتعدين</h3>
+                    <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">بخصوص: تأجير طاحونة كرات</div>
+                </div>
+            </div>
+            <span class="smh-badge smh-badge-green">مكتمل</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <span style="font-size: 10px; color: var(--smh-text-muted);">تم توقيع العقد الإلكتروني</span>
+            <a href="/merchant/negotiation/room/102" style="background: rgba(255,255,255,0.05); color: var(--smh-text-primary); text-decoration: none; padding: 6px 14px; border-radius: var(--smh-radius-lg); font-size: 11px; border: 1px solid var(--smh-border);">
+                عرض السجل
+            </a>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

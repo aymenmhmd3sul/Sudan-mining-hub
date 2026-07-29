@@ -1,45 +1,93 @@
 {% extends "layouts/layout_v2.html" %}
 
-
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/business_workspace/workspace.css">
+<link rel="stylesheet" href="/static/css/business_workspace/workspace_override.css">
 {% endblock %}
 
 {% block content %}
 
-<div class="business-workspace">
+<div class="workspace-shell">
 
 <header class="workspace-header">
-    <div class="workspace-title">
-        <h1>{{ page_title|default("Business Workspace") }}</h1>
-        <small>{{ page_subtitle|default("") }}</small>
+
+    <div class="user-profile">
+
+        <div class="avatar-circle">
+            ت
+        </div>
+
+        <div class="user-info">
+            <div class="merchant-name">
+                {{ merchant_name|default("التاجر") }}
+            </div>
+
+            <span class="account-status">
+                قيد التوثيق
+            </span>
+        </div>
+
     </div>
 
-    <div class="workspace-tools">
-        <button>🌐 العربية | English</button>
-        <button>🔔</button>
-        <button>💬 Smart Translator</button>
-        <button>👤</button>
+
+    <div class="header-actions">
+
+        <button class="icon-btn">
+            🔔
+            <span class="notification-dot"></span>
+        </button>
+
+        <button class="icon-btn">
+            👤
+        </button>
+
     </div>
+
 </header>
 
-<nav class="workspace-nav">
 
-<a href="/merchant">Dashboard</a>
-<a href="/merchant/deals">Trade Desk</a>
-<a href="/merchant/negotiation">Negotiation</a>
-<a href="/merchant/finance">Finance</a>
-<a href="/merchant/guarantee">Guarantee</a>
-<a href="/merchant/documents">Documents</a>
-
-</nav>
-
-<section class="workspace-body">
+<main class="workspace-body">
 
 {% block workspace_content %}
 {% endblock %}
 
-</section>
+</main>
+
+
+<nav class="workspace-nav">
+
+<a href="/merchant" class="nav-item active">
+    🏠
+    <span>الرئيسية</span>
+</a>
+
+<a href="/merchant/deals" class="nav-item">
+    🤝
+    <span>صفقات</span>
+</a>
+
+<a href="/merchant/negotiation" class="nav-item">
+    💬
+    <span>تفاوض</span>
+</a>
+
+<a href="/merchant/finance" class="nav-item">
+    💳
+    <span>مالية</span>
+</a>
+
+<a href="/merchant/guarantee" class="nav-item">
+    🛡️
+    <span>ضمان</span>
+</a>
+
+<a href="/merchant/documents" class="nav-item">
+    📄
+    <span>وثائق</span>
+</a>
+
+</nav>
+
 
 </div>
 

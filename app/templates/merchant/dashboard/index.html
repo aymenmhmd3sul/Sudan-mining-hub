@@ -1,82 +1,151 @@
-{% extends "layouts/layout_v2.html" %}
+{% extends "merchant/layout_v2.html" %}
 
-{% block title %}
-Merchant Dashboard
-{% endblock %}
+{% block title %}لوحة القيادة | مركز أعمال التاجر{% endblock %}
 
 {% block content %}
+<!-- 1. بطاقة الترحب وملخص النشاط -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <span class="smh-badge smh-badge-gold">مركز القيادة التنفيذي</span>
+            <h2 style="font-size: 18px; font-weight: 800; margin-top: 6px; color: var(--smh-text-primary);">
+                مرحباً بك، {{ merchant.name if merchant and merchant.name else 'منصة التعدين' }} ⛏️
+            </h2>
+            <p style="font-size: 12px; color: var(--smh-text-muted); margin-top: 4px;">
+                الوضع التجاري: <span class="text-green" style="font-weight: 700;">نشط وموثق</span> | سوق الذهب والخدمات
+            </p>
+        </div>
+        <div style="font-size: 28px;">🏭</div>
+    </div>
+    
+    <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--smh-border); display: flex; gap: 10px;">
+        <a href="/merchant/deals/new" class="smh-btn-gold" style="flex: 1; font-size: 13px; padding: 10px;">
+            + إنشاء صفقة جديدة
+        </a>
+        <a href="/merchant/trust" style="background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; padding: 10px 14px; border-radius: var(--smh-radius-lg); font-size: 12px; font-weight: 600; border: 1px solid var(--smh-border); display: flex; align-items: center;">
+            🛡️ مستوى الثقة
+        </a>
+    </div>
+</div>
 
-<div class="merchant-dashboard">
-
-<header class="merchant-header">
-    <div>
-        <h1>لوحة التاجر</h1>
-        <p>إدارة الأعمال والصفقات والضمانات عبر منصة السودان للتعدين</p>
+<!-- 2. بطاقات مؤشرات الأداء 4 KPI -->
+<div class="smh-grid-2">
+    <!-- الصفقات النشطة -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-cyan) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">الصفقات النشطة</span>
+            <span class="smh-card-icon">💼</span>
+        </div>
+        <div class="smh-kpi-value text-cyan">{{ active_deals_count if active_deals_count is defined else '12' }}</div>
+        <div class="smh-kpi-subtext">3 صفقات قيد التسليم</div>
     </div>
 
-    <div class="language-switch">
-        🌐 العربية | English
+    <!-- الأموال المحجوزة Escrow -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-gold) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">حساب الضمان Escrow</span>
+            <span class="smh-card-icon">🔐</span>
+        </div>
+        <div class="smh-kpi-value text-gold">{{ escrow_balance if escrow_balance is defined else '4,850,000' }} <span style="font-size: 11px;">ج.س</span></div>
+        <div class="smh-kpi-subtext">محمية بعقود أمان</div>
     </div>
-</header>
 
+    <!-- الرصيد المتاح -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-green) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">الرصيد المتاح</span>
+            <span class="smh-card-icon">💰</span>
+        </div>
+        <div class="smh-kpi-value text-green">{{ available_balance if available_balance is defined else '1,280,000' }} <span style="font-size: 11px;">ج.س</span></div>
+        <div class="smh-kpi-subtext">جاهز للسحب الفوري</div>
+    </div>
 
-<section class="merchant-cards">
-
-<div class="merchant-card trust">
-    <h3>الثقة والاعتماد</h3>
-    <p>حالة التاجر: قيد التوثيق</p>
-    <span>طلب اعتماد تاجر موثوق</span>
+    <!-- الأرباح الشهرية -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-purple) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">أرباح الشهر</span>
+            <span class="smh-card-icon">📈</span>
+        </div>
+        <div class="smh-kpi-value text-purple">{{ monthly_profit if monthly_profit is defined else '+18.5%' }}</div>
+        <div class="smh-kpi-subtext">مقارنة بالشهر السابق</div>
+    </div>
 </div>
 
-
-<div class="merchant-card guarantee">
-    <h3>الضمان</h3>
-    <p>لا يوجد ضمان نشط حالياً</p>
-    <span>حساب بنكي | أصل | ذهب ضمان</span>
+<!-- 3. الإجراءات السريعة -->
+<div class="smh-card">
+    <div class="smh-card-title" style="margin-bottom: 12px; color: var(--smh-text-primary);">
+        ⚡ الإجراءات السريعة
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;">
+        <a href="/merchant/deals" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">📦</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">المنتجات</div>
+            </div>
+        </a>
+        <a href="/merchant/negotiation" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">💬</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">الغرف</div>
+            </div>
+        </a>
+        <a href="/merchant/finance" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">💳</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">السحب</div>
+            </div>
+        </a>
+        <a href="/merchant/documents" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">📄</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">الرخص</div>
+            </div>
+        </a>
+    </div>
 </div>
 
+<!-- 4. آخر الصفقات -->
+<div class="smh-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span class="smh-card-title" style="color: var(--smh-text-primary);">📋 أحدث الصفقات التجارية</span>
+        <a href="/merchant/deals" style="color: var(--smh-gold); font-size: 12px; text-decoration: none; font-weight: 700;">عرض الكل ←</a>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 13px; font-weight: 700;">توريد خام ذهب - 500 جرام</div>
+                <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">العميل: شركة نهر النيل للتعدين</div>
+            </div>
+            <div style="text-align: left;">
+                <span class="smh-badge smh-badge-gold">قيد التنفيذ</span>
+                <div style="font-size: 12px; font-weight: 800; color: var(--smh-gold); margin-top: 4px;">18,500,000 ج.س</div>
+            </div>
+        </div>
 
-<div class="merchant-card deals">
-    <h3>الصفقات</h3>
-    <p>إدارة العروض والعقود والتوريد</p>
+        <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 13px; font-weight: 700;">تأجير طاحونة كرات تعدين</div>
+                <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">الموقع: قضارف - موقع 4</div>
+            </div>
+            <div style="text-align: left;">
+                <span class="smh-badge smh-badge-green">مكتملة</span>
+                <div style="font-size: 12px; font-weight: 800; color: var(--smh-green); margin-top: 4px;">2,400,000 ج.س</div>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<div class="merchant-card finance">
-    <h3>المركز المالي</h3>
-    <p>الفواتير والتسويات</p>
-    <span>عمولة المنصة مدمجة في الاتفاق</span>
+<!-- 5. التنبيهات والأمان -->
+<div class="smh-card" style="border-right: 4px solid var(--smh-gold) !important;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="font-size: 22px;">🛡️</div>
+        <div>
+            <div style="font-size: 13px; font-weight: 700;">تنبيه مستوى الثقة الأمني</div>
+            <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">
+                قم برفع السجل التجاري المحدث لرفع حدود السحب والعمليات اليومية.
+            </div>
+        </div>
+    </div>
 </div>
-
-
-<div class="merchant-card negotiation">
-    <h3>التفاوض الذكي</h3>
-    <p>مترجم عربي - English للمفاوضات الخارجية</p>
-</div>
-
-
-<div class="merchant-card documents">
-    <h3>خزينة المستندات</h3>
-    <p>عقود وفواتير وسجلات قابلة للإبراز</p>
-</div>
-
-</section>
-
-
-<section class="merchant-status">
-
-<h2>مركز العمليات</h2>
-
-<ul>
-<li>طلبات التوريد الخارجية</li>
-<li>تسوية الفواتير الدولية</li>
-<li>إشعارات الضمان للجهات الخارجية</li>
-<li>سجل الصفقات والتوثيق</li>
-</ul>
-
-</section>
-
-
-</div>
-
 {% endblock %}

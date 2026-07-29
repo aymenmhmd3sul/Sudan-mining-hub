@@ -1,20 +1,73 @@
-{% extends "layouts/layout_v2.html" %}
+{% extends "merchant/layout_v2.html" %}
 
-{% block title %}
-Merchant - documents
-{% endblock %}
+{% set active_page = 'documents' %}
+
+{% block title %}الوثائق والرخص | Sudan Mining Hub{% endblock %}
 
 {% block content %}
-
-<div class="merchant-module">
-
-<h1>documents</h1>
-
-<p>
-هذه وحدة مستقلة في لوحة التاجر.
-سيتم ربطها لاحقاً بالأنظمة التشغيلية.
-</p>
-
+<!-- ترويسة إدارة الوثائق -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span class="smh-badge smh-badge-gold">التراخيص والسجلات</span>
+            <h2 style="font-size: 16px; font-weight: 800; margin-top: 4px; color: var(--smh-text-primary);">
+                📄 وثائق وسجلات التعدين
+            </h2>
+        </div>
+        <span class="smh-badge smh-badge-green">موثق معتمد</span>
+    </div>
 </div>
 
+<!-- رفع وثيقة جديدة -->
+<div class="smh-card">
+    <div class="smh-card-title" style="margin-bottom: 12px; color: var(--smh-text-primary);">
+        📤 رفع وثيقة أو ترخيص جديد
+    </div>
+    
+    <form action="/merchant/documents/upload" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 10px;">
+        <div>
+            <label style="font-size: 11px; color: var(--smh-text-muted); display: block; margin-bottom: 4px;">نوع الوثيقة</label>
+            <select name="doc_type" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--smh-border); color: #fff; padding: 10px; border-radius: var(--smh-radius-md); font-size: 12px; box-sizing: border-box;">
+                <option value="commercial_register">السجل التجاري المحدث</option>
+                <option value="mining_license">ترخيص الشركة السودانية للموارد المعدنية</option>
+                <option value="tax_certificate">الخلو الضريبي / البطاقة الضريبية</option>
+                <option value="export_permit">تخصيص تصدير / إذن حركة</option>
+            </select>
+        </div>
+
+        <div>
+            <label style="font-size: 11px; color: var(--smh-text-muted); display: block; margin-bottom: 4px;">اختر الملف (PDF / JPG / PNG)</label>
+            <input type="file" name="file" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--smh-border); color: #fff; padding: 8px; border-radius: var(--smh-radius-md); font-size: 11px; box-sizing: border-box;" required>
+        </div>
+
+        <button type="submit" class="smh-btn-gold" style="margin-top: 6px; padding: 10px;">
+            رفع الوثيقة للمراجعة
+        </button>
+    </form>
+</div>
+
+<!-- قائمة الوثائق المرفوعة -->
+<div class="smh-card">
+    <div class="smh-card-title" style="margin-bottom: 12px; color: var(--smh-text-primary);">
+        📑 الوثائق المعتمدة والمرفوعة
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: var(--smh-radius-sm); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 12px; font-weight: 700;">ترخيص الشركة السودانية للموارد المعدنية</div>
+                <div style="font-size: 10px; color: var(--smh-text-muted);">تاريخ الانتهاء: 15 ديسمبر 2026</div>
+            </div>
+            <span class="smh-badge smh-badge-green">ساري</span>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: var(--smh-radius-sm); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 12px; font-weight: 700;">السجل التجاري</div>
+                <div style="font-size: 10px; color: var(--smh-text-muted);">تاريخ الانتهاء: 01 نوفمبر 2026</div>
+            </div>
+            <span class="smh-badge smh-badge-gold">مراجعة</span>
+        </div>
+    </div>
+</div>
 {% endblock %}

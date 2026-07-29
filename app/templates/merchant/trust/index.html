@@ -1,50 +1,53 @@
-{% extends "layouts/layout_v2.html" %}
+{% extends "merchant/layout_v2.html" %}
 
-{% block title %}
-Merchant Trust Center
-{% endblock %}
+{% set active_page = 'trust' %}
+
+{% block title %}الثقة والاعتماد | Sudan Mining Hub{% endblock %}
 
 {% block content %}
-
-<div class="merchant-module">
-
-<h1>مركز ثقة التاجر</h1>
-
-<div class="cards">
-
-<div class="card">
-<h3>حالة التوثيق</h3>
-<p>قيد المراجعة</p>
+<!-- ترويسة مستوى الثقة -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span class="smh-badge smh-badge-gold">مستوى الاعتماد التنفيذي</span>
+            <h2 style="font-size: 16px; font-weight: 800; margin-top: 4px; color: var(--smh-text-primary);">
+                🛡️ سجل الأمان ومستوى الثقة
+            </h2>
+        </div>
+        <span class="smh-badge smh-badge-green">المستوى 4</span>
+    </div>
 </div>
 
-<div class="card">
-<h3>تصنيف التاجر</h3>
-<p>تاجر مسجل</p>
+<!-- بطاقات مؤشرات الأمان -->
+<div class="smh-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 700; color: var(--smh-text-primary);">نسبة الموثوقية التجارية</span>
+        <span style="font-weight: 800; font-size: 14px; color: var(--smh-gold);">98%</span>
+    </div>
+    <div style="width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+        <div style="width: 98%; background: var(--smh-gold); height: 100%;"></div>
+    </div>
 </div>
 
-<div class="card">
-<h3>سجل الأداء</h3>
-<p>لا توجد بيانات مكتملة بعد</p>
+<!-- متطلبات رفع الترقية -->
+<div class="smh-card">
+    <div class="smh-card-title" style="margin-bottom: 12px; color: var(--smh-text-primary);">
+        ✅ متطلبات شارة التعدين الذهبية
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 8px; border-radius: var(--smh-radius-sm); border: 1px solid var(--smh-border);">
+            <span style="color: var(--smh-text-primary);">1. توثيق الهوية الوطنية / السجل</span>
+            <span class="smh-badge smh-badge-green">مكتمل</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 8px; border-radius: var(--smh-radius-sm); border: 1px solid var(--smh-border);">
+            <span style="color: var(--smh-text-primary);">2. ربط حساب بنك الخرطوم (بنكك)</span>
+            <span class="smh-badge smh-badge-green">مكتمل</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 8px; border-radius: var(--smh-radius-sm); border: 1px solid var(--smh-border);">
+            <span style="color: var(--smh-text-primary);">3. إنهاء 10 صفقات عبر Escrow</span>
+            <span class="smh-badge smh-badge-gold">جاري (8/10)</span>
+        </div>
+    </div>
 </div>
-
-<div class="card">
-<h3>حالة الضمان</h3>
-<p>بانتظار التفعيل</p>
-</div>
-
-</div>
-
-<hr>
-
-<h2>مزايا التاجر الموثوق</h2>
-
-<ul>
-<li>إثبات موثوقية للجهات الخارجية</li>
-<li>رفع مستوى الثقة في التفاوض</li>
-<li>توثيق الصفقات عبر المنصة</li>
-<li>حماية التعاملات التجارية</li>
-</ul>
-
-</div>
-
 {% endblock %}

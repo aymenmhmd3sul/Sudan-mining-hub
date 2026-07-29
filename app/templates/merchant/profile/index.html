@@ -1,20 +1,56 @@
-{% extends "layouts/layout_v2.html" %}
+{% extends "merchant/layout_v2.html" %}
 
-{% block title %}
-Merchant - profile
-{% endblock %}
+{% set active_page = 'profile' %}
+
+{% block title %}حسابي والملف الشخصي | Sudan Mining Hub{% endblock %}
 
 {% block content %}
-
-<div class="merchant-module">
-
-<h1>profile</h1>
-
-<p>
-هذه وحدة مستقلة في لوحة التاجر.
-سيتم ربطها لاحقاً بالأنظمة التشغيلية.
-</p>
-
+<!-- ترويسة الملف الشخصي -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 44px; height: 44px; background: var(--smh-gold); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px;">
+                ت
+            </div>
+            <div>
+                <h2 style="font-size: 15px; font-weight: 800; margin: 0; color: var(--smh-text-primary);">التاجر المعتمد</h2>
+                <span style="font-size: 11px; color: var(--smh-text-muted);">شركة النيل للتعدين والتوريدات</span>
+            </div>
+        </div>
+        <span class="smh-badge smh-badge-green">حساب موثق</span>
+    </div>
 </div>
 
+<!-- البيانات الأساسية -->
+<div class="smh-card">
+    <div class="smh-card-title" style="margin-bottom: 12px; color: var(--smh-text-primary);">
+        👤 البيانات التجارية والشخصية
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--smh-border); padding-bottom: 8px;">
+            <span style="color: var(--smh-text-muted);">رقم الهاتف</span>
+            <span style="color: var(--smh-text-primary); font-weight: 600;">+249 91 234 5678</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--smh-border); padding-bottom: 8px;">
+            <span style="color: var(--smh-text-muted);">البريد الإلكتروني</span>
+            <span style="color: var(--smh-text-primary); font-weight: 600;">merchant@sudanmining.sd</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--smh-border); padding-bottom: 8px;">
+            <span style="color: var(--smh-text-muted);">الموقع التشغيلي الرئيسي</span>
+            <span style="color: var(--smh-text-primary); font-weight: 600;">ولاية نهر النيل - عطبرة</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding-bottom: 4px;">
+            <span style="color: var(--smh-text-muted);">نوع النشاط</span>
+            <span style="color: var(--smh-gold); font-weight: 700;">شراء وتوريد الخام والمعدات</span>
+        </div>
+    </div>
+</div>
+
+<!-- إعدادات الأمان والخروج -->
+<div class="smh-card">
+    <button style="width: 100%; background: rgba(255, 77, 77, 0.1); color: var(--smh-red); border: 1px solid rgba(255, 77, 77, 0.3); padding: 10px; border-radius: var(--smh-radius-md); font-size: 12px; font-weight: 700; cursor: pointer;">
+        تسجيل الخروج من الحساب
+    </button>
+</div>
 {% endblock %}

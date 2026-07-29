@@ -1,39 +1,224 @@
-.business-workspace {
-    padding: 20px;
+/* ==========================================================================
+   Sudan Mining Hub - Merchant Workspace
+   Dark Executive Mobile Theme
+   ========================================================================== */
+
+:root {
+  --bg-main:#0b1329;
+  --bg-card:#152238;
+  --bg-header:#0d1730;
+  --border:#1e2e4a;
+  --white:#ffffff;
+  --muted:#94a3b8;
+
+  --gold:#f59e0b;
+  --cyan:#06b6d4;
+  --green:#10b981;
+  --purple:#a855f7;
+
+  --radius:18px;
+}
+
+* {
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+ -webkit-tap-highlight-color:transparent;
+}
+
+body {
+ font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ background:var(--bg-main)!important;
+ color:var(--white)!important;
+ direction:rtl;
+ min-height:100dvh;
+}
+
+.workspace-shell {
+ width:100%;
+ min-height:100dvh;
+ background:var(--bg-main)!important;
+ display:flex;
+ flex-direction:column;
 }
 
 .workspace-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-radius: 12px;
+ background:var(--bg-header)!important;
+ padding:14px 16px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ border-bottom:1px solid var(--border);
+ position:sticky;
+ top:0;
+ z-index:50;
 }
 
-.workspace-tools button {
-    margin-left: 8px;
+.avatar-circle {
+ width:42px;
+ height:42px;
+ border-radius:50%;
+ background:linear-gradient(135deg,#2563eb,#1d4ed8);
+ color:white;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:bold;
 }
 
-.workspace-nav {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 20px 0;
+.merchant-name {
+ color:white!important;
+ font-size:15px;
+ font-weight:700;
 }
 
-.workspace-nav a {
-    padding: 10px 15px;
-    border-radius: 8px;
-    text-decoration: none;
+.account-status {
+ color:var(--gold);
+ background:#3b2a08;
+ padding:3px 8px;
+ border-radius:8px;
+ font-size:11px;
 }
 
 .workspace-body {
-    margin-top: 20px;
+ flex:1;
+ padding:16px;
+ padding-bottom:90px;
 }
 
-.workspace-card,
-.card {
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 15px;
+
+/* Hero */
+
+.hero-card {
+ background:var(--bg-card);
+ border:1px solid var(--border);
+ border-radius:var(--radius);
+ padding:18px;
+ margin-bottom:14px;
+}
+
+.hero-title {
+ color:white;
+ font-size:18px;
+ font-weight:800;
+}
+
+.hero-subtitle {
+ color:var(--muted);
+ font-size:12px;
+ margin:8px 0 14px;
+}
+
+.hero-btn {
+ display:block;
+ text-align:center;
+ background:var(--gold);
+ color:#000;
+ padding:12px;
+ border-radius:14px;
+ font-weight:800;
+ text-decoration:none;
+}
+
+
+/* Cards */
+
+.dashboard-grid {
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+ width:100%;
+}
+
+.grid-full {
+ grid-column:span 2;
+}
+
+
+.dash-card {
+ background:var(--bg-card);
+ border:1px solid var(--border);
+ border-radius:var(--radius);
+ padding:16px;
+ min-height:125px;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+ text-decoration:none;
+ color:white!important;
+}
+
+.dash-card.featured {
+ border:2px solid var(--gold);
+ box-shadow:0 0 15px rgba(245,158,11,.25);
+}
+
+.card-top {
+ color:var(--muted);
+ font-size:13px;
+ font-weight:700;
+ display:flex;
+ gap:8px;
+ align-items:center;
+}
+
+.card-metric {
+ font-size:23px;
+ font-weight:900;
+ margin:10px 0;
+}
+
+.text-gold {color:var(--gold)!important;}
+.text-cyan {color:var(--cyan)!important;}
+.text-green {color:var(--green)!important;}
+.text-purple {color:var(--purple)!important;}
+
+.card-footer-text {
+ color:var(--muted);
+ font-size:11px;
+}
+
+
+/* Bottom Navigation */
+
+.workspace-nav {
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ width:100%;
+ background:var(--bg-header)!important;
+ border-top:1px solid var(--border);
+ display:grid;
+ grid-template-columns:repeat(6,1fr);
+ padding:10px 4px;
+ z-index:100;
+}
+
+.nav-item {
+ color:var(--muted)!important;
+ text-decoration:none;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ font-size:10px;
+ gap:4px;
+}
+
+.nav-item.active {
+ color:var(--gold)!important;
+ font-weight:bold;
+}
+
+
+@media(max-width:360px){
+
+.dashboard-grid {
+ grid-template-columns:1fr;
+}
+
+.grid-full {
+ grid-column:auto;
+}
+
 }

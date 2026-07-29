@@ -1,20 +1,102 @@
-{% extends "layouts/layout_v2.html" %}
+{% extends "merchant/layout_v2.html" %}
 
-{% block title %}
-Merchant - finance
-{% endblock %}
+{% set active_page = 'finance' %}
+
+{% block title %}المالية والسحب | Sudan Mining Hub{% endblock %}
 
 {% block content %}
-
-<div class="merchant-module">
-
-<h1>finance</h1>
-
-<p>
-هذه وحدة مستقلة في لوحة التاجر.
-سيتم ربطها لاحقاً بالأنظمة التشغيلية.
-</p>
-
+<!-- ترويسة الشاشة المالية -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span class="smh-badge smh-badge-gold">المحفظة والحسابات</span>
+            <h2 style="font-size: 16px; font-weight: 800; margin-top: 4px; color: var(--smh-text-primary);">
+                💳 إدارة الرصيد وعمليات السحب
+            </h2>
+        </div>
+        <a href="#withdraw-section" class="smh-btn-gold" style="width: auto; padding: 8px 14px; font-size: 12px;">
+            ↓ طلب سحب
+        </a>
+    </div>
 </div>
 
+<!-- ملخص الأرصدة 2x2 -->
+<div class="smh-grid-2">
+    <div class="smh-card" style="border-top: 3px solid var(--smh-green) !important; margin-bottom: 0;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">الرصيد المتاح للسحب</span>
+            <span class="smh-card-icon">💰</span>
+        </div>
+        <div class="smh-kpi-value text-green">1,280,000 <span style="font-size: 11px;">ج.س</span></div>
+        <div class="smh-kpi-subtext">جاهز التحويل الفوري</div>
+    </div>
+
+    <div class="smh-card" style="border-top: 3px solid var(--smh-gold) !important; margin-bottom: 0;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">معلق في الضمان Escrow</span>
+            <span class="smh-card-icon">🔐</span>
+        </div>
+        <div class="smh-kpi-value text-gold">4,850,000 <span style="font-size: 11px;">ج.س</span></div>
+        <div class="smh-kpi-subtext">3 صفقات جارٍ تنفيذها</div>
+    </div>
+</div>
+
+<!-- قسم طلب السحب المالي -->
+<div class="smh-card" id="withdraw-section">
+    <div class="smh-card-title" style="margin-bottom: 12px; color: var(--smh-text-primary);">
+        💸 تقديم طلب سحب أرصدة
+    </div>
+    
+    <form action="/merchant/finance/withdraw" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
+        <div>
+            <label style="font-size: 11px; color: var(--smh-text-muted); display: block; margin-bottom: 4px;">المبلغ المراد سحبه (ج.س)</label>
+            <input type="number" name="amount" placeholder="مثال: 500000" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--smh-border); color: #fff; padding: 10px; border-radius: var(--smh-radius-md); font-size: 13px; box-sizing: border-box;" required>
+        </div>
+        
+        <div>
+            <label style="font-size: 11px; color: var(--smh-text-muted); display: block; margin-bottom: 4px;">طريقة التحويل / البنك</label>
+            <select name="payout_method" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--smh-border); color: #fff; padding: 10px; border-radius: var(--smh-radius-md); font-size: 12px; box-sizing: border-box;">
+                <option value="bankak">بنك الخرطوم (بنكك)</option>
+                <option value="fawry">بنك فيصل (فوري)</option>
+                <option value="ocash">بنك أم درمان الوطني (أو كاش)</option>
+            </select>
+        </div>
+
+        <button type="submit" class="smh-btn-gold" style="margin-top: 6px; padding: 10px;">
+            تأكيد طلب السحب المالي
+        </button>
+    </form>
+</div>
+
+<!-- سجل الحركات المالية الأخيرة -->
+<div class="smh-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span class="smh-card-title" style="color: var(--smh-text-primary);">📊 سجل المعاملات المالية</span>
+        <span class="smh-badge smh-badge-gold">آخر 30 يوم</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: var(--smh-radius-sm); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 12px; font-weight: 700; color: var(--smh-green);">+ تحرير دفعية من Escrow</div>
+                <div style="font-size: 10px; color: var(--smh-text-muted);">صفقة #SMH-77109 | بنكك</div>
+            </div>
+            <div style="text-align: left;">
+                <div style="font-size: 12px; font-weight: 800; color: var(--smh-green);">+2,400,000 ج.س</div>
+                <div style="font-size: 9px; color: var(--smh-text-muted);">28 يوليو 2026</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: var(--smh-radius-sm); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 12px; font-weight: 700; color: var(--smh-red);">- عملية سحب حساب</div>
+                <div style="font-size: 10px; color: var(--smh-text-muted);">تحويل حـ/ بنك الخرطوم</div>
+            </div>
+            <div style="text-align: left;">
+                <div style="font-size: 12px; font-weight: 800; color: var(--smh-red);">-1,000,000 ج.س</div>
+                <div style="font-size: 9px; color: var(--smh-text-muted);">22 يوليو 2026</div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

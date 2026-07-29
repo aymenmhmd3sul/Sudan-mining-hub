@@ -1,0 +1,70 @@
+{% extends "merchant/layout_v2.html" %}
+
+{% set active_page = 'negotiation' %}
+
+{% block title %}غرفة التفاوض #{{ room_id }} | Sudan Mining Hub{% endblock %}
+
+{% block content %}
+<!-- ترويسة الغرفة والتنقل -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <a href="/merchant/negotiation" style="color: var(--smh-gold); font-size: 11px; text-decoration: none; font-weight: 700;">← العودة لمركز التفاوض</a>
+                <span style="color: var(--smh-text-muted); font-size: 11px;">/</span>
+                <span style="color: var(--smh-text-muted); font-size: 11px;">غرفة #{{ room_id }}</span>
+            </div>
+            <h2 style="font-size: 16px; font-weight: 800; color: var(--smh-text-primary); margin: 0;">
+                🤝 غرفة التفاوض المباشر #{{ room_id }}
+            </h2>
+        </div>
+        <span class="smh-badge smh-badge-green">مفتوحة</span>
+    </div>
+</div>
+
+<!-- بطاقة معلومات الصفقة والتوثيق والفواتير -->
+<div class="smh-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--smh-border); padding-bottom: 8px; margin-bottom: 8px;">
+        <span style="font-size: 11px; color: var(--smh-text-muted);">السجل المرتبط: <strong style="color: var(--smh-gold);">REQ-2026-X89</strong></span>
+        <span class="smh-badge smh-badge-gold" style="font-size: 10px;">بانتظار الموافقة والضمان</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <div style="font-size: 13px; color: var(--smh-text-primary); font-weight: 700;">عقد توريد خام ذهب - 500 جرام</div>
+            <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">الطرف الآخر: شركة نهر النيل للتعدين</div>
+        </div>
+        <div style="text-align: left;">
+            <div style="font-size: 13px; font-weight: 800; color: var(--smh-gold);">18,500,000 ج.س</div>
+        </div>
+    </div>
+</div>
+
+<!-- سجل التفاوض والمحادثة -->
+<div class="smh-card" style="min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <!-- رسالة العميل/المشتري -->
+        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--smh-radius-sm); border-right: 3px solid var(--smh-gold);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: var(--smh-gold); font-weight: 700;">العميل (المشتري)</span>
+                <span style="font-size: 10px; color: var(--smh-text-muted);">10:30 ص</span>
+            </div>
+            <div style="font-size: 12px; color: var(--smh-text-primary);">السلام عليكم، أود الاستفسار عن الشروط التفصيلية للاتفاق وإصدار الفاتورة المبدئية.</div>
+        </div>
+
+        <!-- رد التاجر/المشرف -->
+        <div style="background: rgba(0, 229, 255, 0.05); padding: 10px; border-radius: var(--smh-radius-sm); border-right: 3px solid var(--smh-cyan); align-self: flex-end; width: 85%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: var(--smh-cyan); font-weight: 700;">أنت (التاجر)</span>
+                <span style="font-size: 10px; color: var(--smh-text-muted);">10:32 ص</span>
+            </div>
+            <div style="font-size: 12px; color: var(--smh-text-primary);">وعليكم السلام، مرحباً بك. يمكنك تقديم العرض المناسب لك هنا مباشرة لتوثيقه وإصدار الضمان.</div>
+        </div>
+    </div>
+
+    <!-- مدخلات التفاوض -->
+    <div style="margin-top: 15px; display: flex; gap: 8px;">
+        <input type="text" placeholder="اكتب عرضاً جديداً أو ملحوظة للطرف الآخر..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--smh-border); color: #fff; padding: 10px; border-radius: var(--smh-radius-sm); font-size: 12px;">
+        <button class="smh-btn-gold" style="padding: 10px 16px; font-size: 12px; white-space: nowrap;">إرسال العرض</button>
+    </div>
+</div>
+{% endblock %}

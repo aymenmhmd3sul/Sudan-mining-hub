@@ -1,0 +1,243 @@
+/* ==========================================================================
+   Sudan Mining Hub - Merchant UI v2 Design System
+   Theme: Executive Dark & Mining Accent
+   ========================================================================== */
+
+:root {
+  --smh-bg-main: #0b1329;
+  --smh-bg-card: #152238;
+  --smh-bg-card-hover: #1c2d4a;
+  --smh-bg-header: #0d1730;
+  --smh-bg-glass: rgba(21, 34, 56, 0.85);
+
+  --smh-border: #1e2e4a;
+  --smh-border-bright: #2d4268;
+
+  --smh-text-primary: #ffffff;
+  --smh-text-muted: #94a3b8;
+  --smh-text-subtle: #64748b;
+
+  --smh-gold: #f59e0b;
+  --smh-cyan: #06b6d4;
+  --smh-green: #10b981;
+  --smh-purple: #a855f7;
+  --smh-red: #ef4444;
+
+  --smh-radius-xl: 18px;
+  --smh-radius-lg: 14px;
+  --smh-radius-md: 10px;
+  --smh-radius-sm: 6px;
+
+  --smh-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --smh-shadow-gold: 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  background-color: var(--smh-bg-main) !important;
+  color: var(--smh-text-primary) !important;
+  direction: rtl;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+.smh-app-shell {
+  width: 100%;
+  max-width: 100% !important;
+  min-height: 100dvh;
+  background-color: var(--smh-bg-main);
+  display: flex;
+  flex-direction: column;
+}
+
+.smh-header {
+  background-color: var(--smh-bg-header) !important;
+  border-bottom: 1px solid var(--smh-border) !important;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.smh-user-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.smh-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 17px;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.smh-user-meta .smh-user-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--smh-text-primary);
+}
+
+.smh-user-meta .smh-trust-badge {
+  font-size: 10px;
+  color: var(--smh-gold);
+  background: rgba(245, 158, 11, 0.15);
+  padding: 2px 8px;
+  border-radius: var(--smh-radius-sm);
+  display: inline-block;
+  margin-top: 2px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-weight: 600;
+}
+
+.smh-main-content {
+  flex: 1;
+  padding: 16px;
+  padding-bottom: 95px;
+}
+
+.smh-card {
+  background: var(--smh-bg-card) !important;
+  border: 1px solid var(--smh-border) !important;
+  border-radius: var(--smh-radius-xl) !important;
+  padding: 16px !important;
+  color: var(--smh-text-primary) !important;
+  box-shadow: var(--smh-shadow-card) !important;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.smh-card-gold-accent {
+  border: 1.5px solid var(--smh-gold) !important;
+  box-shadow: var(--smh-shadow-gold) !important;
+}
+
+.smh-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.smh-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--smh-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.smh-kpi-value {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 4px 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.smh-kpi-subtext {
+  font-size: 11px;
+  color: var(--smh-text-muted);
+}
+
+.text-gold { color: var(--smh-gold) !important; }
+.text-cyan { color: var(--smh-cyan) !important; }
+.text-green { color: var(--smh-green) !important; }
+.text-purple { color: var(--smh-purple) !important; }
+.text-red { color: var(--smh-red) !important; }
+
+.smh-grid-2 {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px !important;
+}
+
+.smh-grid-full {
+  grid-column: span 2 !important;
+}
+
+.smh-btn-gold {
+  width: 100%;
+  background: var(--smh-gold);
+  color: #000000;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px;
+  border-radius: var(--smh-radius-lg);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.smh-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--smh-radius-sm);
+}
+.smh-badge-gold { background: rgba(245, 158, 11, 0.15); color: var(--smh-gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+.smh-badge-cyan { background: rgba(6, 182, 212, 0.15); color: var(--smh-cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
+.smh-badge-green { background: rgba(16, 185, 129, 0.15); color: var(--smh-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+.smh-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: var(--smh-bg-header) !important;
+  border-top: 1px solid var(--smh-border) !important;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 8px 4px 12px 4px;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.smh-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--smh-text-muted);
+  font-size: 10px;
+  gap: 3px;
+  font-weight: 500;
+}
+
+.smh-nav-item.active {
+  color: var(--smh-gold) !important;
+  font-weight: 700;
+}
+
+.smh-nav-item svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}

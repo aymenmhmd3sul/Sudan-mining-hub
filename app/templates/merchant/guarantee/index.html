@@ -1,52 +1,65 @@
-{% extends "layouts/layout_v2.html" %}
+{% extends "merchant/layout_v2.html" %}
 
-{% block title %}
-Merchant Guarantee Center
-{% endblock %}
+{% set active_page = 'guarantee' %}
+
+{% block title %}مركز الضمان | Sudan Mining Hub{% endblock %}
 
 {% block content %}
-
-<div class="merchant-module">
-
-<h1>مركز الضمان</h1>
-
-<div class="cards">
-
-<div class="card">
-<h3>ضمان بنكي</h3>
-<p>ربط البنك لإثبات تغطية الالتزام</p>
-<button>طلب ضمان بنكي</button>
+<!-- ترويسة مركز الضمان -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span class="smh-badge smh-badge-gold">التأمين والخطابات</span>
+            <h2 style="font-size: 16px; font-weight: 800; margin-top: 4px; color: var(--smh-text-primary);">
+                🏦 مركز الضمانات التجارية
+            </h2>
+        </div>
+        <span class="smh-badge smh-badge-green">اعتماد Escrow</span>
+    </div>
 </div>
 
-<div class="card">
-<h3>ضمان أصل</h3>
-<p>تسجيل أصل أو معدات أو مخزون كضمان</p>
-<button>إضافة أصل</button>
+<!-- خيارات الضمان -->
+<div style="display: flex; flex-direction: column; gap: 10px;">
+
+    <!-- ضمان بنكي -->
+    <div class="smh-card" style="margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--smh-text-primary); margin: 0;">🏛️ ضمان بنكي معتمد</h3>
+                <p style="font-size: 11px; color: var(--smh-text-muted); margin: 4px 0 0 0;">ربط البنك لإثبات تغطية الالتزام المالي</p>
+            </div>
+            <span class="smh-badge smh-badge-cyan">نشط</span>
+        </div>
+        <div style="margin-top: 12px;">
+            <button class="smh-btn-gold" style="padding: 8px; font-size: 11px;">طلب ضمان بنكي جديد</button>
+        </div>
+    </div>
+
+    <!-- ضمان الأصول -->
+    <div class="smh-card" style="margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--smh-text-primary); margin: 0;">🚜 ضمان أصل / معدات</h3>
+                <p style="font-size: 11px; color: var(--smh-text-muted); margin: 4px 0 0 0;">تسجيل أصل أو معدات ثقيلة أو مخزون كضمان</p>
+            </div>
+        </div>
+        <div style="margin-top: 12px;">
+            <button style="width: 100%; background: rgba(255,255,255,0.05); color: var(--smh-text-primary); border: 1px solid var(--smh-border); padding: 8px; border-radius: var(--smh-radius-lg); font-size: 11px;">+ تسجيل أصل جديد</button>
+        </div>
+    </div>
+
+    <!-- ضمان الذهب -->
+    <div class="smh-card" style="margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--smh-gold); margin: 0;">👑 ضمان خام ذهب</h3>
+                <p style="font-size: 11px; color: var(--smh-text-muted); margin: 4px 0 0 0;">إيداع شحنة ذهب مسبقة يغطي قيمة التداول</p>
+            </div>
+        </div>
+        <div style="margin-top: 12px;">
+            <button class="smh-btn-gold" style="padding: 8px; font-size: 11px;">تقديم الذهب كضمان</button>
+        </div>
+    </div>
+
 </div>
-
-<div class="card">
-<h3>ذهب ضمان</h3>
-<p>تسجيل ذهب يغطي قيمة الالتزام</p>
-<button>تقديم ذهب ضمان</button>
-</div>
-
-<div class="card">
-<h3>وثيقة تداول</h3>
-<p>وثيقة ضمان قابلة للإبراز للجهات الخارجية</p>
-<button>إضافة وثيقة</button>
-</div>
-
-</div>
-
-<hr>
-
-<h2>إشعار الطرف الخارجي</h2>
-
-<p>
-لا يتم كشف رصيد التاجر.
-يتم فقط إصدار تأكيد من المنصة بأن الضمان يغطي الالتزام.
-</p>
-
-</div>
-
 {% endblock %}

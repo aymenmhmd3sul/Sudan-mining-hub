@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from app.services.templates import templates
-from app.routers import admin_views, auth, opportunities, chat, payments, admin, web, web_auth, admin_mining, mining_sites, views, language
+from app.routers import admin_views, auth, opportunities, chat, payments, admin, web, web_auth, admin_mining, mining_sites, views, language, merchant_views
 
 app = FastAPI(title="Sudan Mining Hub")
 
@@ -25,6 +25,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # استدعاء الموجه الشامل للواجهات (بدون مضاعفة prefix)
 app.include_router(admin_views.router)
+app.include_router(merchant_views.router)
 app.include_router(views.router)
 app.include_router(web.router)
 app.include_router(web_auth.router)

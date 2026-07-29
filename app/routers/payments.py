@@ -113,7 +113,17 @@ def release_escrow(escrow_id: int, current_user: User = Depends(get_current_user
         raise HTTPException(status_code=403, detail="غير مصرح لك بالإفراج عن هذه الأموال، المشتري فقط من يملك الصلاحية.")
         
     escrow.status = "released"
+
+    # تحديث حالة الفاتورة المرتبطة مباشرة
+    invoice = db.query(InvoiceModel).filter(
+        InvoiceModel.id == escrow.invoice_id
+    ).first()
+
+    if invoice:
+        invoice.status = "completed"
+
     db.commit()
+
     return {"message": "✅ تم الإفراج عن الضمان المالي وتحويله لحساب البائع بنجاح."}
 
 # ==========================================

@@ -3,14 +3,33 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.database import Base
-from app.models.user import User
-from app.models.marketplace import MiningAsset
-from app.models.finance import *
-from app.models.operations import *
+import app.models
+
+# Load all models so Alembic detects the complete schema
+from app.models import user
+from app.models import auth
+from app.models import mining_site
+from app.models import finance
+from app.models import commission
+from app.models import operations
+from app.models import marketplace
+from app.models import subscription
 
 def include_object(object, name, type_, reflected, compare_to):
-    if type_ == 'table' and name == 'asset_items':
+    ignored_tables = {
+        'asset_items',
+        'invoice',
+        'escrow',
+        'mining_assets',
+    }
+
+    # Prevent Alembic from generating destructive DROP operations
+    if type_ == 'table' and reflected and compare_to is None:
         return False
+
+    if type_ == 'table' and name in ignored_tables:
+        return False
+
     return True
 
 target_metadata = Base.metadata

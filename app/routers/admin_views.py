@@ -6,6 +6,15 @@ from app.services.templates import templates
 router = APIRouter(prefix="/admin", tags=["Admin Views"])
 
 # الداش بورد الرئيسي للمشرف
+
+
+@router.get("/subscriptions")
+def admin_subscriptions_page(request: Request):
+    return templates.TemplateResponse(
+        "admin/subscriptions/index.html",
+        {"request": request}
+    )
+
 @router.get("", response_class=HTMLResponse)
 @router.get("/", response_class=HTMLResponse)
 @router.get("/dashboard", response_class=HTMLResponse)

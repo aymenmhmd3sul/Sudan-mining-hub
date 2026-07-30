@@ -8,6 +8,7 @@ from app.database import get_db
 from app.security.auth import get_current_user as require_any_user 
 from app.models.marketplace import MiningAsset  # تعديل معماري صارم وصحيح
 from app.schemas.assets import AssetCreate, AssetResponse
+from app.services.plan_access_service import PlanAccessService
 
 router = APIRouter(prefix="/marketplace", tags=["Asset Marketplace Core"])
 
@@ -28,6 +29,19 @@ def create_mining_asset(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="عذراً، هذا الإجراء متاح فقط للحسابات المعتمدة كبائع أو تاجر في المنصة."
         )
+
+    
+    if user_role != "admin":
+        allowed, result = PlanAccessService.can_create_listing(
+            db,
+            current_user["id"]
+        )
+
+        if not allowed:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=result
+            )
 
     try:
         # تحويل القوائم والقواميس إلى JSON Strings لتخزينها في قاعدة البيانات الموحدة

@@ -1,0 +1,130 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+
+<div class="admin-page">
+
+    <h1>إدارة الاشتراكات</h1>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <h3>إجمالي الاشتراكات</h3>
+            <strong id="totalSubscriptions">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>الاشتراكات النشطة</h3>
+            <strong id="activeSubscriptions">0</strong>
+        </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+        <h2>قائمة الاشتراكات</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>الخطة</th>
+                    <th>الحالة</th>
+                    <th>البداية</th>
+                    <th>الانتهاء</th>
+                </tr>
+            </thead>
+
+            <tbody id="subscriptionsTable">
+                <tr>
+                    <td colspan="6">
+                        جاري التحميل...
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function loadSubscriptions(){
+
+    const token = localStorage.getItem("access_token");
+
+    const response = await fetch(
+        "/api/v1/admin/subscriptions",
+        {
+            headers:{
+                "Authorization":"Bearer " + token
+            }
+        }
+    );
+
+    const result = await response.json();
+
+    const table =
+        document.getElementById("subscriptionsTable");
+
+    table.innerHTML="";
+
+
+    result.data.forEach(sub=>{
+
+        table.innerHTML += `
+        <tr>
+            <td>${sub.id}</td>
+            <td>${sub.user_id}</td>
+            <td>${sub.plan_name}</td>
+            <td>${sub.status}</td>
+            <td>${sub.started_at}</td>
+            <td>${sub.expires_at ?? "-"}</td>
+        </tr>
+        `;
+
+    });
+
+}
+
+
+async function loadStats(){
+
+    const token = localStorage.getItem("access_token");
+
+    const response = await fetch(
+        "/api/v1/admin/subscriptions/stats",
+        {
+            headers:{
+                "Authorization":"Bearer " + token
+            }
+        }
+    );
+
+    const result = await response.json();
+
+    document.getElementById(
+        "totalSubscriptions"
+    ).innerText =
+    result.data.total;
+
+
+    document.getElementById(
+        "activeSubscriptions"
+    ).innerText =
+    result.data.active;
+
+}
+
+
+loadSubscriptions();
+loadStats();
+
+</script>
+
+{% endblock %}

@@ -1,8 +1,15 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from app.services.templates import templates
-from app.routers import admin_views, auth, opportunities, chat, payments, admin, web, web_auth, admin_mining, mining_sites, views, language, merchant_views
-
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
+from app.services.templates import templates
+from app.routers import (
+    admin_subscription_plans,
+    admin_views, auth, opportunities, chat, payments, admin,
+    web, web_auth, admin_mining, mining_sites,
+    admin_subscriptions, views, language, merchant_views
+)
 app = FastAPI(title="Sudan Mining Hub")
 
 
@@ -38,6 +45,8 @@ app.include_router(chat.router, prefix="/api/chat", tags=["المحادثات"])
 app.include_router(payments.router, prefix="/api/payments", tags=["المدفوعات"])
 app.include_router(admin.router, prefix="/api/admin", tags=["الإدارة"])
 app.include_router(admin_mining.router)
+app.include_router(admin_subscriptions.router)
+app.include_router(admin_subscription_plans.router)
 app.include_router(mining_sites.router)
 
 @app.get("/")

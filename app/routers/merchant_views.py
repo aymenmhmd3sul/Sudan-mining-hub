@@ -44,7 +44,8 @@ async def merchant_dashboard(
         "merchant/dashboard/index.html",
         {
             "request": request,
-            "lang": "ar",
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
             "active_page": "dashboard",
             "merchant": current_user,
             "active_deals_count": active_deals_count,
@@ -55,31 +56,38 @@ async def merchant_dashboard(
 
 @router.get("/deals", response_class=HTMLResponse)
 async def merchant_deals(request: Request):
-    return templates.TemplateResponse("merchant/deals/index.html", {"request": request, "lang": "ar", "active_page": "deals"})
+    return templates.TemplateResponse("merchant/deals/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "deals"})
 
 @router.get("/negotiation", response_class=HTMLResponse)
 async def merchant_negotiation(request: Request):
-    return templates.TemplateResponse("merchant/negotiation/index.html", {"request": request, "lang": "ar", "active_page": "negotiation"})
+    return templates.TemplateResponse("merchant/negotiation/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "negotiation"})
 
 @router.get("/negotiation/room/{room_id}", response_class=HTMLResponse)
 async def merchant_negotiation_room(request: Request, room_id: int):
-    return templates.TemplateResponse("merchant/negotiation/room.html", {"request": request, "lang": "ar", "room_id": room_id, "active_page": "negotiation"})
+    return templates.TemplateResponse("merchant/negotiation/room.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "room_id": room_id, "active_page": "negotiation"})
 
 @router.get("/finance", response_class=HTMLResponse)
 async def merchant_finance(request: Request):
-    return templates.TemplateResponse("merchant/finance/index.html", {"request": request, "lang": "ar", "active_page": "finance"})
+    return templates.TemplateResponse("merchant/finance/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "finance"})
 
 @router.get("/trust", response_class=HTMLResponse)
 @router.get("/escrow", response_class=HTMLResponse)
 @router.get("/guarantee", response_class=HTMLResponse)
 async def merchant_escrow(request: Request):
-    return templates.TemplateResponse("merchant/trust/index.html", {"request": request, "lang": "ar", "active_page": "guarantee"})
+    return templates.TemplateResponse("merchant/trust/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "guarantee"})
 
 @router.get("/documents", response_class=HTMLResponse)
 async def merchant_documents(request: Request):
-    return templates.TemplateResponse("merchant/documents/index.html", {"request": request, "lang": "ar", "active_page": "documents"})
+    return templates.TemplateResponse("merchant/documents/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "documents"})
 
 @router.get("/profile", response_class=HTMLResponse)
 @router.get("/account", response_class=HTMLResponse)
 async def merchant_profile(request: Request):
-    return templates.TemplateResponse("merchant/profile/index.html", {"request": request, "lang": "ar", "active_page": "profile"})
+    return templates.TemplateResponse("merchant/profile/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "profile"})

@@ -54,6 +54,12 @@ color:#fbbf24;
 <input id="email" placeholder="البريد الإلكتروني" required>
 <input id="password" placeholder="كلمة المرور" type="password" required>
 
+<select id="role" required style="width:100%;padding:12px;margin-top:10px;border-radius:10px;">
+    <option value="buyer">مشتري</option>
+    <option value="merchant">تاجر</option>
+    <option value="agent">وكيل</option>
+</select>
+
 <button type="submit">
 إنشاء الحساب
 </button>
@@ -73,7 +79,7 @@ document.getElementById("registerForm").onsubmit = async function(e){
             phone: document.getElementById("phone").value,
             email: document.getElementById("email").value,
             password: document.getElementById("password").value,
-            role:"buyer"
+            role: document.getElementById("role").value
         })
     });
 

@@ -24,3 +24,5 @@ sudan_mining_backup.sql
 # Temporary old versions
 before_*
 *_old_backup*
+
+*before_*

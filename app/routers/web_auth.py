@@ -19,14 +19,13 @@ def web_login(
         form_data.password
     )
 
-    user = result.get("user")
 
-    if user:
-        role = user.role if hasattr(user, "role") else user.get("role")
-    else:
-        role = None
+    user = result.get("user", {})
 
-    role = str(role).upper() if role else ""
+
+    role = user.get("role", "") if isinstance(user, dict) else ""
+
+    role = str(role).upper()
 
     if role == "ADMIN":
         redirect = "/admin/dashboard"

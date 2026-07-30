@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -10,6 +10,7 @@ router = APIRouter(prefix="/api/web", tags=["Web Auth"])
 
 @router.post("/login")
 def web_login(
+    response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
@@ -37,6 +38,14 @@ def web_login(
         redirect = "/dashboard"
     else:
         redirect = "/visitor"
+
+    response.set_cookie(
+        key="access_token",
+        value=result["access_token"],
+        httponly=True,
+        max_age=3600,
+        samesite="lax"
+    )
 
     return {
         "redirect": redirect,

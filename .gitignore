@@ -13,3 +13,14 @@ app/models/__init__before_finance_restore.py
 sudan_mining_backup.sql
 *.before_i18n.html
 *.before_i18n_full.html
+
+# Local virtual environment
+.venv310/
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary old versions
+before_*
+*_old_backup*

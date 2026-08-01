@@ -24,6 +24,7 @@ class MiningAsset(Base):
     description = Column(String, nullable=True)
     main_category = Column(String, nullable=False)
     sub_category = Column(String, nullable=False)
+    asset_type = Column(String, nullable=False, default="MINING_EQUIPMENT")
     price = Column(Float, nullable=False)
     currency = Column(String, default="USD")
     is_negotiable = Column(Boolean, default=True)
@@ -35,6 +36,7 @@ class MiningAsset(Base):
     is_featured = Column(Boolean, default=False)
     is_approved = Column(Boolean, default=False)
     status = Column(String, default="ACTIVE")
+    version = Column(Integer, default=1, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # إضافة الحقل المطلوب من قبل الـ Schema هندسياً

@@ -1,146 +1,173 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة السودان للتعدين</title>
-
-<link rel="stylesheet" href="{{ url_for('static', path='css/gateway_v2_stable.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>منصة السودان للتعدين</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/gateway_v2_stable.css') }}">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: space-between;
+        }
+        .top-card {
+            background: linear-gradient(135deg, #4a1015, #1f0608);
+            padding: 12px 15px;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand-box strong { color: #fff; font-size: 1rem; display: block; }
+        .brand-box span { color: #ccc; font-size: 0.7rem; }
+        .lang-btn-mini {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 3px 7px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+        .ad-banner-mini {
+            background: rgba(0,0,0,0.3);
+            border: 1px dashed #d4af37;
+            color: #f39c12;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .ticker {
+            background: #181818;
+            color: #d4af37;
+            font-size: 0.75rem;
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        .login-box {
+            width: 100%;
+            max-width: 360px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            box-sizing: border-box;
+        }
+        .login-box h3 { text-align: center; color: #8b6508; margin: 0 0 15px 0; font-size: 1.15rem; }
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #b8860b;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .links-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-top: 12px;
+        }
+        .footer-bar {
+            text-align: center;
+            padding: 12px;
+            color: #888;
+            font-size: 0.75rem;
+            background: #0a0a0a;
+            border-top: 1px solid #1a1a1a;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="app-wrapper">
+        <!-- قسم الهيدر والإعلانات -->
+        <div>
+            <div class="top-card">
+                <div class="header-row">
+                    <div class="brand-box">
+                        <span style="font-size: 1.4rem;">⛏️⚖️</span>
+                        <div>
+                            <strong>منصة السودان للتعدين</strong>
+                            <span>بوابة إدارة قطاع التعدين الذكية</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="/language/ar" class="lang-btn-mini">العربية</a>
+                        <a href="/language/en" class="lang-btn-mini" style="color:#fff;">EN</a>
+                    </div>
+                </div>
+                <div class="ad-banner-mini">
+                    📢 مساحة إعلانية شاغرة - تواصل معنا للرعاية والاستثمار
+                </div>
+            </div>
 
-<div class="page">
+            <div class="ticker">
+                ⚡ مستثمرون دوليون يبحثون عن فرص التعدين في السودان
+            </div>
+        </div>
 
-<section class="top-card">
+        <!-- كارت الدخول في المنتصف تماماً -->
+        <div class="main-content">
+            <div class="login-box">
+                <h3>بوابة الدخول</h3>
+                <form action="/login" method="POST">
+                    <input type="email" name="username" placeholder="البريد الإلكتروني" required>
+                    <input type="password" name="password" placeholder="كلمة المرور" required>
+                    <button type="submit">تسجيل الدخول الآمن 🔐</button>
+                </form>
+                <div class="links-row">
+                    <a href="/visitor" style="color:#666; text-decoration:none;">دخول كزائر</a>
+                    <a href="/register" style="color:#8b6508; text-decoration:none; font-weight:bold;">التسجيل لأول مرة</a>
+                </div>
+            </div>
+        </div>
 
-<header class="header">
-
-<div class="brand">
-<div class="icons">⛏ ⚖️</div>
-
-<strong>منصة السودان للتعدين</strong>
-
-<span>
-بوابة إدارة قطاع التعدين الذكية
-</span>
-
-</div>
-
-
-<div class="language-box">
-
-<button id="langBtn">
-🌐 EN
-</button>
-
-<div id="langMenu">
-
-<a class="ar" href="/language/ar">العربية</a>
-<a class="en" href="/language/en">English</a>
-
-</div>
-
-</div>
-
-</header>
-
-
-
-<div class="gold-ticker">
-    <div class="gold-scroll">
-        <span>🟡 بورصة الذهب مباشرة | الأونصة: $3420 | عيار 24: سعر عالمي</span>
-        <span>🌍 مستثمرون دوليون يبحثون عن فرص التعدين في السودان</span>
-        <span>⛏ معدات تعدين ومشاريع للبيع والشراء عبر المنصة</span>
-        <span>🚚 خدمات النقل واللوجستيات التعدينية متاحة الآن</span>
+        <!-- الفوتر يغلق أسفل الشاشة تماماً -->
+        <div class="footer-bar">
+            سياسة المنصة | تواصل معنا (WhatsApp • Telegram • Email)
+        </div>
     </div>
-</div>
-
-
-
-
-<section class="main-card">
-
-<h1>
-بوابة الدخول
-</h1>
-
-
-<input id="email"
-type="email"
-placeholder="البريد الإلكتروني">
-
-
-<div class="password-box">
-
-<input id="password"
-type="password"
-placeholder="كلمة المرور">
-
-
-<button id="showPass">
-👁
-</button>
-
-</div>
-
-
-<button id="loginBtn"
-class="login-btn">
-
-🔐 تسجيل الدخول الآمن
-
-</button>
-
-
-<div class="links">
-
-<a href="/register">التسجيل لأول مرة</a>
-
-<a href="/visitor">دخول كزائر</a>
-
-</div>
-
-
-<div id="message"></div>
-
-
-
-
-</section>
-
-
-</section>
-
-
-
-
-
-
-
-<footer>
-
-<div>
-سياسة المنصة | تواصل معنا
-</div>
-
-
-<div>
-💬 WhatsApp &nbsp;
-✈ Telegram &nbsp;
-✉ Email
-</div>
-
-
-</footer>
-
-
-</div>
-
-
-<script src="{{ url_for('static', path='js/gateway_v2_stable.js') }}"></script>
-
 </body>
-
 </html>

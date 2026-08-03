@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 router = APIRouter(tags=["Frontend Views"])
 templates = Jinja2Templates(directory="app/templates")
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("/home", response_class=HTMLResponse)
 async def render_login_gateway(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations})
 

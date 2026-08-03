@@ -3,6 +3,11 @@ from app.services.i18n import translate
 
 templates = Jinja2Templates(directory="app/templates")
 
+def jinja_translate(key, lang="ar"):
+    return translate(key, lang)
+
+templates.env.globals["t"] = jinja_translate
+
 templates.env.globals["t"] = translate
 
 

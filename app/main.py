@@ -1,14 +1,18 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from app.services.templates import templates
+from app.services.i18n import get_translations, translate
+from app.translations import TRANSLATIONS
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from app.services.templates import templates
+from app.services.i18n import get_translations, translate
+from app.translations import TRANSLATIONS
 from app.routers import (
     admin_subscription_plans,
     admin_views, auth, opportunities, chat, payments, admin,
     web, web_auth, admin_mining, mining_sites,
-    admin_subscriptions, views, language, merchant_views, marketplace
+    admin_subscriptions, views, language, merchant_views, marketplace, showcase
 )
 app = FastAPI(title="Sudan Mining Hub")
 
@@ -22,6 +26,7 @@ async def language_middleware(request: Request, call_next):
 
     request.state.lang = lang
     request.state.direction = "rtl" if lang == "ar" else "ltr"
+    request.state.translations = TRANSLATIONS.get(lang, TRANSLATIONS["ar"])
 
     response = await call_next(request)
     return response
@@ -49,6 +54,7 @@ app.include_router(admin_subscriptions.router)
 app.include_router(admin_subscription_plans.router)
 app.include_router(mining_sites.router)
 app.include_router(marketplace.router)
+app.include_router(showcase.router)
 
 @app.get("/")
 async def root():

@@ -1,173 +1,627 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ direction }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منصة السودان للتعدين</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/gateway_v2_stable.css') }}">
+    <title>{{ t.platform_name }} | السودان للتعدين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        html, body {
-            height: 100%;
+        :root {
+            --bg-main: #0f080a;
+            --bg-card: #180d10;
+            --bg-card-border: #2a151b;
+            --gold-primary: #d4af37;
+            --gold-hover: #f39c12;
+            --text-light: #f5f5f5;
+            --text-muted: #aaaaaa;
+            --header-bg: linear-gradient(180deg, #220609 0%, #0f080a 100%);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background: #121212;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            padding-bottom: 75px;
             overflow-x: hidden;
         }
-        .app-wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            justify-content: space-between;
-        }
-        .top-card {
-            background: linear-gradient(135deg, #4a1015, #1f0608);
-            padding: 12px 15px;
-            border-bottom-left-radius: 18px;
-            border-bottom-right-radius: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-        .header-row {
+
+        /* Top Header */
+        .top-nav {
+            background: var(--header-bg);
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid var(--bg-card-border);
         }
-        .brand-box {
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo i {
+            color: var(--gold-primary);
+            font-size: 1.6rem;
+        }
+
+        .brand-title strong {
+            display: block;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .brand-title span {
+            color: var(--gold-primary);
+            font-size: 0.7rem;
+        }
+
+        .lang-btn {
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            background: rgba(0,0,0,0.4);
+            cursor: pointer;
+        }
+
+        /* Hero Banner */
+        .hero-section {
+            background: linear-gradient(rgba(15, 8, 10, 0.8), rgba(15, 8, 10, 0.95)), none center/cover no-repeat;
+            padding: 30px 16px 20px 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--bg-card-border);
+        }
+
+        .hero-title {
+            color: var(--gold-primary);
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--gold-primary);
+            border-radius: 8px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             gap: 8px;
+            margin-bottom: 10px;
         }
-        .brand-box strong { color: #fff; font-size: 1rem; display: block; }
-        .brand-box span { color: #ccc; font-size: 0.7rem; }
-        .lang-btn-mini {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #d4af37;
-            color: #d4af37;
-            padding: 3px 7px;
-            border-radius: 5px;
-            font-size: 0.75rem;
-            text-decoration: none;
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            width: 100%;
+            outline: none;
+            font-size: 0.85rem;
         }
-        .ad-banner-mini {
-            background: rgba(0,0,0,0.3);
-            border: 1px dashed #d4af37;
-            color: #f39c12;
+
+        .search-box i { color: var(--gold-primary); }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .filter-select {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            color: var(--text-light);
             padding: 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            outline: none;
+        }
+
+        /* Divider */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--bg-card-border), var(--gold-primary), var(--bg-card-border), transparent);
+            margin: 20px 0;
+        }
+
+        /* Stats Strip */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 10px;
+            padding: 12px 5px;
+            margin: 0 16px;
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-value {
+            color: var(--gold-primary);
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+
+        /* Section Titles */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+            border-right: 3px solid var(--gold-primary);
+            padding-right: 8px;
+        }
+
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 16px;
+        }
+
+        .cat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 8px;
+            padding: 12px 6px;
             text-align: center;
+            cursor: pointer;
+        }
+
+        .cat-card i {
+            color: var(--gold-primary);
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .cat-title {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            display: block;
+            font-weight: bold;
+        }
+
+        .cat-count {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+
+        /* Assets Cards Grid with Real Images */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            padding: 0 16px;
+        }
+
+        .asset-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .asset-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: var(--gold-primary);
+            color: #000;
+            font-size: 0.6rem;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .asset-img-wrap {
+            height: 110px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            background: #201014;
+        }
+
+        .asset-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .asset-body {
+            padding: 8px 10px;
+        }
+
+        .asset-title {
             font-size: 0.78rem;
             font-weight: bold;
-            border-radius: 6px;
-            margin-top: 10px;
+            color: #fff;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .ticker {
-            background: #181818;
-            color: #d4af37;
-            font-size: 0.75rem;
-            padding: 8px;
+
+        .asset-location {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .asset-price {
+            color: var(--gold-primary);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #14080b;
+            border-top: 1px solid var(--bg-card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
             text-align: center;
-            border-bottom: 1px solid #222;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.65rem;
         }
-        .main-content {
-            flex: 1;
+
+        .nav-item i {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-item.active { color: var(--gold-primary); }
+
+        .add-btn {
+            background: var(--gold-primary);
+            color: #000;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px;
-        }
-        .login-box {
-            width: 100%;
-            max-width: 360px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            box-sizing: border-box;
-        }
-        .login-box h3 { text-align: center; color: #8b6508; margin: 0 0 15px 0; font-size: 1.15rem; }
-        .login-box input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 0.9rem;
-        }
-        .login-box button {
-            width: 100%;
-            padding: 12px;
-            background: #b8860b;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
+            position: relative;
+            top: -12px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
             cursor: pointer;
         }
-        .links-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            margin-top: 12px;
+
+        /* Detail Modal & Auth Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 15px;
         }
-        .footer-bar {
-            text-align: center;
-            padding: 12px;
-            color: #888;
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 360px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .detail-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .detail-title {
+            color: var(--gold-primary);
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .detail-meta {
             font-size: 0.75rem;
-            background: #0a0a0a;
-            border-top: 1px solid #1a1a1a;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .detail-desc {
+            font-size: 0.8rem;
+            color: #ddd;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .btn-action {
+            background: var(--gold-primary);
+            color: #000;
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            width: 100%;
+            padding: 8px;
+            border: none;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="app-wrapper">
-        <!-- قسم الهيدر والإعلانات -->
-        <div>
-            <div class="top-card">
-                <div class="header-row">
-                    <div class="brand-box">
-                        <span style="font-size: 1.4rem;">⛏️⚖️</span>
-                        <div>
-                            <strong>منصة السودان للتعدين</strong>
-                            <span>بوابة إدارة قطاع التعدين الذكية</span>
-                        </div>
-                    </div>
-                    <div>
-                        <a href="/language/ar" class="lang-btn-mini">العربية</a>
-                        <a href="/language/en" class="lang-btn-mini" style="color:#fff;">EN</a>
-                    </div>
-                </div>
-                <div class="ad-banner-mini">
-                    📢 مساحة إعلانية شاغرة - تواصل معنا للرعاية والاستثمار
-                </div>
-            </div>
 
-            <div class="ticker">
-                ⚡ مستثمرون دوليون يبحثون عن فرص التعدين في السودان
+    <!-- Header -->
+    <header class="top-nav">
+        <div class="brand-logo">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <div class="brand-title">
+                <strong>{{ t.platform_name }}</strong>
+                <span>{{ t.platform_subtitle }}</span>
             </div>
         </div>
+        <button class="lang-btn" onclick="toggleLanguage()">EN <i class="fa-solid fa-globe"></i></button>
+    </header>
 
-        <!-- كارت الدخول في المنتصف تماماً -->
-        <div class="main-content">
-            <div class="login-box">
-                <h3>بوابة الدخول</h3>
-                <form action="/login" method="POST">
-                    <input type="email" name="username" placeholder="البريد الإلكتروني" required>
-                    <input type="password" name="password" placeholder="كلمة المرور" required>
-                    <button type="submit">تسجيل الدخول الآمن 🔐</button>
-                </form>
-                <div class="links-row">
-                    <a href="/visitor" style="color:#666; text-decoration:none;">دخول كزائر</a>
-                    <a href="/register" style="color:#8b6508; text-decoration:none; font-weight:bold;">التسجيل لأول مرة</a>
-                </div>
-            </div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1 class="hero-title">{{ t.hero_title }}</h1>
+        <p class="hero-subtitle">{{ t.hero_subtitle }}</p>
+        
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="{{ t.search_placeholder }}">
         </div>
 
-        <!-- الفوتر يغلق أسفل الشاشة تماماً -->
-        <div class="footer-bar">
-            سياسة المنصة | تواصل معنا (WhatsApp • Telegram • Email)
+        <div class="filter-row">
+            <select class="filter-select">
+                <option>{{ t.all_states }}</option>
+                <option>نهر النيل</option>
+                <option>الخرطوم</option>
+                <option>كسلا</option>
+                <option>الشمالية</option>
+            </select>
+            <select class="filter-select">
+                <option>{{ t.all_categories }}</option>
+                <option>{{ t.heavy_equipment }}</option>
+                <option>{{ t.factories }}</option>
+                <option>{{ t.mining_sites }}</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="section-divider"></div>
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">152</div>
+            <div class="stat-label">{{ t.companies }}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">2,368</div>
+            <div class="stat-label">{{ t.assets }}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">1,245</div>
+            <div class="stat-label">{{ t.members }}</div>
         </div>
     </div>
+
+    <!-- Categories -->
+    <div class="section-divider"></div>
+    <div class="section-header">
+        <span class="section-title">{{ t.browse_categories }}</span>
+    </div>
+
+    <div class="categories-grid">
+        <a href="/showcase/equipment" class="cat-card" onclick="openCategory('{{ t.heavy_equipment }}')" style="text-decoration:none;">
+            <i class="fa-solid fa-truck-monster"></i>
+            <span class="cat-title">{{ t.heavy_equipment }}</span>
+            <span class="cat-count">1,470</span>
+        </a>
+        <a href="/showcase/mining" class="cat-card" onclick="openCategory('{{ t.mining_sites }}')" style="text-decoration:none;">
+            <i class="fa-solid fa-mountain"></i>
+            <span class="cat-title">{{ t.mining_sites }}</span>
+            <span class="cat-count">316</span>
+        </a>
+        <a href="/showcase/factories" class="cat-card" onclick="openCategory('{{ t.factories }}')" style="text-decoration:none;">
+            <i class="fa-solid fa-industry"></i>
+            <span class="cat-title">{{ t.factories }}</span>
+            <span class="cat-count">178</span>
+        </a>
+    </div>
+
+    <!-- Latest Listings with Real High-Res Heavy Machinery Images -->
+    <div class="section-divider"></div>
+    <div class="section-header">
+        <span class="section-title">{{ t.latest_assets }}</span>
+    </div>
+
+    <div class="assets-grid">
+        <!-- Asset 1 -->
+        <div class="asset-card" onclick="requireAuth(event)" style="cursor:pointer;" onclick="showDetail('{{ t.gold_factory }}', '$1,250,000', 'كسلا - حلفا ال{{ t.new }}ة', 'مصنع معالجة وسحق سيانيد متكامل بسعة إنتاجية عالية، يشتمل على خطوط أحواض ترسيب ومولدات كهربائية ثقيلة جاهزة للتشغيل الفوري.', '')">
+            <span class="asset-badge">{{ t.featured }}</span>
+            <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><path d="M2 22h20M17 22v-9l-5 3v-3l-5 3V4h5v3l5-3v18zM7 9h2M7 13h2M7 17h2"/></svg></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+            <div class="asset-body">
+                <div class="asset-title">{{ t.gold_factory }}</div>
+                <div class="asset-location"><i class="fa-solid fa-location-dot"></i> كسلا - حلفا</div>
+                <div class="asset-price">$1,250,000</div>
+            </div>
+        </div>
+
+        <!-- Asset 2 -->
+        <div class="asset-card" onclick="requireAuth(event)" style="cursor:pointer;" onclick="showDetail('حفار كاتربرلر Caterpillar 320D', '$140,000', 'نهر النيل - أبوحمد', 'حفار كاتربرلر 320D بحالة ممتازة، ساعات عمل قليلة، صيانة دورية معتمدة. مناسب لمواقع التعدين القاسية.', '')">
+            <span class="asset-badge" style="background:#e74c3c; color:#fff;">{{ t.new }}</span>
+            <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><path d="M2 17h12M4 20h8M14 17l4-5 3 2M10 14V8h4l3 4M6 14h8"/><circle cx="4" cy="17" r="2"/><circle cx="12" cy="17" r="2"/></svg></div>
+            <div class="asset-body">
+                <div class="asset-title">حفار كاتربرلر 320D</div>
+                <div class="asset-location"><i class="fa-solid fa-location-dot"></i> نهر النيل - أبوحمد</div>
+                <div class="asset-price">$140,000</div>
+            </div>
+        </div>
+
+        <!-- Asset 3 -->
+        <div class="asset-card" onclick="requireAuth(event)" style="cursor:pointer;" onclick="showDetail('شاحنة قلاب سينوتروك 20 طن', '$85,000', 'الخرطوم', 'شاحنة قلاب ثقيلة للعمل الشاق في المربعات التعدينية، محرك قوي وإطارات حديثة بحالة الجاهزية.', '')">
+            <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><path d="M1 14h15V8H5l-4 6zm15 0h4l3 3v3h-7v-6z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div>
+            <div class="asset-body">
+                <div class="asset-title">{{ t.dump_truck }}</div>
+                <div class="asset-location"><i class="fa-solid fa-location-dot"></i> الخرطوم</div>
+                <div class="asset-price">$85,000</div>
+            </div>
+        </div>
+
+        <!-- Asset 4 -->
+        <div class="asset-card" onclick="requireAuth(event)" style="cursor:pointer;" onclick="showDetail('مطحنة ذهب سعة 100 طن/يوم', '$550,000', 'نهر النيل - العبيدية', 'مطحنة ذهب ميكانيكية متطورة مجهزة بالكامل بالكسارات والدناقير للإنتاج اليومي المستمر.', '')">
+            <span class="asset-badge">{{ t.featured }}</span>
+            <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div>
+            <div class="asset-body">
+                <div class="asset-title">{{ t.gold_mill }}</div>
+                <div class="asset-location"><i class="fa-solid fa-location-dot"></i> نهر النيل</div>
+                <div class="asset-price">$550,000</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item active"><i class="fa-solid fa-house"></i>{{ t.home }}</a>
+        <a href="/showcase/equipment" class="nav-item" onclick="requireAuth('عرض {{ t.favorites }}')"><i class="fa-solid fa-heart"></i>{{ t.favorites }}</a>
+        <div class="add-btn" onclick="requireAuth('{{ t.add_listing }}')"><i class="fa-solid fa-plus"></i></div>
+        <a href="/register" class="nav-item"><i class="fa-solid fa-user-plus"></i>{{ t.signup }}</a>
+        <a href="/login" class="nav-item"><i class="fa-solid fa-right-to-bracket"></i>{{ t.login }}</a>
+    </nav>
+
+    <!-- Dynamic Item Details Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-card">
+            
+            <h3 id="detailTitle" class="detail-title"></h3>
+            <div class="detail-meta">
+                <span id="detailPrice" style="color:var(--gold-primary); font-weight:bold;"></span>
+                <span id="detailLoc"></span>
+            </div>
+            <p id="detailDesc" class="detail-desc"></p>
+            <button class="btn-action" onclick="requireAuth('التواصل مع البائع لإكمال الصفقة')">{{ t.contact_seller }}</button>
+            <button class="btn-secondary" onclick="closeModalDirect('detailModal')">{{ t.close }}</button>
+        </div>
+    </div>
+
+    <!-- Auth Protection Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card" style="text-align:center;">
+            <i class="fa-solid fa-user-lock" style="color:var(--gold-primary); font-size:2.2rem; margin-bottom:10px;"></i>
+            <h3 style="color:#fff; margin-bottom:6px;">{{ t.login }} مطلوب</h3>
+            <p id="authActionText" style="color:var(--text-muted); font-size:0.8rem; margin-bottom:16px;"></p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <a href="/login" class="btn-action" style="text-decoration:none; text-align:center;">{{ t.login }}</a>
+                <a href="/register" class="btn-action" style="background:transparent; color:var(--gold-primary); border:1px solid var(--gold-primary); text-decoration:none; text-align:center;">{{ t.register }}</a>
+            </div>
+            <button class="btn-secondary" onclick="closeModalDirect('authModal')">{{ t.cancel }}</button>
+        </div>
+    </div>
+
+    <script>
+        // Smartphone Back Button Handling (History API)
+        function openModalWithHistory(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            window.history.pushState({ modalOpen: modalId }, "");
+        }
+
+        function closeModalDirect(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.onpopstate = function(event) {
+            document.getElementById('detailModal').style.display = 'none';
+            document.getElementById('authModal').style.display = 'none';
+        };
+
+        // View Item Details Before Auth
+        function showDetail(title, price, location, desc, imgSrc) {
+            document.getElementById('detailTitle').innerText = title;
+            document.getElementById('detailPrice').innerText = price;
+            document.getElementById('detailLoc').innerText = location;
+            document.getElementById('detailDesc').innerText = desc;
+            document.getElementById('detailImg').src = imgSrc;
+            openModalWithHistory('detailModal');
+        }
+
+        function openCategory(catName) {
+            requireAuth('تصفح فئة ' + catName);
+        }
+
+        function requireAuth(actionName) {
+            closeModalDirect('detailModal');
+            document.getElementById('authActionText').innerText = `لإكمال (${actionName})، يرجى {{ t.login }} أو {{ t.register }} على المنصة.`;
+            openModalWithHistory('authModal');
+        }
+
+        function toggleLanguage() {
+            const currentLang = document.documentElement.lang || "ar";
+            window.location.href = currentLang === "ar"
+                ? "/language/en"
+                : "/language/ar";
+        }
+    </script>
+{% include "showcase/components/auth_modal.html" %}
 </body>
 </html>

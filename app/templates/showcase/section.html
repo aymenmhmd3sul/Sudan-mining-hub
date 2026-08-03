@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - منصة السودان للتعدين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #120e0e; color: #fff; font-family: system-ui, -apple-system, sans-serif; margin:0; padding:16px; padding-bottom:80px; }
+        .header { display:flex; align-items:center; gap:12px; margin-bottom:20px; border-bottom:1px solid #2a2225; padding-bottom:12px; }
+        .header a { color:#e5b842; text-decoration:none; font-size:1.2rem; }
+        .header h2 { margin:0; font-size:1.3rem; color:#e5b842; }
+        .grid { display:flex; flex-direction:column; gap:16px; }
+        .card { background:#1b1517; border:1px solid #2a2225; border-radius:12px; overflow:hidden; }
+        .card-img { height:160px; background:#241c1e; display:flex; align-items:center; justify-content:center; color:#e5b842; }
+        .card-body { padding:14px; }
+        .card-title { font-size:1.1rem; font-weight:bold; margin-bottom:6px; color:#fff; }
+        .card-meta { font-size:0.85rem; color:#aaa; margin-bottom:12px; display:flex; justify-content:space-between; }
+        .btn-action { width:100%; background:transparent; border:1px solid #e5b842; color:#e5b842; padding:8px 0; border-radius:6px; font-weight:bold; cursor:pointer; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/"><i class="fa-solid fa-arrow-right"></i></a>
+        <h2>{{ title }}</h2>
+    </div>
+
+    <div class="grid">
+        {% for item in items %}
+        <div class="card">
+            <div class="card-img">
+                <i class="{{ item.icon }}" style="font-size:3.5rem;"></i>
+            </div>
+            <div class="card-body">
+                <div class="card-title">{{ t[item.name_key] if item.name_key in t else item.name }}</div>
+                <div class="card-meta">
+                    <span><i class="fa-solid fa-location-dot"></i> {{ t[item.location_key] if item.location_key in t else item.location }}</span>
+                    <span style="color:#e5b842; font-weight:bold;">{{ t[item.price_key] if item.price_key in t else item.price }}</span>
+                </div>
+                <button class="btn-action" onclick="requireAuth(event)">عرض التفاصيل / للتواصل</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% include "showcase/components/auth_modal.html" %}
+</body>
+</html>

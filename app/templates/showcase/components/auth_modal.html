@@ -1,0 +1,22 @@
+<div id="authModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#1b1517; border:1px solid #e5b842; border-radius:16px; padding:24px; width:90%; max-width:360px; text-align:center; color:#fff;">
+        <div style="font-size:2.5rem; color:#e5b842; margin-bottom:12px;"><i class="fa-solid fa-lock"></i></div>
+        <h3 style="margin:0 0 8px 0; font-size:1.2rem; color:#e5b842;">{{ t.login_required }}</h3>
+        <p style="font-size:0.9rem; color:#ccc; margin-bottom:20px; line-height:1.5;">{{ t.service_login_message }}</p>
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <a href="/login" style="flex:1; background:#e5b842; color:#120e0e; text-decoration:none; padding:10px 0; border-radius:8px; font-weight:bold; font-size:0.9rem;">{{ t.login }}</a>
+            <a href="/register" style="flex:1; background:transparent; border:1px solid #e5b842; color:#e5b842; text-decoration:none; padding:10px 0; border-radius:8px; font-weight:bold; font-size:0.9rem;">{{ t.register }}</a>
+        </div>
+        <button onclick="closeAuthModal()" style="background:none; border:none; color:#888; font-size:0.85rem; margin-top:15px; cursor:pointer;">{{ t.close }}</button>
+    </div>
+</div>
+
+<script>
+function requireAuth(event) {
+    if (event) event.preventDefault();
+    document.getElementById('authModal').style.display = 'flex';
+}
+function closeAuthModal() {
+    document.getElementById('authModal').style.display = 'none';
+}
+</script>

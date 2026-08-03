@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ direction }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>تسجيل الدخول - منصة السودان للتعدين</title>
+
+<style>
+body{
+    margin:0;
+    background:#0f080a;
+    color:#fff;
+    font-family:system-ui;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.card{
+    width:90%;
+    max-width:400px;
+    background:#180d10;
+    border:1px solid #3a2410;
+    border-radius:15px;
+    padding:30px;
+}
+
+h2{
+    text-align:center;
+    color:#d4af37;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #444;
+    background:#10090b;
+    color:white;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#d4af37;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+a{
+    color:#d4af37;
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>تسجيل الدخول</h2>
+
+<form id="loginForm">
+
+<input id="email" type="email" placeholder="{{ t.email }}" required>
+
+<div style="position:relative;">
+<input id="password" type="password" placeholder="{{ t.password }}" required style="padding-left:45px;">
+<button type="button" onclick="togglePassword()" 
+style="position:absolute; left:15px; top:50%; transform:translateY(-50%); z-index:2;
+background:none; border:none; color:#d4af37; width:auto; padding:0;">
+<i id="eyeIcon" class="fa-solid fa-eye"></i>
+</button>
+</div>
+
+<button type="submit">{{ t.login }}</button>
+
+</form>
+
+<p style="text-align:center">
+{{ t.no_account }}
+<a href="/register">{{ t.register }}</a>
+</p>
+
+<p id="message"></p>
+
+</div>
+
+
+<script>
+
+document.getElementById("loginForm").onsubmit = async function(e){
+
+e.preventDefault();
+
+let response = await fetch("/api/auth/login",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email:document.getElementById("email").value,
+password:document.getElementById("password").value
+})
+});
+
+
+let data = await response.json();
+
+if(response.ok){
+
+localStorage.setItem("token", data.access_token);
+localStorage.setItem("user", JSON.stringify(data.user));
+
+if(data.user.role === "ADMIN"){
+    window.location.href="/admin/dashboard";
+}
+else if(data.user.role === "MERCHANT"){
+    window.location.href="/workspace/dashboard";
+}
+else if(data.user.role === "BUYER"){
+    window.location.href="/buyer/dashboard";
+}
+else{
+    window.location.href="/visitor";
+}
+
+}else{
+
+document.getElementById("message").innerText =
+data.detail || "{{ t.invalid_credentials }}";
+
+}
+
+};
+
+function togglePassword(){
+    const input = document.getElementById("password");
+    const icon = document.getElementById("eyeIcon");
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.className = "fa fa-eye-slash";
+    }else{
+        input.type = "password";
+        icon.className = "fa fa-eye";
+    }
+}
+
+</script>
+
+</body>
+</html>

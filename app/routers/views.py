@@ -7,7 +7,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/", response_class=HTMLResponse)
 async def render_login_gateway(request: Request):
-    return templates.TemplateResponse("gateway.html", {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations})
+    return templates.TemplateResponse("login.html", {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations})
 
 @router.get("/explore", response_class=HTMLResponse)
 async def explore_page(request: Request):
@@ -32,7 +32,7 @@ async def opportunity_details_page(request: Request, opp_id: int):
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    return templates.TemplateResponse("gateway.html", {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations})
+    return templates.TemplateResponse("login.html", {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations})
 
 @router.get("/register", response_class=HTMLResponse)
 async def register_page(request: Request):

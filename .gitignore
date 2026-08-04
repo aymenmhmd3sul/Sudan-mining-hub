@@ -26,3 +26,10 @@ before_*
 *_old_backup*
 
 *before_*
+
+# Local backups and temporary files
+*.tar.gz
+cookies.txt
+*.diff
+*.bak
+*.backup*

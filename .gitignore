@@ -33,3 +33,10 @@ cookies.txt
 *.diff
 *.bak
 *.backup*
+
+# Project temporary tools and backups
+*_backup
+*_backup.*
+*_registry_backup
+*_ignore_*.py
+tools_*.py

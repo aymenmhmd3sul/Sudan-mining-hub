@@ -7,6 +7,7 @@ from sqlalchemy import func
 from app.security.auth import get_current_user
 from app.database import get_db
 from app.models.finance import Invoice, Escrow
+from app.models.marketplace import MiningAsset
 from app.models.operations import FinancialTransaction
 
 router = APIRouter(prefix="/merchant", tags=["Merchant"])
@@ -91,3 +92,42 @@ async def merchant_documents(request: Request):
 async def merchant_profile(request: Request):
     return templates.TemplateResponse("merchant/profile/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
             "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "profile"})
+
+
+@router.get("/assets", response_class=HTMLResponse)
+async def merchant_assets(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    assets = db.query(MiningAsset).filter(
+        MiningAsset.owner_id == current_user.id
+    ).all()
+
+    return templates.TemplateResponse(
+        "merchant/assets/index.html",
+        {
+            "request": request,
+            "assets": assets,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
+            "active_page": "assets"
+        }
+    )
+
+
+@router.get("/assets/new", response_class=HTMLResponse)
+async def merchant_new_asset(
+    request: Request,
+    current_user = Depends(get_current_user)
+):
+    return templates.TemplateResponse(
+        "merchant/assets/new.html",
+        {
+            "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
+            "active_page": "assets",
+            "merchant": current_user
+        }
+    )

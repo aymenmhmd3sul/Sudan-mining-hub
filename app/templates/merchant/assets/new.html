@@ -1,0 +1,48 @@
+{% extends "merchant/layout_v2.html" %}
+
+{% block title %}إضافة أصل جديد{% endblock %}
+
+{% block content %}
+
+<div class="smh-card smh-card-gold-accent">
+
+<h2>➕ إضافة أصل تعديني جديد</h2>
+
+<form method="post" action="/merchant/assets/create">
+
+<label>اسم الأصل</label>
+<input name="title" required>
+
+<label>الوصف</label>
+<textarea name="description"></textarea>
+
+<label>التصنيف الرئيسي</label>
+<input name="main_category" placeholder="معدات، مصنع، موقع تعدين">
+
+<label>التصنيف الفرعي</label>
+<input name="sub_category">
+
+<label>السعر</label>
+<input name="price" type="number">
+
+<label>العملة</label>
+<select name="currency">
+<option>USD</option>
+<option>SDG</option>
+</select>
+
+<label>الولاية</label>
+<input name="state_province">
+
+<label>المحلية</label>
+<input name="locality">
+
+<button class="smh-btn-gold" type="submit">
+نشر الأصل
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}

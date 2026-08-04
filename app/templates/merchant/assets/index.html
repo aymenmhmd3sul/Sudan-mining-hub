@@ -1,0 +1,42 @@
+{% extends "merchant/layout_v2.html" %}
+
+{% block title %}أصولي وإعلاناتي{% endblock %}
+
+{% block content %}
+
+<div class="smh-card smh-card-gold-accent">
+<h2>📦 أصولي وإعلاناتي</h2>
+
+<a href="/merchant/assets/new" class="smh-btn-gold">
++ إضافة أصل جديد
+</a>
+</div>
+
+<div class="smh-grid-2">
+
+{% for asset in assets %}
+
+<div class="smh-card">
+<h3>{{ asset.title }}</h3>
+
+<p>{{ asset.main_category }}</p>
+<p>💰 {{ asset.price }} {{ asset.currency }}</p>
+<p>📍 {{ asset.state_province }} - {{ asset.locality }}</p>
+
+<span class="smh-badge smh-badge-gold">
+{{ asset.status }}
+</span>
+
+</div>
+
+{% else %}
+
+<div class="smh-card">
+لا توجد أصول منشورة حالياً
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

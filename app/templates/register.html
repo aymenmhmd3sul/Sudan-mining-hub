@@ -42,17 +42,17 @@ color:#fbbf24;
 
 <div class="box">
 
-<h1>🔐 إنشاء حساب</h1>
+<h1>🔐 {{ t.create_account }}</h1>
 
 <p>
-سجل الآن للتفاوض وإدارة الصفقات في منصة السودان للتعدين.
+{{ t.register_description }}
 </p>
 
 <form id="registerForm">
-<input id="name" placeholder="الاسم" required>
-<input id="phone" placeholder="رقم الهاتف" required>
-<input id="email" placeholder="البريد الإلكتروني" required>
-<input id="password" placeholder="كلمة المرور" type="password" required>
+<input id="name" placeholder="{{ t.full_name }}" required>
+<input id="phone" placeholder="{{ t.phone_number }}" required>
+<input id="email" placeholder="{{ t.email_address }}" required>
+<input id="password" placeholder="{{ t.password }}" type="password" required>
 
 <select id="role" required style="width:100%;padding:12px;margin-top:10px;border-radius:10px;">
     <option value="buyer">مشتري</option>
@@ -61,7 +61,7 @@ color:#fbbf24;
 </select>
 
 <button type="submit">
-إنشاء الحساب
+{{ t.create_account_button }}
 </button>
 </form>
 
@@ -103,21 +103,21 @@ document.getElementById("registerForm").onsubmit = async function(e){
        style="display:block;background:#fbbf24;color:#111827;
        padding:12px;border-radius:10px;text-decoration:none;
        font-weight:bold;margin-bottom:10px;">
-       🔙 العودة للصفحة السابقة
+       🔙 {{ t.back_previous }}
     </a>
 
     <a href="/market"
        style="display:block;background:#1e293b;color:white;
        padding:12px;border-radius:10px;text-decoration:none;
        border:1px solid #334155;">
-       🔍 العودة لاستكشاف الفرص
+       🔍 {{ t.explore_opportunities }}
     </a>
 
 <a href="/"
 style="display:block;background:#0f172a;color:white;
 padding:12px;border-radius:10px;text-decoration:none;
 border:1px solid #334155;margin-top:10px;">
-🏠 العودة للواجهة الرئيسية
+🏠 {{ t.main_interface }}
 </a>
 
 </div>

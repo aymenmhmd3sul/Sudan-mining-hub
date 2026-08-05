@@ -546,7 +546,7 @@
         <a href="/" class="nav-item active"><i class="fa-solid fa-house"></i>{{ t.home }}</a>
         <a href="/showcase/equipment" class="nav-item" onclick="requireAuth('عرض {{ t.favorites }}')"><i class="fa-solid fa-heart"></i>{{ t.favorites }}</a>
         <div class="add-btn" onclick="requireAuth('{{ t.add_listing }}')"><i class="fa-solid fa-plus"></i></div>
-        <a href="/register" class="nav-item"><i class="fa-solid fa-user-plus"></i>{{ t.signup }}</a>
+        <a href="/register?lang={{ lang }}" class="nav-item"><i class="fa-solid fa-user-plus"></i>{{ t.signup }}</a>
         <a href="/login" class="nav-item"><i class="fa-solid fa-right-to-bracket"></i>{{ t.login }}</a>
     </nav>
 
@@ -573,7 +573,7 @@
             <p id="authActionText" style="color:var(--text-muted); font-size:0.8rem; margin-bottom:16px;"></p>
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <a href="/login" class="btn-action" style="text-decoration:none; text-align:center;">{{ t.login }}</a>
-                <a href="/register" class="btn-action" style="background:transparent; color:var(--gold-primary); border:1px solid var(--gold-primary); text-decoration:none; text-align:center;">{{ t.register }}</a>
+                <a href="/register?lang={{ lang }}" class="btn-action" style="background:transparent; color:var(--gold-primary); border:1px solid var(--gold-primary); text-decoration:none; text-align:center;">{{ t.register }}</a>
             </div>
             <button class="btn-secondary" onclick="closeModalDirect('authModal')">{{ t.cancel }}</button>
         </div>

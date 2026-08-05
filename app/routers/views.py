@@ -35,10 +35,35 @@ async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations})
 
 @router.get("/register", response_class=HTMLResponse)
-async def register_page(request: Request):
+async def register_page(request: Request, lang: str = "ar"):
+    from app.services.i18n import get_translations
+
+    request.state.lang = lang
+    request.state.direction = "rtl" if lang == "ar" else "ltr"
+    request.state.translations = get_translations(lang)
+
     return templates.TemplateResponse(
-        "register.html",
-        {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations}
+        "register_preview.html",
+        {
+            "request": request,
+            "lang": request.state.lang,
+            "direction": request.state.direction,
+            "t": request.state.translations
+        }
+    )
+
+
+
+@router.get("/preview/register", response_class=HTMLResponse)
+async def register_preview_page(request: Request):
+    return templates.TemplateResponse(
+        "register_preview.html",
+        {
+            "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": getattr(request.state, "direction", "rtl"),
+            "t": getattr(request.state, "translations", {})
+        }
     )
 
 

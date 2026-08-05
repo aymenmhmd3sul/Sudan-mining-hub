@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ direction }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ t['create_account'] }} - Sudan Mining Hub</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:"Tahoma",Arial,sans-serif;
+    background:
+    linear-gradient(135deg,#020617,#0f172a);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.logo h1{
+    color:#fbbf24;
+    font-size:28px;
+    margin:0;
+}
+
+.logo p{
+    color:#cbd5e1;
+    margin-top:8px;
+}
+
+.card{
+    background:#111827;
+    border:1px solid #334155;
+    border-radius:24px;
+    padding:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+
+h2{
+    text-align:center;
+    color:#f8fafc;
+}
+
+.subtitle{
+    text-align:center;
+    color:#94a3b8;
+    line-height:1.8;
+    margin-bottom:20px;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+    margin-bottom:12px;
+    border-radius:12px;
+    border:1px solid #475569;
+    background:#1e293b;
+    color:white;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#fbbf24;
+    color:#111827;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.links{
+    margin-top:20px;
+}
+
+.links a{
+    display:block;
+    text-align:center;
+    padding:13px;
+    margin-top:10px;
+    border-radius:12px;
+    text-decoration:none;
+    color:white;
+    background:#1e293b;
+    border:1px solid #334155;
+}
+
+.links a:first-child{
+    background:#fbbf24;
+    color:#111827;
+}
+
+.badge{
+    text-align:center;
+    margin-top:15px;
+    color:#64748b;
+    font-size:13px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">
+<h1>{{ t['platform_name'] }}</h1>
+<p>{{ t['business_gateway'] }}</p>
+</div>
+
+
+<div class="card">
+
+<h2>{{ t['create_account'] }}</h2>
+
+<div class="subtitle">
+{{ t['register_description'] }}
+</div>
+
+
+<form id="registerForm">
+
+<input id="name" placeholder="{{ t['full_name'] }}" required>
+
+<input id="phone" placeholder="{{ t['phone_number'] }}" required>
+
+<input id="email" placeholder="{{ t['email_address'] }}" required>
+
+<input id="password" type="password" placeholder="{{ t['password'] }}" required>
+
+
+<select id="role">
+<option value="buyer">{{ t['buyer'] }}</option>
+<option value="merchant">{{ t['merchant'] }}</option>
+<option value="agent">{{ t['agent'] }}</option>
+</select>
+
+
+<button>
+{{ t['create_account_button'] }}
+</button>
+
+</form>
+
+
+<div class="links">
+
+<a href="/visitor">
+{{ t['back_previous'] }}
+</a>
+
+<a href="/market">
+{{ t['explore_opportunities'] }}
+</a>
+
+<a href="/">
+{{ t['main_interface'] }}
+</a>
+
+</div>
+
+
+<div class="badge">
+Sudan Mining Hub
+</div>
+
+
+</div>
+</div>
+
+
+<script>
+
+document.getElementById("registerForm").onsubmit = async function(e){
+
+e.preventDefault();
+
+let res = await fetch("/api/auth/register",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+name:name.value,
+phone:phone.value,
+email:email.value,
+password:password.value,
+role:role.value
+
+})
+
+});
+
+
+let data = await res.json();
+
+if(data.status==="success"){
+alert("تم {{ t['create_account_button'] }} بنجاح");
+}else{
+alert(JSON.stringify(data));
+}
+
+};
+
+</script>
+
+
+</body>
+</html>

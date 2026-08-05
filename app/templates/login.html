@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<title>تسجيل الدخول - منصة السودان للتعدين</title>
+<title>{{ t['login'] }} - Sudan Mining Hub</title>
 
 <style>
 body{
@@ -64,7 +64,7 @@ a{
 
 <div class="card">
 
-<h2>تسجيل الدخول</h2>
+<h2>{{ t['login'] }}</h2>
 
 <form id="loginForm">
 
@@ -85,7 +85,7 @@ background:none; border:none; color:#d4af37; width:auto; padding:0;">
 
 <p style="text-align:center">
 {{ t.no_account }}
-<a href="/register">{{ t.register }}</a>
+<a href="/register?lang={{ lang }}">{{ t.register }}</a>
 </p>
 
 <p id="message"></p>

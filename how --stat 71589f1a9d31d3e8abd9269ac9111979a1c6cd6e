@@ -1,0 +1,23 @@
+[33mcommit 5af380172b5d8a14e0b1620a6fc4f098088a7d87[m
+Author: AYMEN MHMD <aymenmhmd3sul@users.noreply.github.com>
+Date:   Thu Jul 16 11:30:08 2026 +0200
+
+    Fix SQLAlchemy relationships and optional timestamps
+
+[33mcommit 71589f1a9d31d3e8abd9269ac9111979a1c6cd6e[m
+Author: AYMEN MHMD <aymenmhmd3sul@users.noreply.github.com>
+Date:   Wed Jul 8 05:24:07 2026 +0200
+
+    Feature: Integrate Investor & LOI core, update negotiation sub-system paths, and resolve baseline imports
+
+[33mcommit fcfc0e43f9a921e473cc10fd70b6c81e97a1b410[m
+Author: AYMEN MHMD <aymenmhmd3sul@users.noreply.github.com>
+Date:   Tue Jul 7 08:37:02 2026 +0200
+
+    feat: complete Market Core with CRUD, image upload and soft delete [Baseline v1.0]
+
+[33mcommit c3f76f916012210609e5a9b084e45f94cb2851c4[m
+Author: AYMEN MHMD <aymenmhmd3sul@users.noreply.github.com>
+Date:   Sun Jun 28 08:29:36 2026 +0200
+
+    fix dependencies for production deploy

@@ -12,7 +12,7 @@ from app.routers import (
     admin_subscription_plans,
     admin_views, auth, opportunities, chat, payments, admin,
     web, web_auth, admin_mining, mining_sites,
-    admin_subscriptions, views, language, merchant_views, marketplace, showcase
+    admin_subscriptions, views, language, merchant_views, marketplace, showcase, negotiation
 )
 app = FastAPI(title="Sudan Mining Hub")
 
@@ -55,6 +55,7 @@ app.include_router(admin_subscription_plans.router)
 app.include_router(mining_sites.router)
 app.include_router(marketplace.router)
 app.include_router(showcase.router)
+app.include_router(negotiation.router)
 
 @app.get("/")
 async def root():

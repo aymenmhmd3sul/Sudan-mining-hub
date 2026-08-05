@@ -23,6 +23,8 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(150), nullable=False)
+    full_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(150), unique=True, index=True, nullable=False)
     phone: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -44,10 +46,4 @@ class User(Base):
     is_importer: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_global_provider: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    @property
-    def full_name(self) -> str:
-        return self.name
 
-    @property
-    def hashed_password(self) -> str:
-        return self.password_hash

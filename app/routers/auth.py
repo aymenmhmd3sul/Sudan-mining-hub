@@ -26,13 +26,19 @@ class UserLogin(BaseModel):
 def register(user: UserRegister, db: Session = Depends(get_db)):
 
     existing = db.query(User).filter(
-        User.email == user.email
+        (User.email == user.email) |
+        (User.phone == user.phone)
     ).first()
 
     if existing:
+        if existing.email == user.email:
+            detail = "البريد الإلكتروني مسجل مسبقاً"
+        else:
+            detail = "رقم الهاتف مسجل مسبقاً"
+
         raise HTTPException(
             status_code=400,
-            detail="البريد الإلكتروني مسجل مسبقاً"
+            detail=detail
         )
 
     new_user = User(

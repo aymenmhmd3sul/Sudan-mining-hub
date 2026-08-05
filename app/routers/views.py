@@ -43,7 +43,7 @@ async def register_page(request: Request, lang: str = "ar"):
     request.state.translations = get_translations(lang)
 
     return templates.TemplateResponse(
-        "register_preview.html",
+        "register.html",
         {
             "request": request,
             "lang": request.state.lang,

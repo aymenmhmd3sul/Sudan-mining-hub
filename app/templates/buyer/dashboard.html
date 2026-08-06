@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="{{ lang|default('ar') }}" dir="{{ direction|default('rtl') }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة المشتري - منصة السودان للتعدين</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Tahoma,Arial,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:#f8fafc;
+    padding:20px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+.header{
+    background:#1e293b;
+    padding:20px;
+    border-radius:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+    border:1px solid #334155;
+}
+
+.title{
+    color:#fbbf24;
+    font-size:24px;
+}
+
+.user{
+    color:#94a3b8;
+}
+
+.btn{
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.grid{
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+    border:1px solid #334155;
+}
+
+.icon{
+    font-size:35px;
+}
+
+.number{
+    color:#fbbf24;
+    font-size:32px;
+    margin:10px;
+}
+
+.label{
+    color:#94a3b8;
+}
+
+.action{
+    margin-top:30px;
+    background:#1e293b;
+    padding:25px;
+    border-radius:18px;
+    border:1px solid #334155;
+}
+
+.create{
+    background:#fbbf24;
+    color:#0f172a;
+    padding:14px 25px;
+    border-radius:12px;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<div>
+<h1 class="title">⛏️ منصة السودان للتعدين</h1>
+<p class="user">
+مرحباً {{ user.name if user else 'المشتري' }}
+</p>
+</div>
+
+<button class="btn" onclick="logout()">تسجيل الخروج</button>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+<div class="icon">📦</div>
+<div class="number">0</div>
+<div class="label">طلباتي</div>
+</div>
+
+
+<div class="card">
+<div class="icon">🤝</div>
+<div class="number">0</div>
+<div class="label">العروض المستلمة</div>
+</div>
+
+
+<div class="card">
+<div class="icon">💬</div>
+<div class="number">0</div>
+<div class="label">المحادثات</div>
+</div>
+
+
+<div class="card">
+<div class="icon">✅</div>
+<div class="number">0</div>
+<div class="label">الصفقات</div>
+</div>
+
+</div>
+
+
+<div class="action">
+
+<h2>إنشاء طلب جديد</h2>
+
+<p style="color:#94a3b8;margin:15px 0;">
+اطلب معدات، خدمات، أو فرص تعدين وسيقوم التجار بالرد عليك بشكل خاص.
+</p>
+
+<button class="create">
+➕ إنشاء طلب
+</button>
+
+</div>
+
+
+</div>
+
+
+<script>
+function logout(){
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    window.location.href="/login";
+}
+</script>
+
+
+</body>
+</html>

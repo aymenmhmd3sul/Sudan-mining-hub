@@ -31,11 +31,11 @@ def web_login(
     if role == "ADMIN":
         redirect = "/admin/dashboard"
     elif role == "MERCHANT":
-        redirect = "/merchant"
+        redirect = "/merchant/workspace/dashboard"
+    elif role == "BUYER":
+        redirect = "/buyer/dashboard"
     elif role == "AGENT":
         redirect = "/agent"
-    elif role == "BUYER":
-        redirect = "/dashboard"
     else:
         redirect = "/visitor"
 

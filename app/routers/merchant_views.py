@@ -9,6 +9,7 @@ from app.database import get_db
 from app.models.finance import Invoice, Escrow
 from app.models.marketplace import MiningAsset
 from app.models.operations import FinancialTransaction
+from app.models.negotiation import MarketDeal
 
 router = APIRouter(prefix="/merchant", tags=["Merchant"])
 templates = Jinja2Templates(directory="app/templates")
@@ -41,6 +42,13 @@ async def merchant_dashboard(
         FinancialTransaction.status == "APPROVED"
     ).scalar() or 0
 
+            
+    recent_deals = db.query(MarketDeal).filter(
+        MarketDeal.seller_id == current_user.id
+    ).order_by(
+        MarketDeal.created_at.desc()
+    ).limit(5).all()
+
     return templates.TemplateResponse(
         "merchant/dashboard/index.html",
         {
@@ -51,7 +59,9 @@ async def merchant_dashboard(
             "merchant": current_user,
             "active_deals_count": active_deals_count,
             "escrow_balance": escrow_balance,
-            "available_balance": available_balance
+            "available_balance": available_balance,
+        "monthly_profit": 0,
+        "recent_deals": recent_deals
         }
     )
 

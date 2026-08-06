@@ -4,7 +4,8 @@ from datetime import datetime
 
 # 1. شيمات المستخدمين
 class UserBase(BaseModel):
-    full_name: str = Field(..., max_length=150)
+    name: str | None = None
+    full_name: str | None = Field(None, max_length=150)
     email: EmailStr = Field(...)
     role: str = Field("IMPORTER")
     is_active: bool = True

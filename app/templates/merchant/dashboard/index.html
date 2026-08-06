@@ -36,7 +36,7 @@
             <span class="smh-card-title">الصفقات النشطة</span>
             <span class="smh-card-icon">💼</span>
         </div>
-        <div class="smh-kpi-value text-cyan">{{ active_deals_count if active_deals_count is defined else '12' }}</div>
+        <div class="smh-kpi-value text-cyan">{{ active_deals_count if active_deals_count is defined else '0' }}</div>
         <div class="smh-kpi-subtext">3 صفقات قيد التسليم</div>
     </div>
 
@@ -46,7 +46,7 @@
             <span class="smh-card-title">حساب الضمان Escrow</span>
             <span class="smh-card-icon">🔐</span>
         </div>
-        <div class="smh-kpi-value text-gold">{{ escrow_balance if escrow_balance is defined else '4,850,000' }} <span style="font-size: 11px;">ج.س</span></div>
+        <div class="smh-kpi-value text-gold">{{ escrow_balance if escrow_balance is defined else '0' }} <span style="font-size: 11px;">ج.س</span></div>
         <div class="smh-kpi-subtext">محمية بعقود أمان</div>
     </div>
 
@@ -56,7 +56,7 @@
             <span class="smh-card-title">الرصيد المتاح</span>
             <span class="smh-card-icon">💰</span>
         </div>
-        <div class="smh-kpi-value text-green">{{ available_balance if available_balance is defined else '1,280,000' }} <span style="font-size: 11px;">ج.س</span></div>
+        <div class="smh-kpi-value text-green">{{ available_balance if available_balance is defined else '0' }} <span style="font-size: 11px;">ج.س</span></div>
         <div class="smh-kpi-subtext">جاهز للسحب الفوري</div>
     </div>
 
@@ -66,7 +66,7 @@
             <span class="smh-card-title">أرباح الشهر</span>
             <span class="smh-card-icon">📈</span>
         </div>
-        <div class="smh-kpi-value text-purple">{{ monthly_profit if monthly_profit is defined else '+18.5%' }}</div>
+        <div class="smh-kpi-value text-purple">{{ monthly_profit if monthly_profit is defined else '0%' }}</div>
         <div class="smh-kpi-subtext">مقارنة بالشهر السابق</div>
     </div>
 </div>
@@ -111,29 +111,29 @@
         <a href="/merchant/deals" style="color: var(--smh-gold); font-size: 12px; text-decoration: none; font-weight: 700;">عرض الكل ←</a>
     </div>
     
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <div style="font-size: 13px; font-weight: 700;">توريد خام ذهب - 500 جرام</div>
-                <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">العميل: شركة نهر النيل للتعدين</div>
-            </div>
-            <div style="text-align: left;">
-                <span class="smh-badge smh-badge-gold">قيد التنفيذ</span>
-                <div style="font-size: 12px; font-weight: 800; color: var(--smh-gold); margin-top: 4px;">18,500,000 ج.س</div>
-            </div>
-        </div>
-
-        <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <div style="font-size: 13px; font-weight: 700;">تأجير طاحونة كرات تعدين</div>
-                <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">الموقع: قضارف - موقع 4</div>
-            </div>
-            <div style="text-align: left;">
-                <span class="smh-badge smh-badge-green">مكتملة</span>
-                <div style="font-size: 12px; font-weight: 800; color: var(--smh-green); margin-top: 4px;">2,400,000 ج.س</div>
-            </div>
-        </div>
-    </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+{% if recent_deals %}
+{% for deal in recent_deals %}
+          <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                  <div style="font-size: 13px; font-weight: 700;">
+                      {{ deal.asset.name if deal.asset else 'صفقة تجارية' }}
+                  </div>
+                  <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">
+                      العميل: {{ deal.buyer.name if deal.buyer else 'غير محدد' }}
+                  </div>
+              </div>
+              <div style="text-align: left;">
+                  <span class="smh-badge smh-badge-gold">{{ deal.status }}</span>
+              </div>
+          </div>
+{% endfor %}
+{% else %}
+          <div style="text-align:center; color:var(--smh-text-muted); padding:20px;">
+              لا توجد صفقات تجارية حالياً
+          </div>
+{% endif %}
+      </div>
 </div>
 
 <!-- 5. التنبيهات والأمان -->

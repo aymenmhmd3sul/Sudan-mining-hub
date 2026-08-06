@@ -118,14 +118,17 @@ if(response.ok){
 localStorage.setItem("token", data.access_token);
 localStorage.setItem("user", JSON.stringify(data.user));
 
-if(data.user.role === "ADMIN"){
+if(data.user.role.toUpperCase() === "ADMIN"){
     window.location.href="/admin/dashboard";
 }
-else if(data.user.role === "MERCHANT"){
-    window.location.href="/workspace/dashboard";
+else if(data.user.role.toLowerCase() === "merchant"){
+    window.location.href="/merchant/workspace/dashboard";
 }
-else if(data.user.role === "BUYER"){
+else if(data.user.role.toLowerCase() === "buyer"){
     window.location.href="/buyer/dashboard";
+}
+else if(data.user.role.toLowerCase() === "agent"){
+    window.location.href="/agent";
 }
 else{
     window.location.href="/visitor";

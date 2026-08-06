@@ -70,3 +70,15 @@ async def register_preview_page(request: Request):
 @router.get("/visitor", response_class=HTMLResponse)
 async def visitor_page(request: Request):
     return templates.TemplateResponse("visitor.html", {"request": request, "lang": request.state.lang, "direction": request.state.direction, "t": request.state.translations})
+
+
+@router.get("/buyer/dashboard", response_class=HTMLResponse)
+async def buyer_dashboard(request: Request):
+    return templates.TemplateResponse(
+        "buyer/dashboard.html",
+        {
+            "request": request,
+            "active_page": "dashboard",
+            "lang": getattr(request.state, "lang", "ar")
+        }
+    )

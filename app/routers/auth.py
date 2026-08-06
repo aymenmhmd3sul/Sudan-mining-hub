@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Response
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
@@ -56,6 +56,14 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        max_age=3600,
+        samesite="lax"
+    )
+
     return {
         "status": "success",
         "user_id": new_user.id
@@ -65,7 +73,8 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(
     user: UserLogin,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    response: Response = None
 ):
 
     db_user = db.query(User).filter(
@@ -92,6 +101,14 @@ def login(
             "sub": db_user.email,
             "role": str(db_user.role)
         }
+    )
+
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        max_age=3600,
+        samesite="lax"
     )
 
     return {

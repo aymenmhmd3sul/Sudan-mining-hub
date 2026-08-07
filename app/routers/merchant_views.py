@@ -10,7 +10,7 @@ from app.models.finance import Invoice, Escrow
 from app.models.user import User
 from app.models.marketplace import MiningAsset
 from app.models.operations import FinancialTransaction
-from app.models.negotiation import MarketDeal
+from app.models.negotiation import MarketDeal, NegotiationMessage
 from app.viewmodels.merchant_dashboard import map_invoice
 
 router = APIRouter(prefix="/merchant", tags=["Merchant"])
@@ -115,9 +115,45 @@ async def merchant_deals(
     )
 
 @router.get("/negotiation", response_class=HTMLResponse)
-async def merchant_negotiation(request: Request):
-    return templates.TemplateResponse("merchant/negotiation/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
-            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "negotiation"})
+async def merchant_negotiation(
+    request: Request,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    rooms = db.query(MarketDeal).filter(
+        MarketDeal.seller_id == current_user.id
+    ).order_by(
+        MarketDeal.updated_at.desc()
+    ).all()
+
+    negotiation_rooms = []
+
+    for room in rooms:
+        last_message = db.query(NegotiationMessage).filter(
+            NegotiationMessage.room_id == room.id
+        ).order_by(
+            NegotiationMessage.created_at.desc()
+        ).first()
+
+        negotiation_rooms.append({
+            "id": room.id,
+            "buyer_name": room.buyer.name if room.buyer else f"المشتري {room.buyer_id}",
+            "status": room.status,
+            "message": last_message.message if last_message else "لا توجد رسائل",
+            "updated_at": room.updated_at
+        })
+
+    return templates.TemplateResponse(
+        "merchant/negotiation/index.html",
+        {
+            "request": request,
+            "rooms": negotiation_rooms,
+            "rooms_count": len(negotiation_rooms),
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
+            "active_page": "negotiation"
+        }
+    )
 
 @router.get("/negotiation/room/{room_id}", response_class=HTMLResponse)
 async def merchant_negotiation_room(request: Request, room_id: int):

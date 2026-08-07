@@ -14,44 +14,57 @@
                 💼 الصفقات والعقود النشطة
             </h2>
         </div>
-        <span class="smh-badge smh-badge-green">3 صفقات جاريه</span>
+        <span class="smh-badge smh-badge-green">{{ deals_count }} صفقة</span>
     </div>
 </div>
 
 <!-- قائمة الصفقات -->
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
-    <!-- صفقة 1 -->
-    <div class="smh-card" style="margin-bottom: 0;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <span class="smh-badge smh-badge-gold" style="font-size: 10px;">خام ذهب</span>
-                <h3 style="font-size: 14px; font-weight: 700; color: var(--smh-text-primary); margin: 6px 0 2px 0;">توريد 500 جرام ذهب خام</h3>
-                <p style="font-size: 11px; color: var(--smh-text-muted); margin: 0;">العميل: شركة نهر النيل للتعدين</p>
-            </div>
-            <span class="smh-badge smh-badge-cyan">في مرحلة Escrow</span>
-        </div>
-        <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; font-weight: 700; color: var(--smh-gold);">18,500,000 ج.س</span>
-            <a href="/merchant/negotiation" class="smh-btn-gold" style="padding: 6px 12px; font-size: 11px; text-decoration: none;">تفاصيل الصفحة</a>
-        </div>
-    </div>
+    {% if deals %}
+        {% for deal in deals %}
+        <div class="smh-card" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <span class="smh-badge smh-badge-gold" style="font-size: 10px;">
+                        صفقة تجارية
+                    </span>
 
-    <!-- صفقة 2 -->
-    <div class="smh-card" style="margin-bottom: 0;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <span class="smh-badge smh-badge-cyan" style="font-size: 10px;">معدات ثقيلة</span>
-                <h3 style="font-size: 14px; font-weight: 700; color: var(--smh-text-primary); margin: 6px 0 2px 0;">تأجير طاحونة كرات كبرى</h3>
-                <p style="font-size: 11px; color: var(--smh-text-muted); margin: 0;">العميل: أعمال القضارف للتعدين</p>
+                    <h3 style="font-size: 14px; font-weight: 700; color: var(--smh-text-primary); margin: 6px 0 2px 0;">
+                        {{ deal.title }}
+                    </h3>
+
+                    <p style="font-size: 11px; color: var(--smh-text-muted); margin: 0;">
+                        العميل: {{ deal.buyer_name }}
+                    </p>
+                </div>
+
+                <span class="smh-badge smh-badge-cyan">
+                    {{ deal.status }}
+                </span>
             </div>
-            <span class="smh-badge smh-badge-green">مكتملة وموقعة</span>
+
+            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; font-weight: 700; color: var(--smh-gold);">
+                    {{ deal.amount }}
+                </span>
+
+                <a href="/merchant/negotiation"
+                   class="smh-btn-gold"
+                   style="padding: 6px 12px; font-size: 11px; text-decoration: none;">
+                    تفاصيل الصفقة
+                </a>
+            </div>
         </div>
-        <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; font-weight: 700; color: var(--smh-gold);">4,200,000 ج.س</span>
-            <span style="font-size: 10px; color: var(--smh-text-muted);">عقد إلكتروني موثق</span>
+        {% endfor %}
+    {% else %}
+        <div class="smh-card">
+            <p style="text-align: center; color: var(--smh-text-muted); margin: 0;">
+                لا توجد صفقات مسجلة حالياً.
+            </p>
         </div>
-    </div>
+    {% endif %}
 
 </div>
 {% endblock %}
+

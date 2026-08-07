@@ -73,8 +73,8 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(
     user: UserLogin,
-    db: Session = Depends(get_db),
-    response: Response = None
+    response: Response,
+    db: Session = Depends(get_db)
 ):
 
     db_user = db.query(User).filter(

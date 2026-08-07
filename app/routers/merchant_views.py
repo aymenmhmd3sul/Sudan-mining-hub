@@ -7,9 +7,11 @@ from sqlalchemy import func
 from app.security.auth import get_current_user
 from app.database import get_db
 from app.models.finance import Invoice, Escrow
+from app.models.user import User
 from app.models.marketplace import MiningAsset
 from app.models.operations import FinancialTransaction
 from app.models.negotiation import MarketDeal
+from app.viewmodels.merchant_dashboard import map_invoice
 
 router = APIRouter(prefix="/merchant", tags=["Merchant"])
 templates = Jinja2Templates(directory="app/templates")
@@ -32,7 +34,8 @@ async def merchant_dashboard(
         Invoice,
         Escrow.invoice_id == Invoice.id
     ).filter(
-        Invoice.seller_id == current_user.id
+        Invoice.seller_id == current_user.id,
+        Escrow.status == "HELD"
     ).scalar() or 0
 
     available_balance = db.query(
@@ -42,12 +45,29 @@ async def merchant_dashboard(
         FinancialTransaction.status == "APPROVED"
     ).scalar() or 0
 
+    # NOTE:
+    # Temporary calculation until commission engine activation.
+    # Future version will calculate true merchant net profit
+    # after commissions, fees and taxes.
+
+    monthly_profit = db.query(
+        func.sum(Invoice.total_amount)
+    ).filter(
+        Invoice.seller_id == current_user.id,
+        Invoice.status.in_(["PAID", "completed"])
+    ).scalar() or 0
+
             
-    recent_deals = db.query(MarketDeal).filter(
-        MarketDeal.seller_id == current_user.id
+    recent_invoices = db.query(Invoice).filter(
+        Invoice.seller_id == current_user.id
     ).order_by(
-        MarketDeal.created_at.desc()
+        Invoice.created_at.desc()
     ).limit(5).all()
+
+    recent_deals = [
+        map_invoice(invoice)
+        for invoice in recent_invoices
+    ]
 
     return templates.TemplateResponse(
         "merchant/dashboard/index.html",
@@ -60,15 +80,39 @@ async def merchant_dashboard(
             "active_deals_count": active_deals_count,
             "escrow_balance": escrow_balance,
             "available_balance": available_balance,
-        "monthly_profit": 0,
+        "monthly_profit": monthly_profit,
         "recent_deals": recent_deals
         }
     )
 
 @router.get("/deals", response_class=HTMLResponse)
-async def merchant_deals(request: Request):
-    return templates.TemplateResponse("merchant/deals/index.html", {"request": request, "lang": getattr(request.state, "lang", "ar"),
-            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr", "active_page": "deals"})
+async def merchant_deals(
+    request: Request,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    invoices = db.query(Invoice).filter(
+        Invoice.seller_id == current_user.id
+    ).order_by(
+        Invoice.created_at.desc()
+    ).all()
+
+    deals = [
+        map_invoice(invoice)
+        for invoice in invoices
+    ]
+
+    return templates.TemplateResponse(
+        "merchant/deals/index.html",
+        {
+            "request": request,
+            "lang": getattr(request.state, "lang", "ar"),
+            "direction": "rtl" if getattr(request.state, "lang", "ar") == "ar" else "ltr",
+            "active_page": "deals",
+            "deals": deals,
+            "deals_count": len(deals)
+        }
+    )
 
 @router.get("/negotiation", response_class=HTMLResponse)
 async def merchant_negotiation(request: Request):

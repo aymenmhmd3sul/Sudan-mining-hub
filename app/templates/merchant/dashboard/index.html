@@ -117,14 +117,17 @@
           <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
               <div>
                   <div style="font-size: 13px; font-weight: 700;">
-                      {{ deal.asset.name if deal.asset else 'صفقة تجارية' }}
+                      {{ deal.title }}
                   </div>
                   <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">
-                      العميل: {{ deal.buyer.name if deal.buyer else 'غير محدد' }}
+                      العميل: {{ deal.buyer_name }}
                   </div>
               </div>
               <div style="text-align: left;">
                   <span class="smh-badge smh-badge-gold">{{ deal.status }}</span>
+                  <div style="font-size: 12px; font-weight: 800; color: var(--smh-gold); margin-top: 4px;">
+                      {{ deal.amount }}
+                  </div>
               </div>
           </div>
 {% endfor %}

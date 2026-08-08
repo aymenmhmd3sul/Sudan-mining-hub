@@ -1,10 +1,9 @@
 import os
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix="/admin", tags=["Admin Views"])
-templates = Jinja2Templates(directory="app/templates")
+from app.services.templates import templates
 
 # الداش بورد الرئيسي للمشرف
 @router.get("", response_class=HTMLResponse)

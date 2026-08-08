@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 
 router = APIRouter(
     prefix="/admin",
     tags=["Admin Negotiation Page"]
 )
 
-templates = Jinja2Templates(directory="app/templates")
+from app.services.templates import templates
 
 
 @router.get("/negotiation-room/{room_id}", response_class=HTMLResponse)

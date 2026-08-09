@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="{{ lang|default('ar') }}" dir="{{ direction|default('rtl') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Sudan Mining Hub{% endblock %}</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+        }
+
+        .buyer-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 14px 20px;
+            background: #111827;
+            color: white;
+        }
+
+        .buyer-nav a {
+            color: white;
+            text-decoration: none;
+            margin-inline: 7px;
+        }
+
+        .buyer-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .buyer-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        }
+
+        .buyer-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .buyer-links a {
+            display: block;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 10px;
+            color: #111827;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="buyer-nav">
+    <strong>Sudan Mining Hub</strong>
+
+    <div>
+        <a href="/buyer/dashboard">لوحة المشتري</a>
+        <a href="/buyer/opportunities">الفرص</a>
+        <a href="/buyer/requests">طلباتي</a>
+        <a href="/buyer/negotiation">التفاوض</a>
+        <a href="/buyer/deals">الصفقات</a>
+        <a href="/buyer/finance">المالية</a>
+        <a href="/buyer/profile">الملف الشخصي</a>
+    </div>
+</nav>
+
+<main class="buyer-container">
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

@@ -1,38 +1,151 @@
 import os
+
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
-router = APIRouter(prefix="/admin", tags=["Admin Views"])
-from app.services.templates import templates
+from app.services.templates import templates, template_context
 
-# الداش بورد الرئيسي للمشرف
+
+router = APIRouter(
+    prefix="/admin",
+    tags=["Admin Views"]
+)
+
+
+# ============================================================
+# ADMIN DASHBOARD
+# ============================================================
+
 @router.get("", response_class=HTMLResponse)
 @router.get("/", response_class=HTMLResponse)
 @router.get("/dashboard", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
-    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context={"active_tab": "dashboard"})
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/dashboard.html",
+        context=template_context(
+            request,
+            {
+                "active_tab": "dashboard"
+            }
+        )
+    )
 
-# معالج كافة أقسام القائمة الجانبية المنسدلة
+
+# ============================================================
+# ADMIN MODULE ROUTER
+# ============================================================
+
 @router.get("/{module_name}", response_class=HTMLResponse)
 @router.get("/{module_name}/{subpath:path}", response_class=HTMLResponse)
-async def render_admin_module(request: Request, module_name: str, subpath: str = ""):
+async def render_admin_module(
+    request: Request,
+    module_name: str,
+    subpath: str = ""
+):
 
-    # استثناء وحدة Escrow حتى لا يلتقطها الـ wildcard العام
+    # --------------------------------------------------------
+    # Escrow special route
+    # --------------------------------------------------------
+
     if module_name == "finance" and subpath == "escrow":
+
         return templates.TemplateResponse(
             request=request,
             name="admin/finance/escrow.html",
-            context={"active_tab": "escrow"}
+            context=template_context(
+                request,
+                {
+                    "active_tab": "escrow"
+                }
+            )
         )
 
-    # تحويل الشرطة العادية إلى سفليّة لتطابق مجلدات القوالب
-    normalized_module = module_name.replace('-', '_')
-    template_path = f"admin/{normalized_module}/index.html"
-    full_path = os.path.join("app/templates", template_path)
-    
-    context = {"active_tab": module_name, "room_id": subpath if subpath else "1"}
-    
+    # --------------------------------------------------------
+    # Normalize module name
+    # --------------------------------------------------------
+
+    normalized_module = module_name.replace("-", "_")
+
+    # --------------------------------------------------------
+    # First try sub-module template
+    #
+    # Example:
+    # /admin/marketplace/buys
+    #
+    # -> admin/marketplace/buys/index.html
+    # --------------------------------------------------------
+
+    if subpath:
+
+        normalized_subpath = subpath.strip("/")
+
+        sub_template_path = (
+            f"admin/{normalized_module}/"
+            f"{normalized_subpath}/index.html"
+        )
+
+        sub_full_path = os.path.join(
+            "app/templates",
+            sub_template_path
+        )
+
+        if os.path.exists(sub_full_path):
+
+            context = template_context(
+                request,
+                {
+                    "active_tab": module_name,
+                    "room_id": normalized_subpath
+                }
+            )
+
+            return templates.TemplateResponse(
+                request=request,
+                name=sub_template_path,
+                context=context
+            )
+
+    # --------------------------------------------------------
+    # Standard module template
+    #
+    # Example:
+    # /admin/marketplace
+    #
+    # -> admin/marketplace/index.html
+    # --------------------------------------------------------
+
+    template_path = (
+        f"admin/{normalized_module}/index.html"
+    )
+
+    full_path = os.path.join(
+        "app/templates",
+        template_path
+    )
+
+    context = template_context(
+        request,
+        {
+            "active_tab": module_name,
+            "room_id": subpath if subpath else "1"
+        }
+    )
+
     if os.path.exists(full_path):
-        return templates.TemplateResponse(request=request, name=template_path, context=context)
-    
-    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context=context)
+
+        return templates.TemplateResponse(
+            request=request,
+            name=template_path,
+            context=context
+        )
+
+    # --------------------------------------------------------
+    # Fallback
+    # --------------------------------------------------------
+
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/dashboard.html",
+        context=context
+    )

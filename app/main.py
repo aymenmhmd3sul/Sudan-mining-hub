@@ -1,4 +1,5 @@
-from app.routers import legal
+from app.routers import buyer_views
+from app.routers import legal, merchant_views
 from app.routes.admin.escrow import router as escrow_router
 import os
 from fastapi import FastAPI, Request
@@ -8,6 +9,7 @@ from fastapi.responses import HTMLResponse
 
 from app.routers import admin_views
 from app.routers import language
+from app.routers import negotiation
 
 try:
     from app.routers import admin_negotiation_page, admin_negotiation_actions, admin_negotiation_details
@@ -65,8 +67,11 @@ async def serve_login_page(request: Request):
 if auth and hasattr(auth, 'router'):
     app.include_router(auth.router)
 
+app.include_router(buyer_views.router)
+app.include_router(merchant_views.router)
 app.include_router(admin_views.router)
 app.include_router(language.router)
+app.include_router(negotiation.router)
 app.include_router(legal.router)
 
 if admin_negotiation_page and hasattr(admin_negotiation_page, 'router'):

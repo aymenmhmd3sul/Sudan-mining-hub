@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{ lang|default('ar') }}" dir="{{ direction|default('rtl') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sudan Mining Hub{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+        }
+        .merchant-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .merchant-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: #111827;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .merchant-nav a {
+            color: white;
+            text-decoration: none;
+            margin-inline: 8px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="merchant-nav">
+        <strong>Sudan Mining Hub</strong>
+        <div>
+            <a href="/merchant">لوحة التاجر</a>
+            <a href="/merchant/negotiation">التفاوض</a>
+            <a href="/merchant/deals">الصفقات</a>
+            <a href="/merchant/finance">المالية</a>
+        </div>
+    </nav>
+
+    <main class="merchant-container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

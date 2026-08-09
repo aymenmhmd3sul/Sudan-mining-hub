@@ -135,7 +135,27 @@ async def login(request: Request, db: Session = Depends(get_db)):
             "role": getattr(user.role, "value", user.role)
         }
     )
-        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin/dashboard"})
+        role_value = getattr(user.role, "value", user.role)
+        role_value = str(role_value).upper()
+
+        if role_value == "ADMIN":
+            redirect = "/admin/dashboard"
+        elif role_value in ("MERCHANT", "SELLER"):
+            redirect = "/merchant/dashboard"
+        elif role_value == "BUYER":
+            redirect = "/buyer/dashboard"
+        elif role_value == "AGENT":
+            redirect = "/explore"
+        else:
+            redirect = "/explore"
+
+        response = JSONResponse(
+            content={
+                "status": "success",
+                "message": "تم الدخول بنجاح",
+                "redirect": redirect
+            }
+        )
         response.set_cookie(
             key="access_token",
             value=f"Bearer {access_token}",
@@ -166,9 +186,9 @@ def get_my_profile(current_user: User = Depends(get_current_user)):
         "id": current_user.id,
         "name": getattr(current_user, "name", getattr(current_user, "full_name", "Admin")),
         "email": current_user.email,
-        "phone": current_user.phone,
+        "phone": getattr(current_user, "phone", None),
         "role": getattr(current_user.role, "value", current_user.role),
         "status": getattr(current_user.status, "value", current_user.status),
-        "country": current_user.country,
-        "language": current_user.language
+        "country": getattr(current_user, "country", "SD"),
+        "language": getattr(current_user, "language", "ar")
     }

@@ -48,6 +48,29 @@ def get_current_user(
         if not user.is_active:
             raise Exception("Inactive user")
             
+        # التحقق من الحالة الحالية للحساب في قاعدة البيانات.
+        # يمنع استخدام JWT قديم بعد تعليق/رفض الحساب.
+        if not getattr(user, "is_active", True):
+            raise Exception("Inactive user")
+
+        status_value = getattr(user, "status", None)
+        status_value = getattr(status_value, "value", status_value)
+
+        if status_value is not None:
+            normalized_status = str(status_value).strip().lower()
+            if normalized_status != "active":
+                raise Exception("Account is not active")
+
+        # Authorization role comes from the verified JWT claim.
+        # The JWT has already been cryptographically verified above.
+        jwt_role = payload.get("role")
+        if not jwt_role:
+            raise Exception("Missing role claim")
+
+        # Keep DB identity/status checks, but expose the authenticated
+        # JWT role to the role-based authorization dependencies.
+        user.role = str(jwt_role).strip().lower()
+
         return user
     except Exception as e:
         print("AUTH_ERROR:", repr(e))

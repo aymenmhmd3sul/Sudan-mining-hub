@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
 from app.models.negotiation import MarketDeal, Offer
+from app.core.dependencies import verify_admin_token
 
 
 router = APIRouter(
@@ -22,7 +23,8 @@ def get_db():
 @router.post("/negotiation-room/{room_id}/close")
 def close_room(
     room_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(verify_admin_token)
 ):
 
     room = db.query(MarketDeal).filter(
@@ -48,7 +50,8 @@ def close_room(
 @router.post("/offer/{offer_id}/accept")
 def accept_offer(
     offer_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(verify_admin_token)
 ):
 
     offer = db.query(Offer).filter(
@@ -81,7 +84,8 @@ def accept_offer(
 @router.post("/offer/{offer_id}/reject")
 def reject_offer(
     offer_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(verify_admin_token)
 ):
 
     offer = db.query(Offer).filter(

@@ -1,9 +1,10 @@
 import os
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 
 from app.services.templates import templates, template_context
+from app.core.dependencies import verify_admin_token
 
 
 router = APIRouter(
@@ -19,7 +20,7 @@ router = APIRouter(
 @router.get("", response_class=HTMLResponse)
 @router.get("/", response_class=HTMLResponse)
 @router.get("/dashboard", response_class=HTMLResponse)
-async def admin_dashboard(request: Request):
+async def admin_dashboard(request: Request, current_user=Depends(verify_admin_token)):
     return templates.TemplateResponse(
         request=request,
         name="admin/dashboard.html",
@@ -41,7 +42,8 @@ async def admin_dashboard(request: Request):
 async def render_admin_module(
     request: Request,
     module_name: str,
-    subpath: str = ""
+    subpath: str = "",
+    current_user=Depends(verify_admin_token),
 ):
 
     # --------------------------------------------------------

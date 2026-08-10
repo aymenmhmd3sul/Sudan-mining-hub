@@ -167,17 +167,37 @@ async def login(request: Request, db: Session = Depends(get_db)):
 
     return JSONResponse(status_code=401, content={"detail": "خطأ في البريد الإلكتروني أو كلمة المرور"})
 @router.post("/request-role")
-def request_role_upgrade(req: RoleUpgradeRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """طلب تعديل الصلاحيات أو الترقية لأدوار حيوية كـ MERCHANT أو AGENT"""
+def request_role_upgrade(
+    req: RoleUpgradeRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """تسجيل طلب ترقية دون منح الصلاحية مباشرة للمستخدم."""
+
     if req.requested_role == UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="لا يمكن طلب صلاحيات مدير النظام يدوياً."
         )
-    
-    current_user.role = req.requested_role
-    db.commit()
-    return {"message": f"✅ تم الانتقال إلى دور ({req.requested_role.value}) بنجاح."}
+
+    # منع التصعيد الذاتي للصلاحيات.
+    # أي دور مميز يجب أن يُمنح فقط عبر مسار اعتماد إداري موثوق.
+    privileged_roles = {
+        UserRole.MERCHANT,
+        UserRole.AGENT,
+    }
+
+    if req.requested_role in privileged_roles:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="لا يمكن منح الصلاحية ذاتياً. يجب اعتماد طلب الترقية من الإدارة."
+        )
+
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="طلب الدور غير صالح."
+    )
+
 
 @router.get("/me")
 def get_my_profile(current_user: User = Depends(get_current_user)):

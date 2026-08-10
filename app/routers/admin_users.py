@@ -4,6 +4,7 @@ from typing import Optional
 
 from app.core.db import SessionLocal
 from app.security.auth import get_current_user
+from app.models.user import UserRole, UserStatus
 
 router = APIRouter(
     prefix="/api/admin/users",
@@ -12,7 +13,8 @@ router = APIRouter(
 
 
 def verify_admin_role(current_user=Depends(get_current_user)):
-    if str(current_user.role) not in ["ADMIN", "admin", "superadmin", "UserRole.ADMIN"]:
+    role = getattr(current_user.role, "value", current_user.role)
+    if str(role).lower() != UserRole.ADMIN.value.lower():
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="غير مصرح لك بدخول لوحة التحكم الإدارية"
@@ -51,8 +53,15 @@ def get_user_stats(current_admin=Depends(verify_admin_role)):
     db = SessionLocal()
     
     total_res = db.execute(text("SELECT COUNT(*) FROM users")).scalar() or 0
-    active_res = db.execute(text("SELECT COUNT(*) FROM users WHERE status = 'ACTIVE'")).scalar() or 0
-    banned_res = db.execute(text("SELECT COUNT(*) FROM users WHERE status = 'BANNED'")).scalar() or 0
+    active_res = db.execute(
+        text("SELECT COUNT(*) FROM users WHERE LOWER(status) = LOWER(:status)"),
+        {"status": UserStatus.ACTIVE.value},
+    ).scalar() or 0
+
+    suspended_res = db.execute(
+        text("SELECT COUNT(*) FROM users WHERE LOWER(status) = LOWER(:status)"),
+        {"status": UserStatus.SUSPENDED.value},
+    ).scalar() or 0
     
     db.close()
 
@@ -61,7 +70,7 @@ def get_user_stats(current_admin=Depends(verify_admin_role)):
         "data": {
             "total_users": total_res,
             "active_users": active_res,
-            "banned_users": banned_res
+            "suspended_users": suspended_res
         }
     }
 
@@ -72,7 +81,14 @@ def toggle_user_status(
     new_status: str,
     current_admin=Depends(verify_admin_role)
 ):
-    if new_status not in ["ACTIVE", "BANNED"]:
+    normalized_status = str(new_status).strip().lower()
+
+    allowed_statuses = {
+        UserStatus.ACTIVE.value,
+        UserStatus.SUSPENDED.value,
+    }
+
+    if normalized_status not in allowed_statuses:
         raise HTTPException(
             status_code=400,
             detail="حالة حساب غير قانونية"
@@ -101,7 +117,7 @@ def toggle_user_status(
         WHERE LOWER(email)=LOWER(:email)
         """),
         {
-            "status": new_status,
+            "status": normalized_status,
             "email": user_email
         }
     )
@@ -121,7 +137,11 @@ def change_user_role(
     current_admin=Depends(verify_admin_role)
 ):
     """تعديل صلاحيات ودور المستخدم"""
-    if new_role not in ["ADMIN", "USER", "admin", "user"]:
+    normalized_role = str(new_role).strip().lower()
+
+    allowed_roles = {role.value for role in UserRole}
+
+    if normalized_role not in allowed_roles:
         raise HTTPException(
             status_code=400,
             detail="دور غير صالح"
@@ -150,7 +170,7 @@ def change_user_role(
         WHERE LOWER(email)=LOWER(:email)
         """),
         {
-            "role": new_role,
+            "role": normalized_role,
             "email": user_email
         }
     )
@@ -159,5 +179,5 @@ def change_user_role(
     db.close()
 
     return {
-        "message": f"تم تغيير دور المستخدم إلى {new_role}"
+        "message": f"تم تغيير دور المستخدم إلى {normalized_role}"
     }

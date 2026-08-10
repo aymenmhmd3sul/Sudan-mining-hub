@@ -42,3 +42,32 @@ def require_any_user(current_user: User = Depends(get_current_user)):
         "email": current_user.email,
         "full_name": current_user.full_name
     }
+
+
+def require_role(required_role: str):
+    def checker(current_user: User = Depends(get_current_user)):
+        if not current_user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="جلسة العمل غير صالحة"
+            )
+
+        role = getattr(current_user.role, "value", current_user.role)
+
+        if str(role).lower() != required_role.lower():
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"غير مصرح: يتطلب دور {required_role}"
+            )
+
+        return current_user
+
+    return checker
+
+
+def require_buyer(current_user: User = Depends(get_current_user)):
+    return require_role("buyer")(current_user)
+
+
+def require_merchant(current_user: User = Depends(get_current_user)):
+    return require_role("merchant")(current_user)

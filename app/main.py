@@ -8,6 +8,7 @@ from app.translations import TRANSLATIONS
 from fastapi.responses import HTMLResponse
 
 from app.routers import admin_views
+from app.routers import admin_users
 from app.routers import language
 from app.routers import negotiation
 
@@ -24,6 +25,15 @@ except ImportError:
     auth = None
 
 app = FastAPI(title="Sudan Mining Hub")
+
+
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "ok",
+        "service": "Sudan Mining Hub"
+    }
+
 
     
 @app.middleware("http")
@@ -70,6 +80,7 @@ if auth and hasattr(auth, 'router'):
 app.include_router(buyer_views.router)
 app.include_router(merchant_views.router)
 app.include_router(admin_views.router)
+app.include_router(admin_users.router)
 app.include_router(language.router)
 app.include_router(negotiation.router)
 app.include_router(legal.router)

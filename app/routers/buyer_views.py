@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from app.services.templates import templates, template_context
+from app.core.dependencies import require_buyer
+from fastapi import Depends
 
-router = APIRouter(prefix="/buyer", tags=["Buyer"])
+router = APIRouter(
+    prefix="/buyer",
+    tags=["Buyer"],
+    dependencies=[Depends(require_buyer)]
+)
 
 
 def render(request: Request, page: str):

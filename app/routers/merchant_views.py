@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from app.services.templates import templates, template_context
+from app.core.dependencies import require_merchant
+from fastapi import Depends
 
-router = APIRouter(prefix="/merchant", tags=["Merchant"])
+router = APIRouter(
+    prefix="/merchant",
+    tags=["Merchant"],
+    dependencies=[Depends(require_merchant)]
+)
 
 
 @router.get("", response_class=HTMLResponse)

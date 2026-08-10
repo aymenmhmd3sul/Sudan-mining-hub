@@ -1,21 +1,21 @@
 {% extends "admin/layout.html" %}
 
 {% block title %}
-غرفة التفاوض
+{{ t("ui_0536") }}ة التفاوض
 {% endblock %}
 
 
 {% block content %}
 
 <h1 style="font-size:28px;margin-bottom:20px">
-🤝 تفاصيل غرفة التفاوض
+{{ t("ui_0230") }} التفاوض
 </h1>
 
 
 <div class="cards">
 
 <div class="card">
-<h3>رقم الغرفة</h3>
+<h3>{{ t("ui_0179") }} ال{{ t("ui_0536") }}ة</h3>
 <h1 id="room_id">-</h1>
 </div>
 
@@ -34,7 +34,7 @@
 
 <div class="placeholder-card">
 
-<h2>👥 الأطراف</h2>
+<h2>👥 {{ t("ui_0087") }}</h2>
 
 <p id="parties"></p>
 
@@ -62,7 +62,7 @@
 <thead>
 <tr>
 <th>القيمة</th>
-<th>العملة</th>
+<th>{{ t("ui_0191") }}</th>
 <th>الحالة</th>
 </tr>
 </thead>

@@ -5,11 +5,11 @@
     <!-- الهيدر -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
         <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>🛠️ إدارة الخدمات والتجهيزات</span>
+            <span>{{ t("ui_0309") }}</span>
         </h1>
-        <p class="text-xs text-gray-400 mb-4">متابعة طلبات الخدمات اللوجستية، تأجير المعدات، والاستشارات الفنية</p>
+        <p class="text-xs text-gray-400 mb-4">متابعة طلبات الخدمات اللوجستية، تأجير {{ t('equipment') }}، والاستشارات الفنية</p>
         <button type="button" onclick="openCreateModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
-            + إضافة خدمة / طلب جديد
+            {{ t("ui_0311") }}
         </button>
     </div>
 
@@ -17,25 +17,25 @@
     <div class="grid grid-cols-2 gap-3">
         <!-- إجمالي الخدمات (الكل) -->
         <div id="card-all" onclick="filterBy('all')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95 shadow-lg shadow-amber-500/10">
-            <span class="text-[11px] text-gray-400">إجمالي الطلبات 📊</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0105") }}</span>
             <span class="text-lg font-bold text-amber-400 mt-1" id="stat-all-count">3</span>
         </div>
 
-        <!-- نشطة / متاحة -->
+        <!-- {{ t("ui_0318") }} / {{ t("ui_0265") }} -->
         <div id="card-active" onclick="filterBy('active')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-emerald-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">خدمات نشطة ⚙️</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0312") }}</span>
             <span class="text-lg font-bold text-emerald-400 mt-1" id="stat-active-count">2</span>
         </div>
 
-        <!-- قيد التنفيذ -->
+        <!-- {{ t('deals_in_progress') }} -->
         <div id="card-in_progress" onclick="filterBy('in_progress')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-blue-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">قيد التنفيذ ⏳</span>
+            <span class="text-[11px] text-gray-400">{{ t('deals_in_progress') }} ⏳</span>
             <span class="text-lg font-bold text-blue-400 mt-1" id="stat-in_progress-count">1</span>
         </div>
 
-        <!-- مكتملة / معلقة -->
+        <!-- {{ t("ui_0287") }} / {{ t("ui_0170") }}ة -->
         <div id="card-completed" onclick="filterBy('completed')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-purple-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">مكتملة ✅</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0313") }}</span>
             <span class="text-lg font-bold text-purple-400 mt-1" id="stat-completed-count">0</span>
         </div>
     </div>
@@ -43,13 +43,13 @@
     <!-- كارت القائمة والجدول -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
         <div class="text-xs font-bold text-white flex items-center justify-between">
-            <span>📋 قائمة الخدمات والتجهيزات المتاحة</span>
+            <span>{{ t("ui_0314") }}</span>
         </div>
 
-        <!-- شريط البحث -->
+        <!-- شريط ال{{ t("ui_0066") }} -->
         <div class="flex gap-2">
-            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="بحث باسم الخدمة أو مزود الخدمة..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">🔍 بحث</button>
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="{{ t("ui_0066") }} باسم الخدمة أو مزود الخدمة..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">{{ t("ui_0031") }}</button>
         </div>
 
         <!-- الجدول -->
@@ -57,39 +57,39 @@
             <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
                 <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
                     <tr>
-                        <th class="py-3 px-3">رقم</th>
-                        <th class="py-3 px-3">اسم الخدمة / التجهيز</th>
-                        <th class="py-3 px-3">الحالة</th>
-                        <th class="py-3 px-3">التكلفة التقديرية</th>
-                        <th class="py-3 px-3 text-center">التفاصيل</th>
+                        <th class="py-3 px-3">{{ t("ui_0179") }}</th>
+                        <th class="py-3 px-3">{{ t("ui_0315") }}</th>
+                        <th class="py-3 px-3">{{ t('status') }}</th>
+                        <th class="py-3 px-3">{{ t("ui_0316") }}</th>
+                        <th class="py-3 px-3 text-center">{{ t('details') }}</th>
                     </tr>
                 </thead>
                 <tbody id="services-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
-                    <tr class="service-row hover:bg-gray-700/40 transition" data-id="301" data-title="تأجير حافارات وكسارات ثقيلة" data-status="active" data-status-label="نشطة" data-price="2,500 USD / شهر" data-provider="شركة الخدمات الهندسية">
+                    <tr class="service-row hover:bg-gray-700/40 transition" data-id="301" data-title="{{ t("ui_0317") }}" data-status="active" data-status-label="{{ t("ui_0318") }}" data-price="2,500 {{ t('currency_usd') }} / شهر" data-provider="شركة الخدمات الهندسية">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#301</td>
-                        <td class="py-3 px-3 text-white font-bold">تأجير حافارات وكسارات ثقيلة</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">نشطة</span></td>
-                        <td class="py-3 px-3 font-bold text-amber-400">2,500 USD / شهر</td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0317") }}</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">{{ t("ui_0318") }}</span></td>
+                        <td class="py-3 px-3 font-bold text-amber-400">2,500 {{ t('currency_usd') }} / شهر</td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
-                    <tr class="service-row hover:bg-gray-700/40 transition" data-id="302" data-title="استشارات مسح جيولوجي وتحليل عينات" data-status="active" data-status-label="نشطة" data-price="1,200 USD" data-provider="مكتب الجيولوجيين المتحدين">
+                    <tr class="service-row hover:bg-gray-700/40 transition" data-id="302" data-title="{{ t("ui_0320") }}" data-status="active" data-status-label="{{ t("ui_0318") }}" data-price="1,200 {{ t('currency_usd') }}" data-provider="مكتب الجيولوجيين المتحدين">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#302</td>
-                        <td class="py-3 px-3 text-white font-bold">استشارات مسح جيولوجي وتحليل عينات</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">نشطة</span></td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0320") }}</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">{{ t("ui_0318") }}</span></td>
                         <td class="py-3 px-3 font-bold text-amber-400">1,200 USD</td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
-                    <tr class="service-row hover:bg-gray-700/40 transition" data-id="303" data-title="صيانة وتجديد أجهزة استخلاص الذهب" data-status="in_progress" data-status-label="قيد التنفيذ" data-price="850,000 SDG" data-provider="ورشة النيل للصيانة والتجهيزات">
+                    <tr class="service-row hover:bg-gray-700/40 transition" data-id="303" data-title="{{ t("ui_0321") }}" data-status="in_progress" data-status-label="{{ t('deals_in_progress') }}" data-price="850,000 {{ t('currency_sdg') }}" data-provider="ورشة النيل للصيانة والتجهيزات">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#303</td>
-                        <td class="py-3 px-3 text-white font-bold">صيانة وتجديد أجهزة استخلاص الذهب</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">قيد التنفيذ</span></td>
-                        <td class="py-3 px-3 font-bold text-amber-400">850,000 SDG</td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0321") }}</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">{{ t('deals_in_progress') }}</span></td>
+                        <td class="py-3 px-3 font-bold text-amber-400">850,000 {{ t('currency_sdg') }}</td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
                 </tbody>
@@ -98,83 +98,83 @@
     </div>
 </div>
 
-<!-- Modal إضافة خدمة جديدة -->
+<!-- Modal {{ t("ui_0251") }} خدمة جديدة -->
 <div id="modal-create" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-xs">➕ إضافة خدمة أو تجهيز جديد</h3>
+            <h3 class="text-white font-bold text-xs">{{ t("ui_0322") }}</h3>
             <button type="button" onclick="closeModal('modal-create')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
         </div>
         <form onsubmit="addNewService(event)" class="space-y-3">
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">اسم الخدمة / التجهيز</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0315") }}</label>
                 <input type="text" id="new-title" required placeholder="مثال: صيانة مولدات سعة 500 كافيا" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">مزود الخدمة / الشركة</label>
-                <input type="text" id="new-provider" required placeholder="مثال: شركة التعدين الحديثة" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0323") }}</label>
+                <input type="text" id="new-provider" required placeholder="مثال: شركة {{ t('mining') }} الحديثة" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">حالة الخدمة</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0324") }}</label>
                 <select id="new-status" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-                    <option value="active">نشطة</option>
-                    <option value="in_progress">قيد التنفيذ</option>
-                    <option value="completed">مكتملة</option>
+                    <option value="active">{{ t("ui_0318") }}</option>
+                    <option value="in_progress">{{ t('deals_in_progress') }}</option>
+                    <option value="completed">{{ t("ui_0287") }}</option>
                 </select>
             </div>
             <div class="grid grid-cols-3 gap-2">
                 <div class="col-span-2">
-                    <label class="block text-[11px] text-gray-300 mb-1">التكلفة التقديرية</label>
+                    <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0316") }}</label>
                     <input type="number" id="new-price" required placeholder="0" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[11px] text-gray-300 mb-1">العملة</label>
+                    <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0191") }}</label>
                     <select id="new-curr" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
                         <option value="USD">USD</option>
-                        <option value="SDG">SDG</option>
+                        <option value="{{ t('currency_sdg') }}">SDG</option>
                     </select>
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إضافة الخدمة</button>
-                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">{{ t("ui_0325") }}</button>
+                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">{{ t('cancel') }}</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal التفاصيل -->
+<!-- Modal {{ t('details') }} -->
 <div id="modal-detail" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-xs">🛠️ تفاصيل الخدمة</h3>
+            <h3 class="text-white font-bold text-xs">{{ t("ui_0326") }}</h3>
             <button type="button" onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
         </div>
         <div class="space-y-3 text-xs">
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">اسم الخدمة:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t("ui_0327") }}</span>
                 <p class="text-white font-bold text-sm mt-0.5" id="view-title">-</p>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                    <span class="text-gray-400 block text-[10px]">رقم الخدمة:</span>
+                    <span class="text-gray-400 block text-[10px]">{{ t("ui_0328") }}</span>
                     <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-id">-</p>
                 </div>
                 <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                    <span class="text-gray-400 block text-[10px]">الحالة:</span>
+                    <span class="text-gray-400 block text-[10px]">{{ t('status') }}:</span>
                     <p class="text-emerald-400 font-bold mt-0.5" id="view-status">-</p>
                 </div>
             </div>
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">مزود الخدمة:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t("ui_0329") }}</span>
                 <p class="text-gray-200 font-bold mt-0.5" id="view-provider">-</p>
             </div>
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">التكلفة التقديرية:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t("ui_0330") }}</span>
                 <p class="text-amber-400 font-bold mt-0.5" id="view-price">-</p>
             </div>
         </div>
-        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">إغلاق</button>
+        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">{{ t('close') }}</button>
     </div>
 </div>
 
@@ -272,7 +272,7 @@ function addNewService(e) {
     const newId = 300 + document.querySelectorAll('.service-row').length + 1;
 
     let statusLabel = 'نشطة';
-    if (status === 'in_progress') statusLabel = 'قيد التنفيذ';
+    if (status === 'in_progress') statusLabel = '{{ t('deals_in_progress') }}';
     if (status === 'completed') statusLabel = 'مكتملة';
 
     const tbody = document.getElementById('services-table-body');

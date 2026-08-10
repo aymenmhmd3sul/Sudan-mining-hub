@@ -10,12 +10,12 @@ Merchant Dashboard
 
 <header class="merchant-header">
     <div>
-        <h1>لوحة التاجر</h1>
-        <p>إدارة الأعمال والصفقات والضمانات عبر منصة السودان للتعدين</p>
+        <h1>{{ t("ui_0413") }} {{ t('merchant') }}</h1>
+        <p>إدارة الأعمال و{{ t('deals') }} و{{ t("ui_0484") }}ات عبر منصة السودان للتعدين</p>
     </div>
 
     <div class="language-switch">
-        🌐 العربية | English
+        🌐 {{ t('arabic') }} | English
     </div>
 </header>
 
@@ -23,41 +23,41 @@ Merchant Dashboard
 <section class="merchant-cards">
 
 <div class="merchant-card trust">
-    <h3>الثقة والاعتماد</h3>
-    <p>حالة التاجر: قيد التوثيق</p>
-    <span>طلب اعتماد تاجر موثوق</span>
+    <h3>{{ t("ui_0481") }}</h3>
+    <p>حالة {{ t('merchant') }}: قيد التوثيق</p>
+    <span>{{ t("ui_0483") }}</span>
 </div>
 
 
 <div class="merchant-card guarantee">
-    <h3>الضمان</h3>
-    <p>لا يوجد ضمان نشط حالياً</p>
-    <span>حساب بنكي | أصل | ذهب ضمان</span>
+    <h3>{{ t("ui_0484") }}</h3>
+    <p>{{ t("ui_0485") }}</p>
+    <span>{{ t("ui_0486") }}</span>
 </div>
 
 
 <div class="merchant-card deals">
-    <h3>الصفقات</h3>
-    <p>إدارة العروض والعقود والتوريد</p>
+    <h3>{{ t('deals') }}</h3>
+    <p>إدارة {{ t('offers') }} و{{ t('contracts') }} والتوريد</p>
 </div>
 
 
 <div class="merchant-card finance">
-    <h3>المركز المالي</h3>
-    <p>الفواتير والتسويات</p>
-    <span>عمولة المنصة مدمجة في الاتفاق</span>
+    <h3>{{ t("ui_0488") }}</h3>
+    <p>{{ t("ui_0489") }}</p>
+    <span>{{ t("ui_0490") }}</span>
 </div>
 
 
 <div class="merchant-card negotiation">
-    <h3>التفاوض الذكي</h3>
-    <p>مترجم عربي - English للمفاوضات الخارجية</p>
+    <h3>{{ t('negotiation') }} {{ t("ui_0491") }}</h3>
+    <p>{{ t("ui_0492") }}</p>
 </div>
 
 
 <div class="merchant-card documents">
-    <h3>خزينة المستندات</h3>
-    <p>عقود وفواتير وسجلات قابلة للإبراز</p>
+    <h3>{{ t("ui_0493") }}</h3>
+    <p>{{ t("ui_0494") }}</p>
 </div>
 
 </section>
@@ -65,13 +65,13 @@ Merchant Dashboard
 
 <section class="merchant-status">
 
-<h2>مركز العمليات</h2>
+<h2>{{ t("ui_0495") }}</h2>
 
 <ul>
-<li>طلبات التوريد الخارجية</li>
-<li>تسوية الفواتير الدولية</li>
-<li>إشعارات الضمان للجهات الخارجية</li>
-<li>سجل الصفقات والتوثيق</li>
+<li>{{ t("ui_0496") }}</li>
+<li>{{ t("ui_0497") }}</li>
+<li>{{ t("ui_0498") }}</li>
+<li>سجل {{ t('deals') }} والتوثيق</li>
 </ul>
 
 </section>

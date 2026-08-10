@@ -6,55 +6,55 @@
     <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex justify-between items-center">
         <div>
             <h1 class="text-xl font-bold text-white flex items-center gap-2">
-                🛡️ إدارة حسابات الضمان (Escrow)
+                {{ t("ui_0078") }}
             </h1>
-            <p class="text-gray-400 text-xs mt-1">وحدة مستقلة: متابعة المبالغ المحجوزة، الصفقات المعلقة، وإدارة النزاعات</p>
+            <p class="text-gray-400 text-xs mt-1">وحدة مستقلة: متابعة المبالغ ال{{ t("ui_0090") }}ة، {{ t('deals') }} ال{{ t("ui_0170") }}ة، وإدارة النزاعات</p>
         </div>
         <span class="bg-green-500/10 text-green-400 border border-green-500/20 text-xs px-3 py-1.5 rounded-lg font-mono">
-            المبالغ المحجوزة: $88,200
+            {{ t("ui_0080") }}
         </span>
     </div>
 
-    <!-- كروت البيانات الإحصائية -->
+    <!-- كروت {{ t("ui_0146") }} الإحصائية -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
-            <p class="text-gray-400 text-xs">صفقات قيد التنفيذ</p>
-            <p class="text-xl font-bold text-yellow-400 mt-1">12 صفقة</p>
+            <p class="text-gray-400 text-xs">{{ t("ui_0081") }} {{ t('deals_in_progress') }}</p>
+            <p class="text-xl font-bold text-yellow-400 mt-1">{{ t("ui_0082_12") }}</p>
         </div>
         <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
-            <p class="text-gray-400 text-xs">بانتظار الموافقة</p>
+            <p class="text-gray-400 text-xs">{{ t("ui_0083") }}</p>
             <p class="text-xl font-bold text-blue-400 mt-1">$35,000</p>
         </div>
         <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
-            <p class="text-gray-400 text-xs">نزاعات مفتوحة</p>
-            <p class="text-xl font-bold text-red-400 mt-1">1 حالة</p>
+            <p class="text-gray-400 text-xs">{{ t("ui_0084") }}</p>
+            <p class="text-xl font-bold text-red-400 mt-1">{{ t("ui_0085_1") }}</p>
         </div>
     </div>
 
-    <!-- جدول صفقات Escrow -->
+    <!-- جدول {{ t("ui_0081") }} Escrow -->
     <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
         <div class="p-4 border-b border-gray-700 font-bold text-white text-sm">
-            🔒 سجل صفقات الضمان النشطة
+            {{ t("ui_0086") }}
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-right text-xs text-gray-300">
                 <thead class="bg-gray-900/50 text-gray-400">
                     <tr>
-                        <th class="p-3">رقم العملية</th>
-                        <th class="p-3">الأطراف</th>
-                        <th class="p-3">المبلغ</th>
-                        <th class="p-3">الحالة</th>
-                        <th class="p-3">الإجراء</th>
+                        <th class="p-3">{{ t('operation_number') }}</th>
+                        <th class="p-3">{{ t("ui_0087") }}</th>
+                        <th class="p-3">{{ t('amount') }}</th>
+                        <th class="p-3">{{ t('status') }}</th>
+                        <th class="p-3">{{ t("ui_0088") }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-700">
                     <tr>
                         <td class="p-3 font-mono text-yellow-400">ESC-2026-001</td>
-                        <td class="p-3">شركة التعدين الأهلية ⬅️ مطاحن المكراد</td>
+                        <td class="p-3">شركة {{ t('mining') }} الأهلية ⬅️ مطاحن المكراد</td>
                         <td class="p-3 font-bold text-white">$45,000</td>
-                        <td class="p-3"><span class="bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded text-xs">محجوز</span></td>
+                        <td class="p-3"><span class="bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded text-xs">{{ t("ui_0090") }}</span></td>
                         <td class="p-3">
-                            <button class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs">إفراج عن المبلغ</button>
+                            <button class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs">{{ t("ui_0091") }} {{ t('amount') }}</button>
                         </td>
                     </tr>
                 </tbody>

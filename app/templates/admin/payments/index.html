@@ -5,11 +5,11 @@
     <!-- الهيدر -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
         <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>💳 إدارة المدفوعات والاشتراكات</span>
+            <span>{{ t("ui_0277") }}</span>
         </h1>
-        <p class="text-xs text-gray-400 mb-4">متابعة الفواتير، اشتراكات الموردين، وتوثيق المعاملات المالية</p>
+        <p class="text-xs text-gray-400 mb-4">{{ t("ui_0278") }} {{ t('finance') }}</p>
         <button type="button" onclick="openCreateModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
-            + تسجيل عملية دفع جديدة
+            {{ t("ui_0279") }}
         </button>
     </div>
 
@@ -17,25 +17,25 @@
     <div class="grid grid-cols-2 gap-3">
         <!-- إجمالي العمليات (الكل) -->
         <div id="card-all" onclick="filterBy('all')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95 shadow-lg shadow-amber-500/10">
-            <span class="text-[11px] text-gray-400">إجمالي المعاملات 📊</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0280") }}</span>
             <span class="text-lg font-bold text-amber-400 mt-1" id="stat-all-count">3</span>
         </div>
 
         <!-- مدفوعات ناجحة -->
         <div id="card-completed" onclick="filterBy('completed')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-emerald-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">مدفوعات مكتملة ✅</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0281") }}</span>
             <span class="text-lg font-bold text-emerald-400 mt-1" id="stat-completed-count">2</span>
         </div>
 
-        <!-- قيد الانتظار -->
+        <!-- {{ t("ui_0185") }} -->
         <div id="card-pending" onclick="filterBy('pending')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-blue-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">قيد التأكيد ⏳</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0282") }}</span>
             <span class="text-lg font-bold text-blue-400 mt-1" id="stat-pending-count">1</span>
         </div>
 
         <!-- فاشلة / مستردة -->
         <div id="card-failed" onclick="filterBy('failed')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-purple-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">مرفوضة / مستردة ❌</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0283") }}</span>
             <span class="text-lg font-bold text-purple-400 mt-1" id="stat-failed-count">0</span>
         </div>
     </div>
@@ -43,13 +43,13 @@
     <!-- كارت القائمة والجدول -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
         <div class="text-xs font-bold text-white flex items-center justify-between">
-            <span>📋 سجل العمليات المالية (انقر التفاصيل)</span>
+            <span>📋 سجل العمليات {{ t('finance') }} (انقر {{ t('details') }})</span>
         </div>
 
-        <!-- شريط البحث -->
+        <!-- شريط ال{{ t("ui_0066") }} -->
         <div class="flex gap-2">
-            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="بحث باسم العميل أو رقم العملية..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">🔍 بحث</button>
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="{{ t("ui_0066") }} باسم العميل أو {{ t('operation_number') }}..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">{{ t("ui_0031") }}</button>
         </div>
 
         <!-- الجدول -->
@@ -57,39 +57,39 @@
             <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
                 <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
                     <tr>
-                        <th class="py-3 px-3">رقم</th>
-                        <th class="py-3 px-3">العميل / المعاملة</th>
-                        <th class="py-3 px-3">الحالة</th>
-                        <th class="py-3 px-3">المبلغ</th>
-                        <th class="py-3 px-3 text-center">التفاصيل</th>
+                        <th class="py-3 px-3">{{ t("ui_0179") }}</th>
+                        <th class="py-3 px-3">{{ t("ui_0285") }}</th>
+                        <th class="py-3 px-3">{{ t('status') }}</th>
+                        <th class="py-3 px-3">{{ t('amount') }}</th>
+                        <th class="py-3 px-3 text-center">{{ t('details') }}</th>
                     </tr>
                 </thead>
                 <tbody id="payments-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
-                    <tr class="payment-row hover:bg-gray-700/40 transition" data-id="501" data-title="اشتراك سنوي - شركة التعدين المتقدمة" data-status="completed" data-status-label="مكتملة" data-price="1,200 USD">
+                    <tr class="payment-row hover:bg-gray-700/40 transition" data-id="501" data-title="اشتراك سنوي - شركة {{ t('mining') }} المتقدمة" data-status="completed" data-status-label="{{ t("ui_0287") }}" data-price="1,200 {{ t('currency_usd') }}">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#501</td>
-                        <td class="py-3 px-3 text-white font-bold">اشتراك سنوي - شركة التعدين المتقدمة</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">مكتملة</span></td>
-                        <td class="py-3 px-3 font-bold text-emerald-400">1,200 USD</td>
+                        <td class="py-3 px-3 text-white font-bold">اشتراك سنوي - شركة {{ t('mining') }} المتقدمة</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">{{ t("ui_0287") }}</span></td>
+                        <td class="py-3 px-3 font-bold text-emerald-400">1,200 {{ t('currency_usd') }}</td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
-                    <tr class="payment-row hover:bg-gray-700/40 transition" data-id="502" data-title="رسوم توثيق صفقة بيع خام" data-status="completed" data-status-label="مكتملة" data-price="450,000 SDG">
+                    <tr class="payment-row hover:bg-gray-700/40 transition" data-id="502" data-title="{{ t("ui_0288") }}" data-status="completed" data-status-label="{{ t("ui_0287") }}" data-price="450,000 {{ t('currency_sdg') }}">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#502</td>
-                        <td class="py-3 px-3 text-white font-bold">رسوم توثيق صفقة بيع خام</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">مكتملة</span></td>
-                        <td class="py-3 px-3 font-bold text-emerald-400">450,000 SDG</td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0288") }}</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">{{ t("ui_0287") }}</span></td>
+                        <td class="py-3 px-3 font-bold text-emerald-400">450,000 {{ t('currency_sdg') }}</td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
-                    <tr class="payment-row hover:bg-gray-700/40 transition" data-id="503" data-title="ترقية حساب توريد زئبق" data-status="pending" data-status-label="قيد التأكيد" data-price="300 USD">
+                    <tr class="payment-row hover:bg-gray-700/40 transition" data-id="503" data-title="{{ t("ui_0289") }}" data-status="pending" data-status-label="{{ t("ui_0290") }}" data-price="300 {{ t('currency_usd') }}">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#503</td>
-                        <td class="py-3 px-3 text-white font-bold">ترقية حساب توريد زئبق</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">قيد التأكيد</span></td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0289") }}</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">{{ t("ui_0290") }}</span></td>
                         <td class="py-3 px-3 font-bold text-emerald-400">300 USD</td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
                 </tbody>
@@ -98,75 +98,75 @@
     </div>
 </div>
 
-<!-- Modal إضافة عملية دفع -->
+<!-- Modal {{ t("ui_0251") }} عملية دفع -->
 <div id="modal-create" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-xs">➕ تسجيل عملية دفع جديدة</h3>
+            <h3 class="text-white font-bold text-xs">{{ t("ui_0291") }}</h3>
             <button type="button" onclick="closeModal('modal-create')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
         </div>
         <form onsubmit="addNewPayment(event)" class="space-y-3">
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">اسم العميل / بيان الدفع</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0292") }}</label>
                 <input type="text" id="new-title" required placeholder="مثال: رسوم اشتراك شهري" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">حالة الدفع</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0293") }}</label>
                 <select id="new-status" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-                    <option value="completed">مكتملة</option>
-                    <option value="pending">قيد التأكيد</option>
-                    <option value="failed">مرفوضة / مستردة</option>
+                    <option value="completed">{{ t("ui_0287") }}</option>
+                    <option value="pending">{{ t("ui_0290") }}</option>
+                    <option value="failed">{{ t("ui_0294") }}</option>
                 </select>
             </div>
             <div class="grid grid-cols-3 gap-2">
                 <div class="col-span-2">
-                    <label class="block text-[11px] text-gray-300 mb-1">المبلغ</label>
+                    <label class="block text-[11px] text-gray-300 mb-1">{{ t('amount') }}</label>
                     <input type="number" id="new-price" required placeholder="0" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[11px] text-gray-300 mb-1">العملة</label>
+                    <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0191") }}</label>
                     <select id="new-curr" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
                         <option value="USD">USD</option>
-                        <option value="SDG">SDG</option>
+                        <option value="{{ t('currency_sdg') }}">SDG</option>
                     </select>
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">حفظ العملية</button>
-                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">{{ t('save') }} {{ t("ui_0295") }}</button>
+                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">{{ t('cancel') }}</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal التفاصيل -->
+<!-- Modal {{ t('details') }} -->
 <div id="modal-detail" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-xs">💳 تفاصيل المعاملة المالية</h3>
+            <h3 class="text-white font-bold text-xs">{{ t("ui_0296") }} {{ t('finance') }}</h3>
             <button type="button" onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
         </div>
         <div class="space-y-3 text-xs">
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">البيان / العميل:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t("ui_0297") }}</span>
                 <p class="text-white font-bold text-sm mt-0.5" id="view-title">-</p>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                    <span class="text-gray-400 block text-[10px]">رقم العملية:</span>
+                    <span class="text-gray-400 block text-[10px]">{{ t('operation_number') }}:</span>
                     <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-id">-</p>
                 </div>
                 <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                    <span class="text-gray-400 block text-[10px]">حالة الدفع:</span>
+                    <span class="text-gray-400 block text-[10px]">{{ t("ui_0298") }}</span>
                     <p class="text-emerald-400 font-bold mt-0.5" id="view-status">-</p>
                 </div>
             </div>
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">المبلغ المدفوع:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t('amount') }} {{ t("ui_0299") }}</span>
                 <p class="text-emerald-400 font-bold mt-0.5" id="view-price">-</p>
             </div>
         </div>
-        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">إغلاق</button>
+        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">{{ t('close') }}</button>
     </div>
 </div>
 

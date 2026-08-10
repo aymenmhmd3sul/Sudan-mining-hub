@@ -1,11 +1,11 @@
 <div class="module-container" style="padding: 20px; color: #fff; background: #1a1a1a; border-radius: 12px;">
     <h3 style="border-bottom: 2px solid #cc0000; padding-bottom: 10px; color: #cc0000; display: flex; align-items: center; gap: 10px;">
-        <i class="fa fa-file-signature"></i> إدارة المستثمرين وعقود ومركز الفرص (LOIs)
+        <i class="fa fa-file-signature"></i> إدارة المستثمرين وعقود ومركز {{ t('opportunities') }} (LOIs)
     </h3>
     
     <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
         <div style="background: #262626; padding: 15px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 4px solid #cc0000;">
-            <h4 style="margin: 0; color: #aaa; font-size: 14px;">الفرص الاستثمارية النشطة</h4>
+            <h4 style="margin: 0; color: #aaa; font-size: 14px;">{{ t('opportunities') }} {{ t("ui_0544") }}</h4>
             <p id="stat-active-opps" style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0; color: #fff;">...</p>
         </div>
     </div>
@@ -14,15 +14,15 @@
         <table style="width: 100%; border-collapse: collapse; background: #222; border-radius: 8px; overflow: hidden; text-align: right;">
             <thead>
                 <tr style="background: #cc0000; color: #fff;">
-                    <th style="padding: 12px;">العنوان</th>
-                    <th style="padding: 12px;">النوع</th>
-                    <th style="padding: 12px;">المبلغ المستهدف</th>
-                    <th style="padding: 12px;">الوصف</th>
+                    <th style="padding: 12px;">{{ t("ui_0545") }}</th>
+                    <th style="padding: 12px;">{{ t('type') }}</th>
+                    <th style="padding: 12px;">{{ t('amount') }} {{ t("ui_0546") }}</th>
+                    <th style="padding: 12px;">{{ t("ui_0547") }}</th>
                 </tr>
             </thead>
             <tbody id="opportunities-table-body">
                 <tr>
-                    <td colspan="4" style="text-align: center; padding: 20px; color: #888;">🔄 جاري استدعاء حقول قاعدة البيانات حية...</td>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #888;">{{ t("ui_0548") }}</td>
                 </tr>
             </tbody>
         </table>

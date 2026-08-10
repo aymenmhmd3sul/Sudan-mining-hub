@@ -5,11 +5,11 @@
     <!-- الهيدر -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
         <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>🔍 سجل المراجعة والنشاطات (Audit Log)</span>
+            <span>{{ t("ui_0023") }}</span>
         </h1>
-        <p class="text-xs text-gray-400 mb-4">تتبع وتوثيق كافة الأنشطة، الإجراءات، والتغييرات التي تتم على المنصة</p>
+        <p class="text-xs text-gray-400 mb-4">تتبع وتوثيق كافة الأ{{ t("ui_0318") }}، {{ t('actions') }}، والتغييرات التي تتم على المنصة</p>
         <button type="button" onclick="openCreateModal()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-xs transition shadow-lg active:scale-95">
-            + تسجيل حدث يدوياً
+            {{ t("ui_0025") }}
         </button>
     </div>
 
@@ -17,25 +17,25 @@
     <div class="grid grid-cols-2 gap-3">
         <!-- إجمالي الأحداث (الكل) -->
         <div id="card-all" onclick="filterBy('all')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95 shadow-lg shadow-amber-500/10">
-            <span class="text-[11px] text-gray-400">إجمالي الأحداث 📊</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0026") }}</span>
             <span class="text-lg font-bold text-amber-400 mt-1" id="stat-all-count">3</span>
         </div>
 
         <!-- أحداث النظام / أمان -->
         <div id="card-system" onclick="filterBy('system')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-emerald-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">النظام والأمان 🛡️</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0027") }}</span>
             <span class="text-lg font-bold text-emerald-400 mt-1" id="stat-system-count">1</span>
         </div>
 
-        <!-- أحداث التعديل والإضافة -->
+        <!-- أحداث ال{{ t('edit') }} وال{{ t("ui_0251") }} -->
         <div id="card-action" onclick="filterBy('action')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-blue-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">إجراءات البيانات 📝</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0028") }}</span>
             <span class="text-lg font-bold text-blue-400 mt-1" id="stat-action-count">2</span>
         </div>
 
-        <!-- تحذيرات / تنبيهات -->
+        <!-- {{ t("ui_0048") }}ات / تنبيهات -->
         <div id="card-warning" onclick="filterBy('warning')" class="stat-card cursor-pointer bg-gray-800/60 border-2 border-transparent hover:border-rose-500/50 rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 active:scale-95">
-            <span class="text-[11px] text-gray-400">تحذيرات ⚠️</span>
+            <span class="text-[11px] text-gray-400">{{ t("ui_0029") }}</span>
             <span class="text-lg font-bold text-rose-400 mt-1" id="stat-warning-count">0</span>
         </div>
     </div>
@@ -43,13 +43,13 @@
     <!-- كارت القائمة والجدول -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
         <div class="text-xs font-bold text-white flex items-center justify-between">
-            <span>📋 قائمة الأنشطة والحدث الأخير</span>
+            <span>{{ t("ui_0030") }}</span>
         </div>
 
-        <!-- شريط البحث -->
+        <!-- شريط ال{{ t("ui_0066") }} -->
         <div class="flex gap-2">
-            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="بحث بالمستخدم، الحدث، أو عنوان IP..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">🔍 بحث</button>
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="{{ t("ui_0066") }} ب{{ t("ui_0033") }}، الحدث، أو {{ t("ui_0180") }} IP..." class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+            <button type="button" class="px-4 py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition shrink-0">{{ t("ui_0031") }}</button>
         </div>
 
         <!-- الجدول -->
@@ -57,39 +57,39 @@
             <table class="w-full text-right text-xs text-gray-300 min-w-[500px]">
                 <thead class="bg-gray-900/90 text-gray-400 border-b border-gray-700">
                     <tr>
-                        <th class="py-3 px-3">رقم الحدث</th>
-                        <th class="py-3 px-3">المستخدم</th>
-                        <th class="py-3 px-3">الإجراء / الحدث</th>
-                        <th class="py-3 px-3">نوع الحدث</th>
-                        <th class="py-3 px-3 text-center">التفاصيل</th>
+                        <th class="py-3 px-3">{{ t("ui_0032") }}</th>
+                        <th class="py-3 px-3">{{ t("ui_0033") }}</th>
+                        <th class="py-3 px-3">{{ t("ui_0034") }}</th>
+                        <th class="py-3 px-3">{{ t("ui_0035") }}</th>
+                        <th class="py-3 px-3 text-center">{{ t('details') }}</th>
                     </tr>
                 </thead>
                 <tbody id="audit-table-body" class="divide-y divide-gray-700/50 bg-gray-800/20">
-                    <tr class="audit-row hover:bg-gray-700/40 transition" data-id="501" data-user="المدير العام" data-action="تحديث حالة فرصة استثمارية #201" data-type="action" data-type-label="إجراء بيانات" data-ip="197.252.201.4">
+                    <tr class="audit-row hover:bg-gray-700/40 transition" data-id="501" data-user="{{ t("ui_0036") }}" data-action="{{ t("ui_0037") }}" data-type="action" data-type-label="{{ t("ui_0038") }}" data-ip="197.252.201.4">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#501</td>
-                        <td class="py-3 px-3 text-white font-bold">المدير العام</td>
-                        <td class="py-3 px-3 text-gray-300">تحديث حالة فرصة استثمارية #201</td>
-                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">إجراء بيانات</span></td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0036") }}</td>
+                        <td class="py-3 px-3 text-gray-300">{{ t("ui_0037") }}</td>
+                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">{{ t("ui_0038") }}</span></td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
-                    <tr class="audit-row hover:bg-gray-700/40 transition" data-id="502" data-user="أحمد عبد الله" data-action="رفع وثائق التوثيق الرسمي" data-type="action" data-type-label="إجراء بيانات" data-ip="102.120.45.12">
+                    <tr class="audit-row hover:bg-gray-700/40 transition" data-id="502" data-user="{{ t("ui_0040") }}" data-action="{{ t("ui_0041") }}" data-type="action" data-type-label="{{ t("ui_0038") }}" data-ip="102.120.45.12">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#502</td>
-                        <td class="py-3 px-3 text-white font-bold">أحمد عبد الله</td>
-                        <td class="py-3 px-3 text-gray-300">رفع وثائق التوثيق الرسمي</td>
-                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">إجراء بيانات</span></td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0040") }}</td>
+                        <td class="py-3 px-3 text-gray-300">{{ t("ui_0041") }}</td>
+                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">{{ t("ui_0038") }}</span></td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
-                    <tr class="audit-row hover:bg-gray-700/40 transition" data-id="503" data-user="نظام الأمان" data-action="تسجيل دخول ناجح للوحة التحكم" data-type="system" data-type-label="نظام وأمان" data-ip="127.0.0.1">
+                    <tr class="audit-row hover:bg-gray-700/40 transition" data-id="503" data-user="{{ t("ui_0042") }}" data-action="{{ t("ui_0043") }}{{ t('dashboard') }}" data-type="system" data-type-label="{{ t("ui_0044") }}" data-ip="127.0.0.1">
                         <td class="py-3 px-3 font-mono text-amber-400 font-bold">#503</td>
-                        <td class="py-3 px-3 text-white font-bold">نظام الأمان</td>
-                        <td class="py-3 px-3 text-gray-300">تسجيل دخول ناجح للوحة التحكم</td>
-                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">نظام وأمان</span></td>
+                        <td class="py-3 px-3 text-white font-bold">{{ t("ui_0042") }}</td>
+                        <td class="py-3 px-3 text-gray-300">{{ t("ui_0043") }}{{ t('dashboard') }}</td>
+                        <td class="py-3 px-3"><span class="px-2.5 py-1 whitespace-nowrap inline-block rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">{{ t("ui_0044") }}</span></td>
                         <td class="py-3 px-3 text-center">
-                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">👁️ عرض</button>
+                            <button type="button" onclick="showRowDetails(this)" class="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg text-[10px] font-bold transition">{{ t("ui_0039") }}</button>
                         </td>
                     </tr>
                 </tbody>
@@ -98,74 +98,74 @@
     </div>
 </div>
 
-<!-- Modal إضافة سجل يدوي -->
+<!-- Modal {{ t("ui_0251") }} سجل يدوي -->
 <div id="modal-create" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-xs">➕ تسجيل حدث جديد يدوياً</h3>
+            <h3 class="text-white font-bold text-xs">{{ t("ui_0045") }}</h3>
             <button type="button" onclick="closeModal('modal-create')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
         </div>
         <form onsubmit="addNewAudit(event)" class="space-y-3">
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">اسم المستخدم / المنفذ</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0046") }}</label>
                 <input type="text" id="new-user" required placeholder="مثال: مشرف النظام" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">تفاصيل الإجراء / الحدث</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0047") }}</label>
                 <input type="text" id="new-action" required placeholder="مثال: مراجعة داتابيز تعدين الخرطوم" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">نوع الحدث</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0035") }}</label>
                 <select id="new-type" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
-                    <option value="action">إجراء بيانات</option>
-                    <option value="system">نظام وأمان</option>
-                    <option value="warning">تحذير</option>
+                    <option value="action">{{ t("ui_0038") }}</option>
+                    <option value="system">{{ t("ui_0044") }}</option>
+                    <option value="warning">{{ t("ui_0048") }}</option>
                 </select>
             </div>
             <div>
-                <label class="block text-[11px] text-gray-300 mb-1">عنوان IP (اختياري)</label>
+                <label class="block text-[11px] text-gray-300 mb-1">{{ t("ui_0049") }}</label>
                 <input type="text" id="new-ip" placeholder="127.0.0.1" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">تسجيل الحدث</button>
-                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+                <button type="submit" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">{{ t("ui_0050") }}</button>
+                <button type="button" onclick="closeModal('modal-create')" class="w-full py-2.5 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">{{ t('cancel') }}</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal التفاصيل -->
+<!-- Modal {{ t('details') }} -->
 <div id="modal-detail" style="display:none !important;" class="fixed inset-0 bg-black/80 backdrop-blur-sm justify-center items-center p-4 z-[99999]">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-            <h3 class="text-white font-bold text-xs">🔍 تفاصيل سجل السلوك / النشاط</h3>
+            <h3 class="text-white font-bold text-xs">{{ t("ui_0051") }}</h3>
             <button type="button" onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
         </div>
         <div class="space-y-3 text-xs">
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">المستخدم المنفذ:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t("ui_0052") }}</span>
                 <p class="text-white font-bold text-sm mt-0.5" id="view-user">-</p>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                    <span class="text-gray-400 block text-[10px]">رقم الحدث:</span>
+                    <span class="text-gray-400 block text-[10px]">{{ t("ui_0053") }}</span>
                     <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-id">-</p>
                 </div>
                 <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                    <span class="text-gray-400 block text-[10px]">نوع الحدث:</span>
+                    <span class="text-gray-400 block text-[10px]">{{ t("ui_0054") }}</span>
                     <p class="text-emerald-400 font-bold mt-0.5" id="view-type">-</p>
                 </div>
             </div>
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">وصف الإجراء:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t("ui_0055") }}</span>
                 <p class="text-gray-200 font-bold mt-0.5" id="view-action">-</p>
             </div>
             <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700/50">
-                <span class="text-gray-400 block text-[10px]">عنوان IP:</span>
+                <span class="text-gray-400 block text-[10px]">{{ t("ui_0056") }}</span>
                 <p class="text-amber-400 font-mono font-bold mt-0.5" id="view-ip">-</p>
             </div>
         </div>
-        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">إغلاق</button>
+        <button type="button" onclick="closeModal('modal-detail')" class="w-full py-2.5 bg-gray-700 text-white font-bold text-xs rounded-xl hover:bg-gray-600 transition">{{ t('close') }}</button>
     </div>
 </div>
 

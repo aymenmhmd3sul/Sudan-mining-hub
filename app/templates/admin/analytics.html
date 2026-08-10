@@ -1,6 +1,6 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-<!-- تضمين مكتبة Chart.js للرسوم البيانية التفاعلية -->
+<!-- تضمين مكتبة Chart.js للرسوم البيانية ال{{ t("ui_0021") }}ة -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="space-y-5 text-right">
@@ -8,60 +8,60 @@
     <!-- الهيدر مع زر تحديث متفاعل -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl relative overflow-hidden">
         <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>الإحصائيات والتحليلات الحية 📊</span>
+            <span>الإحصائيات و{{ t('analytics') }} {{ t("ui_0397") }} 📊</span>
         </h1>
-        <p class="text-xs text-gray-400 mb-4">مؤشرات الأداء العامة، حركة التعدين، والتفاعلات حياً</p>
+        <p class="text-xs text-gray-400 mb-4">مؤشرات الأداء العامة، حركة {{ t('mining') }}، والتفاعلات حياً</p>
         
         <button type="button" id="refresh-btn" onclick="updateLiveCharts()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2 mx-auto">
             <span id="refresh-icon" class="inline-block">🔄</span>
-            <span id="refresh-text">تحديث البيانات الحية</span>
+            <span id="refresh-text">{{ t("ui_0007") }}</span>
         </button>
     </div>
 
-    <!-- كروت الإحصائيات الحية -->
+    <!-- كروت الإحصائيات {{ t("ui_0397") }} -->
     <div class="grid grid-cols-2 gap-3">
         <div onclick="animateCard(this)" class="bg-gray-800/60 border-2 border-amber-500/50 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg active:scale-95 transition cursor-pointer">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-400 font-medium">إجمالي الزيارات 🌐</span>
+                <span class="text-[11px] text-gray-400 font-medium">{{ t("ui_0008") }}</span>
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
             </div>
             <span id="stat-visits" class="text-2xl font-black text-amber-400 mt-2 font-mono">24,850</span>
-            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">↑ 12% هذا الشهر</span>
+            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">{{ t("ui_0019_12") }}</span>
         </div>
 
         <div onclick="animateCard(this)" class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-400 font-medium">المناجم والآبار ⛏️</span>
+                <span class="text-[11px] text-gray-400 font-medium">{{ t("ui_0010") }}</span>
             </div>
             <span id="stat-mines" class="text-2xl font-black text-emerald-400 mt-2 font-mono">142</span>
-            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">↑ 5 مواقع جديدة</span>
+            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">{{ t("ui_0011_5") }}</span>
         </div>
 
         <div onclick="animateCard(this)" class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-400 font-medium">الصفقات النشطة 🤝</span>
+                <span class="text-[11px] text-gray-400 font-medium">{{ t('deals') }} {{ t("ui_0012") }}</span>
             </div>
             <span id="stat-deals" class="text-2xl font-black text-white mt-2 font-mono">18</span>
-            <span class="text-[10px] text-amber-400 mt-1 font-semibold">قيد التفاوض</span>
+            <span class="text-[10px] text-amber-400 mt-1 font-semibold">{{ t('under_negotiation') }}</span>
         </div>
 
         <div onclick="animateCard(this)" class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-400 font-medium">معدل التوثيق 🆔</span>
+                <span class="text-[11px] text-gray-400 font-medium">{{ t("ui_0014") }}</span>
             </div>
             <span id="stat-auth" class="text-2xl font-black text-purple-400 mt-2 font-mono">89.4%</span>
-            <span class="text-[10px] text-purple-300 mt-1 font-semibold">موثق رسمياً</span>
+            <span class="text-[10px] text-purple-300 mt-1 font-semibold">{{ t("ui_0015") }}</span>
         </div>
     </div>
 
-    <!-- رسم بياني تفاعلي حقيقي (Chart 1: النشاط الأسبوعي) -->
+    <!-- رسم بياني {{ t("ui_0021") }} حقيقي (Chart 1: النشاط الأسبوعي) -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
         <div class="flex items-center justify-between">
             <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-                📈 نشاط المنصة خلال الأسبوع
+                {{ t("ui_0020") }}
             </h3>
             <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">
-                تفاعلي
+                {{ t("ui_0021") }}
             </span>
         </div>
         <div class="relative w-full h-56">
@@ -69,10 +69,10 @@
         </div>
     </div>
 
-    <!-- رسم بياني تفاعلي حقيقي (Chart 2: توزيع التعدين) -->
+    <!-- رسم بياني {{ t("ui_0021") }} حقيقي (Chart 2: توزيع {{ t('mining') }}) -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
         <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-            🎯 توزيع قطاعات التعدين النشطة
+            🎯 توزيع قطاعات {{ t('mining') }} ال{{ t("ui_0318") }}
         </h3>
         <div class="relative w-full h-48 flex justify-center">
             <canvas id="miningDistributionChart"></canvas>
@@ -81,7 +81,7 @@
 
 </div>
 
-<!-- السكربت التفاعلي وبناء الرسوم البيانية -->
+<!-- السكربت ال{{ t("ui_0021") }} وبناء الرسوم البيانية -->
 <script>
 let barChart, doughnutChart;
 
@@ -116,7 +116,7 @@ function initCharts() {
         }
     });
 
-    // 2. الرسم البياني الدائري لتوزيع قطاعات التعدين
+    // 2. الرسم البياني الدائري لتوزيع قطاعات {{ t('mining') }}
     const ctx2 = document.getElementById('miningDistributionChart').getContext('2d');
     doughnutChart = new Chart(ctx2, {
         type: 'doughnut',

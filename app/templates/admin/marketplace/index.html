@@ -8,12 +8,12 @@
     showViewModal: false, 
     showEditModal: false, 
     newItemTitle: '',
-    newItemType: 'عرض بيع',
+    newItemType: '{{ t("ui_0147") }}',
     selectedItem: { title: '', type: '', owner: '', price: '', status: '', details: '', phone: '' },
     items: [
-        { id: 1, title: 'فرصة استثمار بئر تعدين - نهر النيل', type: 'فرصة تجارية', owner: 'شركة النيل الاستثمارية', price: '50,000 $', status: 'نشط', details: 'بئر جاهز مع كافة التصاريح الرسمية في ولاية نهر النيل', phone: '+249912345678' },
-        { id: 2, title: 'عرض بيع كسارة حجرية هيدروليكية', type: 'عرض بيع', owner: 'مؤسسة الذهب العالمية', price: '120,000 $', status: 'قيد التفاوض', details: 'كسارة طاقة 50 طن/ساعة بحالة ممتازة مع قطع الغيار', phone: '+249123456789' },
-        { id: 3, title: 'طلب شراء آليات حفر ثقيل', type: 'طلب شراء', owner: 'مجموعة البحر الأحمر', price: 'حسب العرض', status: 'نشط', details: 'مطلوب عدد 2 بوكلين مقاس 320 بحالة جيدة جداً', phone: '+249900000000' }
+        { id: 1, title: 'فرصة استثمار {{ t('mining_well') }} - نهر النيل', type: '{{ t("ui_0149") }}', owner: 'شركة النيل الاستثمارية', price: '50,000 $', {{ t("ui_0136_status") }} details: 'بئر جاهز مع كافة التصاريح الرسمية في ولاية نهر النيل', phone: '+249912345678' },
+        { id: 2, title: '{{ t("ui_0147") }} كسارة حجرية هيدروليكية', type: '{{ t("ui_0147") }}', owner: 'مؤسسة الذهب العالمية', price: '120,000 $', status: '{{ t('under_negotiation') }}', details: 'كسارة طاقة 50 طن/ساعة بحالة ممتازة مع قطع الغيار', phone: '+249123456789' },
+        { id: 3, title: '{{ t("ui_0243") }}', type: '{{ t("ui_0148") }}', owner: 'مجموعة البحر الأحمر', price: 'حسب العرض', {{ t("ui_0136_status") }} details: 'مطلوب عدد 2 بوكلين مقاس 320 بحالة جيدة جداً', phone: '+249900000000' }
     ],
     get filteredItems() {
         return this.items.filter(i => {
@@ -22,27 +22,27 @@
                 i.owner.toLowerCase().includes(this.searchQuery.toLowerCase());
             
             if (this.selectedFilter === 'all') return matchesSearch;
-            if (this.selectedFilter === 'opportunities') return matchesSearch && i.type === 'فرصة تجارية';
-            if (this.selectedFilter === 'sales') return matchesSearch && i.type === 'عرض بيع';
-            if (this.selectedFilter === 'buys') return matchesSearch && i.type === 'طلب شراء';
+            {{ t("ui_0130_if_this_selectedFilter_opportunities_return_matchesSearch_i_type") }}
+            {{ t("ui_0131_if_this_selectedFilter_sales_return_matchesSearch_i_type") }}
+            {{ t("ui_0132_if_this_selectedFilter_buys_return_matchesSearch_i_type") }}
             return matchesSearch;
         });
     },
     addItem() {
-        if (!this.newItemTitle) { alert('الرجاء كتابة عنوان الفرصة أو العرض'); return; }
+        if (!this.newItemTitle) { alert('الرجاء كتابة {{ t("ui_0180") }} {{ t('opportunities') }}ة أو العرض'); return; }
         this.items.unshift({
             id: Date.now(),
             title: this.newItemTitle,
             type: this.newItemType,
-            owner: 'مستخدم عادي',
-            price: 'غير محدد',
-            status: 'نشط',
-            details: 'لا توجد تفاصيل إضافية',
-            phone: 'غير مدخل'
+            {{ t("ui_0134_owner") }}
+            {{ t("ui_0135_price") }}
+            {{ t("ui_0136_status") }}
+            {{ t("ui_0137_details") }}
+            {{ t("ui_0138_phone") }}
         });
         this.newItemTitle = '';
         this.showAddModal = false;
-        alert('تمت إضافة الفرصة بنجاح!');
+        alert('تمت {{ t("ui_0251") }} {{ t('opportunities') }}ة بنجاح!');
     },
     saveEdit() {
         alert('تم {{ t('save') }} ال{{ t('edit') }}ات بنجاح!');
@@ -68,15 +68,15 @@
         </div>
         <div @click="selectedFilter = 'sales'" :class="selectedFilter === 'sales' ? 'border-green-500 ring-1 ring-green-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
             <div class="text-gray-400 text-xs font-bold">{{ t('seller_offers') }} 🏷️</div>
-            <div class="text-xl font-bold text-green-400 mt-1" x-text="items.filter(i => i.type === 'عرض بيع').length"></div>
+            <div class="text-xl font-bold text-green-400 mt-1" x-text="items.filter(i => {{ t("ui_0141_i_type") }}</div>
         </div>
         <div @click="selectedFilter = 'buys'" :class="selectedFilter === 'buys' ? 'border-blue-500 ring-1 ring-blue-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
-            <div class="text-gray-400 text-xs font-bold">طلبات الشراء 🛒</div>
-            <div class="text-xl font-bold text-blue-400 mt-1" x-text="items.filter(i => i.type === 'طلب شراء').length"></div>
+            <div class="text-gray-400 text-xs font-bold">{{ t("ui_0142") }}</div>
+            <div class="text-xl font-bold text-blue-400 mt-1" x-text="items.filter(i => {{ t("ui_0143_i_type") }}</div>
         </div>
         <div @click="selectedFilter = 'opportunities'" :class="selectedFilter === 'opportunities' ? 'border-purple-500 ring-1 ring-purple-500' : 'border-gray-700'" class="bg-gray-800 p-3 rounded-xl border cursor-pointer hover:bg-gray-750 transition">
             <div class="text-gray-400 text-xs font-bold">{{ t('opportunities') }} 💎</div>
-            <div class="text-xl font-bold text-purple-400 mt-1" x-text="items.filter(i => i.type === 'فرصة تجارية').length"></div>
+            <div class="text-xl font-bold text-purple-400 mt-1" x-text="items.filter(i => {{ t("ui_0144_i_type") }}</div>
         </div>
     </div>
 
@@ -112,7 +112,7 @@
                                 <span class="bg-amber-900/40 text-amber-300 text-[10px] px-2 py-1 rounded border border-amber-700/50" x-text="smhType(item.type)"></span>
                             </td>
                             <td @click="selectedItem = Object.assign({}, item); showViewModal = true" class="p-3 whitespace-nowrap">
-                                <span :class="item.status === 'قيد التفاوض' ? 'bg-purple-900/50 text-purple-300 border-purple-800/50' : 'bg-green-900/50 text-green-400 border-green-800/50'" class="text-[10px] px-2 py-1 rounded border" x-text="smhStatus(item.status)"></span>
+                                <span :class="item.status === '{{ t('under_negotiation') }}' ? 'bg-purple-900/50 text-purple-300 border-purple-800/50' : 'bg-green-900/50 text-green-400 border-green-800/50'" class="text-[10px] px-2 py-1 rounded border" x-text="smhStatus(item.status)"></span>
                             </td>
                             <td class="p-3 text-center whitespace-nowrap space-x-1 space-x-reverse">
                                 <button @click.stop="selectedItem = Object.assign({}, item); showViewModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-[11px]">{{ t('preview') }}</button>
@@ -125,12 +125,12 @@
         </div>
     </div>
 
-    <!-- Modal: {{ t('preview') }} تفاصيل الفرصة التجارية للأدمن -->
+    <!-- Modal: {{ t('preview') }} تفاصيل {{ t('opportunities') }}ة التجارية للأدمن -->
     <div x-show="showViewModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-lg text-white space-y-4">
             <div class="flex justify-between items-center border-b border-gray-700 pb-2">
                 <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">🔍 {{ t('details') }}</h3>
-                <span :class="selectedItem.status === 'قيد التفاوض' ? 'bg-purple-900/50 text-purple-300' : 'bg-green-900/50 text-green-400'" class="text-[10px] px-2 py-0.5 rounded border border-gray-600" x-text="smhStatus(selectedItem.status)"></span>
+                <span :class="selectedItem.status === '{{ t('under_negotiation') }}' ? 'bg-purple-900/50 text-purple-300' : 'bg-green-900/50 text-green-400'" class="text-[10px] px-2 py-0.5 rounded border border-gray-600" x-text="smhStatus(selectedItem.status)"></span>
             </div>
             
             <div class="space-y-3">
@@ -145,7 +145,7 @@
                         <span class="font-semibold text-amber-300" x-text="selectedItem.owner"></span>
                     </div>
                     <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
-                        <span class="text-gray-400 block text-[10px]">{{ t('amount') }} المطلـوب / التقديري:</span>
+                        <span class="text-gray-400 block text-[10px]">{{ t('amount') }} {{ t("ui_0145") }}</span>
                         <span class="font-mono text-green-400" x-text="selectedItem.price"></span>
                     </div>
                     <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700">
@@ -165,13 +165,13 @@
             </div>
 
             <div class="flex justify-end gap-2 pt-2 border-t border-gray-700">
-                <button @click="showViewModal = false; showEditModal = true" class="bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded text-xs text-white font-bold">{{ t('edit') }} البيانات</button>
+                <button @click="showViewModal = false; showEditModal = true" class="bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded text-xs text-white font-bold">{{ t('edit') }} {{ t("ui_0146") }}</button>
                 <button @click="showViewModal = false" class="bg-gray-700 hover:bg-gray-600 px-4 py-1.5 rounded text-xs text-white">{{ t('close') }}</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: إضافة فرصة جديدة -->
+    <!-- Modal: {{ t("ui_0251") }} فرصة جديدة -->
     <div x-show="showAddModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-md text-white space-y-4">
             <h3 class="text-base font-bold border-b border-gray-700 pb-2">➕ {{ t('add_offer_opportunity') }}</h3>
@@ -182,9 +182,9 @@
             <div>
                 <label class="block text-xs text-gray-400 mb-1">{{ t('type') }}</label>
                 <select x-model="newItemType" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
-                    <option value="عرض بيع">عرض بيع</option>
-                    <option value="طلب شراء">طلب شراء</option>
-                    <option value="فرصة تجارية">فرصة تجارية</option>
+                    <option value="{{ t("ui_0147") }}">{{ t("ui_0147") }}</option>
+                    <option value="{{ t("ui_0148") }}">{{ t("ui_0148") }}</option>
+                    <option value="{{ t("ui_0149") }}">{{ t("ui_0149") }}</option>
                 </select>
             </div>
             <div class="flex justify-end gap-2 pt-2">
@@ -194,10 +194,10 @@
         </div>
     </div>
 
-    <!-- Modal: {{ t('edit') }} الفرصة -->
+    <!-- Modal: {{ t('edit') }} {{ t('opportunities') }}ة -->
     <div x-show="showEditModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 rounded-xl p-5 border border-gray-700 w-full max-w-md text-white space-y-3">
-            <h3 class="text-base font-bold border-b border-gray-700 pb-2">✏️ {{ t('edit') }} بيانات الفرصة</h3>
+            <h3 class="text-base font-bold border-b border-gray-700 pb-2">✏️ {{ t('edit') }} بيانات {{ t('opportunities') }}ة</h3>
             <div>
                 <label class="block text-xs text-gray-400 mb-1">{{ t('title') }}</label>
                 <input type="text" x-model="selectedItem.title" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-xs text-white">
@@ -234,8 +234,8 @@ window.smhType = function(value) {
 window.smhStatus = function(value) {
     const map = {
         "نشط": "active",
-        "قيد التفاوض": "under_negotiation",
-        "قيد المراجعة": "under_review",
+        "{{ t('under_negotiation') }}": "under_negotiation",
+        "{{ t('under_review') }}": "under_review",
         "مفتوح": "open",
     };
     const key = map[value];

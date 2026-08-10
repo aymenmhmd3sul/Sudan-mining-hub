@@ -1,7 +1,7 @@
 {% extends "admin/layout.html" %}
 
 {% block title %}
-الإحصائيات والتحليلات الحية | Sudan Mining Hub
+الإحصائيات و{{ t('analytics') }} {{ t("ui_0397") }} | Sudan Mining Hub
 {% endblock %}
 
 {% block content %}
@@ -12,53 +12,53 @@
     <!-- الهيدر مع زر التحديث المتفاعل -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 text-center shadow-xl">
         <h1 class="text-xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>الإحصائيات والتحليلات الحية 📊</span>
+            <span>الإحصائيات و{{ t('analytics') }} {{ t("ui_0397") }} 📊</span>
         </h1>
-        <p class="text-xs text-gray-400 mb-4">اضغط على أي قسم بالأسفل لعرض التوزيع البياني الخاص به</p>
+        <p class="text-xs text-gray-400 mb-4">{{ t("ui_0006") }}</p>
         
         <button type="button" id="refresh-btn" onclick="updateLiveCharts()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2 mx-auto">
             <span id="refresh-icon" class="inline-block transition-transform duration-500">🔄</span>
-            <span id="refresh-text">تحديث البيانات الحية</span>
+            <span id="refresh-text">{{ t("ui_0007") }}</span>
         </button>
     </div>
 
-    <!-- كروت الإحصائيات التفاعلية (تبويبات حية) -->
+    <!-- كروت الإحصائيات ال{{ t("ui_0021") }}ة (تبويبات حية) -->
     <div class="grid grid-cols-2 gap-3">
         <!-- 1. كارت الزيارات -->
         <div id="card-visits" onclick="switchTab('visits')" class="stat-card bg-gray-800/60 border-2 border-amber-500 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg active:scale-95 transition cursor-pointer select-none">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-300 font-semibold">إجمالي الزيارات 🌐</span>
+                <span class="text-[11px] text-gray-300 font-semibold">{{ t("ui_0008") }}</span>
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
             </div>
             <span id="stat-visits" class="text-2xl font-black text-amber-400 mt-2 font-mono">24,850</span>
-            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">↑ 12% عن الشهر الماضي</span>
+            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">{{ t("ui_0009_12") }}</span>
         </div>
 
         <!-- 2. كارت المناجم والآبار -->
         <div id="card-mines" onclick="switchTab('mines')" class="stat-card bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer select-none opacity-80 hover:opacity-100">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-300 font-semibold">المناجم والآبار ⛏️</span>
+                <span class="text-[11px] text-gray-300 font-semibold">{{ t("ui_0010") }}</span>
             </div>
             <span id="stat-mines" class="text-2xl font-black text-emerald-400 mt-2 font-mono">142</span>
-            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">↑ 5 مواقع جديدة</span>
+            <span class="text-[10px] text-emerald-400 mt-1 font-semibold">{{ t("ui_0011_5") }}</span>
         </div>
 
-        <!-- 3. كارت الصفقات -->
+        <!-- 3. كارت {{ t('deals') }} -->
         <div id="card-deals" onclick="switchTab('deals')" class="stat-card bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer select-none opacity-80 hover:opacity-100">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-300 font-semibold">الصفقات النشطة 🤝</span>
+                <span class="text-[11px] text-gray-300 font-semibold">{{ t('deals') }} {{ t("ui_0012") }}</span>
             </div>
             <span id="stat-deals" class="text-2xl font-black text-white mt-2 font-mono">18</span>
-            <span class="text-[10px] text-amber-400 mt-1 font-semibold">قيد التفاوض المستمر</span>
+            <span class="text-[10px] text-amber-400 mt-1 font-semibold">{{ t('under_negotiation') }} {{ t("ui_0013") }}</span>
         </div>
 
         <!-- 4. كارت التوثيق -->
         <div id="card-auth" onclick="switchTab('auth')" class="stat-card bg-gray-800/60 border border-gray-700/60 rounded-2xl p-3.5 flex flex-col justify-between active:scale-95 transition cursor-pointer select-none opacity-80 hover:opacity-100">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] text-gray-300 font-semibold">معدل التوثيق 🆔</span>
+                <span class="text-[11px] text-gray-300 font-semibold">{{ t("ui_0014") }}</span>
             </div>
             <span id="stat-auth" class="text-2xl font-black text-purple-400 mt-2 font-mono">89.4%</span>
-            <span class="text-[10px] text-purple-300 mt-1 font-semibold">موثق رسمياً</span>
+            <span class="text-[10px] text-purple-300 mt-1 font-semibold">{{ t("ui_0015") }}</span>
         </div>
     </div>
 
@@ -66,10 +66,10 @@
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
         <div class="flex items-center justify-between">
             <h3 id="chart-title" class="text-xs font-bold text-white flex items-center gap-1.5">
-                📈 تحليل إجمالي الزيارات الأسبوعي
+                {{ t("ui_0016") }}
             </h3>
             <span id="chart-badge" class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">
-                نشط الآن
+                {{ t("ui_0017") }}
             </span>
         </div>
         <div class="relative w-full h-60">
@@ -79,7 +79,7 @@
 
 </div>
 
-<!-- السكربت التفاعلي للربط والتبديل -->
+<!-- السكربت ال{{ t("ui_0021") }} للربط والتبديل -->
 <script>
 let analyticsChart;
 let currentTab = 'visits';
@@ -101,14 +101,14 @@ const chartDatasets = {
         bgColor: 'rgba(16, 185, 129, 0.85)'
     },
     deals: {
-        title: '🤝 حركة الصفقات والتفاوض هذا الأسبوع',
-        labels: ['عروض جديدة', 'مفاوضات جارية', 'اتفاقيات أولية', 'صياغة عقود', 'صفقات مكتملة'],
+        title: '🤝 حركة {{ t('deals') }} و{{ t('negotiation') }} هذا الأسبوع',
+        labels: ['عروض جديدة', 'مفاوضات جارية', 'اتفاقيات أولية', 'صياغة عقود', '{{ t('completed_deals') }}'],
         data: [12, 18, 8, 5, 4],
         color: '#3b82f6',
         bgColor: 'rgba(59, 130, 246, 0.85)'
     },
     auth: {
-        title: '🆔 نسبة توثيق الحسابات والشركات %',
+        title: '🆔 نسبة توثيق الحسابات و{{ t('companies') }} %',
         labels: ['شركات تعدين', 'مستثمرين', 'موردين', 'مكاتب هندسية', 'أفراد'],
         data: [95, 88, 92, 85, 78],
         color: '#a855f7',

@@ -1,8 +1,8 @@
 {% extends "admin/layout.html" %}
-{% block title %}التقارير والتحليلات - Sudan Mining Hub{% endblock %}
+{% block title %}{{ t('reports') }} و{{ t('analytics') }} - Sudan Mining Hub{% endblock %}
 {% block content %}
 <div class="placeholder-card">
-    <h2>📈 التقارير والتحليلات (Reports)</h2>
-    <p style="color: var(--text-muted); margin-top: 10px;">هذه الشاشة محجوزة معمارياً لتوليد التقارير المالية والإنتاجية وتصديرها بصيغ PDF و Excel.</p>
+    <h2>📈 {{ t('reports') }} و{{ t('analytics') }} (Reports)</h2>
+    <p style="color: var(--text-muted); margin-top: 10px;">هذه الشاشة {{ t("ui_0090") }}ة معمارياً لتوليد {{ t('reports') }} {{ t('finance') }} و{{ t('production') }}ية وتصديرها بصيغ PDF و Excel.</p>
 </div>
 {% endblock %}

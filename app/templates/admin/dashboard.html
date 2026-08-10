@@ -1,24 +1,24 @@
 {% extends "admin/layout.html" %}
 
 {% block title %}
-لوحة التحكم الرئيسية | Sudan Mining Hub
+{{ t('dashboard') }} {{ t('home') }} | Sudan Mining Hub
 {% endblock %}
 
 {% block content %}
 
 <div class="placeholder-card">
-    <h2>📊 مركز القيادة الإداري</h2>
+    <h2>📊 {{ t('admin_command_center') }}</h2>
     <p>
-    جاري دمج لوحة التحليلات الحية داخل الإطار الإداري الموحد.
+    جاري دمج {{ t("ui_0413") }} {{ t('analytics') }} {{ t("ui_0397") }} داخل الإطار الإداري الموحد.
     </p>
 
     <hr>
 
-    <h3>الوحدات المتاحة:</h3>
+    <h3>{{ t('available_modules') }}:</h3>
     <ul>
         <li>🏪 Marketplace</li>
         <li>⛏ Mining</li>
-        <li>🚜 Equipment & Services</li>
+        <li>🚜 Equipment & {{ t('services') }}</li>
         <li>💰 Finance</li>
         <li>👥 Users</li>
         <li>💬 Communications</li>

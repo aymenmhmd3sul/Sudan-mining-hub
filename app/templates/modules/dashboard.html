@@ -2,60 +2,60 @@
     <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
         <div>
             <h2 class="text-2xl font-bold text-yellow-500 flex items-center gap-2">
-                <i class="fas fa-chart-line"></i> مركز القيادة والسيطرة المركزي
+                <i class="fas fa-chart-line"></i> {{ t("ui_0531") }}
             </h2>
             <p class="text-xs text-gray-400 mt-1">Sudan Mining Hub — Command System v1.0</p>
         </div>
         <div class="bg-yellow-600/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-mono border border-yellow-500/30">
-            <i class="fas fa-user-shield"></i> المؤشرات الحية
+            <i class="fas fa-user-shield"></i> {{ t("ui_0532") }}
         </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="p-4 bg-blue-950/40 border border-blue-800/50 rounded-lg">
             <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">الأصول والمناجم</span>
+                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">{{ t('assets') }} {{ t("ui_0533") }}</span>
                 <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
             </div>
             <div class="mt-2">
                 <h3 class="text-3xl font-extrabold text-white" id="stat-total-assets">...</h3>
-                <p class="text-xs text-gray-400 mt-1">النشطة حالياً: <span class="text-green-400 font-bold" id="stat-active-assets">...</span></p>
+                <p class="text-xs text-gray-400 mt-1">{{ t("ui_0534") }} <span class="text-green-400 font-bold" id="stat-active-assets">...</span></p>
             </div>
         </div>
 
         <div class="p-4 bg-yellow-950/40 border border-yellow-800/50 rounded-lg">
             <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-yellow-400 uppercase tracking-wider">المستثمرون</span>
+                <span class="text-xs font-bold text-yellow-400 uppercase tracking-wider">{{ t("ui_0393") }}</span>
                 <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
             </div>
             <div class="mt-2">
                 <h3 class="text-3xl font-extrabold text-white" id="stat-total-investors">...</h3>
-                <p class="text-xs text-gray-400 mt-1">عدد الملفات الاستثمارية المسجلة بنجاح.</p>
+                <p class="text-xs text-gray-400 mt-1">{{ t("ui_0535") }}</p>
             </div>
         </div>
 
         <div class="p-4 bg-purple-950/40 border border-purple-800/50 rounded-lg">
             <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">غرف التفاوض</span>
+                <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">{{ t("ui_0536") }} {{ t('negotiation') }}</span>
                 <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
             </div>
             <div class="mt-2">
                 <h3 class="text-3xl font-extrabold text-white" id="stat-open-rooms">...</h3>
-                <p class="text-xs text-gray-400 mt-1">غرف نقاش الصفقات النشطة والمفتوحة.</p>
+                <p class="text-xs text-gray-400 mt-1">{{ t("ui_0536") }} نقاش {{ t('deals') }} ال{{ t("ui_0318") }} والمفتوحة.</p>
             </div>
         </div>
 
         <div class="p-4 bg-red-950/40 border border-red-800/50 rounded-lg">
             <div class="flex justify-between items-start">
-                <span class="text-xs font-bold text-red-400 uppercase tracking-wider">طلبات الاهتمام (LOIs)</span>
+                <span class="text-xs font-bold text-red-400 uppercase tracking-wider">{{ t("ui_0538") }}</span>
                 <span class="flex h-2 w-2 rounded-full bg-yellow-500 animate-pulse"></span>
             </div>
             <div class="mt-2">
                 <div class="text-xs text-gray-300 grid grid-cols-2 gap-1 font-mono">
-                    <div>مسودة: <span class="text-gray-400 font-bold" id="loi-draft">0</span></div>
-                    <div>مقدمة: <span class="text-blue-400 font-bold" id="loi-submitted">0</span></div>
-                    <div>مقبولة: <span class="text-green-400 font-bold" id="loi-accepted">0</span></div>
-                    <div>مرفوضة: <span class="text-red-400 font-bold" id="loi-rejected">0</span></div>
+                    <div>{{ t("ui_0539") }} <span class="text-gray-400 font-bold" id="loi-draft">0</span></div>
+                    <div>{{ t("ui_0540") }} <span class="text-blue-400 font-bold" id="loi-submitted">0</span></div>
+                    <div>{{ t("ui_0541") }} <span class="text-green-400 font-bold" id="loi-accepted">0</span></div>
+                    <div>{{ t("ui_0542") }} <span class="text-red-400 font-bold" id="loi-rejected">0</span></div>
                 </div>
             </div>
         </div>

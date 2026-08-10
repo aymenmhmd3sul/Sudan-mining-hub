@@ -1,10 +1,10 @@
 {% extends "layouts/buyer_layout.html" %}
 
-{% block title %}الصفقات - المشتري{% endblock %}
+{% block title %}{{ t('deals') }} - {{ t('buyer') }}{% endblock %}
 
 {% block content %}
 <div class="buyer-card">
-    <h1>الصفقات</h1>
-    <p>الصفقات الحالية والمكتملة.</p>
+    <h1>{{ t('deals') }}</h1>
+    <p>{{ t('deals') }} {{ t("ui_0417") }}</p>
 </div>
 {% endblock %}

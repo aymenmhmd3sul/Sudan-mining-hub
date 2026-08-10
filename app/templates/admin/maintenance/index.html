@@ -2,11 +2,11 @@
 {% block content %}
 <div class="space-y-6">
     <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700">
-        <h1 class="text-xl font-bold text-white mb-2">🔧 الصيانة والدعم الفني</h1>
-        <p class="text-xs text-gray-400">سجلات ورش الصيانة والأعطال الفنية</p>
+        <h1 class="text-xl font-bold text-white mb-2">🔧 {{ t('maintenance_technical_support') }}</h1>
+        <p class="text-xs text-gray-400">{{ t('maintenance_description') }}</p>
     </div>
     <div class="bg-gray-900 p-8 rounded-xl border border-gray-800 text-center text-gray-500 text-xs">
-        جاري ربط واستعراض بيانات هذا القسم من قاعدة البيانات...
+        {{ t('section_database_loading') }}
     </div>
 </div>
 {% endblock %}

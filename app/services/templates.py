@@ -2,8 +2,14 @@ from pathlib import Path
 
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
+from jinja2 import pass_context
 
-from app.services.i18n import translate
+from app.services.i18n import (
+    DEFAULT_LANGUAGE,
+    language_direction,
+    normalize_language,
+    translate,
+)
 
 
 TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
@@ -13,34 +19,60 @@ class UnifiedTemplates(Jinja2Templates):
     """
     طبقة موحدة لعرض القوالب.
 
-    تدعم الاستدعاءات الحالية سواء:
-        TemplateResponse("page.html", context)
-    أو:
-        TemplateResponse(request=request, name="page.html", context=context)
+    تدعم الاستدعاءات القديمة والجديدة لـ TemplateResponse،
+    وتضمن تمرير request واللغة والاتجاه إلى القالب.
 
-    وتضمن تمرير request + اللغة + الاتجاه إلى جميع القوالب.
+    كما تجعل:
+        {{ t("login") }}
+
+    تعتمد تلقائياً على لغة الطلب الحالية بدلاً من افتراض العربية.
     """
 
     def __init__(self, directory):
         super().__init__(directory=directory)
 
-        # دالة الترجمة متاحة مباشرة داخل Jinja:
-        # {{ t("login") }}
-        self.env.globals["t"] = translate
+        @pass_context
+        def jinja_translate(context, key, lang=None):
+            """
+            ترجمة واعية بسياق Jinja.
+
+            الأولوية:
+            1. lang المرسل صراحة
+            2. lang الموجود في context
+            3. request.state.lang
+            4. العربية كافتراضي
+            """
+            if lang is None:
+                lang = context.get("lang")
+
+            if lang is None:
+                request = context.get("request")
+                if request is not None:
+                    lang = getattr(
+                        getattr(request, "state", None),
+                        "lang",
+                        None,
+                    )
+
+            lang = normalize_language(lang or DEFAULT_LANGUAGE)
+            return translate(key, lang)
+
+        self.env.globals["t"] = jinja_translate
+        self.env.globals["language_direction"] = language_direction
+        self.env.globals["normalize_language"] = normalize_language
 
     def TemplateResponse(self, *args, **kwargs):
         """
         Compatibility wrapper حول Jinja2Templates.TemplateResponse.
+        يدعم الصيغ القديمة والجديدة.
         """
 
         request = kwargs.pop("request", None)
         name = kwargs.pop("name", None)
         context = kwargs.pop("context", None)
 
-        # --------------------------------------------------
-        # دعم الاستدعاء القديم:
+        # الصيغة القديمة:
         # TemplateResponse("page.html", {"request": request})
-        # --------------------------------------------------
         if args:
             if isinstance(args[0], str):
                 if name is None:
@@ -62,11 +94,10 @@ class UnifiedTemplates(Jinja2Templates):
                 if len(args) > 2 and context is None:
                     context = args[2]
 
-        # --------------------------------------------------
-        # حماية من أي استدعاء ناقص
-        # --------------------------------------------------
         if not name:
-            raise ValueError("TemplateResponse requires a template name")
+            raise ValueError(
+                "TemplateResponse requires a template name"
+            )
 
         if context is None:
             context = {}
@@ -74,44 +105,44 @@ class UnifiedTemplates(Jinja2Templates):
         if not isinstance(context, dict):
             context = dict(context)
 
-        # request يمكن أن يكون داخل context في بعض القوالب القديمة
+        # بعض القوالب القديمة تمرر request داخل context
         if request is None:
             request = context.get("request")
 
         if request is not None:
             context.setdefault("request", request)
 
-            # اللغة والاتجاه
+            state = getattr(request, "state", None)
+
             lang = getattr(
-                getattr(request, "state", None),
+                state,
                 "lang",
-                None
+                None,
             )
 
             direction = getattr(
-                getattr(request, "state", None),
+                state,
                 "direction",
-                None
+                None,
             )
 
-            if not lang:
-                lang = "ar"
+            lang = normalize_language(lang)
 
             if not direction:
-                direction = "rtl" if lang == "ar" else "ltr"
+                direction = language_direction(lang)
 
             context.setdefault("lang", lang)
             context.setdefault("direction", direction)
 
         else:
-            context.setdefault("lang", "ar")
+            context.setdefault("lang", DEFAULT_LANGUAGE)
             context.setdefault("direction", "rtl")
 
         return super().TemplateResponse(
             request=request,
             name=name,
             context=context,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -125,20 +156,17 @@ def template_context(request: Request, context=None):
 
     data = dict(context or {})
 
-    lang = getattr(
-        getattr(request, "state", None),
-        "lang",
-        None
-    ) or "ar"
+    state = getattr(request, "state", None)
 
-    direction = getattr(
-        getattr(request, "state", None),
-        "direction",
-        None
+    lang = normalize_language(
+        getattr(state, "lang", None)
     )
 
-    if not direction:
-        direction = "rtl" if lang == "ar" else "ltr"
+    direction = getattr(
+        state,
+        "direction",
+        None,
+    ) or language_direction(lang)
 
     data["request"] = request
     data["lang"] = lang

@@ -1,10 +1,10 @@
 {% extends "layouts/buyer_layout.html" %}
 
-{% block title %}التفاوض - المشتري{% endblock %}
+{% block title %}{{ t('negotiation') }} - {{ t('buyer') }}{% endblock %}
 
 {% block content %}
 <div class="buyer-card">
-    <h1>التفاوض</h1>
-    <p>غرف التفاوض والعروض الخاصة بك.</p>
+    <h1>{{ t('negotiation') }}</h1>
+    <p>{{ t("ui_0536") }} {{ t('negotiation') }} و{{ t('offers') }} الخاصة بك.</p>
 </div>
 {% endblock %}

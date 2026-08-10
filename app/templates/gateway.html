@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sudan Mining Hub</title>
+<title>{{ t('platform_name') }}</title>
 
 <link rel="stylesheet" href="{{ url_for('static', path='css/gateway.css') }}">
 
@@ -17,11 +17,17 @@
 <header class="top">
 
 <div class="logo">
-⛏ Sudan Mining Hub
+⛏ {{ t('platform_name') }}
 </div>
 
 <div class="tools">
-<button id="langBtn">English</button>
+<a
+    id="langBtn"
+    href="/language/{{ 'en' if lang == 'ar' else 'ar' }}"
+>
+    {{ t('english') if lang == 'ar' else t('arabic') }}
+</a>
+
 <button id="themeBtn">🌙</button>
 </div>
 
@@ -31,13 +37,13 @@
 <section class="gold-card">
 
 <div>
-🌍 الذهب العالمي
-<h3 id="globalGold">$3420 / oz</h3>
+🌍 {{ t('global_gold') }}
+<h3 id="globalGold">{{ t('global_gold_price') }}</h3>
 </div>
 
 <div>
-🇸🇩 الذهب المحلي
-<h3 id="localGold">75,000 SDG / gram</h3>
+🇸🇩 {{ t('local_gold') }}
+<h3 id="localGold">{{ t('local_gold_price') }}</h3>
 </div>
 
 </section>
@@ -46,14 +52,14 @@
 <section class="login-box">
 
 <h1>
-بوابة الدخول
+{{ t('gateway_title') }}
 </h1>
 
 
-<input 
+<input
 id="email"
 type="email"
-placeholder="البريد الإلكتروني"
+placeholder="{{ t('email_address') }}"
 autocomplete="off">
 
 
@@ -62,7 +68,7 @@ autocomplete="off">
 <input
 id="password"
 type="password"
-placeholder="كلمة المرور"
+placeholder="{{ t('password') }}"
 autocomplete="new-password">
 
 <button id="showPass">
@@ -73,65 +79,61 @@ autocomplete="new-password">
 
 
 <button class="login">
-تسجيل الدخول
+{{ t('login') }}
 </button>
 
 
 <a class="forgot">
-نسيت كلمة المرور؟
+{{ t('forgot') }} {{ t('password') }}؟
 </a>
 
 
 </section>
 
 
-
 <button class="visitor">
 
-👤 الدخول كزائر
+👤 {{ t('login_as') }}{{ t('visitor') }}
 
 </button>
-
 
 
 <section class="updates">
 
 <h3>
-🔔 آخر التحديثات
+🔔 {{ t('latest_updates') }}
 </h3>
 
 <p>
-إعلانات التعدين والفرص الجديدة
+{{ t('mining_ads') }}
 </p>
 
 </section>
-
 
 
 <section class="bank">
 
 <h3>
-🏦 Banking Center
+🏦 {{ t('banking_center') }}
 </h3>
 
 <p>
-الخدمات البنكية والدفع الإلكتروني
+{{ t('banking_services') }}
 </p>
 
 </section>
 
 
-
 <section class="contact">
 
 <h3>
-التواصل
+{{ t('contact') }}
 </h3>
 
 <div>
-💬 WhatsApp
-✈ Telegram
-✉ Email
+💬 {{ t('whatsapp') }}
+✈ {{ t('telegram') }}
+✉ {{ t('email') }}
 </div>
 
 </section>
@@ -139,11 +141,11 @@ autocomplete="new-password">
 
 <footer>
 
-Sudan Mining Hub v1.0
+{{ t('platform_name') }} v1.0
 
 <br>
 
-Privacy | Terms | API
+{{ t('privacy') }} | {{ t('terms') }} | {{ t('api') }}
 
 </footer>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - سودان مايننج هاب</title>
+    <title>{{ t('login') }} {{ t("ui_0407") }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -54,13 +54,13 @@
         <div class="mb-2">
             <i class="fa-solid fa-gem text-warning fa-3x"></i>
         </div>
-        <h4 class="fw-bold text-white">سودان مايننج هاب</h4>
-        <p class="text-muted small mb-0">مركز قيادة المنصة والتداولات</p>
+        <h4 class="fw-bold text-white">{{ t("ui_0408") }}</h4>
+        <p class="text-muted small mb-0">{{ t("ui_0409") }}</p>
     </div>
 
     <form action="/login" method="POST">
         <div class="mb-3">
-            <label class="form-label text-light small">البريد الإلكتروني</label>
+            <label class="form-label text-light small">{{ t('email_address') }}</label>
             <div class="input-group">
                 <span class="input-group-text bg-dark border-secondary text-warning"><i class="fa-solid fa-envelope"></i></span>
                 <input type="email" name="username" class="form-control" value="aymen.mhmd3@gmail.com" required>
@@ -68,18 +68,18 @@
         </div>
 
         <div class="mb-4">
-            <label class="form-label text-light small">كلمة المرور</label>
+            <label class="form-label text-light small">{{ t('password') }}</label>
             <div class="input-group">
                 <span class="input-group-text bg-dark border-secondary text-warning"><i class="fa-solid fa-lock"></i></span>
                 <input type="password" name="password" class="form-control" placeholder="••••••••" required>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-warning w-100 py-2 mb-3">تسجيل الدخول الآن</button>
+        <button type="submit" class="btn btn-warning w-100 py-2 mb-3">{{ t('login') }} {{ t("ui_0410") }}</button>
     </form>
 
     <div class="text-center pt-2 border-top border-secondary">
-        <a href="/" class="text-muted text-decoration-none small"><i class="fa-solid fa-arrow-right me-1"></i> العودة للرئيسية</a>
+        <a href="/" class="text-muted text-decoration-none small"><i class="fa-solid fa-arrow-right me-1"></i> {{ t("ui_0411") }}</a>
     </div>
 </div>
 

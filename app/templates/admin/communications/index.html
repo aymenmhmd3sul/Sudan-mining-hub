@@ -1,8 +1,8 @@
 {% extends "admin/layout.html" %}
-{% block title %}مركز الاتصالات - Sudan Mining Hub{% endblock %}
+{% block title %}مركز {{ t('communications') }} - Sudan Mining Hub{% endblock %}
 {% block content %}
 <div class="placeholder-card">
-    <h2>💬 مركز الاتصالات (Communications)</h2>
-    <p style="color: var(--text-muted); margin-top: 10px;">هذه الشاشة محجوزة معمارياً لمراقبة الرسائل، المحادثات، البريد الإلكتروني، وإشعارات النظام.</p>
+    <h2>💬 مركز {{ t('communications') }} (Communications)</h2>
+    <p style="color: var(--text-muted); margin-top: 10px;">هذه الشاشة {{ t("ui_0090") }}ة معمارياً لمراقبة الرسائل، المحادثات، {{ t('email_address') }}، وإشعارات النظام.</p>
 </div>
 {% endblock %}

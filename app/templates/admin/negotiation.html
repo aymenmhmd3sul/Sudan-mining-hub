@@ -6,34 +6,34 @@
     <!-- الهيدر الرئيسي -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl">
         <h1 class="text-2xl font-extrabold text-white mb-1 flex items-center justify-center gap-2">
-            <span>🤝</span> إدارة غرف التفاوض والتداولات
+            <span>🤝</span> إدارة {{ t("ui_0536") }} {{ t('negotiation') }} والتداولات
         </h1>
-        <p class="text-xs text-gray-400 mb-4">متابعة غرف التفاوض المفتوحة والعروض المتبادلة بين الموردين والمشترين</p>
+        <p class="text-xs text-gray-400 mb-4">متابعة {{ t("ui_0536") }} {{ t('negotiation') }} المفتوحة و{{ t('offers') }} المتبادلة بين الموردين و{{ t('buyer') }}ن</p>
         <button @click="openModal = true" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-all shadow-lg hover:shadow-amber-500/20 active:scale-95">
-            + إنشاء غرفة جديدة
+            {{ t("ui_0199") }}
         </button>
     </div>
 
     <!-- الإحصائيات -->
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <div class="bg-gray-800/60 border border-amber-500/30 rounded-2xl p-4">
-            <span class="text-xs text-gray-400 block">إجمالي الغرف 📊</span>
+            <span class="text-xs text-gray-400 block">{{ t("ui_0174") }}</span>
             <span class="text-xl font-bold text-amber-400 mt-1 block" x-text="rooms.length">0</span>
         </div>
         <div class="bg-gray-800/60 border border-blue-500/30 rounded-2xl p-4">
-            <span class="text-xs text-gray-400 block">غرف نشطة ⚡</span>
-            <span class="text-xl font-bold text-blue-400 mt-1 block" x-text="rooms.filter(r => r.status === 'مفتوحة').length">0</span>
+            <span class="text-xs text-gray-400 block">{{ t("ui_0200") }}</span>
+            <span class="text-xl font-bold text-blue-400 mt-1 block" x-text="rooms.filter(r => {{ t("ui_0201_r_status") }}</span>
         </div>
         <div class="bg-gray-800/60 border border-emerald-500/30 rounded-2xl p-4">
-            <span class="text-xs text-gray-400 block">غرف مكتملة ✅</span>
-            <span class="text-xl font-bold text-emerald-400 mt-1 block" x-text="rooms.filter(r => r.status === 'مغلقة' || r.status === 'مكتملة').length">0</span>
+            <span class="text-xs text-gray-400 block">{{ t("ui_0202") }}</span>
+            <span class="text-xl font-bold text-emerald-400 mt-1 block" x-text="rooms.filter(r => {{ t("ui_0203_r_status") }}</span>
         </div>
     </div>
 
-    <!-- شبكة غرف المفاوضات -->
+    <!-- شبكة {{ t("ui_0536") }} المفاوضات -->
     <div class="bg-gray-800/80 border border-gray-700/60 backdrop-blur-md rounded-2xl p-5 shadow-xl">
         <div class="text-sm font-bold text-white mb-4 flex items-center justify-between">
-            <span class="flex items-center gap-2">💬 الغرف النشطة (انقر للدخول للغرفة)</span>
+            <span class="flex items-center gap-2">{{ t("ui_0204") }}</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -41,8 +41,8 @@
                 <div @click="goToRoom(room.id)" class="bg-gray-900/80 border border-gray-700 hover:border-amber-500/50 rounded-2xl p-4 transition cursor-pointer hover:shadow-lg hover:scale-[1.01] group relative">
                     <div class="flex justify-between items-start mb-2">
                         <div>
-                            <span class="text-[10px] font-mono text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20" x-text="'غرفة #' + room.id"></span>
-                            <h3 class="text-sm font-bold text-white mt-1 group-hover:text-amber-400 transition" x-text="room.title || 'غرفة تفاوض جديدة'"></h3>
+                            <span class="text-[10px] font-mono text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20" x-text="'{{ t("ui_0212") }}' + room.id"></span>
+                            <h3 class="text-sm font-bold text-white mt-1 group-hover:text-amber-400 transition" x-text="room.title || '{{ t("ui_0536") }}ة تفاوض جديدة'"></h3>
                         </div>
                         <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold" 
                               :class="room.status === 'مفتوحة' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-gray-700 text-gray-300'"
@@ -50,14 +50,14 @@
                     </div>
 
                     <div class="text-xs text-gray-400 space-y-1 mb-3">
-                        <p>👤 **الأطراف المتفاوضة:** <span class="text-gray-200" x-text="room.parties || 'العميل vs المورد'"></span></p>
-                        <p>💰 **القيمة المستهدفة:** <span class="text-emerald-400 font-bold" x-text="room.value ? '$' + room.value : 'غير محدودة'"></span></p>
+                        <p>{{ t("ui_0205") }} <span class="text-gray-200" x-text="room.parties || 'العميل vs المورد'"></span></p>
+                        <p>{{ t("ui_0206") }} <span class="text-emerald-400 font-bold" x-text="room.value ? '$' + room.value : 'غير محدودة'"></span></p>
                     </div>
 
                     <div class="pt-3 border-t border-gray-800 flex justify-between items-center text-xs">
                         <span class="text-gray-500 text-[11px]" x-text="room.date || 'اليوم'"></span>
                         <span class="text-amber-400 font-bold group-hover:translate-x-1 transition flex items-center gap-1">
-                            دخول الغرفة ➔
+                            {{ t("ui_0207") }}
                         </span>
                     </div>
                 </div>
@@ -65,29 +65,29 @@
         </div>
     </div>
 
-    <!-- Modal إنشاء غرفة جديدة -->
+    <!-- Modal {{ t("ui_0192") }} {{ t("ui_0536") }}ة جديدة -->
     <div x-show="openModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50" x-cloak>
         <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-                <h3 class="text-white font-bold text-sm">➕ إنشاء غرفة تفاوض جديدة</h3>
+                <h3 class="text-white font-bold text-sm">{{ t("ui_0186") }}</h3>
                 <button @click="openModal = false" class="text-gray-400 hover:text-white font-bold">✕</button>
             </div>
             <form @submit.prevent="createRoom()" class="space-y-3">
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">عنوان موضوع التفاوض</label>
+                    <label class="block text-xs text-gray-300 mb-1">{{ t("ui_0208") }} {{ t('negotiation') }}</label>
                     <input type="text" x-model="newRoom.title" required placeholder="مثال: تفاوض صفقة توريد ذهب خام" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-3 focus:border-amber-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">الأطراف (المشتري / البائع)</label>
-                    <input type="text" x-model="newRoom.parties" required placeholder="مثال: شركة التعدين x التاجر" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-3 focus:border-amber-500 focus:outline-none">
+                    <label class="block text-xs text-gray-300 mb-1">{{ t("ui_0087") }} ({{ t('buyer') }} / البائع)</label>
+                    <input type="text" x-model="newRoom.parties" required placeholder="مثال: شركة {{ t('mining') }} x {{ t('merchant') }}" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-3 focus:border-amber-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">القيمة التقديرية ($)</label>
+                    <label class="block text-xs text-gray-300 mb-1">{{ t("ui_0210") }}</label>
                     <input type="number" x-model="newRoom.value" placeholder="0.00" class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-xl p-3 focus:border-amber-500 focus:outline-none">
                 </div>
                 <div class="flex gap-2 pt-2">
-                    <button type="submit" class="w-full py-3 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">إنشاء الغرفة</button>
-                    <button type="button" @click="openModal = false" class="w-full py-3 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">إلغاء</button>
+                    <button type="submit" class="w-full py-3 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-600 transition">{{ t("ui_0211") }}</button>
+                    <button type="button" @click="openModal = false" class="w-full py-3 bg-gray-700 text-white text-xs rounded-xl hover:bg-gray-600 transition">{{ t('cancel') }}</button>
                 </div>
             </form>
         </div>
@@ -100,7 +100,7 @@ function negotiationDesk() {
     return {
         openModal: false,
         rooms: [
-            { id: 1, title: 'صفقة شراء توريد معدات معالجة', parties: 'مجموعة التعدين vs المورد العالمي', value: '45,000', status: 'مفتوحة', date: 'اليوم 10:30 ص' },
+            { id: 1, title: 'صفقة شراء توريد معدات معالجة', parties: 'مجموعة {{ t('mining') }} vs المورد العالمي', value: '45,000', status: 'مفتوحة', date: 'اليوم 10:30 ص' },
             { id: 2, title: 'تفاوض عقد تجميع ذهب خام', parties: 'شركة أمان vs بائع محلي', value: '120,000', status: 'مفتوحة', date: 'أمس' }
         ],
         newRoom: { title: '', parties: '', value: '' },
@@ -120,7 +120,7 @@ function negotiationDesk() {
             });
             this.openModal = false;
             this.newRoom = { title: '', parties: '', value: '' };
-            // توجيه تلقائي للغرفة الجديدة
+            // توجيه تلقائي للغرفة {{ t('new') }}
             this.goToRoom(newId);
         }
     }

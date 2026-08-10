@@ -1,8 +1,8 @@
 {% extends "admin/layout.html" %}
-{% block title %}مركز الأمان والمراقبة - Sudan Mining Hub{% endblock %}
+{% block title %}{{ t("ui_0306") }}{% endblock %}
 {% block content %}
 <div class="placeholder-card">
-    <h2>🔐 مركز الأمان (Security)</h2>
-    <p style="color: var(--text-muted); margin-top: 10px;">هذه الشاشة محجوزة معمارياً لمراقبة النظام، محاولات تسجيل الدخول، الجلسات النشطة، والحظر.</p>
+    <h2>{{ t("ui_0307") }}</h2>
+    <p style="color: var(--text-muted); margin-top: 10px;">هذه الشاشة {{ t("ui_0090") }}ة معمارياً لمراقبة النظام، محاولات {{ t('login') }}، الجلسات ال{{ t("ui_0318") }}، والحظر.</p>
 </div>
 {% endblock %}

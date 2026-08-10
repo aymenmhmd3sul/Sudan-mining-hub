@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Sudan التعدين Hub - الإدارة{% endblock %}</title>
+    <title>{% block title %}Sudan {{ t('mining') }} Hub - {{ t('admin') }}{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/admin.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,49 +14,49 @@
     <!-- الهيدر العلوي المتجاوب للهاتف -->
     <header class="admin-header">
         <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
-        <div class="header-title">مركز قيادة المنصة</div>
+        <div class="header-title">{{ t("ui_0128") }}</div>
         <div class="user-profile-badge">A</div>
     </header>
 
     <div class="admin-layout">
         <!-- الشريط الجانبي الشجري (11 وحدة كاملة بفروعها) -->
         <nav class="admin-sidebar" id="adminSidebar">
-            <a href="/admin/dashboard" class="sidebar-item">📊 لوحة التحكم</a>
+            <a href="/admin/dashboard" class="sidebar-item">📊 {{ t('dashboard') }}</a>
             
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-market')">🏪 السوق <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-market')">🏪 {{ t('marketplace') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-market">
-                <a href="/admin/marketplace">Opportunities</a>
-                <a href="/admin/marketplace">Buyer Requests</a>
-                <a href="/admin/marketplace">Seller Offers</a>
-                <a href="/admin/marketplace">التفاوض</a>
-                <a href="/admin/marketplace">Contracts</a>
-                <a href="/admin/marketplace">Deals</a>
+                <a href="/admin/marketplace">{{ t('opportunities') }}</a>
+                <a href="/admin/marketplace">{{ t('buyer_requests') }}</a>
+                <a href="/admin/marketplace">{{ t('seller_offers') }}</a>
+                <a href="/admin/marketplace">{{ t('negotiation') }}</a>
+                <a href="/admin/marketplace">{{ t('contracts') }}</a>
+                <a href="/admin/marketplace">{{ t('deals') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-mining')">⛏ التعدين <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-mining')">⛏ {{ t('mining') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-mining">
-                <a href="/admin/mining">التعدين Sites</a>
-                <a href="/admin/mining">Concessions</a>
-                <a href="/admin/mining">Minerals</a>
-                <a href="/admin/mining">Samples</a>
-                <a href="/admin/mining">Lab Results</a>
-                <a href="/admin/mining">Production</a>
-                <a href="/admin/mining">Inventory</a>
+                <a href="/admin/mining">{{ t('mining') }} Sites</a>
+                <a href="/admin/mining">{{ t('concessions') }}</a>
+                <a href="/admin/mining">{{ t('minerals') }}</a>
+                <a href="/admin/mining">{{ t('samples') }}</a>
+                <a href="/admin/mining">{{ t('lab_results') }}</a>
+                <a href="/admin/mining">{{ t('production') }}</a>
+                <a href="/admin/mining">{{ t('inventory') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-equipment')">🚜 المعدات والخدمات <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-equipment')">🚜 {{ t('equipment_services') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-equipment">
-                <a href="/admin/equipment">Equipment</a>
-                <a href="/admin/equipment">Rentals</a>
-                <a href="/admin/equipment">Service Providers</a>
-                <a href="/admin/equipment">Logistics</a>
-                <a href="/admin/equipment">Transport</a>
-                <a href="/admin/equipment">Warehouses</a>
-                <a href="/admin/equipment">Maintenance</a>
+                <a href="/admin/equipment">{{ t('equipment') }}</a>
+                <a href="/admin/equipment">{{ t('rentals') }}</a>
+                <a href="/admin/equipment">{{ t('service_providers') }}</a>
+                <a href="/admin/equipment">{{ t('logistics') }}</a>
+                <a href="/admin/equipment">{{ t('transport') }}</a>
+                <a href="/admin/equipment">{{ t('warehouses') }}</a>
+                <a href="/admin/equipment">{{ t('maintenance') }}</a>
             </div>
 
             
-<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-advanced')">🚀 العمليات المتقدمة <span>▾</span></div>
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-advanced')">🚀 {{ t('advanced_operations') }} <span>▾</span></div>
 
 <div class="sidebar-sub-menu" id="menu-advanced">
 
@@ -76,88 +76,88 @@
 
 <a href="/admin/audit">🔍 Audit</a>
 
-<a href="/admin/analytics">📊 التحليلات</a>
+<a href="/admin/analytics">📊 {{ t('analytics') }}</a>
 
 </div>
 
-<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-finance')">💰 المالية <span>▾</span></div>
+<div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-finance')">💰 {{ t('finance') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-finance">
-                <a href="/admin/finance">Invoices</a>
-                <a href="/admin/finance/escrow">Escrow</a>
-                <a href="/admin/finance">Payment Transactions</a>
-                <a href="/admin/finance">Commissions</a>
-                <a href="/admin/finance">Settlements</a>
-                <a href="/admin/finance">Refunds</a>
-                <a href="/admin/finance">Disputes</a>
+                <a href="/admin/finance">{{ t('invoices') }}</a>
+                <a href="/admin/finance/escrow">{{ t('escrow') }}</a>
+                <a href="/admin/finance">{{ t('payment_transactions') }}</a>
+                <a href="/admin/finance">{{ t('commissions') }}</a>
+                <a href="/admin/finance">{{ t('settlements') }}</a>
+                <a href="/admin/finance">{{ t('refunds') }}</a>
+                <a href="/admin/finance">{{ t('disputes') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 المستخدمون <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-users')">👥 {{ t('users') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-users">
-                <a href="/admin/users">Buyers</a>
-                <a href="/admin/users">Sellers</a>
-                <a href="/admin/users">Traders</a>
-                <a href="/admin/users">التعدين Companies</a>
-                <a href="/admin/users">Service Companies</a>
-                <a href="/admin/users">Agents</a>
-                <a href="/admin/users">Admins</a>
-                <a href="/admin/users">Roles & Permissions</a>
+                <a href="/admin/users">{{ t('buyers') }}</a>
+                <a href="/admin/users">{{ t('sellers') }}</a>
+                <a href="/admin/users">{{ t('traders') }}</a>
+                <a href="/admin/users">{{ t('mining') }} Companies</a>
+                <a href="/admin/users">{{ t('service_companies') }}</a>
+                <a href="/admin/users">{{ t('agents') }}</a>
+                <a href="/admin/users">{{ t('admins') }}</a>
+                <a href="/admin/users">{{ t('roles_permissions') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-comm')">💬 الاتصالات <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-comm')">💬 {{ t('communications') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-comm">
-                <a href="/admin/communications">Messages</a>
-                <a href="/admin/communications">Chats</a>
-                <a href="/admin/communications">Notifications</a>
-                <a href="/admin/communications">Email</a>
-                <a href="/admin/communications">SMS</a>
+                <a href="/admin/communications">{{ t('messages') }}</a>
+                <a href="/admin/communications">{{ t('chats') }}</a>
+                <a href="/admin/communications">{{ t('notifications') }}</a>
+                <a href="/admin/communications">{{ t('email') }}</a>
+                <a href="/admin/communications">{{ t('sms') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-content')">📰 المحتوى <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-content')">📰 {{ t('content') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-content">
-                <a href="/admin/content">News</a>
-                <a href="/admin/content">Articles</a>
-                <a href="/admin/content">Advertisements</a>
-                <a href="/admin/content">Subscriptions</a>
-                <a href="/admin/content">Static Pages</a>
-                <a href="/admin/content">FAQ</a>
+                <a href="/admin/content">{{ t('news') }}</a>
+                <a href="/admin/content">{{ t('articles') }}</a>
+                <a href="/admin/content">{{ t('advertisements') }}</a>
+                <a href="/admin/content">{{ t('subscriptions') }}</a>
+                <a href="/admin/content">{{ t('static_pages') }}</a>
+                <a href="/admin/content">{{ t('faq') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-reports')">📈 التقارير <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-reports')">📈 {{ t('reports') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-reports">
-                <a href="/admin/reports">Financial التقارير</a>
-                <a href="/admin/reports">التعدين التقارير</a>
-                <a href="/admin/reports">السوق التقارير</a>
-                <a href="/admin/reports">User التقارير</a>
-                <a href="/admin/reports">التحليلات</a>
-                <a href="/admin/reports">Export</a>
+                <a href="/admin/reports">Financial {{ t('reports') }}</a>
+                <a href="/admin/reports">{{ t('mining') }} {{ t('reports') }}</a>
+                <a href="/admin/reports">{{ t('marketplace') }} {{ t('reports') }}</a>
+                <a href="/admin/reports">User {{ t('reports') }}</a>
+                <a href="/admin/reports">{{ t('analytics') }}</a>
+                <a href="/admin/reports">{{ t('export') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-admin')">⚙ الإدارة <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-admin')">⚙ {{ t('admin') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-admin">
-                <a href="/admin/administration">General Settings</a>
-                <a href="/admin/administration">Countries</a>
-                <a href="/admin/administration">Currencies</a>
-                <a href="/admin/administration">Taxes</a>
-                <a href="/admin/administration">Payment Providers</a>
-                <a href="/admin/administration">API Keys</a>
-                <a href="/admin/administration">Audit Log</a>
-                <a href="/admin/administration">Backup</a>
-                <a href="/admin/administration">Email Settings</a>
-                <a href="/admin/administration">SMS Settings</a>
+                <a href="/admin/administration">{{ t('general_settings') }}</a>
+                <a href="/admin/administration">{{ t('countries') }}</a>
+                <a href="/admin/administration">{{ t('currencies') }}</a>
+                <a href="/admin/administration">{{ t('taxes') }}</a>
+                <a href="/admin/administration">{{ t('payment_providers') }}</a>
+                <a href="/admin/administration">{{ t('api_keys') }}</a>
+                <a href="/admin/administration">{{ t('audit_log') }}</a>
+                <a href="/admin/administration">{{ t('backup') }}</a>
+                <a href="/admin/administration">{{ t('email_settings') }}</a>
+                <a href="/admin/administration">{{ t('sms_settings') }}</a>
             </div>
 
-            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-security')">🔐 الأمن <span>▾</span></div>
+            <div class="sidebar-dropdown-btn" onclick="toggleDropdown('menu-security')">🔐 {{ t('security') }} <span>▾</span></div>
             <div class="sidebar-sub-menu" id="menu-security">
-                <a href="/admin/security">Login History</a>
-                <a href="/admin/security">Active Sessions</a>
-                <a href="/admin/security">Permissions</a>
-                <a href="/admin/security">Activity Log</a>
-                <a href="/admin/security">Block List</a>
-                <a href="/admin/security">System Monitoring</a>
+                <a href="/admin/security">{{ t('login_history') }}</a>
+                <a href="/admin/security">{{ t('active_sessions') }}</a>
+                <a href="/admin/security">{{ t('permissions') }}</a>
+                <a href="/admin/security">{{ t('activity_log') }}</a>
+                <a href="/admin/security">{{ t('block_list') }}</a>
+                <a href="/admin/security">{{ t('system_monitoring') }}</a>
             </div>
         </nav>
 
-        <!-- منطقة عرض المحتوى المتغيرة -->
+        <!-- منطقة عرض {{ t('content') }} المتغيرة -->
         <main class="admin-main-content">
             <div class="content-wrapper">
                 {% block content %}{% endblock %}

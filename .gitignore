@@ -14,3 +14,34 @@ test_*.py
 
 # admin creation scripts temporary
 create_admin_fixed*.py
+
+# Local i18n workspaces / audit artifacts
+.i18n_audit/
+.i18n_phase6/
+.i18n_phase7/
+.i18n_phase8/
+.i18n_phase9/
+.i18n_runtime_final/
+.i18n_runtime_test/
+.i18n_unification_backup_20260809/
+
+# Local virtual environment
+.venv311clean/
+
+# Local i18n audit scripts/reports
+fix_i18n.py
+i18n_audit.py
+i18n_audit_output.txt
+i18n_audit_report.txt
+i18n_phase2_audit.py
+i18n_phase2_report.txt
+i18n_phase3_candidates.py
+i18n_phase3_candidates.txt
+i18n_phase4_classified.txt
+i18n_phase4_classify.py
+i18n_production_candidates.py
+i18n_production_candidates.txt
+
+# Local database / accidental temporary files
+local.db.before_asset_type_fix_20260809_094848
+sionLocal

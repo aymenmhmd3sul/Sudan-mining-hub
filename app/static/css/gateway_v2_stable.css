@@ -1,0 +1,634 @@
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+min-height:100vh;
+font-family:Arial,sans-serif;
+background:#120b0b;
+color:white;
+}
+
+.page{
+width:100%;
+max-width:430px;
+margin:auto;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+
+/* Header */
+
+.header{
+background:linear-gradient(135deg,#7b1e2b,#3b0b12);
+padding:15px;
+border-radius:0 0 30px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.brand{
+display:flex;
+flex-direction:column;
+}
+
+.icons{
+font-size:22px;
+}
+
+.brand strong{
+color:#ffd76a;
+font-size:19px;
+}
+
+.brand span{
+font-size:12px;
+}
+
+
+.language-box{
+position:relative;
+}
+
+#langBtn{
+background:#1b1b1b;
+color:#ffd76a;
+border:1px solid #ffd76a;
+border-radius:12px;
+padding:8px 12px;
+}
+
+
+#langMenu{
+display:none;
+position:absolute;
+top:calc(100% + 8px);
+inset-inline-start:0;
+background:#fff7e6;
+border-radius:10px;
+padding:6px;
+width:120px;
+max-width:calc(100vw - 20px);
+z-index:1000;
+box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+
+/* Fix position relative to button edges */
+[dir="rtl"] #langMenu {
+    left: 0 !important;
+    right: auto !important;
+}
+
+[dir="ltr"] #langMenu {
+    right: 0 !important;
+    left: auto !important;
+}
+
+#langMenu button{
+width:100%;
+border:0;
+padding:8px;
+}
+
+
+/* Gold */
+
+.gold-ticker{
+background:#050505;
+color:#ffd76a;
+padding:10px;
+border-radius:14px;
+font-size:13px;
+text-align:center;
+}
+
+
+/* Login */
+
+.main-card,
+.platform-card{
+
+background:#fff7e6;
+color:#392b18;
+padding:16px;
+border-radius:22px;
+box-shadow:0 8px 20px #0005;
+
+}
+
+
+.main-card h1{
+text-align:center;
+color:#8a6400;
+font-size:22px;
+margin:5px;
+}
+
+
+input{
+width:100%;
+height:42px;
+margin:6px 0;
+border-radius:12px;
+border:1px solid #c9a85b;
+padding:10px;
+font-size:15px;
+}
+
+
+.password-box{
+display:flex;
+gap:5px;
+}
+
+.password-box input{
+flex:1;
+}
+
+#showPass{
+width:42px;
+border:0;
+border-radius:12px;
+background:#3b0b12;
+color:#ffd76a;
+}
+
+
+.login-btn{
+
+width:100%;
+height:45px;
+border:0;
+border-radius:14px;
+margin-top:8px;
+background:linear-gradient(135deg,#d4af37,#b8860b);
+font-weight:bold;
+font-size:16px;
+
+}
+
+
+.links{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+margin-top:10px;
+color:#7b1e2b;
+}
+
+
+/* Promotion */
+
+.platform-card{
+text-align:center;
+font-size:14px;
+}
+
+.platform-card h3{
+color:#8a6400;
+margin:5px;
+}
+
+
+/* Footer */
+
+footer{
+text-align:center;
+font-size:12px;
+color:#d8c28a;
+padding:8px;
+}
+
+
+.promotion{
+    overflow:hidden;
+    background:#fff7e6;
+    border-radius:20px;
+    margin:10px auto;
+    padding:12px;
+}
+
+.ad-track{
+    display:flex;
+    gap:50px;
+    width:max-content;
+    animation:moveAds 18s linear infinite;
+}
+
+.ad-track span{
+    white-space:nowrap;
+    font-size:14px;
+    color:#6b4b00;
+}
+
+@keyframes moveAds{
+    from{
+        transform:translateX(-100%);
+    }
+    to{
+        transform:translateX(100%);
+    }
+}
+
+
+/* FINAL LAYOUT FIX */
+
+.top-card{
+    margin:0 auto 6px;
+    border-radius:22px;
+    overflow:hidden;
+}
+
+.main-card{
+    margin:0;
+    border-radius:0;
+    padding:18px 15px;
+}
+
+.promotion{
+    margin:6px auto 10px;
+    border-radius:18px;
+    padding:10px;
+}
+
+.ad-track{
+    display:flex;
+    width:max-content;
+    animation:moveAds 25s linear infinite;
+}
+
+@keyframes moveAds{
+    from{
+        transform:translateX(-100%);
+    }
+    to{
+        transform:translateX(100%);
+    }
+}
+
+
+/* Mobile browser safe height */
+html, body{
+    min-height:100%;
+    overflow-x:hidden;
+}
+
+.page{
+    min-height:100dvh;
+}
+
+/* reduce extra browser viewport gap */
+@media(max-width:600px){
+
+    .top-card{
+        margin-top:0;
+    }
+
+    .main-card{
+        padding-top:14px;
+        padding-bottom:14px;
+    }
+
+    footer{
+        padding-bottom:5px;
+    }
+}
+
+
+/* Mobile browser safe height */
+html, body{
+    min-height:100%;
+    overflow-x:hidden;
+}
+
+.page{
+    min-height:100dvh;
+}
+
+/* reduce extra browser viewport gap */
+@media(max-width:600px){
+
+    .top-card{
+        margin-top:0;
+    }
+
+    .main-card{
+        padding-top:14px;
+        padding-bottom:14px;
+    }
+
+    footer{
+        padding-bottom:5px;
+    }
+}
+
+
+/* Merge top header and login card */
+.top-card{
+    border-radius:20px;
+    overflow:hidden;
+    padding-bottom:0;
+}
+
+.header{
+    margin-bottom:0;
+}
+
+.gold-ticker{
+    margin:0;
+    border-radius:0;
+    padding:8px 12px;
+    background:#fff1c7;
+    font-size:13px;
+}
+
+.main-card{
+    margin-top:0;
+    border-radius:0 0 20px 20px;
+}
+
+/* remove gap between blocks */
+.promotion{
+    margin-top:6px;
+}
+
+/* gold price + ads area */
+.gold-ticker{
+    white-space:nowrap;
+    overflow:hidden;
+}
+
+
+.gold-ticker{
+overflow:hidden;
+white-space:nowrap;
+}
+
+.gold-scroll{
+display:flex;
+gap:80px;
+width:max-content;
+animation:goldMove 30s linear infinite;
+}
+
+.gold-scroll span{
+font-size:13px;
+}
+
+@keyframes goldMove{
+from{
+transform:translateX(100%);
+}
+to{
+transform:translateX(-100%);
+}
+}
+
+
+/* ===== FINAL GATEWAY LAYOUT FIX ===== */
+
+/* منع أي تمدد أفقي بسبب الشريط المتحرك */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* تثبيت الحاوية */
+.page {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* دمج الرأس مع منطقة الدخول */
+.top-card {
+    margin-bottom: 0;
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+/* شريط الذهب والإعلانات */
+.gold-ticker {
+    background: #17120a;
+    color: #ffffff;
+    border-radius: 0;
+    padding: 12px 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* الحركة داخل الشريط فقط */
+.gold-scroll {
+    display: flex;
+    gap: 70px;
+    width: max-content;
+    animation: goldMoveFinal 35s linear infinite;
+}
+
+.gold-scroll span {
+    white-space: nowrap;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.gold-scroll span:first-child {
+    color: #ffd76a;
+}
+
+/* منع خروج الحركة خارج الشاشة */
+@keyframes goldMoveFinal {
+    from {
+        transform: translateX(20%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* بطاقة الدخول */
+.main-card {
+    margin-top: 0;
+    border-radius: 0 0 22px 22px;
+}
+
+/* الإعلان السفلي يصبح جزءاً من التصميم */
+.promotion {
+    margin-top: 8px;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+/* تحسين الفوتر */
+footer {
+    padding: 8px;
+    text-align: center;
+}
+
+
+
+/* ===== FINAL MOBILE UI FIX ===== */
+
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+}
+
+body{
+    margin:0;
+}
+
+.page{
+    width:100%;
+    max-width:100%;
+}
+
+/* Header + Login merge */
+.top-card{
+    width:100%;
+    max-width:100%;
+    overflow:hidden;
+}
+
+.header{
+    width:100%;
+}
+
+.main-card{
+    width:100%;
+    max-width:100%;
+}
+
+/* Gold + Ads unified ticker */
+
+.gold-ticker{
+    width:100%;
+    overflow:hidden;
+    background:#161616;
+    color:#ffe7a0;
+    border-radius:0;
+    padding:12px 0;
+    white-space:nowrap;
+}
+
+.gold-scroll{
+    display:flex;
+    width:max-content;
+    gap:70px;
+    animation:goldMove 35s linear infinite;
+}
+
+.gold-scroll span{
+    display:inline-block;
+    font-size:15px;
+    color:#ffe7a0;
+    padding:0 15px;
+}
+
+@keyframes goldMove{
+
+    from{
+        transform:translateX(100%);
+    }
+
+    to{
+        transform:translateX(-100%);
+    }
+
+}
+
+
+/* Keep controls visible */
+
+.password-box{
+    position:relative;
+    width:100%;
+}
+
+.password-box input{
+    width:100%;
+    padding-left:45px;
+    padding-right:45px;
+    box-sizing:border-box;
+}
+
+#showPass{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:5;
+}
+
+[dir="rtl"] #showPass{
+    left:10px;
+    right:auto;
+}
+
+[dir="ltr"] #showPass{
+    right:10px;
+    left:auto;
+}
+
+
+/* Footer restore */
+
+footer{
+    width:100%;
+    text-align:center;
+    padding:12px 5px;
+}
+
+
+/* Mobile viewport */
+
+@media(max-width:600px){
+
+    .top-card{
+        margin:0;
+    }
+
+    .main-card{
+        padding:14px;
+    }
+
+    .gold-scroll{
+        gap:40px;
+    }
+
+    .gold-scroll span{
+        font-size:14px;
+    }
+
+}
+
+
+@keyframes goldMoveReverse{
+    from{
+        transform:translateX(-100%);
+    }
+    to{
+        transform:translateX(100%);
+    }
+}
+
+
+
+
+
+
+
+html[dir="ltr"] .gold-scroll{
+    animation-direction: reverse;
+}
+
+html[dir="rtl"] .gold-scroll{
+    animation-direction: normal;
+}

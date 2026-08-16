@@ -1,69 +1,83 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة السودان للتعدين</title>
 
-<title>Sudan Mining Hub</title>
-
-<link rel="stylesheet" href="{{ url_for('static', path='css/gateway.css') }}">
-
+<link rel="stylesheet" href="{{ url_for('static', path='css/gateway_v2_stable.css') }}">
 </head>
 
 <body>
 
 <div class="page">
 
-<header class="top">
+<section class="top-card">
 
-<div class="logo">
-⛏ Sudan Mining Hub
+<header class="header">
+
+<div class="brand">
+<div class="icons">⛏ ⚖️</div>
+
+<strong>منصة السودان للتعدين</strong>
+
+<span>
+بوابة إدارة قطاع التعدين الذكية
+</span>
+
 </div>
 
-<div class="tools">
-<button id="langBtn">English</button>
-<button id="themeBtn">🌙</button>
+
+<div class="language-box">
+
+<button id="langBtn">
+🌐 EN
+</button>
+
+<div id="langMenu">
+
+<button class="ar">العربية</button>
+<button class="en">English</button>
+
+</div>
+
 </div>
 
 </header>
 
 
-<section class="gold-card">
 
-<div>
-🌍 الذهب العالمي
-<h3 id="globalGold">$3420 / oz</h3>
+<div class="gold-ticker">
+    <div class="gold-scroll">
+        <span>🟡 بورصة الذهب مباشرة | الأونصة: $3420 | عيار 24: سعر عالمي</span>
+        <span>🌍 مستثمرون دوليون يبحثون عن فرص التعدين في السودان</span>
+        <span>⛏ معدات تعدين ومشاريع للبيع والشراء عبر المنصة</span>
+        <span>🚚 خدمات النقل واللوجستيات التعدينية متاحة الآن</span>
+    </div>
 </div>
 
-<div>
-🇸🇩 الذهب المحلي
-<h3 id="localGold">75,000 SDG / gram</h3>
-</div>
-
-</section>
 
 
-<section class="login-box">
+
+<section class="main-card">
 
 <h1>
 بوابة الدخول
 </h1>
 
 
-<input 
-id="email"
+<input id="email"
 type="email"
-placeholder="البريد الإلكتروني"
-autocomplete="off">
+placeholder="البريد الإلكتروني">
 
 
 <div class="password-box">
 
-<input
-id="password"
+<input id="password"
 type="password"
-placeholder="كلمة المرور"
-autocomplete="new-password">
+placeholder="كلمة المرور">
+
 
 <button id="showPass">
 👁
@@ -72,78 +86,52 @@ autocomplete="new-password">
 </div>
 
 
-<button class="login">
-تسجيل الدخول
-</button>
+<button id="loginBtn"
+class="login-btn">
 
-
-<a class="forgot">
-نسيت كلمة المرور؟
-</a>
-
-
-</section>
-
-
-
-<button class="visitor">
-
-👤 الدخول كزائر
+🔐 تسجيل الدخول الآمن
 
 </button>
 
 
+<div class="links">
 
-<section class="updates">
+<a>التسجيل لأول مرة</a>
 
-<h3>
-🔔 آخر التحديثات
-</h3>
+<a>دخول كزائر</a>
 
-<p>
-إعلانات التعدين والفرص الجديدة
-</p>
-
-</section>
-
-
-
-<section class="bank">
-
-<h3>
-🏦 Banking Center
-</h3>
-
-<p>
-الخدمات البنكية والدفع الإلكتروني
-</p>
-
-</section>
-
-
-
-<section class="contact">
-
-<h3>
-التواصل
-</h3>
-
-<div>
-💬 WhatsApp
-✈ Telegram
-✉ Email
 </div>
 
+
+<div id="message"></div>
+
+
+
+
 </section>
+
+
+</section>
+
+
+
+
+
 
 
 <footer>
 
-Sudan Mining Hub v1.0
+<div>
+سياسة المنصة | تواصل معنا
+</div>
 
-<br>
 
-Privacy | Terms | API
+<div>
+💬 WhatsApp &nbsp;
+✈ Telegram &nbsp;
+✉ Email
+</div>
+
 
 </footer>
 
@@ -151,7 +139,8 @@ Privacy | Terms | API
 </div>
 
 
-<script src="{{ url_for('static', path='js/gateway.js') }}"></script>
+<script src="{{ url_for('static', path='js/gateway_v2_stable.js') }}"></script>
 
 </body>
+
 </html>

@@ -62,11 +62,20 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
 
 @router.post("/login")
 async def login(request: Request, db: Session = Depends(get_db)):
-    # محاولة قراءة البيانات سواء كانت JSON أو Form Data
+    """
+    Central web login endpoint.
+
+    Supports JSON and form-urlencoded/form-data requests.
+    Authentication is centralized through AuthService.
+    The access token is stored only in an HttpOnly cookie.
+    """
+
     email = None
     password = None
-    
+
     content_type = request.headers.get("content-type", "")
+
+    # JSON request
     if "application/json" in content_type:
         try:
             body = await request.json()
@@ -74,7 +83,8 @@ async def login(request: Request, db: Session = Depends(get_db)):
             password = body.get("password")
         except Exception:
             pass
-    
+
+    # Form request
     if not email or not password:
         try:
             form = await request.form()
@@ -84,13 +94,22 @@ async def login(request: Request, db: Session = Depends(get_db)):
             pass
 
     if not email or not password:
-        return JSONResponse(status_code=400, content={"detail": "يرجى إدخال البريد الإلكتروني وكلمة المرور"})
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "يرجى إدخال البريد الإلكتروني وكلمة المرور"
+            }
+        )
 
-    email = email.strip().lower()
+    email = str(email).strip().lower()
 
-    # 1. فحص الحساب الثابت للمشرف
-    if (email == "aymen.mhmd3@gmail.com" or email == "admin@sudanmining.com") and password == "SudanMining@2026":
-        print("ADMIN LOGIN MATCHED")
+    # ---------------------------------------------------------
+    # 1. Fixed system administrator account
+    # ---------------------------------------------------------
+    if (
+        email in ["aymen.mhmd3@gmail.com", "admin@sudanmining.com"]
+        and password == "SudanMining@2026"
+    ):
         access_token = create_access_token(
             data={
                 "id": 1,
@@ -99,43 +118,15 @@ async def login(request: Request, db: Session = Depends(get_db)):
                 "status": "ACTIVE"
             }
         )
-        role = "ADMIN"
-
-        if role == "ADMIN":
-            redirect = "/admin/dashboard"
-        elif role in ["MERCHANT", "SELLER"]:
-            redirect = "/merchant/dashboard"
-        elif role == "BUYER":
-            redirect = "/buyer/dashboard"
-        else:
-            redirect = "/explore"
 
         response = JSONResponse(
             content={
                 "status": "success",
                 "message": "تم الدخول بنجاح",
-                "redirect": redirect
+                "redirect": "/admin/dashboard"
             }
         )
-        response.set_cookie(
-            key="access_token",
-            value=f"Bearer {access_token}",
-            httponly=True,
-            max_age=2592000, # 30 يوماً
-            samesite="lax"
-        )
-        return response
 
-    # 2. فحص الحسابات من قاعدة البيانات
-    user = db.query(User).filter(User.email == email).first() if 'User' in globals() or 'User' in locals() else None
-    if user and verify_password(password, user.password_hash):
-        access_token = create_access_token(
-        data={
-            "sub": user.email,
-            "role": getattr(user.role, "value", user.role)
-        }
-    )
-        response = JSONResponse(content={"status": "success", "message": "تم الدخول بنجاح", "redirect": "/admin/dashboard"})
         response.set_cookie(
             key="access_token",
             value=f"Bearer {access_token}",
@@ -143,9 +134,66 @@ async def login(request: Request, db: Session = Depends(get_db)):
             max_age=2592000,
             samesite="lax"
         )
+
         return response
 
-    return JSONResponse(status_code=401, content={"detail": "خطأ في البريد الإلكتروني أو كلمة المرور"})
+    # ---------------------------------------------------------
+    # 2. Database users — centralized authentication
+    # ---------------------------------------------------------
+    try:
+        result = AuthService.authenticate_user(
+            db,
+            email,
+            password
+        )
+    except HTTPException as exc:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail}
+        )
+
+    access_token = result["access_token"]
+
+    # Read the authenticated user's role for routing.
+    user = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
+
+    role = getattr(user.role, "value", user.role) if user else "BUYER"
+    role = str(role).upper()
+
+    if role == "ADMIN":
+        redirect = "/admin/dashboard"
+    elif role in ["MERCHANT", "SELLER"]:
+        redirect = "/merchant/dashboard"
+    elif role == "BUYER":
+        redirect = "/buyer/dashboard"
+    else:
+        redirect = "/explore"
+
+    response = JSONResponse(
+        content={
+            "status": "success",
+            "message": "تم الدخول بنجاح",
+            "redirect": redirect
+        }
+    )
+
+    # IMPORTANT:
+    # Token is NOT exposed to JavaScript/localStorage.
+    # Browser keeps it as an HttpOnly authentication cookie.
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {access_token}",
+        httponly=True,
+        max_age=2592000,
+        samesite="lax"
+    )
+
+    return response
+
 @router.post("/request-role")
 def request_role_upgrade(req: RoleUpgradeRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """طلب تعديل الصلاحيات أو الترقية لأدوار حيوية كـ MERCHANT أو AGENT"""

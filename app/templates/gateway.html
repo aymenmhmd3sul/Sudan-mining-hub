@@ -412,6 +412,13 @@
     data-server-language="{{ lang }}"
     data-login-text="{{ t("login") }}"
     data-register-text="{{ t("register") }}"
+    data-auth-prefix="{{ "لإكمال" if lang == "ar" else "To complete" }}"
+    data-auth-connector="{{ "يرجى" if lang == "ar" else "please" }}"
+    data-auth-suffix="{{ "على المنصة." if lang == "ar" else "on the platform." }}"
+    data-browse-category="{{ "تصفح فئة" if lang == "ar" else "Browse" }}"
+    data-login-checking="{{ "جاري التحقق..." if lang == "ar" else "Checking..." }}"
+    data-login-invalid="{{ "البريد الإلكتروني أو كلمة المرور غير صحيحة" if lang == "ar" else "Email or password is incorrect" }}"
+    data-login-server-error="{{ "تعذر الاتصال بالخادم" if lang == "ar" else "Unable to connect to the server" }}"
 >
 
     <!-- Header -->
@@ -502,9 +509,9 @@
 
     <div class="assets-grid">
         <!-- Asset 1 -->
-        <div class="asset-card" style="cursor:pointer;" onclick="showDetail('{{ t("gold_factory") }}', '$1,250,000', '{{ t("location_kassala_halfa") }}', '{{ t("gold_factory_desc") }}', '')">
+        <div class="asset-card" data-category="{{ t("factories") }}" data-state="{{ t("state_kassala") }}" style="cursor:pointer;" onclick="showDetail('{{ t("gold_factory") }}', '$1,250,000', '{{ t("location_kassala_halfa") }}', '{{ t("gold_factory_desc") }}', '')">
             <span class="asset-badge">{{ t("featured") }}</span>
-            <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><path d="M2 22h20M17 22v-9l-5 3v-3l-5 3V4h5v3l5-3v18zM7 9h2M7 13h2M7 17h2"/></svg></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+            <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><path d="M2 22h20M17 22v-9l-5 3v-3l-5 3V4h5v3l5-3v18zM7 9h2M7 13h2M7 17h2"/></svg></div>
             <div class="asset-body">
                 <div class="asset-title">{{ t("gold_factory") }}</div>
                 <div class="asset-location"><i class="fa-solid fa-location-dot"></i> {{ t("location_kassala_halfa") }}</div>
@@ -513,7 +520,7 @@
         </div>
 
         <!-- Asset 2 -->
-        <div class="asset-card" style="cursor:pointer;" onclick="showDetail('{{ t("excavator_320d") }}', '$140,000', '{{ t("location_abu_hamad") }}', '{{ t("excavator_320d_desc") }}', '')">
+        <div class="asset-card" data-category="{{ t("heavy_equipment") }}" data-state="{{ t("state_northern") }}" style="cursor:pointer;" onclick="showDetail('{{ t("excavator_320d") }}', '$140,000', '{{ t("location_abu_hamad") }}', '{{ t("excavator_320d_desc") }}', '')">
             <span class="asset-badge" style="background:#e74c3c; color:#fff;">{{ t("new") }}</span>
             <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><path d="M2 17h12M4 20h8M14 17l4-5 3 2M10 14V8h4l3 4M6 14h8"/><circle cx="4" cy="17" r="2"/><circle cx="12" cy="17" r="2"/></svg></div>
             <div class="asset-body">
@@ -524,7 +531,7 @@
         </div>
 
         <!-- Asset 3 -->
-        <div class="asset-card" style="cursor:pointer;" onclick="showDetail('{{ t("dump_truck_sinotruk") }}', '$85,000', '{{ t("location_khartoum") }}', '{{ t("dump_truck_desc") }}', '')">
+        <div class="asset-card" data-category="{{ t("heavy_equipment") }}" data-state="{{ t("state_khartoum") }}" style="cursor:pointer;" onclick="showDetail('{{ t("dump_truck_sinotruk") }}', '$85,000', '{{ t("location_khartoum") }}', '{{ t("dump_truck_desc") }}', '')">
             <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><path d="M1 14h15V8H5l-4 6zm15 0h4l3 3v3h-7v-6z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div>
             <div class="asset-body">
                 <div class="asset-title">{{ t("dump_truck") }}</div>
@@ -534,7 +541,7 @@
         </div>
 
         <!-- Asset 4 -->
-        <div class="asset-card" style="cursor:pointer;" onclick="showDetail('{{ t("gold_mill_detail") }}', '$550,000', '{{ t("location_obeidiya") }}', '{{ t("gold_mill_desc") }}', '')">
+        <div class="asset-card" data-category="{{ t("mining_sites") }}" data-state="{{ t("state_nile") }}" style="cursor:pointer;" onclick="showDetail('{{ t("gold_mill_detail") }}', '$550,000', '{{ t("location_obeidiya") }}', '{{ t("gold_mill_desc") }}', '')">
             <span class="asset-badge">{{ t("featured") }}</span>
             <div class="asset-img-wrap" style="width:100%;height:180px;background:#1b1517;display:flex;align-items:center;justify-content:center;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5b842" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div>
             <div class="asset-body">
@@ -570,6 +577,7 @@
             <button class="btn-action" onclick="requireAuth('{{ t("contact_seller_action") }}')">{{ t("contact_seller") }}</button>
             <button class="btn-secondary" onclick="closeModalDirect('detailModal')">{{ t("close") }}</button>
         </div>
+    </div>
     </div>
 
     <!-- Auth Protection Modal -->

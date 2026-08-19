@@ -68,6 +68,19 @@ async def serve_login_page(request: Request):
         return templates.TemplateResponse(request=request, name="login.html", context=template_context(request))
     return templates.TemplateResponse(request=request, name="admin/dashboard.html")
 
+@app.get("/register", response_class=HTMLResponse)
+async def serve_register_page(request: Request):
+    if os.path.exists("app/templates/register.html"):
+        return templates.TemplateResponse(
+            request=request,
+            name="register.html",
+            context=template_context(request),
+        )
+    return HTMLResponse(
+        "<h2>صفحة التسجيل غير متاحة حالياً</h2>",
+        status_code=404
+    )
+
 if auth and hasattr(auth, 'router'):
     app.include_router(auth.router)
 

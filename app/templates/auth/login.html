@@ -58,25 +58,135 @@
         <p class="text-muted small mb-0">مركز قيادة المنصة والتداولات</p>
     </div>
 
-    <form action="/login" method="POST">
-        <div class="mb-3">
-            <label class="form-label text-light small">البريد الإلكتروني</label>
-            <div class="input-group">
-                <span class="input-group-text bg-dark border-secondary text-warning"><i class="fa-solid fa-envelope"></i></span>
-                <input type="email" name="username" class="form-control" value="aymen.mhmd3@gmail.com" required>
-            </div>
+    
+<form id="loginForm">
+    <div class="mb-3">
+        <label class="form-label text-light small">
+            {% if lang == "en" %}Email{% else %}البريد الإلكتروني{% endif %}
+        </label>
+        <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-warning">
+                <i class="fa-solid fa-envelope"></i>
+            </span>
+            <input
+                type="email"
+                id="loginEmail"
+                name="username"
+                class="form-control"
+                autocomplete="username"
+                required
+            >
         </div>
+    </div>
 
-        <div class="mb-4">
-            <label class="form-label text-light small">كلمة المرور</label>
-            <div class="input-group">
-                <span class="input-group-text bg-dark border-secondary text-warning"><i class="fa-solid fa-lock"></i></span>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-            </div>
+    <div class="mb-4">
+        <label class="form-label text-light small">
+            {% if lang == "en" %}Password{% else %}كلمة المرور{% endif %}
+        </label>
+        <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-warning">
+                <i class="fa-solid fa-lock"></i>
+            </span>
+            <input
+                type="password"
+                id="loginPassword"
+                name="password"
+                class="form-control"
+                autocomplete="current-password"
+                required
+            >
         </div>
+    </div>
 
-        <button type="submit" class="btn btn-warning w-100 py-2 mb-3">تسجيل الدخول الآن</button>
-    </form>
+    <div id="loginMessage" class="small text-center mb-3"></div>
+
+    <button type="submit" class="btn btn-warning w-100 py-2 mb-3">
+        {% if lang == "en" %}Sign in{% else %}تسجيل الدخول{% endif %}
+    </button>
+</form>
+
+<div class="text-center pt-2 border-top border-secondary">
+    <a href="/register" class="text-warning text-decoration-none small">
+        {% if lang == "en" %}Create a new account{% else %}إنشاء حساب جديد{% endif %}
+    </a>
+    <br>
+    <a href="/" class="text-muted text-decoration-none small mt-2 d-inline-block">
+        <i class="fa-solid fa-arrow-right me-1"></i>
+        {% if lang == "en" %}Back to home{% else %}العودة للرئيسية{% endif %}
+    </a>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const message = document.getElementById("loginMessage");
+    const form = new FormData();
+
+    form.append(
+        "username",
+        document.getElementById("loginEmail").value.trim()
+    );
+
+    form.append(
+        "password",
+        document.getElementById("loginPassword").value
+    );
+
+    message.textContent =
+        {% if lang == "en" %}
+        "Signing in..."
+        {% else %}
+        "جاري تسجيل الدخول..."
+        {% endif %};
+
+    try {
+        const response = await fetch("/auth/login", {
+            method: "POST",
+            body: form,
+            credentials: "same-origin"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            message.textContent =
+                data.detail ||
+                {% if lang == "en" %}
+                "Login failed."
+                {% else %}
+                "فشل تسجيل الدخول."
+                {% endif %};
+
+            message.className = "small text-center mb-3 text-danger";
+            return;
+        }
+
+        message.textContent =
+            data.message ||
+            {% if lang == "en" %}
+            "Login successful."
+            {% else %}
+            "تم تسجيل الدخول بنجاح."
+            {% endif %};
+
+        message.className = "small text-center mb-3 text-warning";
+
+        window.location.href = data.redirect || "/explore";
+
+    } catch (error) {
+        message.textContent =
+            {% if lang == "en" %}
+            "Unable to connect to the server."
+            {% else %}
+            "تعذر الاتصال بالخادم."
+            {% endif %};
+
+        message.className = "small text-center mb-3 text-danger";
+    }
+});
+</script>
+
 
     <div class="text-center pt-2 border-top border-secondary">
         <a href="/" class="text-muted text-decoration-none small"><i class="fa-solid fa-arrow-right me-1"></i> العودة للرئيسية</a>

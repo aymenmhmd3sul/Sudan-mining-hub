@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="{{ lang|default('ar') }}" dir="{{ direction|default('rtl') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if lang == "en" %}Create Account - Sudan Mining Hub{% else %}إنشاء حساب - سودان مايننج هاب{% endif %}
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, #2a1015 0%, #0f080a 48%, #080506 100%);
+            color: #fff;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 430px;
+            background: #180d10;
+            border: 1px solid #d4af37;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.45);
+        }
+
+        .logo {
+            text-align: center;
+            color: #d4af37;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.35rem;
+            margin: 0 0 8px;
+            color: #d4af37;
+        }
+
+        .description {
+            text-align: center;
+            color: #aaa;
+            font-size: .85rem;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #ddd;
+            font-size: .82rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 14px;
+            border-radius: 8px;
+            border: 1px solid #392027;
+            background: #0f080a;
+            color: #fff;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #d4af37;
+        }
+
+        button {
+            width: 100%;
+            border: 0;
+            border-radius: 8px;
+            padding: 12px;
+            background: #d4af37;
+            color: #080506;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        button:disabled {
+            opacity: .6;
+        }
+
+        #message {
+            min-height: 22px;
+            text-align: center;
+            font-size: .82rem;
+            margin: 8px 0;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid #302027;
+        }
+
+        a {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: .82rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">⚖</div>
+
+    <h1>
+        {% if lang == "en" %}
+            Create Account
+        {% else %}
+            إنشاء حساب
+        {% endif %}
+    </h1>
+
+    <div class="description">
+        {{ t("register_description") }}
+    </div>
+
+    <form id="registerForm">
+
+        <label>
+            {% if lang == "en" %}Full name{% else %}الاسم الكامل{% endif %}
+        </label>
+
+        <input
+            id="name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+        >
+
+        <label>
+            {% if lang == "en" %}Email{% else %}البريد الإلكتروني{% endif %}
+        </label>
+
+        <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+        >
+
+        <label>
+            {% if lang == "en" %}Phone number{% else %}رقم الهاتف{% endif %}
+        </label>
+
+        <input
+            id="phone"
+            name="phone"
+            type="tel"
+            autocomplete="tel"
+            required
+        >
+
+        <label>
+            {% if lang == "en" %}Password{% else %}كلمة المرور{% endif %}
+        </label>
+
+        <input
+            id="password"
+            name="password"
+            type="password"
+            minlength="6"
+            autocomplete="new-password"
+            required
+        >
+
+        <div id="message"></div>
+
+        <button id="registerButton" type="submit">
+            {% if lang == "en" %}
+                Create Account
+            {% else %}
+                إنشاء الحساب
+            {% endif %}
+        </button>
+
+    </form>
+
+    <div class="links">
+        <a href="/login">
+            {% if lang == "en" %}
+                Already have an account? Sign in
+            {% else %}
+                لديك حساب بالفعل؟ تسجيل الدخول
+            {% endif %}
+        </a>
+        <br><br>
+        <a href="/">
+            {% if lang == "en" %}
+                Back to platform
+            {% else %}
+                العودة إلى المنصة
+            {% endif %}
+        </a>
+    </div>
+
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const button = document.getElementById("registerButton");
+    const message = document.getElementById("message");
+
+    button.disabled = true;
+
+    message.textContent =
+        {% if lang == "en" %}
+        "Creating account..."
+        {% else %}
+        "جاري إنشاء الحساب..."
+        {% endif %};
+
+    try {
+        const response = await fetch("/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                name: document.getElementById("name").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                phone: document.getElementById("phone").value.trim(),
+                password: document.getElementById("password").value
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            message.textContent =
+                data.detail ||
+                {% if lang == "en" %}
+                "Registration failed."
+                {% else %}
+                "فشل إنشاء الحساب."
+                {% endif %};
+
+            message.style.color = "#ff6b6b";
+            button.disabled = false;
+            return;
+        }
+
+        message.textContent =
+            {% if lang == "en" %}
+            "Account created successfully. Redirecting to login..."
+            {% else %}
+            "تم إنشاء الحساب بنجاح. سيتم نقلك لتسجيل الدخول..."
+            {% endif %};
+
+        message.style.color = "#d4af37";
+
+        setTimeout(function() {
+            window.location.href = "/login";
+        }, 1200);
+
+    } catch (error) {
+        message.textContent =
+            {% if lang == "en" %}
+            "Unable to connect to the server."
+            {% else %}
+            "تعذر الاتصال بالخادم."
+            {% endif %};
+
+        message.style.color = "#ff6b6b";
+        button.disabled = false;
+    }
+});
+</script>
+
+</body>
+</html>

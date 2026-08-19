@@ -88,3 +88,9 @@ if admin_negotiation_actions and hasattr(admin_negotiation_actions, 'router'):
 # disabled conflicting details router
 
 app.include_router(escrow_router)
+
+# Render / platform health check
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+

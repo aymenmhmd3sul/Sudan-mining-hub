@@ -19,6 +19,7 @@ class UserRegister(BaseModel):
     email: EmailStr
     password: str
     phone: str
+    role: UserRole = UserRole.BUYER
     country: Optional[str] = "SD"
     language: Optional[str] = "ar"
 
@@ -49,7 +50,7 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
         email=user_data.email.strip().lower(),
         phone=user_data.phone.strip(),
         password_hash=hashed_pwd,
-        role=UserRole.BUYER,
+        role=user_data.role,
         status=UserStatus.PENDING,
         country=user_data.country,
         language=user_data.language

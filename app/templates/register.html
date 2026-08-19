@@ -80,6 +80,56 @@
             border-color: #d4af37;
         }
 
+        .role-options {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .role-option {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .role-card {
+            display: block;
+            padding: 12px 14px;
+            border: 1px solid #392027;
+            border-radius: 10px;
+            background: #0f080a;
+            transition: .15s ease;
+        }
+
+        .role-card strong {
+            display: block;
+            color: #d4af37;
+            margin-bottom: 3px;
+        }
+
+        .role-card small {
+            display: block;
+            color: #aaa;
+            line-height: 1.45;
+            font-size: .75rem;
+            font-weight: 400;
+        }
+
+        .role-option input:checked + .role-card {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 1px #d4af37 inset;
+            background: #211217;
+        }
+
+        .role-option:hover .role-card {
+            border-color: #d4af37;
+        }
+
         button {
             width: 100%;
             border: 0;
@@ -174,6 +224,77 @@
             required
         >
 
+
+        <label>
+            {% if lang == "en" %}Account type{% else %}نوع الحساب{% endif %}
+        </label>
+
+        <div class="role-options" role="radiogroup"
+             aria-label="{% if lang == 'en' %}Account type{% else %}نوع الحساب{% endif %}">
+
+            <label class="role-option">
+                <input
+                    type="radio"
+                    name="role"
+                    value="buyer"
+                    checked
+                >
+                <span class="role-card">
+                    <strong>
+                        {% if lang == "en" %}Buyer{% else %}مشتري{% endif %}
+                    </strong>
+                    <small>
+                        {% if lang == "en" %}
+                            Find opportunities, equipment and mining assets.
+                        {% else %}
+                            استكشف الفرص والمعدات والأصول التعدينية.
+                        {% endif %}
+                    </small>
+                </span>
+            </label>
+
+            <label class="role-option">
+                <input
+                    type="radio"
+                    name="role"
+                    value="merchant"
+                >
+                <span class="role-card">
+                    <strong>
+                        {% if lang == "en" %}Merchant{% else %}تاجر{% endif %}
+                    </strong>
+                    <small>
+                        {% if lang == "en" %}
+                            Offer equipment, factories and mining assets.
+                        {% else %}
+                            اعرض المعدات والمصانع والأصول التعدينية.
+                        {% endif %}
+                    </small>
+                </span>
+            </label>
+
+            <label class="role-option">
+                <input
+                    type="radio"
+                    name="role"
+                    value="agent"
+                >
+                <span class="role-card">
+                    <strong>
+                        {% if lang == "en" %}Agent{% else %}وكيل{% endif %}
+                    </strong>
+                    <small>
+                        {% if lang == "en" %}
+                            Work as a verified intermediary on the platform.
+                        {% else %}
+                            اعمل كوسيط معتمد داخل المنصة.
+                        {% endif %}
+                    </small>
+                </span>
+            </label>
+
+        </div>
+
         <label>
             {% if lang == "en" %}Password{% else %}كلمة المرور{% endif %}
         </label>
@@ -246,7 +367,8 @@ document.getElementById("registerForm").addEventListener("submit", async functio
                 name: document.getElementById("name").value.trim(),
                 email: document.getElementById("email").value.trim(),
                 phone: document.getElementById("phone").value.trim(),
-                password: document.getElementById("password").value
+                password: document.getElementById("password").value,
+                role: document.querySelector('input[name="role"]:checked')?.value || "buyer"
             })
         });
 

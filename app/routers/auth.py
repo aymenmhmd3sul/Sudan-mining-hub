@@ -168,7 +168,7 @@ async def login(request: Request, db: Session = Depends(get_db)):
     if role == "ADMIN":
         redirect = "/admin/dashboard"
     elif role in ["MERCHANT", "SELLER"]:
-        redirect = "/merchant/dashboard"
+        redirect = "/merchant"
     elif role == "BUYER":
         redirect = "/buyer/dashboard"
     else:

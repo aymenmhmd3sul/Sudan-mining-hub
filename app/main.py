@@ -6,8 +6,10 @@ from fastapi.staticfiles import StaticFiles
 from app.translations import TRANSLATIONS
 from fastapi.responses import HTMLResponse
 
+from app.routers import merchant_views
 from app.routers import admin_views
-from app.routers import language, web
+from app.routers import admin_users
+from app.routers import language, web, negotiation
 
 try:
     from app.routers import admin_negotiation_page, admin_negotiation_actions, admin_negotiation_details
@@ -88,8 +90,11 @@ if web_auth and hasattr(web_auth, 'router'):
     app.include_router(web_auth.router)
 
 app.include_router(admin_views.router)
+app.include_router(merchant_views.router)
+app.include_router(admin_users.router)
 app.include_router(language.router)
 app.include_router(web.router)
+app.include_router(negotiation.router)
 app.include_router(legal.router)
 
 if admin_negotiation_page and hasattr(admin_negotiation_page, 'router'):

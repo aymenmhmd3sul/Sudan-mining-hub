@@ -42,3 +42,20 @@ def require_any_user(current_user: User = Depends(get_current_user)):
         "email": current_user.email,
         "full_name": current_user.full_name
     }
+
+def require_merchant(current_user: User = Depends(get_current_user)):
+    """Require an active merchant account for merchant routes."""
+    if not current_user or not getattr(current_user, "is_active", True):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="جلسة العمل غير صالحة، يرجى تسجيل الدخول"
+        )
+
+    role = getattr(current_user.role, "value", current_user.role)
+    if str(role).lower() != UserRole.MERCHANT.value.lower():
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="غير مصرح لك بالوصول إلى لوحة التاجر"
+        )
+
+    return current_user

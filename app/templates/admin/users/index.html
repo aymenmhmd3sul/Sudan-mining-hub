@@ -1,27 +1,83 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<div class="space-y-6" x-data="{ 
+<div class="space-y-6" x-init="loadUsers()" x-data="{
     searchQuery: '',
     selectedFilter: 'all',
-    showAddModal: false, 
-    showViewModal: false, 
-    showEditModal: false, 
+    showAddModal: false,
+    showViewModal: false,
+    showEditModal: false,
     newUserName: '',
     newUserEmail: '',
     newUserRole: 'تاجر',
     selectedItem: { name: '', email: '', role: '', status: '', phone: '', joinedDate: '' },
-    items: [
-        { id: 1, name: 'أحمد سليمان', email: 'ahmed@example.com', role: 'تاجر', status: 'نشط', phone: '+249912345678', joinedDate: '2026-01-15' },
-        { id: 2, name: 'عمر الفاروق', email: 'omar@example.com', role: 'مشتري / مستثمر', status: 'نشط', phone: '+249123456789', joinedDate: '2026-02-10' },
-        { id: 3, name: 'شركة النيل للخدمات', email: 'info@nile.sd', role: 'تاجر', status: 'معلق', phone: '+249900000000', joinedDate: '2026-03-01' }
-    ],
+    items: [],
+
+    async loadUsers() {
+        try {
+            const response = await fetch('/api/admin/users/manage', {
+                credentials: 'same-origin'
+            });
+
+            if (response.status === 401) {
+                console.warn('ADMIN USERS AUTH EXPIRED - redirecting to login');
+                window.location.href = '/login?next=/admin/users';
+                return;
+            }
+
+            if (!response.ok) {
+                const raw = await response.text();
+                console.error('ADMIN USERS API FAILURE:', response.status, raw);
+                throw new Error(`HTTP ${response.status}: ${raw}`);
+            }
+
+            const data = await response.json();
+            console.log('ADMIN USERS API SUCCESS:', data);
+
+            this.items = (data.users || []).map(u => ({
+                id: u.id,
+                name: u.full_name || u.name || u.email || 'بدون اسم',
+                email: u.email || '',
+                role: this.normalizeRole(u.role),
+                status: this.normalizeStatus(u.status),
+                phone: u.phone || 'غير مدخل',
+                joinedDate: u.created_at
+                    ? String(u.created_at).slice(0, 10)
+                    : ''
+            }));
+        } catch (error) {
+            console.error('ADMIN USERS LOAD ERROR:', error);
+            alert('تعذر تحميل المستخدمين من قاعدة البيانات');
+        }
+    },
+
+    normalizeRole(role) {
+        const r = String(role || '').toLowerCase();
+
+        if (r.includes('admin')) return 'مدير نظام';
+        if (r.includes('merchant') || r.includes('seller') || r.includes('trader')) return 'تاجر';
+        if (r.includes('buyer') || r.includes('investor')) return 'مشتري / مستثمر';
+
+        return role || 'مستخدم';
+    },
+
+    normalizeStatus(status) {
+        const st = String(status || '').toUpperCase();
+
+        if (st === 'ACTIVE') return 'نشط';
+        if (st === 'SUSPENDED') return 'محظور';
+        if (st === 'REJECTED') return 'مرفوض';
+        if (st === 'BANNED') return 'محظور';
+        if (st === 'PENDING') return 'معلق';
+
+        return status || 'غير معروف';
+    },
     get filteredItems() {
         return this.items.filter(i => {
-            const matchesSearch = !this.searchQuery.trim() || 
-                i.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+            const matchesSearch = !this.searchQuery.trim() ||
+                i.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 i.email.toLowerCase().includes(this.searchQuery.toLowerCase());
-            
+
             if (this.selectedFilter === 'all') return matchesSearch;
             if (this.selectedFilter === 'merchants') return matchesSearch && i.role === 'تاجر';
             if (this.selectedFilter === 'buyers') return matchesSearch && i.role === 'مشتري / مستثمر';
@@ -45,9 +101,70 @@
         this.showAddModal = false;
         alert('تم إضافة الحساب بنجاح!');
     },
-    saveEdit() {
-        alert('تم حفظ بيانات المستخدم بنجاح!');
-        this.showEditModal = false;
+    async saveEdit() {
+        try {
+            const statusMap = {
+                'نشط': 'ACTIVE',
+                'محظور': 'SUSPENDED',
+                'معلق': 'PENDING',
+                'مرفوض': 'REJECTED'
+            };
+
+            const newStatus = statusMap[this.selectedItem.status];
+
+            if (!newStatus) {
+                alert('حالة الحساب غير صالحة');
+                return;
+            }
+
+            const params = new URLSearchParams({
+                user_email: this.selectedItem.email,
+                new_status: newStatus
+            });
+
+            const response = await fetch('/api/admin/users/toggle-status', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: params.toString()
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const detail = Array.isArray(data.detail)
+                    ? data.detail.map(item => item.msg || JSON.stringify(item)).join(' | ')
+                    : (typeof data.detail === 'object'
+                        ? JSON.stringify(data.detail)
+                        : (data.detail || `HTTP ${response.status}`));
+
+                throw new Error(detail);
+            }
+
+            const index = this.items.findIndex(
+                item => item.email.toLowerCase() === this.selectedItem.email.toLowerCase()
+            );
+
+            if (index !== -1) {
+                this.items[index].status =
+                    newStatus === 'ACTIVE'
+                        ? 'نشط'
+                        : (newStatus === 'SUSPENDED'
+                            ? 'محظور'
+                            : (newStatus === 'REJECTED' ? 'مرفوض' : 'معلق'));
+            }
+
+            this.showEditModal = false;
+
+            await this.loadUsers();
+
+            alert('تم حفظ حالة الحساب بنجاح');
+        } catch (error) {
+            console.error('ADMIN USER STATUS SAVE ERROR:', error);
+            alert('تعذر حفظ حالة الحساب: ' + error.message);
+        }
     }
 }">
     <!-- Header -->
@@ -85,7 +202,7 @@
     <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
         <div class="p-4 border-b border-gray-700 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
             <span class="font-bold text-white text-sm">📋 قائمة المستخدمين (انقر للتفاصيل)</span>
-            
+
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <input type="text" x-model="searchQuery" placeholder="بحث بالاسم أو البريد..." class="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                 <button class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-lg text-xs whitespace-nowrap">
@@ -132,7 +249,7 @@
                 <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">👤 تفاصيل حساب المستخدم</h3>
                 <span :class="selectedItem.status === 'معلق' ? 'bg-amber-900/50 text-amber-300' : 'bg-green-900/50 text-green-400'" class="text-[10px] px-2 py-0.5 rounded border border-gray-600" x-text="selectedItem.status"></span>
             </div>
-            
+
             <div class="space-y-3">
                 <div class="bg-gray-900 p-3 rounded-lg border border-gray-700">
                     <p class="text-[11px] text-gray-400">اسم المستخدم / الجهة:</p>

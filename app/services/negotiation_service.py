@@ -222,6 +222,68 @@ class NegotiationService:
         }
 
     @staticmethod
+    def get_user_rooms(db: Session, user_id: int):
+        """
+        جلب جميع غرف التفاوض التي يكون المستخدم طرفاً فيها.
+        تشمل غرف المشتري وغرف البائع، مع آخر رسالة وآخر عرض.
+        """
+        rooms = (
+            db.query(MarketDeal)
+            .filter(
+                (MarketDeal.buyer_id == user_id) |
+                (MarketDeal.seller_id == user_id)
+            )
+            .order_by(MarketDeal.updated_at.desc())
+            .all()
+        )
+
+        result = []
+
+        for room in rooms:
+            messages = (
+                db.query(NegotiationMessage)
+                .filter(NegotiationMessage.room_id == room.id)
+                .order_by(NegotiationMessage.created_at.desc())
+                .all()
+            )
+
+            offers = (
+                db.query(Offer)
+                .filter(Offer.room_id == room.id)
+                .order_by(Offer.created_at.desc())
+                .all()
+            )
+
+            unread_count = (
+                db.query(NegotiationMessage)
+                .filter(
+                    NegotiationMessage.room_id == room.id,
+                    NegotiationMessage.sender_id != user_id,
+                    NegotiationMessage.is_read == False
+                )
+                .count()
+            )
+
+            result.append({
+                "id": room.id,
+                "asset_id": room.asset_id,
+                "seller_id": room.seller_id,
+                "buyer_id": room.buyer_id,
+                "status": str(room.status),
+                "created_at": room.created_at,
+                "updated_at": room.updated_at,
+                "last_message_at": (
+                    messages[0].created_at if messages else None
+                ),
+                "unread_count": unread_count,
+                "last_offer_id": (
+                    offers[0].id if offers else None
+                ),
+            })
+
+        return result
+
+    @staticmethod
     def get_room_by_id(db: Session, room_id: int, user_id: int):
         room = db.query(MarketDeal).filter(
             MarketDeal.id == room_id

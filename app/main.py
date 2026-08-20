@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.translations import TRANSLATIONS
 from fastapi.responses import HTMLResponse
 
-from app.routers import merchant_views
+from app.routers import merchant_views, buyer_views, agent_views
 from app.routers import admin_views
 from app.routers import admin_users
 from app.routers import language, web, negotiation
@@ -91,6 +91,8 @@ if web_auth and hasattr(web_auth, 'router'):
 
 app.include_router(admin_views.router)
 app.include_router(merchant_views.router)
+app.include_router(buyer_views.router)
+app.include_router(agent_views.router)
 app.include_router(admin_users.router)
 app.include_router(language.router)
 app.include_router(web.router)

@@ -51,7 +51,7 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
         phone=user_data.phone.strip(),
         password_hash=hashed_pwd,
         role=user_data.role,
-        status=UserStatus.PENDING,
+        status=UserStatus.ACTIVE,
         country=user_data.country,
         language=user_data.language
     )
@@ -168,9 +168,11 @@ async def login(request: Request, db: Session = Depends(get_db)):
     if role == "ADMIN":
         redirect = "/admin/dashboard"
     elif role in ["MERCHANT", "SELLER"]:
-        redirect = "/merchant"
+        redirect = "/merchant/workspace/dashboard"
     elif role == "BUYER":
         redirect = "/buyer/dashboard"
+    elif role == "AGENT":
+        redirect = "/agent/dashboard"
     else:
         redirect = "/explore"
 

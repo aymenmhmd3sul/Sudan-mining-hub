@@ -1,0 +1,151 @@
+{% extends "merchant/layout_v2.html" %}
+
+{% block title %}{{ t("merchant_dashboard_title") }}{% endblock %}
+
+{% block content %}
+<!-- 1. بطاقة الترحب وملخص النشاط -->
+<div class="smh-card smh-card-gold-accent">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <span class="smh-badge smh-badge-gold">{{ t("merchant_executive_center") }}</span>
+            <h2 style="font-size: 18px; font-weight: 800; margin-top: 6px; color: var(--smh-text-primary);">
+                {{ t("merchant_welcome") }} {{ merchant.name if merchant and merchant.name else t("platform_name") }} ⛏️
+            </h2>
+            <p style="font-size: 12px; color: var(--smh-text-muted); margin-top: 4px;">
+                {{ t("merchant_business_status") }} <span class="text-green" style="font-weight: 700;">{{ t("merchant_active_verified") }}</span> | {{ t("merchant_gold_services") }}
+            </p>
+        </div>
+        <div style="font-size: 28px;">🏭</div>
+    </div>
+    
+    <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--smh-border); display: flex; gap: 10px;">
+        <a href="/merchant/deals/new" class="smh-btn-gold" style="flex: 1; font-size: 13px; padding: 10px;">
+            {{ t("create_new_deal") }}
+        </a>
+        <a href="/merchant/trust" style="background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; padding: 10px 14px; border-radius: var(--smh-radius-lg); font-size: 12px; font-weight: 600; border: 1px solid var(--smh-border); display: flex; align-items: center;">
+            {{ t("trust_level") }}
+        </a>
+    </div>
+</div>
+
+<!-- 2. بطاقات مؤشرات الأداء 4 KPI -->
+<div class="smh-grid-2">
+    <!-- {{ t("active_deals") }} -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-cyan) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">{{ t("active_deals") }}</span>
+            <span class="smh-card-icon">💼</span>
+        </div>
+        <div class="smh-kpi-value text-cyan">{{ active_deals_count if active_deals_count is defined else '12' }}</div>
+        <div class="smh-kpi-subtext">{{ t("deals_in_delivery") }}</div>
+    </div>
+
+    <!-- الأموال المحجوزة Escrow -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-gold) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">{{ t("escrow_account_merchant") }}</span>
+            <span class="smh-card-icon">🔐</span>
+        </div>
+        <div class="smh-kpi-value text-gold">{{ escrow_balance if escrow_balance is defined else '4,850,000' }} <span style="font-size: 11px;">{{ t("currency_sdg_label") }}</span></div>
+        <div class="smh-kpi-subtext">{{ t("protected_by_contracts") }}</div>
+    </div>
+
+    <!-- {{ t("available_balance_merchant") }} -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-green) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">{{ t("available_balance_merchant") }}</span>
+            <span class="smh-card-icon">💰</span>
+        </div>
+        <div class="smh-kpi-value text-green">{{ available_balance if available_balance is defined else '1,280,000' }} <span style="font-size: 11px;">{{ t("currency_sdg_label") }}</span></div>
+        <div class="smh-kpi-subtext">{{ t("ready_for_withdrawal") }}</div>
+    </div>
+
+    <!-- ال{{ t("monthly_profit") }}ية -->
+    <div class="smh-card" style="border-top: 3px solid var(--smh-purple) !important;">
+        <div class="smh-card-header">
+            <span class="smh-card-title">{{ t("monthly_profit") }}</span>
+            <span class="smh-card-icon">📈</span>
+        </div>
+        <div class="smh-kpi-value text-purple">{{ monthly_profit if monthly_profit is defined else '+18.5%' }}</div>
+        <div class="smh-kpi-subtext">{{ t("vs_previous_month") }}</div>
+    </div>
+</div>
+
+<!-- 3. الإجراءات السريعة -->
+<div class="smh-card">
+    <div class="smh-card-title" style="margin-bottom: 12px; color: var(--smh-text-primary);">
+        {{ t("quick_actions") }}
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;">
+        <a href="/merchant/deals" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">📦</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">{{ t("products") }}</div>
+            </div>
+        </a>
+        <a href="/merchant/negotiation" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">💬</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">{{ t("rooms") }}</div>
+            </div>
+        </a>
+        <a href="/merchant/finance" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">💳</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">{{ t("withdrawal") }}</div>
+            </div>
+        </a>
+        <a href="/merchant/documents" style="text-decoration: none; color: var(--smh-text-primary);">
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 6px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border);">
+                <div style="font-size: 20px;">📄</div>
+                <div style="font-size: 10px; margin-top: 4px; font-weight: 600;">{{ t("licenses") }}</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- 4. آخر الصفقات -->
+<div class="smh-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span class="smh-card-title" style="color: var(--smh-text-primary);">{{ t("latest_commercial_deals") }}</span>
+        <a href="/merchant/deals" style="color: var(--smh-gold); font-size: 12px; text-decoration: none; font-weight: 700;">{{ t("view_all") }}</a>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 13px; font-weight: 700;">{{ t("gold_raw_supply") }}</div>
+                <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">{{ t("nile_mining_company") }}</div>
+            </div>
+            <div style="text-align: left;">
+                <span class="smh-badge smh-badge-gold">{{ t("in_progress") }}</span>
+                <div style="font-size: 12px; font-weight: 800; color: var(--smh-gold); margin-top: 4px;">18,500,000 {{ t("currency_sdg_label") }}</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--smh-radius-md); border: 1px solid var(--smh-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 13px; font-weight: 700;">{{ t("mining_ball_mill_rental") }}</div>
+                <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">{{ t("qadarif_site_4") }}</div>
+            </div>
+            <div style="text-align: left;">
+                <span class="smh-badge smh-badge-green">{{ t("completed") }}</span>
+                <div style="font-size: 12px; font-weight: 800; color: var(--smh-green); margin-top: 4px;">2,400,000 {{ t("currency_sdg_label") }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 5. التنبيهات والأمان -->
+<div class="smh-card" style="border-right: 4px solid var(--smh-gold) !important;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="font-size: 22px;">🛡️</div>
+        <div>
+            <div style="font-size: 13px; font-weight: 700;">{{ t("security_trust_alert") }}</div>
+            <div style="font-size: 11px; color: var(--smh-text-muted); margin-top: 2px;">
+                {{ t("upload_updated_registration") }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

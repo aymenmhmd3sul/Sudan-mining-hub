@@ -144,7 +144,27 @@ def change_user_role(
     current_admin=Depends(verify_admin_role)
 ):
     """تعديل صلاحيات ودور المستخدم"""
-    if new_role not in ["ADMIN", "USER", "admin", "user"]:
+    role_map = {
+        "ADMIN": "admin",
+        "admin": "admin",
+        "MERCHANT": "merchant",
+        "merchant": "merchant",
+        "SELLER": "merchant",
+        "seller": "merchant",
+        "BUYER": "buyer",
+        "buyer": "buyer",
+        "AGENT": "agent",
+        "agent": "agent",
+        "USER": "buyer",
+        "user": "buyer",
+    }
+
+    normalized_role = str(new_role).strip()
+    db_role = role_map.get(normalized_role)
+    if db_role is None:
+        db_role = role_map.get(normalized_role.upper())
+
+    if db_role is None:
         raise HTTPException(
             status_code=400,
             detail="دور غير صالح"
@@ -173,7 +193,7 @@ def change_user_role(
         WHERE LOWER(email)=LOWER(:email)
         """),
         {
-            "role": new_role,
+            "role": db_role,
             "email": user_email
         }
     )
@@ -182,5 +202,6 @@ def change_user_role(
     db.close()
 
     return {
-        "message": f"تم تغيير دور المستخدم إلى {new_role}"
+        "message": f"تم تغيير دور المستخدم إلى {db_role}",
+        "role": db_role
     }

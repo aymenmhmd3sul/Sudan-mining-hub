@@ -1,0 +1,33 @@
+{% extends "merchant/layout_v2.html" %}
+
+{% block title %}
+{{ t("profile") }} - {{ t("merchant") }}
+{% endblock %}
+
+{% block content %}
+
+<div class="merchant-module">
+
+    <h1>{{ t("profile") }}</h1>
+
+    <p>
+        {{ t("ui_0413") }} {{ t("merchant") }}.
+    </p>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>{{ t("profile") }}</h3>
+            <p>{{ t("ui_0501") }}</p>
+        </div>
+
+        <div class="card">
+            <h3>{{ t("merchant") }}</h3>
+            <p>{{ t("ui_0518") }}</p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

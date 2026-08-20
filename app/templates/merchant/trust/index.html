@@ -1,0 +1,50 @@
+{% extends "merchant/layout_v2.html" %}
+
+{% block title %}
+{{ t("ui_0518") }} - {{ t("merchant") }}
+{% endblock %}
+
+{% block content %}
+
+<div class="merchant-module">
+
+    <h1>{{ t("ui_0518") }} {{ t("merchant") }}</h1>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>{{ t("ui_0519") }}</h3>
+            <p>{{ t("under_review") }}</p>
+        </div>
+
+        <div class="card">
+            <h3>{{ t("ui_0520") }} {{ t("merchant") }}</h3>
+            <p>{{ t("ui_0521") }}</p>
+        </div>
+
+        <div class="card">
+            <h3>{{ t("ui_0522") }}</h3>
+            <p>{{ t("ui_0523") }}</p>
+        </div>
+
+        <div class="card">
+            <h3>{{ t("ui_0524") }}</h3>
+            <p>{{ t("ui_0525") }}</p>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h2>{{ t("merchant") }}</h2>
+
+    <ul>
+        <li>{{ t("ui_0527") }}</li>
+        <li>{{ t("ui_0528") }} {{ t("negotiation") }}</li>
+        <li>{{ t("deals") }}</li>
+        <li>{{ t("ui_0530") }}</li>
+    </ul>
+
+</div>
+
+{% endblock %}

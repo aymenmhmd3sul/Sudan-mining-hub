@@ -1,39 +1,103 @@
 import os
-from fastapi import APIRouter, Request
+
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 
-router = APIRouter(prefix="/admin", tags=["Admin Views"])
-templates = Jinja2Templates(directory="app/templates")
+from app.services.templates import templates, template_context
+from app.core.dependencies import verify_admin_token
 
-# الداش بورد الرئيسي للمشرف
+
+router = APIRouter(
+    prefix="/admin",
+    tags=["Admin Views"]
+)
+
+
 @router.get("", response_class=HTMLResponse)
 @router.get("/", response_class=HTMLResponse)
 @router.get("/dashboard", response_class=HTMLResponse)
-async def admin_dashboard(request: Request):
-    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context={"active_tab": "dashboard"})
+async def admin_dashboard(
+    request: Request,
+    current_user=Depends(verify_admin_token),
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/dashboard.html",
+        context=template_context(
+            request,
+            {"active_tab": "dashboard"},
+        ),
+    )
 
-# معالج كافة أقسام القائمة الجانبية المنسدلة
+
 @router.get("/{module_name}", response_class=HTMLResponse)
 @router.get("/{module_name}/{subpath:path}", response_class=HTMLResponse)
-async def render_admin_module(request: Request, module_name: str, subpath: str = ""):
-
-    # استثناء وحدة Escrow حتى لا يلتقطها الـ wildcard العام
+async def render_admin_module(
+    request: Request,
+    module_name: str,
+    subpath: str = "",
+    current_user=Depends(verify_admin_token),
+):
     if module_name == "finance" and subpath == "escrow":
         return templates.TemplateResponse(
             request=request,
             name="admin/finance/escrow.html",
-            context={"active_tab": "escrow"}
+            context=template_context(
+                request,
+                {"active_tab": "escrow"},
+            ),
         )
 
-    # تحويل الشرطة العادية إلى سفليّة لتطابق مجلدات القوالب
-    normalized_module = module_name.replace('-', '_')
+    normalized_module = module_name.replace("-", "_")
+
+    if subpath:
+        normalized_subpath = subpath.strip("/")
+        sub_template_path = (
+            f"admin/{normalized_module}/"
+            f"{normalized_subpath}/index.html"
+        )
+
+        sub_full_path = os.path.join(
+            "app/templates",
+            sub_template_path,
+        )
+
+        if os.path.exists(sub_full_path):
+            return templates.TemplateResponse(
+                request=request,
+                name=sub_template_path,
+                context=template_context(
+                    request,
+                    {
+                        "active_tab": module_name,
+                        "room_id": normalized_subpath,
+                    },
+                ),
+            )
+
     template_path = f"admin/{normalized_module}/index.html"
-    full_path = os.path.join("app/templates", template_path)
-    
-    context = {"active_tab": module_name, "room_id": subpath if subpath else "1"}
-    
+    full_path = os.path.join(
+        "app/templates",
+        template_path,
+    )
+
+    context = template_context(
+        request,
+        {
+            "active_tab": module_name,
+            "room_id": subpath if subpath else "1",
+        },
+    )
+
     if os.path.exists(full_path):
-        return templates.TemplateResponse(request=request, name=template_path, context=context)
-    
-    return templates.TemplateResponse(request=request, name="admin/dashboard.html", context=context)
+        return templates.TemplateResponse(
+            request=request,
+            name=template_path,
+            context=context,
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/dashboard.html",
+        context=context,
+    )

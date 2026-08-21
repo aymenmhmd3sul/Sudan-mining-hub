@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from enum import Enum
-from sqlalchemy import String, DateTime, Boolean, Integer
+from sqlalchemy import String, DateTime, Boolean, Integer, event
 from sqlalchemy.orm import Mapped, mapped_column
 from app.core.db import Base
 
@@ -23,6 +23,8 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(150), nullable=False)
+    # Canonical DB identity name. Kept synchronized with name for legacy compatibility.
+    full_name: Mapped[str] = mapped_column(String(150), nullable=False)
     email: Mapped[str] = mapped_column(String(150), unique=True, index=True, nullable=False)
     phone: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -45,9 +47,31 @@ class User(Base):
     is_global_provider: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     @property
-    def full_name(self) -> str:
-        return self.name
+    def display_name(self) -> str:
+        return self.full_name or self.name
 
     @property
     def hashed_password(self) -> str:
         return self.password_hash
+
+
+# ---------------------------------------------------------------------------
+# Identity compatibility guard
+# ---------------------------------------------------------------------------
+# Every registration path (agent / merchant / buyer / future roles) passes
+# through this ORM model. Synchronize the two historical identity columns
+# before PostgreSQL receives the INSERT, preventing full_name NULL violations.
+@event.listens_for(User, "before_insert")
+def sync_user_identity_names(mapper, connection, target):
+    name = (target.name or "").strip()
+    full_name = (target.full_name or "").strip()
+
+    if not name and full_name:
+        target.name = full_name
+        name = full_name
+
+    if not full_name and name:
+        target.full_name = name
+
+    if not target.name or not target.full_name:
+        raise ValueError("User requires a non-empty name/full_name")

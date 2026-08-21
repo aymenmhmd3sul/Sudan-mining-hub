@@ -45,8 +45,11 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
 
     # استخدام الاسم الصحيح والمحقق للدالة هنا
     hashed_pwd = get_password_hash(user_data.password)
+    normalized_name = user_data.name.strip()
+
     new_user = User(
-        name=user_data.name.strip(),
+        name=normalized_name,
+        full_name=normalized_name,
         email=user_data.email.strip().lower(),
         phone=user_data.phone.strip(),
         password_hash=hashed_pwd,

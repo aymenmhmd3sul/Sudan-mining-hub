@@ -53,7 +53,9 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
         email=user_data.email.strip().lower(),
         phone=user_data.phone.strip(),
         password_hash=hashed_pwd,
-        role=user_data.role,
+        # لا نسمح للعميل بتصعيد نفسه إلى Merchant/Admin/Agent
+        # التسجيل العام يبدأ بحساب Buyer، وترقية الدور تتم عبر المسار الإداري.
+        role=UserRole.BUYER,
         status=UserStatus.ACTIVE,
         country=user_data.country,
         language=user_data.language

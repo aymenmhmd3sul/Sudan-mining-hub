@@ -95,6 +95,14 @@
                 autocomplete="current-password"
                 required
             >
+<button
+    type="button"
+    id="toggleLoginPassword"
+    class="password-eye-btn"
+    aria-label="إظهار كلمة المرور"
+    title="إظهار كلمة المرور">
+    <i class="fa-solid fa-eye"></i>
+</button>
         </div>
     </div>
 
@@ -192,6 +200,39 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         <a href="/" class="text-muted text-decoration-none small"><i class="fa-solid fa-arrow-right me-1"></i> العودة للرئيسية</a>
     </div>
 </div>
+
+
+<script>
+(function () {
+    const password = document.getElementById("loginPassword");
+    const toggle = document.getElementById("toggleLoginPassword");
+
+    if (!password || !toggle) return;
+
+    toggle.addEventListener("click", function () {
+        const showing = password.type === "text";
+
+        password.type = showing ? "password" : "text";
+
+        const icon = toggle.querySelector("i");
+        if (icon) {
+            icon.className = showing
+                ? "fa-solid fa-eye"
+                : "fa-solid fa-eye-slash";
+        }
+
+        toggle.setAttribute(
+            "aria-label",
+            showing ? "إظهار كلمة المرور" : "إخفاء كلمة المرور"
+        );
+
+        toggle.setAttribute(
+            "title",
+            showing ? "إظهار كلمة المرور" : "إخفاء كلمة المرور"
+        );
+    });
+})();
+</script>
 
 </body>
 </html>

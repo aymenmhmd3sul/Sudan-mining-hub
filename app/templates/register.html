@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <title>
         {% if lang == "en" %}Create Account - Sudan Mining Hub{% else %}إنشاء حساب - سودان مايننج هاب{% endif %}
@@ -78,6 +79,47 @@
 
         input:focus {
             border-color: #d4af37;
+        }
+
+        .password-field {
+            position: relative;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .password-field input {
+            width: 100%;
+            margin-bottom: 0;
+            padding-inline-end: 48px;
+        }
+
+        .password-eye-btn {
+            position: absolute;
+            top: 50%;
+            inset-inline-end: 8px;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: #d4af37;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .password-eye-btn:hover {
+            background: rgba(212, 175, 55, 0.12);
+        }
+
+        .password-eye-btn:focus-visible {
+            outline: 2px solid #d4af37;
+            outline-offset: 2px;
         }
 
         .role-options {
@@ -299,14 +341,24 @@
             {% if lang == "en" %}Password{% else %}كلمة المرور{% endif %}
         </label>
 
-        <input
-            id="password"
-            name="password"
-            type="password"
-            minlength="6"
-            autocomplete="new-password"
-            required
-        >
+        <div class="password-field">
+            <input
+                id="password"
+                name="password"
+                type="password"
+                minlength="6"
+                autocomplete="new-password"
+                required
+            >
+            <button
+                type="button"
+                id="toggleRegisterPassword"
+                class="password-eye-btn"
+                aria-label="إظهار كلمة المرور"
+                title="إظهار كلمة المرور">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            </button>
+        </div>
 
         <div id="message"></div>
 
@@ -413,6 +465,39 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         button.disabled = false;
     }
 });
+</script>
+
+
+<script>
+(function () {
+    const password = document.getElementById("password");
+    const toggle = document.getElementById("toggleRegisterPassword");
+
+    if (!password || !toggle) return;
+
+    toggle.addEventListener("click", function () {
+        const showing = password.type === "text";
+
+        password.type = showing ? "password" : "text";
+
+        const icon = toggle.querySelector("i");
+        if (icon) {
+            icon.className = showing
+                ? "fa-solid fa-eye"
+                : "fa-solid fa-eye-slash";
+        }
+
+        toggle.setAttribute(
+            "aria-label",
+            showing ? "إظهار كلمة المرور" : "إخفاء كلمة المرور"
+        );
+
+        toggle.setAttribute(
+            "title",
+            showing ? "إظهار كلمة المرور" : "إخفاء كلمة المرور"
+        );
+    });
+})();
 </script>
 
 </body>

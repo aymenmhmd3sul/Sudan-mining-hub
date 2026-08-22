@@ -1,0 +1,19 @@
+{% extends "layouts/buyer_layout.html" %}
+
+{% block title %}{{ t("ui_0413") }} {{ t('buyer') }} - Sudan Mining Hub{% endblock %}
+
+{% block content %}
+<div class="buyer-card">
+    <h1>{{ t("ui_0413") }} {{ t('buyer') }}</h1>
+    <p>مرحباً بك في حساب {{ t('buyer') }}.</p>
+
+    <div class="buyer-links">
+        <a href="/buyer/opportunities">{{ t('explore_opportunities') }}</a>
+        <a href="/buyer/requests">{{ t("ui_0415") }}</a>
+        <a href="/buyer/negotiation">{{ t('negotiation') }}</a>
+        <a href="/buyer/deals">{{ t('deals') }}</a>
+        <a href="/buyer/finance">{{ t('finance') }}</a>
+        <a href="/buyer/profile">{{ t("ui_0416") }}</a>
+    </div>
+</div>
+{% endblock %}

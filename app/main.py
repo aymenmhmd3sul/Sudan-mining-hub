@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from app.routers import merchant_views, buyer_views, agent_views
 from app.routers import admin_views
 from app.routers import admin_users
-from app.routers import language, web, negotiation
+from app.routers import language, web, negotiation, marketplace
 
 try:
     from app.routers import admin_negotiation_page, admin_negotiation_actions, admin_negotiation_details
@@ -98,6 +98,7 @@ app.include_router(language.router)
 app.include_router(web.router)
 app.include_router(negotiation.router)
 app.include_router(legal.router)
+app.include_router(marketplace.router)
 
 if admin_negotiation_page and hasattr(admin_negotiation_page, 'router'):
     app.include_router(admin_negotiation_page.router)

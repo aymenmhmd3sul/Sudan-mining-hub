@@ -29,6 +29,14 @@ class User(Base):
     phone: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
 
+    # Legacy database compatibility:
+    # PostgreSQL still requires this historical column.
+    # It must contain the same hash as password_hash for new users.
+    hashed_password: Mapped[Optional[str]] = mapped_column(
+        String(255),
+        nullable=True
+    )
+
     role: Mapped[UserRole] = mapped_column(String(50), default=UserRole.BUYER, nullable=False)
     status: Mapped[UserStatus] = mapped_column(String(50), default=UserStatus.PENDING, nullable=False)
     country: Mapped[str] = mapped_column(String(10), default="SD", nullable=False)
@@ -49,10 +57,6 @@ class User(Base):
     @property
     def display_name(self) -> str:
         return self.full_name or self.name
-
-    @property
-    def hashed_password(self) -> str:
-        return self.password_hash
 
 
 # ---------------------------------------------------------------------------
@@ -75,3 +79,12 @@ def sync_user_identity_names(mapper, connection, target):
 
     if not target.name or not target.full_name:
         raise ValueError("User requires a non-empty name/full_name")
+
+    # Password compatibility bridge:
+    # password_hash is canonical; hashed_password is retained
+    # because the production PostgreSQL schema still requires it.
+    if not target.password_hash and target.hashed_password:
+        target.password_hash = target.hashed_password
+
+    if target.password_hash and not target.hashed_password:
+        target.hashed_password = target.password_hash

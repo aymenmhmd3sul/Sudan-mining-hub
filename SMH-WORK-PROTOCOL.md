@@ -552,6 +552,148 @@ B) حل بسيط صحيح وقابل للتوسع
 
 ---
 
+
+## 15. PRODUCTION DATABASE & ENVIRONMENT IDENTITY
+
+هذه هي الهوية التشغيلية المعتمدة لبيئة Production، وتم تثبيتها بعد التحقق من إعدادات Render وNeon.
+
+### Render Web Service
+
+- Service: `Sudan-mining-hub-3`
+- Service ID: `srv-d8m7vocvikkc73cgc0a0`
+- Type: Web Service (Python 3)
+- Plan: Starter
+- Compute: 0.5 CPU / 512 MB RAM
+- Region: Frankfurt (EU Central)
+- Repository: `aymenmhmd3sul/Sudan-mining-hub`
+- Production URL: `https://sudan-mining-hub-3.onrender.com`
+- Configured deployment branch: `preview-interactive-gateway-i18n-20260817`
+- Auto-Deploy: OFF
+
+### Render Build / Start
+
+Build command:
+
+`pip install -r requirements.txt`
+
+Start command:
+
+`uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+### Production Database
+
+Production database is:
+
+**Neon PostgreSQL**
+
+Render Web Service is the application layer and passes the production `DATABASE_URL` to the application.
+
+The production database is NOT Render's former PostgreSQL service.
+
+The former Render database service:
+
+`Sudan-mining-hub-db`
+
+is not the Production Source of Truth.
+
+### Production Source of Truth
+
+**Neon PostgreSQL is the single source of truth for Production data.**
+
+Production users, authentication data, marketplace data, and other persistent application data must be read/written through the Production Neon database when the application is running in Production.
+
+The Neon connection string and credentials MUST NOT be stored in this protocol, GitHub source files, or other documentation.
+
+Only the variable name and architectural role may be documented.
+
+### Local Databases
+
+The following local databases are NOT Production:
+
+- `local.db` — local development database.
+- `sudan_mining.db` — legacy local database.
+
+A local runtime result such as:
+
+`DATABASE_URL = sqlite:///local.db`
+
+proves only the database configuration of the local Termux environment.
+
+It MUST NOT be interpreted as the Production database configuration.
+
+### Environment Separation Rule
+
+The project has four distinct layers:
+
+`Termux Local`
+→ `GitHub`
+→ `Render Web Service`
+→ `Neon Production Database`
+
+These layers MUST NOT be conflated.
+
+In particular:
+
+- Local `.env` does not define Render Production.
+- GitHub branch state does not by itself prove the deployed Render state.
+- Render Web Service is not the Production database.
+- Neon is the Production database.
+- A local SQLite database must never be used as evidence about Production data.
+- A disabled/removed legacy Render database must never be silently replaced by a local SQLite database.
+
+### Production Verification Rule
+
+Before any database, authentication, migration, or user-account investigation, identify explicitly:
+
+1. Which environment is being tested.
+2. Which Git branch/commit is being tested.
+3. Which database that environment actually resolves to.
+4. Whether the result represents Local, GitHub, Render, or Neon state.
+
+If these identities are unclear, STOP before making changes.
+
+### No Third Database Rule
+
+Do not introduce a third database as a temporary workaround.
+
+Do not create a new SQLite/PostgreSQL database merely to make a test pass.
+
+If Production is unavailable, diagnose the Production path instead of silently falling back to another database.
+
+### Authentication Database Rule
+
+Authentication tests such as:
+
+- `good@test.com`
+- Buyer
+- Merchant
+- Agent
+- Admin
+
+must be executed against the intended environment and database.
+
+A successful local authentication test does not prove that the same account exists in Neon Production.
+
+### Render Deployment Rule
+
+Never assume that pushing a GitHub branch changes Production.
+
+Always verify:
+
+- Render configured branch.
+- Render deployed commit/SHA.
+- Render runtime environment.
+- Runtime `DATABASE_URL` destination, without exposing credentials.
+
+### Critical Safety Rule
+
+Before changing `app/database.py`, `app/infrastructure/database.py`, authentication, migrations, models, or database dependencies:
+
+**IDENTIFY ENVIRONMENT → IDENTIFY DATABASE → VERIFY SOURCE OF TRUTH → THEN CHANGE.**
+
+This rule exists to prevent testing one database while believing that another database is being tested.
+
+
 ## 29. البروتوكول النهائي
 
 القاعدة الذهبية:

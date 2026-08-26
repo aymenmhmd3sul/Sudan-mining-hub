@@ -201,6 +201,14 @@ async def login(request: Request, db: Session = Depends(get_db)):
         samesite="lax"
     )
 
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {access_token}",
+        httponly=True,
+        max_age=2592000,
+        samesite="lax",
+        secure=False
+    )
     return response
 
 @router.post("/request-role")

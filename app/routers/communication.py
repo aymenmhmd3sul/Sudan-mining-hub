@@ -35,9 +35,9 @@ class EventLogResponse(BaseModel):
 # --- المسارات البرمجية (Endpoints) ---
 
 @router.get("/notifications", response_model=List[NotificationResponse])
-def get_my_notifications(unread_only: bool = False, db: Session = Depends(get_db), current_user: dict = Depends(require_any_user)):
+def get_my_notifications(unread_only: bool = False, db: Session = Depends(get_db), current_user = Depends(require_any_user)):
     """جلب قائمة الإشعارات والتنبيهات الخاصة بالمستخدم الحالي."""
-    user_id = current_user.get("id")
+    user_id = current_user.id
     query = db.query(Notification).filter(Notification.user_id == user_id)
     
     if unread_only:
@@ -46,9 +46,9 @@ def get_my_notifications(unread_only: bool = False, db: Session = Depends(get_db
     return query.order_by(Notification.created_at.desc()).all()
 
 @router.patch("/notifications/{notification_id}/read", status_code=status.HTTP_200_OK)
-def mark_notification_as_read(notification_id: int, db: Session = Depends(get_db), current_user: dict = Depends(require_any_user)):
+def mark_notification_as_read(notification_id: int, db: Session = Depends(get_db), current_user = Depends(require_any_user)):
     """تحديث حالة الإشعار إلى 'مقروء' لتنظيف صندوق الوارد للمستخدم."""
-    user_id = current_user.get("id")
+    user_id = current_user.id
     notification = db.query(Notification).filter(Notification.id == notification_id, Notification.user_id == user_id).first()
     
     if not notification:
@@ -59,7 +59,7 @@ def mark_notification_as_read(notification_id: int, db: Session = Depends(get_db
     return {"status": "success", "message": "تم تعيين الإشعار كمقروء بنجاح"}
 
 @router.get("/deals/{deal_id}/logs", response_model=List[EventLogResponse])
-def get_deal_audit_trail(deal_id: int, db: Session = Depends(get_db), current_user: dict = Depends(require_any_user)):
+def get_deal_audit_trail(deal_id: int, db: Session = Depends(get_db), current_user = Depends(require_any_user)):
     """استخراج سجل التدقيق التاريخي الكامل والأحداث المرتبطة بصفقة تعدينية معينة (Audit Trail)."""
     # تتاح القراءة لأطراف النظام الموثقين
     logs = db.query(DealEventLog).filter(DealEventLog.deal_id == deal_id).order_by(DealEventLog.created_at.asc()).all()

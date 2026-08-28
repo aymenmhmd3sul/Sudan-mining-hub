@@ -10,6 +10,7 @@ from app.core.dependencies import require_merchant
 from app.database import get_db
 from app.models.finance import Invoice, Escrow
 from app.models.operations import FinancialTransaction
+from app.models.communication import Notification
 from app.models.marketplace import MiningAsset, AssetType
 
 
@@ -105,6 +106,37 @@ async def merchant_dashboard(
     )
 
 
+
+
+@router.get("/notifications", response_class=HTMLResponse)
+async def merchant_notifications(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_merchant),
+):
+    notifications = (
+        db.query(Notification)
+        .filter(Notification.user_id == current_user.id)
+        .order_by(Notification.created_at.desc())
+        .limit(100)
+        .all()
+    )
+
+    unread_count = sum(
+        1 for notification in notifications
+        if not notification.is_read
+    )
+
+    context = template_context(request)
+    context["active_page"] = "notifications"
+    context["merchant"] = current_user
+    context["notifications"] = notifications
+    context["unread_count"] = unread_count
+
+    return templates.TemplateResponse(
+        "merchant/notifications/index.html",
+        context,
+    )
 
 
 @router.get("/deals/new", response_class=HTMLResponse)

@@ -1,61 +1,38 @@
-from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
-import sqlalchemy as sa
-from app.models.auth import User, UserStatus
-from app.core.security import verify_password, create_access_token
+import hashlib
+import base64
+import hmac
 
-class AuthService:
-    @staticmethod
-    def authenticate_user(db: Session, username: str, password: str) -> dict:
-        # تطهير المدخلات فوراً من أي فراغات زائدة وتحويلها لأحرف صغيرة
-        clean_username = username.strip().lower()
-        
-        # استعلام ORM قياسي وصريح ومحمي
-        user = db.query(User).filter(sa.func.lower(User.email) == clean_username).first()
-        
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="البريد الإلكتروني أو كلمة المرور غير صحيحة."
-            )
-            
-        # التحقق من كلمة المرور باستخدام الـ Hash المخزن
-        if not verify_password(password, user.password_hash):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="البريد الإلكتروني أو كلمة المرور غير صحيحة."
-            )
-            
-        # استخراج القيمة النصية للحالة لضمان استقرار المقارنة
-        current_status = user.status.value if hasattr(user.status, 'value') else user.status
-        
-        # التحقق الصارم من حالة الحساب بناءً على الحالات الأربعة
-        if current_status == UserStatus.SUSPENDED.value:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="تم تعليق حسابك. يرجى مراجعة الدعم الفني."
-            )
-        elif current_status == UserStatus.PENDING.value:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="حسابك في انتظار مراجعة الإدارة والموافقة."
-            )
-        elif current_status == UserStatus.REJECTED.value:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="تم رفض طلب انضمامك إلى المنصة."
-            )
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    if not hashed_password or not plain_password:
+        return False
+    try:
+        if hashed_password.startswith("$pbkdf2-sha256$"):
+            parts = hashed_password.split("$")
+            rounds = int(parts[2])
+            salt_b64 = parts[3]
+            # دعم الـ Salt الثابت والـ Salt الديناميكي
+            if salt_b64 == base64.b64encode(b"sudan_mining_salt").decode("ascii").rstrip("="):
+                salt = b"sudan_mining_salt"
+            else:
+                salt = base64.b64decode(salt_b64 + "==")
+                
+            expected_key = base64.b64decode(parts[4] + "==")
+            key = hashlib.pbkdf2_hmac("sha256", plain_password.encode("utf-8"), salt, rounds)
+            return hmac.compare_digest(key, expected_key)
+        return False
+    except Exception:
+        return False
 
-        # تجهيز بيانات التوكن (Token Claims) من كائن الـ ORM مباشرة
-        token_data = {
-            "id": user.id,
-            "sub": user.email,
-            "role": user.role.value if hasattr(user.role, 'value') else user.role,
-            "status": current_status
-        }
-        
-        token = create_access_token(data=token_data)
-        return {
-            "access_token": token,
-            "token_type": "bearer"
-        }
+def get_password_hash(password: str) -> str:
+    """Create a password hash compatible with verify_password()."""
+    rounds = 310000
+    salt = b"sudan_mining_salt"
+    key = hashlib.pbkdf2_hmac(
+        "sha256",
+        str(password).encode("utf-8"),
+        salt,
+        rounds,
+    )
+    salt_b64 = base64.b64encode(salt).decode("ascii").rstrip("=")
+    key_b64 = base64.b64encode(key).decode("ascii").rstrip("=")
+    return f"$pbkdf2-sha256${rounds}${salt_b64}${key_b64}"

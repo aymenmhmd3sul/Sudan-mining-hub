@@ -1,204 +1,219 @@
-from fastapi.responses import JSONResponse, Response
-from fastapi import Request, APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
+
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
-from typing import Optional
 
-# الاستيرادات الدقيقة والمحققة من بنية المشروع الحالية
-from app.core.db import get_db
-from app.security.auth import get_current_user
-from app.core.security import get_password_hash, verify_password, create_access_token
-from app.models.auth import User, UserRole, UserStatus
-from app.services.auth_service import AuthService
+from app.database import get_db
+from app.models.user import User, UserRole
+from app.services.auth_service import verify_password, get_password_hash
+from app.core.security import create_access_token
 
-router = APIRouter(prefix="/auth", tags=["Identity & Trust"])
 
-class UserRegister(BaseModel):
-    name: str
-    email: EmailStr
-    password: str
-    phone: str
-    role: UserRole = UserRole.BUYER
-    country: Optional[str] = "SD"
-    language: Optional[str] = "ar"
+router = APIRouter(tags=["Auth"])
 
-class RoleUpgradeRequest(BaseModel):
-    requested_role: UserRole
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
-def register(user_data: UserRegister, db: Session = Depends(get_db)):
-    """إنشاء الهوية الموحدة والآمنة في النظام"""
-    existing_email = db.query(User).filter(User.email == user_data.email.strip().lower()).first()
-    if existing_email:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="البريد الإلكتروني مسجل بالفعل في النظام."
-        )
+def _role_value(user: User) -> str:
+    """Return the canonical lowercase role value."""
+    return str(
+        getattr(user.role, "value", user.role)
+    ).strip().lower()
 
-    existing_phone = db.query(User).filter(User.phone == user_data.phone.strip()).first()
-    if existing_phone:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="رقم الهاتف مسجل بالفعل في النظام."
-        )
 
-    # استخدام الاسم الصحيح والمحقق للدالة هنا
-    hashed_pwd = get_password_hash(user_data.password)
-    normalized_name = user_data.name.strip()
+def _redirect_for_role(role: str) -> str:
+    """Return the real dashboard route for each supported role."""
+    redirects = {
+        UserRole.ADMIN.value: "/admin/dashboard",
+        UserRole.MERCHANT.value: "/merchant/workspace/dashboard",
+        UserRole.BUYER.value: "/buyer/dashboard",
+        UserRole.AGENT.value: "/agent/dashboard",
+    }
+    return redirects.get(role, "/login")
 
-    new_user = User(
-        name=normalized_name,
-        full_name=normalized_name,
-        email=user_data.email.strip().lower(),
-        phone=user_data.phone.strip(),
-        password_hash=hashed_pwd,
-        hashed_password=hashed_pwd,  # PostgreSQL legacy NOT NULL compatibility
-        # لا نسمح للعميل بتصعيد نفسه إلى Merchant/Admin/Agent
-        # التسجيل العام يبدأ بحساب Buyer، وترقية الدور تتم عبر المسار الإداري.
-        role=UserRole.BUYER,
-        status=UserStatus.ACTIVE,
-        country=user_data.country,
-        language=user_data.language
-    )
-    
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "✅ تم إنشاء حسابك الموحد بنجاح! حسابك الآن في انتظار مراجعة الإدارة والاعتماد الفوري."}
 
-@router.post("/login")
-async def login(request: Request, db: Session = Depends(get_db)):
+async def _read_credentials(request: Request):
     """
-    Central web login endpoint.
-
-    Supports JSON and form-urlencoded/form-data requests.
-    Authentication is centralized through AuthService.
-    The access token is stored only in an HttpOnly cookie.
+    Accept both JSON and HTML form submissions.
+    Returns: email, password
     """
+    content_type = request.headers.get("content-type", "").lower()
 
-    email = None
-    password = None
-
-    content_type = request.headers.get("content-type", "")
-
-    # JSON request
     if "application/json" in content_type:
         try:
             body = await request.json()
-            email = body.get("email") or body.get("username")
-            password = body.get("password")
+            return (
+                body.get("email") or body.get("username"),
+                body.get("password"),
+            )
         except Exception:
             pass
 
-    # Form request
+    try:
+        form = await request.form()
+        return (
+            form.get("email") or form.get("username"),
+            form.get("password"),
+        )
+    except Exception:
+        return None, None
+
+
+async def _read_registration_data(request: Request):
+    """
+    Accept JSON and form registration payloads.
+    """
+    content_type = request.headers.get("content-type", "").lower()
+
+    email = None
+    password = None
+    full_name = None
+    phone = None
+    account_type = UserRole.BUYER.value
+
+    if "application/json" in content_type:
+        try:
+            body = await request.json()
+
+            email = body.get("email") or body.get("username")
+            password = body.get("password")
+            full_name = body.get("full_name") or body.get("name")
+            phone = body.get("phone") or body.get("phone_number")
+            account_type = (
+                body.get("account_type")
+                or body.get("role")
+                or UserRole.BUYER.value
+            )
+        except Exception:
+            pass
+
     if not email or not password:
         try:
             form = await request.form()
-            email = form.get("username") or form.get("email")
+
+            email = form.get("email") or form.get("username")
             password = form.get("password")
+            full_name = (
+                form.get("full_name")
+                or form.get("name")
+                or full_name
+            )
+            phone = (
+                form.get("phone")
+                or form.get("phone_number")
+                or phone
+            )
+            account_type = (
+                form.get("account_type")
+                or form.get("role")
+                or account_type
+            )
         except Exception:
             pass
+
+    return email, password, full_name, phone, account_type
+
+
+def _normalize_role(account_type) -> UserRole:
+    value = str(account_type or UserRole.BUYER.value).strip().lower()
+
+    if value in {
+        UserRole.ADMIN.value,
+        UserRole.MERCHANT.value,
+        UserRole.BUYER.value,
+        UserRole.AGENT.value,
+    }:
+        return UserRole(value)
+
+    # Compatibility with older frontend values.
+    if "merchant" in value or "seller" in value:
+        return UserRole.MERCHANT
+
+    if "agent" in value:
+        return UserRole.AGENT
+
+    if "admin" in value:
+        return UserRole.ADMIN
+
+    return UserRole.BUYER
+
+
+@router.post("/auth/login", operation_id="auth_login")
+@router.post("/login", include_in_schema=False)
+@router.post("/api/auth/login", include_in_schema=False)
+async def login(
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    email, password = await _read_credentials(request)
 
     if not email or not password:
         return JSONResponse(
             status_code=400,
             content={
-                "detail": "يرجى إدخال البريد الإلكتروني وكلمة المرور"
-            }
+                "detail": "الرجاء إدخال البريد الإلكتروني وكلمة المرور."
+            },
         )
 
-    email = str(email).strip().lower()
+    normalized_email = str(email).strip().lower()
 
-    # ---------------------------------------------------------
-    # 1. Fixed system administrator account
-    # ---------------------------------------------------------
-    if (
-        email in ["aymen.mhmd3@gmail.com", "admin@sudanmining.com"]
-        and password == "SudanMining@2026"
-    ):
-        access_token = create_access_token(
-            data={
-                "id": 1,
-                "sub": email,
-                "role": "ADMIN",
-                "status": "ACTIVE"
-            }
-        )
-
-        response = JSONResponse(
-            content={
-                "status": "success",
-                "message": "تم الدخول بنجاح",
-                "redirect": "/admin/dashboard"
-            }
-        )
-
-        response.set_cookie(
-            key="access_token",
-            value=f"Bearer {access_token}",
-            httponly=True,
-            max_age=2592000,
-            samesite="lax"
-        )
-
-        return response
-
-    # ---------------------------------------------------------
-    # 2. Database users — centralized authentication
-    # ---------------------------------------------------------
-    try:
-        result = AuthService.authenticate_user(
-            db,
-            email,
-            password
-        )
-    except HTTPException as exc:
-        return JSONResponse(
-            status_code=exc.status_code,
-            content={"detail": exc.detail}
-        )
-
-    access_token = result["access_token"]
-
-    # Read the authenticated user's role for routing.
     user = (
         db.query(User)
-        .filter(User.email == email)
+        .filter(User.email == normalized_email)
         .first()
     )
 
-    role = getattr(user.role, "value", user.role) if user else "BUYER"
-    role = str(role).upper()
+    if not user or not getattr(user, "is_active", True):
+        return JSONResponse(
+            status_code=401,
+            content={
+                "detail": "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+            },
+        )
 
-    if role == "ADMIN":
-        redirect = "/admin/dashboard"
-    elif role in ["MERCHANT", "SELLER"]:
-        redirect = "/merchant/dashboard"
-    elif role == "BUYER":
-        redirect = "/buyer/dashboard"
-    elif role == "AGENT":
-        redirect = "/agent/dashboard"
-    else:
-        redirect = "/explore"
+    # password_hash is canonical.
+    # hashed_password remains a legacy compatibility column.
+    stored_hash = (
+        getattr(user, "password_hash", None)
+        or getattr(user, "hashed_password", None)
+    )
+
+    if not verify_password(str(password), stored_hash):
+        return JSONResponse(
+            status_code=401,
+            content={
+                "detail": "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+            },
+        )
+
+    role = _role_value(user)
+    redirect_url = _redirect_for_role(role)
+
+    if redirect_url == "/login":
+        return JSONResponse(
+            status_code=403,
+            content={
+                "detail": "دور المستخدم غير صالح للوصول إلى المنصة."
+            },
+        )
+
+    access_token = create_access_token(
+        data={
+            "sub": user.email,
+            "id": user.id,
+            "email": user.email,
+            "role": role,
+        },
+        expires_delta=timedelta(days=30),
+    )
 
     response = JSONResponse(
         content={
             "status": "success",
-            "message": "تم الدخول بنجاح",
-            "redirect": redirect
+            "message": "تم تسجيل الدخول بنجاح",
+            "redirect": redirect_url,
+            "access_token": access_token,
+            "role": role,
         }
-    )
-
-    # IMPORTANT:
-    # Token is NOT exposed to JavaScript/localStorage.
-    # Browser keeps it as an HttpOnly authentication cookie.
-    response.set_cookie(
-        key="access_token",
-        value=f"Bearer {access_token}",
-        httponly=True,
-        max_age=2592000,
-        samesite="lax"
     )
 
     response.set_cookie(
@@ -207,33 +222,117 @@ async def login(request: Request, db: Session = Depends(get_db)):
         httponly=True,
         max_age=2592000,
         samesite="lax",
-        secure=False
+        secure=False,
     )
+
     return response
 
-@router.post("/request-role")
-def request_role_upgrade(req: RoleUpgradeRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """طلب تعديل الصلاحيات أو الترقية لأدوار حيوية كـ MERCHANT أو AGENT"""
-    if req.requested_role == UserRole.ADMIN:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="لا يمكن طلب صلاحيات مدير النظام يدوياً."
-        )
-    
-    current_user.role = req.requested_role
-    db.commit()
-    return {"message": f"✅ تم الانتقال إلى دور ({req.requested_role.value}) بنجاح."}
 
-@router.get("/me")
-def get_my_profile(current_user: User = Depends(get_current_user)):
-    """استعراض ملف المستخدم الحي مباشرة من كائن الـ ORM المستقر"""
-    return {
-        "id": current_user.id,
-        "name": getattr(current_user, "name", getattr(current_user, "full_name", "Admin")),
-        "email": current_user.email,
-        "phone": current_user.phone,
-        "role": getattr(current_user.role, "value", current_user.role),
-        "status": getattr(current_user.status, "value", current_user.status),
-        "country": current_user.country,
-        "language": current_user.language
-    }
+@router.post("/auth/register", operation_id="auth_register")
+@router.post("/register", include_in_schema=False)
+@router.post("/api/auth/register", include_in_schema=False)
+async def register_user(
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    (
+        email,
+        password,
+        full_name,
+        phone,
+        account_type,
+    ) = await _read_registration_data(request)
+
+    if not email or not password or not full_name:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "الرجاء تعبئة كافة الحقول الإجبارية."
+            },
+        )
+
+    normalized_email = str(email).strip().lower()
+    normalized_name = str(full_name).strip()
+    normalized_phone = str(phone or "").strip()
+
+    if not normalized_phone:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "رقم الهاتف مطلوب."
+            },
+        )
+
+    if not normalized_name:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "الاسم مطلوب."
+            },
+        )
+
+    existing_email = (
+        db.query(User)
+        .filter(User.email == normalized_email)
+        .first()
+    )
+
+    if existing_email:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "البريد الإلكتروني مستخدم مسبقاً."
+            },
+        )
+
+    existing_phone = (
+        db.query(User)
+        .filter(User.phone == normalized_phone)
+        .first()
+    )
+
+    if existing_phone:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "رقم الهاتف مستخدم مسبقاً."
+            },
+        )
+
+    role_enum = _normalize_role(account_type)
+
+    password_hash = get_password_hash(str(password))
+
+    new_user = User(
+        name=normalized_name,
+        full_name=normalized_name,
+        email=normalized_email,
+        phone=normalized_phone,
+        password_hash=password_hash,
+        hashed_password=password_hash,
+        role=role_enum,
+        is_active=True,
+    )
+
+    db.add(new_user)
+
+    try:
+        db.commit()
+        db.refresh(new_user)
+    except Exception:
+        db.rollback()
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "تعذر إنشاء الحساب. تحقق من البيانات وحاول مرة أخرى."
+            },
+        )
+
+    return JSONResponse(
+        content={
+            "status": "success",
+            "message": "تم إنشاء الحساب بنجاح",
+            "redirect": "/login",
+            "role": _role_value(new_user),
+        }
+    )

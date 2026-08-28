@@ -6,10 +6,11 @@ from fastapi.staticfiles import StaticFiles
 from app.translations import TRANSLATIONS
 from fastapi.responses import HTMLResponse
 
-from app.routers import merchant_views, buyer_views, agent_views
+from app.routers import merchant_views, buyer_views, agent_views, communication
 from app.routers import admin_views
 from app.routers import admin_users
-from app.routers import language, web, negotiation, marketplace
+from app.routers import language, web, negotiation, marketplace, market, mining_sites
+from app.api.routers.search import router as search_router
 
 try:
     from app.routers import admin_negotiation_page, admin_negotiation_actions, admin_negotiation_details
@@ -23,10 +24,6 @@ try:
 except ImportError:
     auth = None
 
-try:
-    from app.routers import web_auth
-except ImportError:
-    web_auth = None
 
 app = FastAPI(title="Sudan Mining Hub")
 
@@ -86,11 +83,10 @@ async def serve_register_page(request: Request):
 if auth and hasattr(auth, 'router'):
     app.include_router(auth.router)
 
-if web_auth and hasattr(web_auth, 'router'):
-    app.include_router(web_auth.router)
 
 app.include_router(admin_views.router)
 app.include_router(merchant_views.router)
+app.include_router(communication.router)
 app.include_router(buyer_views.router)
 app.include_router(agent_views.router)
 app.include_router(admin_users.router)
@@ -99,6 +95,8 @@ app.include_router(web.router)
 app.include_router(negotiation.router)
 app.include_router(legal.router)
 app.include_router(marketplace.router)
+app.include_router(market.router)
+app.include_router(mining_sites.router)
 
 if admin_negotiation_page and hasattr(admin_negotiation_page, 'router'):
     app.include_router(admin_negotiation_page.router)
@@ -109,6 +107,7 @@ if admin_negotiation_actions and hasattr(admin_negotiation_actions, 'router'):
 # disabled conflicting details router
 
 app.include_router(escrow_router)
+app.include_router(search_router)
 
 # Render / platform health check
 @app.get("/health")

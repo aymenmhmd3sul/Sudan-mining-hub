@@ -12,6 +12,52 @@ from app.services.plan_access_service import PlanAccessService
 
 router = APIRouter(prefix="/marketplace", tags=["Asset Marketplace Core"])
 
+
+def _decode_json_value(value, default):
+    """
+    Decode JSON-backed marketplace fields safely.
+
+    Handles:
+    - native Python list/dict
+    - normal JSON strings
+    - legacy double-encoded JSON strings
+    - NULL / empty values
+
+    The decoded value must have the same container type as `default`.
+    Otherwise the safe default is returned.
+    """
+    if value is None:
+        return default
+
+    if isinstance(value, type(default)):
+        return value
+
+    if not isinstance(value, str):
+        return default
+
+    raw = value.strip()
+
+    if not raw:
+        return default
+
+    try:
+        decoded = json.loads(raw)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return default
+
+    # Legacy records may contain JSON encoded as a JSON string.
+    if isinstance(decoded, str):
+        try:
+            decoded = json.loads(decoded)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            return default
+
+    if isinstance(decoded, type(default)):
+        return decoded
+
+    return default
+
+
 @router.post("/assets", response_model=AssetResponse, status_code=status.HTTP_201_CREATED)
 def create_mining_asset(
     payload: AssetCreate, 
@@ -83,8 +129,8 @@ def create_mining_asset(
             "state_province": new_asset.state_province,
             "locality": new_asset.locality,
             "coordinates": new_asset.coordinates,
-            "images_urls": json.loads(new_asset.images_urls) if isinstance(new_asset.images_urls, str) else new_asset.images_urls,
-            "specific_specs": json.loads(new_asset.specific_specs) if isinstance(new_asset.specific_specs, str) else new_asset.specific_specs,
+            "images_urls": _decode_json_value(new_asset.images_urls, default=[]),
+            "specific_specs": _decode_json_value(new_asset.specific_specs, default={}),
             "status": new_asset.status,
             "created_at": new_asset.created_at,
             "updated_at": new_asset.updated_at
@@ -123,8 +169,8 @@ def list_mining_assets(
             "state_province": asset.state_province,
             "locality": asset.locality,
             "coordinates": asset.coordinates,
-            "images_urls": json.loads(asset.images_urls) if isinstance(asset.images_urls, str) else asset.images_urls,
-            "specific_specs": json.loads(asset.specific_specs) if isinstance(asset.specific_specs, str) else asset.specific_specs,
+            "images_urls": _decode_json_value(asset.images_urls, default=[]),
+            "specific_specs": _decode_json_value(asset.specific_specs, default={}),
             "status": asset.status,
             "created_at": asset.created_at,
             "updated_at": asset.updated_at
@@ -164,8 +210,8 @@ def get_mining_asset(
         "state_province": asset.state_province,
         "locality": asset.locality,
         "coordinates": asset.coordinates,
-        "images_urls": json.loads(asset.images_urls) if isinstance(asset.images_urls, str) else asset.images_urls,
-        "specific_specs": json.loads(asset.specific_specs) if isinstance(asset.specific_specs, str) else asset.specific_specs,
+        "images_urls": _decode_json_value(asset.images_urls, default=[]),
+        "specific_specs": _decode_json_value(asset.specific_specs, default={}),
         "status": asset.status,
         "created_at": asset.created_at,
         "updated_at": asset.updated_at
@@ -270,7 +316,6 @@ def update_mining_asset(
 
             setattr(asset, field, value)
 
-    asset.version = (asset.version or 1) + 1
 
     db.commit()
     db.refresh(asset)
@@ -288,8 +333,8 @@ def update_mining_asset(
         "state_province": asset.state_province,
         "locality": asset.locality,
         "coordinates": asset.coordinates,
-        "images_urls": json.loads(asset.images_urls) if isinstance(asset.images_urls, str) else asset.images_urls,
-        "specific_specs": json.loads(asset.specific_specs) if isinstance(asset.specific_specs, str) else asset.specific_specs,
+        "images_urls": _decode_json_value(asset.images_urls, default=[]),
+        "specific_specs": _decode_json_value(asset.specific_specs, default={}),
         "status": asset.status,
         "created_at": asset.created_at,
         "updated_at": asset.updated_at

@@ -12,13 +12,13 @@ router = APIRouter(prefix="/mining-sites", tags=["Mining Sites Management"])
 def create_mining_site(
     payload: MiningSiteCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(require_any_user)
+    current_user = Depends(require_any_user)
 ):
-    user_role = current_user.get("role")
-    if user_role not in ["investor", "engineer", "admin"]:
+    user_role = str(getattr(current_user.role, "value", current_user.role)).lower()
+    if user_role not in ["admin", "merchant"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="عذراً، هذا الإجراء متاح فقط للحسابات المعتمدة كأدمن، مهندس، أو مستثمر."
+            detail="عذراً، هذا الإجراء متاح فقط لحسابات الأدمن أو التاجر."
         )
     try:
         new_site = MiningSite(
@@ -28,7 +28,7 @@ def create_mining_site(
             state_province=payload.state_province,
             locality=payload.locality,
             coordinates=payload.coordinates,
-            owner_id=current_user["id"],
+            owner_id=current_user.id,
             version=1
         )
         db.add(new_site)
@@ -45,6 +45,5 @@ def create_mining_site(
 @router.get("/", response_model=List[MiningSiteResponse])
 def list_mining_sites(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(require_any_user)
 ):
     return db.query(MiningSite).all()
